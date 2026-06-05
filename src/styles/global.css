@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fraunces variable avec italique - une seule famille fait tout le caractère */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'opsz' 14, 'SOFT' 50;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-ink;
+    overflow-x: hidden;
+  }
+
+  /* Headings : grand opsz pour le display, weight modéré, tracking serré */
+  h1, h2 {
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  }
+
+  h3, h4 {
+    font-variation-settings: 'opsz' 100, 'SOFT' 40;
+  }
+
+  /* Sélection ocre douce */
+  ::selection {
+    background-color: #C9924A;
+    color: #F7F2EA;
+  }
+}
+
+@layer components {
+  /* Filet ocre signature - court, élégant */
+  .rule-ocre {
+    @apply block w-12 h-px bg-ocre my-8;
+  }
+
+  /* Filet vertical sapin (utilisé pour citation anti-vente signature) */
+  .rule-vertical {
+    @apply block w-px h-24 bg-ocre mx-auto;
+  }
+
+  /* Étiquette "Page en construction" */
+  .en-construction {
+    @apply inline-flex items-center gap-2 text-xs uppercase tracking-widest text-muted border border-beige rounded-full px-3 py-1;
+  }
+
+  /* Encart anti-vente */
+  .anti-vente {
+    @apply border-l-2 border-ocre pl-4 italic text-muted text-sm;
+  }
+
+  /* Eyebrow caps - le label discret au-dessus des titres */
+  .eyebrow {
+    @apply text-eyebrow uppercase text-ocre;
+  }
+
+  .eyebrow-muted {
+    @apply text-eyebrow uppercase text-muted;
+  }
+}
+
+@layer utilities {
+  /* Fade-up : animation d'entrée à l'intersection */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .fade-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Parallax léger sur images hero */
+  .parallax {
+    will-change: transform;
+  }
+
+  /* Grain texture subtil — appliqué via ::before sur sections nécessaires */
+  .grain {
+    position: relative;
+  }
+  .grain::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+    z-index: 1;
+  }
+
+  /* Custom cursor (visible sur desktop seulement, désactivé mobile) */
+  .has-custom-cursor {
+    cursor: none;
+  }
+  @media (max-width: 768px) {
+    .has-custom-cursor {
+      cursor: auto;
+    }
+  }
+}
+
+/* Custom cursor element (positionné via JS) */
+#cursor {
+  width: 8px;
+  height: 8px;
+  background-color: #C9924A;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.7;
+  transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              height 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.3s ease;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: multiply;
+  display: none;
+}
+@media (min-width: 768px) {
+  #cursor { display: block; }
+}
+#cursor.is-hovering {
+  width: 32px;
+  height: 32px;
+  opacity: 0.4;
+}

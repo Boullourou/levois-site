@@ -1,0 +1,126 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "Carnet de terrain public sur Lèves (28300), tenu par Mouaad Boullourou, habitant et conseiller immobilier SAFTI. Aider Lèves à mieux exister."
+} = Astro.props;
+const fullTitle = title === 'Accueil' ? 'Lèves, carnet de terrain · Mouaad Boullourou' : `${title} · Lèves, carnet de terrain`;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+
+    <!-- Preconnect Google Fonts pour Fraunces -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:image" content="/portrait-headshot.webp" />
+
+    <!-- Schema.org Person + WebSite -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Mouaad Boullourou",
+      "jobTitle": "Conseiller immobilier",
+      "worksFor": { "@type": "Organization", "name": "SAFTI" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Lèves", "postalCode": "28300", "addressCountry": "FR" }
+    })} />
+  </head>
+
+  <body class="min-h-screen flex flex-col has-custom-cursor">
+    <!-- Custom cursor (desktop only via CSS media query) -->
+    <div id="cursor" aria-hidden="true"></div>
+
+    <Header />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Intersection Observer pour fade-up + parallax léger sur hero -->
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        // === Fade-up à l'intersection ===
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
+
+        document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
+
+        // === Parallax léger sur image hero (max 30px) ===
+        const parallaxElements = document.querySelectorAll('.parallax');
+        if (parallaxElements.length && window.innerWidth > 768) {
+          let ticking = false;
+          window.addEventListener('scroll', () => {
+            if (!ticking) {
+              window.requestAnimationFrame(() => {
+                const scrollY = window.scrollY;
+                parallaxElements.forEach((el) => {
+                  const translate = Math.min(scrollY * 0.12, 30);
+                  el.style.transform = `translateY(${translate}px) scale(1.02)`;
+                });
+                ticking = false;
+              });
+              ticking = true;
+            }
+          });
+        }
+
+        // === Custom cursor avec lag fluide (desktop only) ===
+        const cursor = document.getElementById('cursor');
+        if (cursor && window.innerWidth > 768) {
+          let mouseX = window.innerWidth / 2;
+          let mouseY = window.innerHeight / 2;
+          let cursorX = mouseX;
+          let cursorY = mouseY;
+
+          document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+          });
+
+          const renderCursor = () => {
+            cursorX += (mouseX - cursorX) * 0.22;
+            cursorY += (mouseY - cursorY) * 0.22;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(renderCursor);
+          };
+          requestAnimationFrame(renderCursor);
+
+          // Cursor expand sur éléments interactifs
+          const interactables = document.querySelectorAll('a, button, [role="button"]');
+          interactables.forEach((el) => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

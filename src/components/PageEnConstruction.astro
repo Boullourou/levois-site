@@ -1,0 +1,19 @@
+---
+export interface Props {
+  message?: string;
+}
+const { message = "Page en construction — enrichie au fil des rencontres avec les habitants." } = Astro.props;
+---
+
+<div class="my-8 p-5 border border-beige rounded-md bg-cream/60">
+  <span class="en-construction">
+    <span class="w-1.5 h-1.5 rounded-full bg-ocre"></span>
+    En construction
+  </span>
+  <p class="mt-3 text-sm text-muted max-w-prose">
+    {message}
+    <a href="/contribuer" class="text-sapin underline underline-offset-2 hover:text-ocre">
+      Vous pouvez m'aider à l'enrichir &rarr;
+    </a>
+  </p>
+</div>

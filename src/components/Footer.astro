@@ -1,0 +1,57 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-section-md md:mt-section-lg border-t border-beige/60 bg-cream-soft">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md py-section md:py-section-md">
+
+    <!-- Bloc principal : signature personnelle + sitemap -->
+    <div class="grid md:grid-cols-2 gap-12 md:gap-16 mb-16">
+
+      <!-- Colonne signature (large) -->
+      <div class="space-y-6 max-w-md">
+        <div class="flex items-center gap-4">
+          <img
+            src="/portrait-avatar.webp"
+            alt="Mouaad Boullourou"
+            width="56"
+            height="56"
+            class="w-14 h-14 rounded-full object-cover border border-beige"
+            loading="lazy"
+          />
+          <div>
+            <div class="font-medium text-ink text-base">Mouaad Boullourou</div>
+            <div class="text-sm text-muted">Habitant de Lèves · Conseiller immobilier SAFTI</div>
+          </div>
+        </div>
+
+        <div class="border-l-2 border-ocre pl-5 py-1">
+          <p class="italic text-muted text-[15px] leading-relaxed">
+            Prendre le temps de comprendre les lieux, les gens
+            et les projets — avant de parler immobilier.
+          </p>
+        </div>
+      </div>
+
+      <!-- Colonne sitemap -->
+      <div class="md:justify-self-end">
+        <div class="eyebrow-muted mb-5">Sur le site</div>
+        <ul class="space-y-2.5 text-[15px]">
+          <li><a href="/le-projet" class="text-ink/80 hover:text-sapin transition-colors">Le projet</a></li>
+          <li><a href="/vendre-a-leves" class="text-ink/80 hover:text-sapin transition-colors">Vendre à Lèves</a></li>
+          <li><a href="/observatoire-immo" class="text-ink/80 hover:text-sapin transition-colors">Observatoire immo</a></li>
+          <li><a href="/commerces" class="text-ink/80 hover:text-sapin transition-colors">Commerces &amp; artisans</a></li>
+          <li><a href="/contribuer" class="text-ink/80 hover:text-sapin transition-colors">Contribuer</a></li>
+          <li><a href="/contact" class="text-ink/80 hover:text-sapin transition-colors">Contact</a></li>
+          <li class="pt-2"><a href="/mentions-legales" class="text-muted text-sm hover:text-sapin transition-colors">Mentions légales</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bas du footer : copyright minimal -->
+    <div class="pt-8 border-t border-beige/40 flex flex-col md:flex-row md:justify-between gap-2 text-xs text-muted">
+      <div>© {year} · Mouaad Boullourou · Carnet de terrain sur Lèves (28300)</div>
+      <div class="italic">Made with care for Lèves</div>
+    </div>
+  </div>
+</footer>

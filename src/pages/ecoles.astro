@@ -1,0 +1,94 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const axes = [
+  { eyebrow: "Maternelle & primaire", title: "Le maillage scolaire de base", desc: "Les écoles publiques de Lèves, leurs effectifs, leur fonctionnement. Les écoles privées dans le périmètre proche." },
+  { eyebrow: "Collège & lycée", title: "La suite du parcours", desc: "Où vont les enfants de Lèves après le primaire ? Quels collèges, quels lycées, quelles réputations locales." },
+  { eyebrow: "Périscolaire", title: "Accueils et activités hors classe", desc: "Cantines, garderies, centres aérés, mercredis. Le quotidien des familles qui travaillent." },
+  { eyebrow: "Associatif", title: "Sports, musique, ateliers", desc: "Le tissu associatif local : ce qu'il propose pour les enfants et adolescents, prix, accessibilité." },
+];
+---
+
+<Layout
+  title="Écoles & familles à Lèves"
+  description="Le maillage scolaire et la vie famille à Lèves. Page en construction, enrichie auprès des familles installées."
+>
+
+  <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
+
+    <!-- HERO -->
+    <header class="mb-section md:mb-section-md max-w-editorial fade-up">
+      <div class="eyebrow mb-6">Pour les familles</div>
+      <h1 class="text-hero text-sapin leading-[0.95] mb-8">
+        Écoles<br/>
+        <em class="font-normal italic text-sapin-deep">&amp; familles.</em>
+      </h1>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted max-w-prose">
+        Pour qui s'installe avec des enfants, le choix de l'école est souvent
+        l'argument premier — et l'information la plus difficile à obtenir
+        honnêtement. Voici ce que je vais essayer de partager auprès des familles
+        de la commune.
+      </p>
+    </header>
+
+    <!-- EN CONSTRUCTION badge -->
+    <div class="mb-16 md:mb-20 fade-up">
+      <div class="inline-flex items-center gap-3 border border-beige rounded-full px-5 py-2.5 bg-cream-soft">
+        <span class="block w-1.5 h-1.5 rounded-full bg-ocre"></span>
+        <span class="text-eyebrow uppercase text-muted">En construction · rencontres avec familles en cours</span>
+      </div>
+    </div>
+
+    <!-- TEASER -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <h2 class="text-h2 text-sapin mb-3">Les sujets que je couvrirai :</h2>
+      <span class="rule-ocre"></span>
+
+      <div class="space-y-0 mt-12">
+        {axes.map((axe, idx) => (
+          <article class={`grid md:grid-cols-[auto_1fr] gap-4 md:gap-12 py-7 md:py-9 ${idx === 0 ? 'border-t' : ''} border-b border-beige fade-up`}>
+            <div class="md:w-48">
+              <div class="eyebrow-muted">{axe.eyebrow}</div>
+            </div>
+            <div>
+              <h3 class="text-h3 text-sapin mb-2">{axe.title}</h3>
+              <p class="text-body-lg text-muted leading-relaxed max-w-prose">{axe.desc}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Caveat de fiabilité -->
+    <section class="mb-section anti-vente max-w-prose fade-up">
+      Je m'engage sur cette page à ne publier que des éléments factuels et vérifiés,
+      ou clairement attribués à un témoignage de parent identifié. L'école est un sujet
+      sensible, je ne veux pas créer de hiérarchie hâtive entre établissements.
+    </section>
+
+    <!-- CTA contribuer -->
+    <section class="bg-cream-soft border border-beige rounded-md p-8 md:p-12 fade-up">
+      <div class="max-w-editorial">
+        <div class="eyebrow mb-4">Vous êtes parent à Lèves ?</div>
+        <h2 class="text-h2 text-sapin mb-4">
+          Votre retour est<br/>
+          <em class="italic font-normal">précieux pour cette page.</em>
+        </h2>
+        <p class="text-body-lg text-muted leading-relaxed mb-8 max-w-prose">
+          Ce que vos enfants vivent à l'école ou au périscolaire, vos points
+          de satisfaction, vos points de friction. Tout est utile, et tout
+          peut rester anonyme si vous le souhaitez.
+        </p>
+        <a
+          href="/contribuer"
+          class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]"
+        >
+          Partager mon retour
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </a>
+      </div>
+    </section>
+
+  </article>
+</Layout>

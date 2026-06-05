@@ -1,0 +1,100 @@
+---
+const currentPath = Astro.url.pathname;
+
+const nav = [
+  { href: '/le-projet', label: 'Le projet' },
+  { href: '/vendre-a-leves', label: 'Vendre' },
+  { href: '/pourquoi-vivre-a-leves', label: 'Pourquoi y vivre' },
+  { href: '/secteurs', label: 'Secteurs' },
+  { href: '/commerces', label: 'Commerces' },
+  { href: '/contribuer', label: 'Contribuer' },
+];
+---
+
+<header class="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-beige/50">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md py-5 md:py-6 flex items-center justify-between">
+
+    <!-- Logo : Carnet de terrain en italique Fraunces -->
+    <a href="/" class="group">
+      <div class="text-2xl md:text-3xl font-display italic text-sapin tracking-tight leading-none">
+        Carnet <span class="not-italic font-normal text-sapin/70">de terrain</span>
+      </div>
+    </a>
+
+    <!-- Nav desktop -->
+    <nav class="hidden md:block">
+      <ul class="flex items-center gap-7 lg:gap-9 text-[15px]">
+        {nav.map((item) => {
+          const isActive = currentPath === item.href;
+          return (
+            <li>
+              <a
+                href={item.href}
+                class={`transition-colors hover:text-sapin pb-1 ${
+                  isActive
+                    ? 'text-sapin border-b border-sapin'
+                    : 'text-muted'
+                }`}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <!-- Menu mobile button -->
+    <button
+      id="menu-toggle"
+      class="md:hidden text-sapin p-2 -mr-2"
+      aria-label="Ouvrir le menu"
+      aria-expanded="false"
+    >
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <line x1="3" y1="8" x2="21" y2="8" />
+        <line x1="3" y1="16" x2="21" y2="16" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Menu mobile (caché par défaut, ouvert via JS) -->
+  <div id="mobile-menu" class="md:hidden hidden border-t border-beige/50 bg-cream">
+    <nav class="px-edge py-6">
+      <ul class="space-y-4">
+        {nav.map((item) => {
+          const isActive = currentPath === item.href;
+          return (
+            <li>
+              <a
+                href={item.href}
+                class={`block text-lg ${isActive ? 'text-sapin' : 'text-ink/80'} hover:text-sapin transition-colors`}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => {
+        const isOpen = !menu.classList.contains('hidden');
+        if (isOpen) {
+          menu.classList.add('hidden');
+          toggle.setAttribute('aria-expanded', 'false');
+        } else {
+          menu.classList.remove('hidden');
+          toggle.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
+  });
+</script>

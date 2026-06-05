@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Vendre à Lèves"
+  description="Vous vendez votre bien à Lèves ? Un agent immobilier expérimenté m'accompagne fin juin pour donner son avis sur votre bien, gratuitement et sans engagement."
+>
+  <article class="max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-20 pb-24">
+
+    <div class="text-xs uppercase tracking-[0.2em] text-ocre mb-6">
+      Vous vendez ?
+    </div>
+
+    <h2 class="text-4xl sm:text-5xl leading-[1.1] font-medium tracking-tightest mb-4">
+      Vendre votre bien
+      <span class="italic text-sapin block sm:inline">à Lèves</span>
+    </h2>
+    <span class="rule-ocre"></span>
+
+    <p class="text-lg text-ink/85 leading-relaxed max-w-prose">
+      Je débute en immobilier — je m'appelle Mouaad Boullourou et je suis conseiller
+      SAFTI sur Lèves et le bassin chartrain (Chartres, Mainvilliers, Champhol,
+      Lucé, Le Coudray, Luisant). Pour me lancer, j'ai préparé quelque chose qui
+      pourrait vraiment vous être utile si vous vendez actuellement votre bien.
+    </p>
+
+    <!-- L'événement parrain -->
+    <section class="mt-12 p-6 sm:p-9 border border-sapin/30 rounded-md bg-sapin/5">
+      <div class="text-[11px] uppercase tracking-widest text-ocre mb-3">
+        Événement · fin juin
+      </div>
+      <h3 class="text-2xl sm:text-3xl font-medium mb-4 text-sapin">
+        3 jours pour vous donner un vrai avis pro sur votre bien
+      </h3>
+      <div class="space-y-4 text-ink/85 leading-relaxed">
+        <p>
+          Fin juin, un agent immobilier expérimenté (10 ans de métier, plus de
+          200 ventes) m'accompagne pendant 3 jours à Lèves pour m'aider à démarrer
+          mon activité.
+        </p>
+        <p>
+          Pendant ces 3 jours, on peut venir voir votre bien <strong>ensemble</strong>,
+          chez vous, et vous donner un avis professionnel concret : prix réaliste,
+          délais probables, points forts et points faibles de votre annonce actuelle,
+          conseils pratiques.
+        </p>
+        <p>
+          <strong>Gratuit. Sans engagement. Sans suite obligatoire de votre part.</strong>
+        </p>
+        <p class="text-sm text-muted italic">
+          Pour vous, c'est l'occasion d'avoir un regard pro gratuit sur votre bien.
+          Pour moi, c'est l'occasion d'apprendre sur de vraies situations,
+          accompagné de quelqu'un d'expérimenté.
+        </p>
+      </div>
+
+      <div class="mt-8">
+        <a href="#reserver" class="inline-block bg-sapin text-cream px-6 py-3 rounded-full hover:bg-ink transition-colors">
+          Réserver un créneau
+        </a>
+      </div>
+    </section>
+
+    <!-- Freebie : guide vendeur -->
+    <section class="mt-16">
+      <div class="text-[11px] uppercase tracking-widest text-ocre mb-3">
+        Ressource gratuite
+      </div>
+      <h3 class="text-2xl sm:text-3xl font-medium mb-4">
+        Le guide du vendeur particulier à Lèves
+      </h3>
+      <div class="space-y-4 text-ink/85 leading-relaxed max-w-prose">
+        <p>
+          Un guide pratique de 8 à 10 pages, rédigé avec l'agent qui m'accompagne.
+          Il couvre les choses qu'on aurait toutes aimé savoir avant de mettre
+          son bien en vente :
+        </p>
+        <ul class="space-y-2 list-none pl-0">
+          <li class="flex gap-3"><span class="text-ocre mt-1.5">→</span><span>Comment estimer juste son bien (les 3 méthodes pro)</span></li>
+          <li class="flex gap-3"><span class="text-ocre mt-1.5">→</span><span>Les 5 erreurs qui font perdre 6 mois</span></li>
+          <li class="flex gap-3"><span class="text-ocre mt-1.5">→</span><span>Les délais réels et les frais cachés</span></li>
+          <li class="flex gap-3"><span class="text-ocre mt-1.5">→</span><span>Comparables récents à Lèves</span></li>
+        </ul>
+        <p class="text-sm text-muted italic">
+          En préparation, disponible début juillet. Laissez-moi votre email pour
+          le recevoir dès qu'il sort, et choisir si vous voulez aussi un créneau
+          avec mon parrain.
+        </p>
+      </div>
+
+      <!-- Form opt-in -->
+      <form
+        id="reserver"
+        action="https://formspree.io/f/xnjynroj"
+        method="POST"
+        class="mt-8 space-y-5 p-6 sm:p-8 border border-beige rounded-md bg-cream"
+      >
+        <input type="hidden" name="_subject" value="[Vendre à Lèves] Nouvelle demande vendeur" />
+        <h4 class="text-xl font-medium">M'envoyer le guide & être recontacté</h4>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-widest text-muted">Prénom</span>
+            <input type="text" name="prenom" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin" />
+          </label>
+          <label class="block">
+            <span class="text-[11px] uppercase tracking-widest text-muted">Email *</span>
+            <input type="email" name="email" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin" />
+          </label>
+        </div>
+
+        <label class="block">
+          <span class="text-[11px] uppercase tracking-widest text-muted">Téléphone (facultatif)</span>
+          <input type="tel" name="telephone" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin" />
+        </label>
+
+        <fieldset class="space-y-2">
+          <legend class="text-[11px] uppercase tracking-widest text-muted mb-2">Ce qui vous intéresse</legend>
+          <label class="flex items-start gap-3 text-sm">
+            <input type="checkbox" name="interet_guide" value="oui" checked class="mt-1" />
+            <span>Recevoir le guide du vendeur dès sa sortie (début juillet)</span>
+          </label>
+          <label class="flex items-start gap-3 text-sm">
+            <input type="checkbox" name="interet_rdv" value="oui" class="mt-1" />
+            <span>Réserver un créneau pour visiter mon bien fin juin avec votre parrain</span>
+          </label>
+        </fieldset>
+
+        <label class="flex items-start gap-3 text-xs text-muted">
+          <input type="checkbox" name="consentement" value="oui" required class="mt-0.5" />
+          <span>
+            J'accepte d'être recontacté par Mouaad Boullourou par email ou téléphone
+            au sujet de ma demande. Je peux retirer mon consentement à tout moment.
+          </span>
+        </label>
+
+        <button type="submit" class="bg-sapin text-cream px-6 py-3 rounded-full hover:bg-ink transition-colors">
+          Envoyer
+        </button>
+
+        <p class="text-xs text-muted">
+          Données utilisées uniquement pour cette demande. Voir
+          <a href="/mentions-legales" class="text-sapin underline">mentions légales</a>.
+        </p>
+      </form>
+    </section>
+
+    <!-- Posture rappel -->
+    <p class="mt-16 anti-vente">
+      Prendre le temps de comprendre les lieux, les gens et les projets —
+      avant de parler immobilier.
+    </p>
+
+  </article>
+</Layout>
