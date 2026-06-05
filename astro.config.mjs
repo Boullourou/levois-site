@@ -1,13 +1,14 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
-import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://vivre-a-leves.fr', // à remplacer si tu choisis un autre domaine
+  // URL de production - levois.fr (gentilé officiel des habitants de Lèves)
+  site: 'https://levois.fr',
   integrations: [
     tailwind(),
-    sitemap(),
+    // sitemap() retiré temporairement (incompatibilité versions @astrojs/sitemap 3.2.1 + Astro 4.16+)
+    // Sera réintégré plus tard avec versions alignées
   ],
   build: {
     inlineStylesheets: 'auto',
