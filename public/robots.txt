@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /merci
+
+Sitemap: https://levois.fr/sitemap.xml
