@@ -1,0 +1,82 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Merci"
+  description="Merci pour votre message. Je vous reviens personnellement dans les 48h."
+>
+
+  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md fade-up">
+
+    <!-- HERO -->
+    <header class="mb-section">
+      <div class="eyebrow mb-6">Message envoyé</div>
+      <h1 class="text-display text-sapin leading-[1.05] mb-6">
+        Merci pour votre<br/>
+        <em class="font-normal italic text-sapin-deep">message.</em>
+      </h1>
+      <span class="rule-ocre"></span>
+    </header>
+
+    <!-- MESSAGE PRINCIPAL -->
+    <section class="mb-section max-w-prose">
+      <p class="text-body-lg text-ink/85 leading-relaxed">
+        Je le lirai avec attention et je vous reviens
+        <strong class="text-sapin">personnellement dans les 48h</strong>.
+      </p>
+      <p class="text-body-lg text-muted leading-relaxed mt-6">
+        Pas de réponse automatique, pas de mail de relance, pas de transfert
+        à un service tiers. C'est moi qui vous écrirai.
+      </p>
+    </section>
+
+    <!-- POURSUIVRE LA VISITE -->
+    <section class="border-t border-beige pt-12 md:pt-16">
+      <div class="eyebrow mb-6">En attendant</div>
+      <h2 class="text-h3 text-sapin mb-10">Continuer à découvrir le carnet</h2>
+
+      <div class="grid sm:grid-cols-2 gap-x-12 gap-y-2">
+
+        <a href="/carnets-de-terrain" class="group block py-4 border-b border-beige">
+          <div class="flex items-baseline justify-between gap-4">
+            <span class="text-h3 text-sapin group-hover:text-ocre transition-colors">Le carnet</span>
+            <span class="text-ocre text-2xl transition-transform group-hover:translate-x-1">→</span>
+          </div>
+          <p class="text-sm text-muted mt-1">Portraits, observations, fragments de Lèves</p>
+        </a>
+
+        <a href="/observatoire-immo" class="group block py-4 border-b border-beige">
+          <div class="flex items-baseline justify-between gap-4">
+            <span class="text-h3 text-sapin group-hover:text-ocre transition-colors">L'observatoire</span>
+            <span class="text-ocre text-2xl transition-transform group-hover:translate-x-1">→</span>
+          </div>
+          <p class="text-sm text-muted mt-1">Le marché immobilier de Lèves, en données</p>
+        </a>
+
+        <a href="/le-projet" class="group block py-4 border-b border-beige">
+          <div class="flex items-baseline justify-between gap-4">
+            <span class="text-h3 text-sapin group-hover:text-ocre transition-colors">Le projet</span>
+            <span class="text-ocre text-2xl transition-transform group-hover:translate-x-1">→</span>
+          </div>
+          <p class="text-sm text-muted mt-1">Pourquoi je tiens ce carnet</p>
+        </a>
+
+        <a href="/" class="group block py-4 border-b border-beige">
+          <div class="flex items-baseline justify-between gap-4">
+            <span class="text-h3 text-sapin group-hover:text-ocre transition-colors">Accueil</span>
+            <span class="text-ocre text-2xl transition-transform group-hover:translate-x-1">→</span>
+          </div>
+          <p class="text-sm text-muted mt-1">Retour au point de départ</p>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- SIGNATURE -->
+    <p class="mt-section anti-vente italic">
+      À bientôt — Mouaad.
+    </p>
+
+  </article>
+</Layout>
