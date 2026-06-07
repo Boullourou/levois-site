@@ -11,7 +11,7 @@ const types = [
 
 <Layout
   title="Carnets de terrain"
-  description="Les articles, portraits et notes du carnet sur Lèves. Premier numéro à venir."
+  description="Les articles, portraits et notes du carnet sur Lèves."
 >
 
   <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
@@ -31,13 +31,31 @@ const types = [
       </p>
     </header>
 
-    <!-- EN CONSTRUCTION badge -->
-    <div class="mb-16 md:mb-20 fade-up">
-      <div class="inline-flex items-center gap-3 border border-beige rounded-full px-5 py-2.5 bg-cream-soft">
-        <span class="block w-1.5 h-1.5 rounded-full bg-ocre"></span>
-        <span class="text-eyebrow uppercase text-muted">Premier article publié bientôt</span>
+    <!-- À LIRE -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <h2 class="text-h2 text-sapin mb-3">À lire</h2>
+      <span class="rule-ocre"></span>
+
+      <div class="mt-12 border border-beige rounded-md overflow-hidden">
+        <a
+          href="/carnets-de-terrain/pourquoi-je-tiens-ce-carnet"
+          class="block bg-cream hover:bg-cream-soft transition-colors p-6 md:p-10 group"
+        >
+          <div class="eyebrow-muted mb-3">Carnet de terrain · Juin 2026</div>
+          <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors">
+            Pourquoi je tiens ce carnet
+          </h3>
+          <p class="text-[15px] text-muted leading-relaxed mb-5 max-w-prose">
+            Une maison, ce n'est pas une surface et un diagnostic. Pourquoi je prends
+            le temps d'observer Lèves avant de parler immobilier.
+          </p>
+          <span class="inline-flex items-center gap-2 text-[14px] text-sapin">
+            Lire
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+          </span>
+        </a>
       </div>
-    </div>
+    </section>
 
     <!-- TYPES D'ARTICLES À VENIR -->
     <section class="mb-section md:mb-section-md fade-up">
