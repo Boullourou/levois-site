@@ -3,39 +3,46 @@ import Layout from '../layouts/Layout.astro';
 
 const carnet = [
   {
+    href: '/carnets-de-terrain',
+    eyebrow: 'Le journal',
+    title: 'Carnet de terrain',
+    desc: 'Portraits, notes et observations sur Lèves, au fil des rencontres. Le cœur du site.',
+    classes: 'md:col-span-8 md:row-span-2 bg-sapin text-cream group',
+  },
+  {
     href: '/le-projet',
     eyebrow: 'Pour commencer',
     title: 'Le projet',
     desc: 'Pourquoi ce site existe, et ce que vous pouvez attendre de moi.',
-    classes: 'md:col-span-8 md:row-span-2 bg-sapin text-cream group',
+    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
   },
   {
     href: '/pourquoi-vivre-a-leves',
     eyebrow: 'À découvrir',
     title: 'Pourquoi y vivre',
     desc: "Les atouts de la commune, par ceux qui y vivent.",
-    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
+    classes: 'md:col-span-4 bg-beige text-ink',
   },
   {
     href: '/secteurs',
     eyebrow: 'Sur la carte',
     title: 'Les secteurs',
     desc: "À explorer avec les habitants, pas une vision figée.",
-    classes: 'md:col-span-4 bg-beige text-ink',
+    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
   },
   {
     href: '/commerces',
     eyebrow: 'Au quotidien',
     title: 'Commerces & artisans',
     desc: 'Les bonnes adresses du coin, au fil des rencontres.',
-    classes: 'md:col-span-6 bg-ink text-cream',
+    classes: 'md:col-span-4 bg-ink text-cream',
   },
   {
     href: '/contribuer',
     eyebrow: 'Aidez-moi',
     title: 'Contribuer',
     desc: "Vous vivez ici ? Votre regard m'intéresse vraiment.",
-    classes: 'md:col-span-6 bg-cream border border-ocre/40 text-ink',
+    classes: 'md:col-span-4 bg-cream border border-ocre/40 text-ink',
   },
 ];
 
@@ -43,8 +50,8 @@ const segmentation = [
   {
     question: 'Vous vivez à Lèves ou envisagez de vous y installer ?',
     answer: 'Explorez le carnet de terrain et son observatoire immobilier (à venir).',
-    href: '/le-projet',
-    cta: 'Découvrir',
+    href: '/carnets-de-terrain',
+    cta: 'Découvrir le carnet',
   },
   {
     question: 'Vous tenez un commerce ou un atelier sur la commune ?',
