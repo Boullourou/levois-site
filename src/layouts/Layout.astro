@@ -6,13 +6,20 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
+
+const siteUrl = 'https://levois.fr';
 
 const {
   title,
-  description = "Carnet de terrain public sur Lèves (28300), tenu par Mouaad Boullourou, habitant et conseiller immobilier SAFTI. Aider Lèves à mieux exister."
+  description = "Carnet de terrain public sur Lèves (28300), tenu par Mouaad Boullourou, habitant et conseiller immobilier SAFTI. Aider Lèves à mieux exister.",
+  image = "/portrait-headshot.webp"
 } = Astro.props;
+
 const fullTitle = title === 'Accueil' ? 'Lèves, carnet de terrain · Mouaad Boullourou' : `${title} · Lèves, carnet de terrain`;
+const canonical = siteUrl + Astro.url.pathname;
+const ogImage = image.startsWith('http') ? image : siteUrl + image;
 ---
 
 <!doctype html>
@@ -24,6 +31,7 @@ const fullTitle = title === 'Accueil' ? 'Lèves, carnet de terrain · Mouaad Bou
     <meta name="generator" content={Astro.generator} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
 
     <!-- Preconnect Google Fonts pour Fraunces -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,7 +42,15 @@ const fullTitle = title === 'Accueil' ? 'Lèves, carnet de terrain · Mouaad Bou
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
-    <meta property="og:image" content="/portrait-headshot.webp" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:site_name" content="Lèves, carnet de terrain" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Schema.org Person + WebSite -->
     <script type="application/ld+json" set:html={JSON.stringify({

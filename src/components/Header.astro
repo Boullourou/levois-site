@@ -2,6 +2,7 @@
 const currentPath = Astro.url.pathname;
 
 const nav = [
+  { href: '/carnets-de-terrain', label: 'Carnets' },
   { href: '/le-projet', label: 'Le projet' },
   { href: '/vendre-a-leves', label: 'Vendre' },
   { href: '/pourquoi-vivre-a-leves', label: 'Pourquoi y vivre' },
@@ -25,7 +26,7 @@ const nav = [
     <nav class="hidden md:block">
       <ul class="flex items-center gap-7 lg:gap-9 text-[15px]">
         {nav.map((item) => {
-          const isActive = currentPath === item.href;
+          const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href + '/'));
           return (
             <li>
               <a
@@ -63,7 +64,7 @@ const nav = [
     <nav class="px-edge py-6">
       <ul class="space-y-4">
         {nav.map((item) => {
-          const isActive = currentPath === item.href;
+          const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href + '/'));
           return (
             <li>
               <a
