@@ -9,11 +9,27 @@ const categories = [
   { eyebrow: "Pour le corps", title: "Coiffeurs, esthétique, bien-être", desc: "Les enseignes locales, les indépendants, les habitués." },
   { eyebrow: "Pour le reste", title: "Autres commerces & services", desc: "Tout ce qui ne rentre pas dans les cases précédentes mais mérite d'être mentionné." },
 ];
+
+// ──────────────────────────────────────────────────────────────
+//  POUR AJOUTER UN COMMERCE
+//  Copie un bloc { ... } comme le modèle en commentaire ci-dessous,
+//  colle-le dans la liste, enlève les "//" et remplis. Garde la virgule.
+//  (Le plus simple : envoie-moi les infos, je l'ajoute proprement.)
+// ──────────────────────────────────────────────────────────────
+const commerces = [
+  // {
+  //   nom: "Boulangerie Untel",
+  //   categorie: "Boulangerie",
+  //   adresse: "12 rue de Chartres, Lèves",
+  //   texte: "Une ou deux phrases : ce qu'ils font, leur histoire, pourquoi ça vaut le détour.",
+  //   site: "",   // URL complète s'ils en ont un (https://...), sinon laisse vide ""
+  // },
+];
 ---
 
 <Layout
   title="Commerces & artisans de Lèves"
-  description="Les bonnes adresses de Lèves au fil des rencontres. Annuaire en construction."
+  description="Les bonnes adresses de Lèves au fil des rencontres."
 >
 
   <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
@@ -34,17 +50,41 @@ const categories = [
       </p>
     </header>
 
-    <!-- EN CONSTRUCTION badge -->
-    <div class="mb-16 md:mb-20 fade-up">
-      <div class="inline-flex items-center gap-3 border border-beige rounded-full px-5 py-2.5 bg-cream-soft">
-        <span class="block w-1.5 h-1.5 rounded-full bg-ocre"></span>
-        <span class="text-eyebrow uppercase text-muted">En construction · premières adresses à venir</span>
-      </div>
-    </div>
-
-    <!-- TEASER : catégories -->
+    <!-- ANNUAIRE (se remplit tout seul à partir de la liste "commerces") -->
     <section class="mb-section md:mb-section-md fade-up">
-      <h2 class="text-h2 text-sapin mb-3">Les catégories qui seront couvertes :</h2>
+      {commerces.length === 0 ? (
+        <div class="inline-flex items-center gap-3 border border-beige rounded-full px-5 py-2.5 bg-cream-soft">
+          <span class="block w-1.5 h-1.5 rounded-full bg-ocre"></span>
+          <span class="text-eyebrow uppercase text-muted">Premières adresses à venir, au fil des rencontres</span>
+        </div>
+      ) : (
+        <div class="grid sm:grid-cols-2 gap-px bg-beige border border-beige">
+          {commerces.map((c) => (
+            <div class="bg-cream p-6 md:p-8 flex flex-col">
+              <div class="eyebrow-muted mb-3">{c.categorie}</div>
+              <h3 class="text-h3 text-sapin mb-1">{c.nom}</h3>
+              {c.adresse && <div class="text-sm text-muted mb-3">{c.adresse}</div>}
+              <p class="text-[15px] text-muted leading-relaxed mb-4">{c.texte}</p>
+              {c.site && (
+                <a
+                  href={c.site}
+                  target="_blank"
+                  rel="noopener"
+                  class="mt-auto inline-flex items-center gap-2 text-eyebrow uppercase text-sapin hover:text-ocre transition-colors"
+                >
+                  Voir le site
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+
+    <!-- CATÉGORIES (ce qui sera couvert) -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <h2 class="text-h2 text-sapin mb-3">Les catégories couvertes :</h2>
       <span class="rule-ocre"></span>
 
       <div class="grid sm:grid-cols-2 gap-px bg-beige border border-beige mt-12">
@@ -58,11 +98,9 @@ const categories = [
       </div>
     </section>
 
-    <!-- CTA double : recommander OU être référencé -->
-    <section class="grid md:grid-cols-2 gap-5 fade-up">
-
-      <!-- CTA recommander -->
-      <div class="bg-cream-soft border border-beige rounded-md p-8 md:p-10">
+    <!-- CTA : recommander une adresse -->
+    <section class="fade-up">
+      <div class="bg-cream-soft border border-beige rounded-md p-8 md:p-10 max-w-editorial">
         <div class="eyebrow mb-4">Vous avez une bonne adresse ?</div>
         <h3 class="text-h3 text-sapin mb-3">Recommandez-la</h3>
         <p class="text-[15px] text-muted leading-relaxed mb-6">
@@ -78,25 +116,6 @@ const categories = [
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
         </a>
       </div>
-
-      <!-- CTA commerçant -->
-      <div class="bg-sapin text-cream rounded-md p-8 md:p-10">
-        <div class="text-eyebrow uppercase tracking-widest text-ocre-soft mb-4">Vous tenez un commerce ?</div>
-        <h3 class="text-h3 mb-3">Un site web sobre &amp; rapide</h3>
-        <p class="text-[15px] opacity-80 leading-relaxed mb-6">
-          Si vous tenez un commerce ou un atelier à Lèves ou autour
-          et que votre visibilité en ligne mériterait mieux, j'ai peut-être
-          quelque chose à vous proposer.
-        </p>
-        <a
-          href="/pour-les-commerces"
-          class="inline-flex items-center gap-2 text-eyebrow uppercase text-ocre-soft hover:text-cream transition-colors border-b border-ocre-soft pb-1"
-        >
-          Voir mon offre site
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-        </a>
-      </div>
-
     </section>
 
   </article>
