@@ -1,0 +1,181 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const boucles = [
+  {
+    nom: "Boucle de Lèves en vallée de l'Eure",
+    distance: "12,7 km · environ 3h55",
+    texte: "La grande boucle de la commune, entre champs, sous-bois et patrimoine. Départ au pied de l'église Saint-Lazare (parking gratuit rue des Grands Prés). Sur le chemin : la vallée du Couasnon, le Mémorial de Chavannes — haut lieu de la Résistance —, les étangs, le moulin, et les vestiges de l'abbaye de Josaphat juste avant de revenir au bourg. Prévoir de bonnes chaussures : certains passages en sous-bois sont boueux ou pierreux.",
+  },
+  {
+    nom: "Entre étangs et vallée de l'Eure",
+    distance: "9,6 à 13,1 km · environ 3h30",
+    texte: "Circuit labellisé par la Fédération Française de Randonnée, au plus près de la rivière. Il traverse les hameaux du Gorget et du Mousseau, passe devant le moulin de la Forte Maison et l'ancienne abbaye de Josaphat.",
+  },
+  {
+    nom: "Les hauts de Chartres",
+    distance: "6,3 km · environ 2h",
+    texte: "Petite boucle facile le long du ruisseau du Couasnon, avec de remarquables points de vue sur la cathédrale de Chartres à travers les jardins.",
+  },
+  {
+    nom: "Le grand tour du Gorget",
+    distance: "8,3 km · environ 2h30",
+    texte: "Exploration des zones humides du secteur du Gorget, à la limite de Saint-Prest.",
+  },
+  {
+    nom: "La vallée du Couasnon",
+    distance: "8,1 km · environ 2h",
+    texte: "Une marche concentrée sur les berges boisées du Couasnon.",
+  },
+  {
+    nom: "La Croix Rouge",
+    distance: "4,7 km · environ 1h30",
+    texte: "Promenade très facile au départ de la route de Chavannes, dans la fraîcheur des bois de Séréville. Idéale en famille.",
+  },
+];
+---
+
+<Layout
+  title="Balades & nature à Lèves"
+  description="Le Plan Vert, les boucles de randonnée, les étangs, les bois : où marcher, courir et pédaler à Lèves."
+>
+
+  <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
+
+    <!-- HERO -->
+    <header class="mb-section md:mb-section-md max-w-editorial fade-up">
+      <div class="eyebrow mb-6">Dehors</div>
+      <h1 class="text-hero text-sapin leading-[0.95] mb-8">
+        Balades<br/>
+        <em class="font-normal italic text-sapin-deep">&amp; nature.</em>
+      </h1>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted max-w-prose">
+        C'est l'une des premières choses que j'ai comprises en m'installant :
+        Lèves est une commune verte. Deux rivières — l'Eure et le Couasnon —,
+        des bois, des étangs, des prairies, et un réseau de sentiers qui permet
+        de marcher des heures sans reprendre la voiture. Voici de quoi commencer.
+      </p>
+    </header>
+
+    <!-- LE PLAN VERT -->
+    <section class="bg-sapin text-cream rounded-md p-8 md:p-12 mb-section md:mb-section-md fade-up">
+      <div class="max-w-editorial">
+        <div class="text-eyebrow uppercase tracking-widest text-ocre-soft mb-4">L'épine dorsale</div>
+        <h2 class="text-h2 mb-6">
+          Le Plan Vert,<br/>
+          <em class="italic font-normal">le long de l'Eure.</em>
+        </h2>
+        <p class="text-[15px] opacity-80 leading-relaxed mb-4">
+          Un itinéraire aménagé qui suit les berges de l'Eure, à pied ou à vélo.
+          En le parcourant, on croise une bonne partie du patrimoine de la commune :
+          les vestiges de l'abbaye de Josaphat dans le parc de la Fondation d'Aligre,
+          le moulin de Lèves, les Ateliers Loire — maîtres-verriers installés ici
+          depuis 1946 —, le lavoir municipal et les étangs communaux.
+        </p>
+        <p class="text-[15px] opacity-80 leading-relaxed">
+          Des expositions en plein air ponctuent régulièrement le parcours.
+          C'est aussi par là que passe la Véloscénie, la véloroute Paris –
+          Mont-Saint-Michel, qui traverse la commune.
+        </p>
+      </div>
+    </section>
+
+    <!-- LES BOUCLES -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <h2 class="text-h2 text-sapin mb-3">Les boucles balisées</h2>
+      <span class="rule-ocre"></span>
+
+      <div class="mt-12 space-y-0">
+        {boucles.map((b, idx) => (
+          <article class={`py-8 md:py-10 ${idx === 0 ? 'border-t' : ''} border-b border-beige`}>
+            <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-3">
+              <h3 class="text-h3 text-sapin">{b.nom}</h3>
+              <div class="eyebrow-muted shrink-0">{b.distance}</div>
+            </div>
+            <p class="text-[15px] text-muted leading-relaxed max-w-prose">{b.texte}</p>
+          </article>
+        ))}
+      </div>
+
+      <p class="text-[15px] italic text-muted mt-8 max-w-prose">
+        Les distances et durées sont celles des topo-guides ; comptez votre propre rythme.
+        Trois circuits VTT balisés partent également de la commune, et le GR 655
+        — le chemin de Compostelle, voie de Tours — traverse Lèves en direction
+        de la cathédrale de Chartres.
+      </p>
+    </section>
+
+    <!-- LES LIEUX -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <h2 class="text-h2 text-sapin mb-3">Les lieux à connaître</h2>
+      <span class="rule-ocre"></span>
+
+      <div class="grid sm:grid-cols-2 gap-px bg-beige border border-beige mt-12">
+        <div class="bg-cream p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Au bord de l'eau</div>
+          <h3 class="text-h3 text-sapin mb-2">Les étangs communaux</h3>
+          <p class="text-[15px] text-muted leading-relaxed">
+            Le grand et le petit étang, accessibles depuis la rue de Josaphat.
+            Pêche gérée par l'association Lèves, Pêche et Nature — avec trois
+            pontons adaptés aux personnes à mobilité réduite —, aire de jeux en
+            bois, tables de pique-nique, et des brebis en éco-pâturage aux abords
+            du grand étang.
+          </p>
+        </div>
+        <div class="bg-cream-soft p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Sous les arbres</div>
+          <h3 class="text-h3 text-sapin mb-2">Les bois</h3>
+          <p class="text-[15px] text-muted leading-relaxed">
+            Le Bois de Lèves, le Bois du Champ de Mars et les coteaux boisés du
+            Vau de Lèves. Des sentiers ombragés comme la Sente Guyards, praticables
+            à pied comme en VTT.
+          </p>
+        </div>
+        <div class="bg-cream-soft p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Sur le plateau</div>
+          <h3 class="text-h3 text-sapin mb-2">Plaines & vues sur la cathédrale</h3>
+          <p class="text-[15px] text-muted leading-relaxed">
+            Les chemins de plaine au nord offrent des points de vue remarquables
+            sur la cathédrale de Chartres. L'ancien champ de tir de Chavannes,
+            transformé en champ mellifère, accueille le Rucher de Chavannes et
+            ses ruches pédagogiques.
+          </p>
+        </div>
+        <div class="bg-cream p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Mémoire</div>
+          <h3 class="text-h3 text-sapin mb-2">Le Mémorial de Chavannes</h3>
+          <p class="text-[15px] text-muted leading-relaxed">
+            Sur la grande boucle, le parcours passe par ce haut lieu de la
+            Résistance, où neuf jeunes hommes furent fusillés entre 1942 et 1944.
+            Un détour qui mérite le silence.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="bg-cream-soft border border-beige rounded-md p-8 md:p-12 fade-up">
+      <div class="max-w-editorial">
+        <div class="eyebrow mb-4">Vous marchez ici depuis des années ?</div>
+        <h2 class="text-h2 text-sapin mb-4">
+          Partagez vos coins<br/>
+          <em class="italic font-normal">préférés.</em>
+        </h2>
+        <p class="text-body-lg text-muted leading-relaxed mb-8 max-w-prose">
+          Un sentier que les topo-guides ne mentionnent pas, un point de vue,
+          une heure de la journée où la lumière vaut le détour — dites-le moi,
+          j'irai voir, et la page s'enrichira.
+        </p>
+        <a
+          href="/contribuer"
+          class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]"
+        >
+          Partager un coin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </a>
+      </div>
+    </section>
+
+  </article>
+</Layout>
