@@ -1,0 +1,114 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const rubriques = [
+  {
+    href: '/balades',
+    eyebrow: 'Dehors',
+    title: 'Balades & nature',
+    desc: "Le Plan Vert le long de l'Eure, six boucles balisées, les étangs, les bois, les vues sur la cathédrale.",
+    live: true,
+  },
+  {
+    href: '/secteurs',
+    eyebrow: 'Sur la carte',
+    title: 'Les secteurs',
+    desc: "Les sous-quartiers de la commune, vus par ceux qui y vivent — atouts et limites compris.",
+    live: true,
+  },
+  {
+    href: '/commerces',
+    eyebrow: 'Au quotidien',
+    title: 'Commerces & artisans',
+    desc: "Les bonnes adresses du coin, au fil des rencontres et des recommandations d'habitants.",
+    live: true,
+  },
+  {
+    href: '/ecoles',
+    eyebrow: 'En famille',
+    title: 'Écoles & petite enfance',
+    desc: "Maternelle, élémentaire, crèches, accueils de loisirs : le paysage scolaire de la commune.",
+    live: false,
+  },
+];
+---
+
+<Layout
+  title="Vivre à Lèves"
+  description="Balades, secteurs, commerces, écoles : le pratique de Lèves, rangé au même endroit, enrichi au fil des rencontres."
+>
+
+  <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
+
+    <!-- HERO -->
+    <header class="mb-section md:mb-section-md max-w-editorial fade-up">
+      <div class="eyebrow mb-6">Le guide</div>
+      <h1 class="text-hero text-sapin leading-[0.95] mb-8">
+        Vivre<br/>
+        <em class="font-normal italic text-sapin-deep">à Lèves.</em>
+      </h1>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted max-w-prose">
+        Tout le pratique de la commune, rangé au même endroit : où marcher,
+        quels quartiers, quelles adresses. Pas une brochure — un guide
+        d'habitant, qui s'enrichit au fil des rencontres et qui assume
+        de dire aussi ce qui manque.
+      </p>
+    </header>
+
+    <!-- RUBRIQUES -->
+    <section class="fade-up">
+      <div class="grid sm:grid-cols-2 gap-px bg-beige border border-beige">
+        {rubriques.map((r) =>
+          r.live ? (
+            <a href={r.href} class="bg-cream hover:bg-cream-soft transition-colors p-6 md:p-10 group flex flex-col">
+              <div class="eyebrow-muted mb-3">{r.eyebrow}</div>
+              <h2 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors">{r.title}</h2>
+              <p class="text-[15px] text-muted leading-relaxed mb-5">{r.desc}</p>
+              <span class="mt-auto inline-flex items-center gap-2 text-[14px] text-sapin">
+                Découvrir
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+              </span>
+            </a>
+          ) : (
+            <div class="bg-cream-soft p-6 md:p-10 flex flex-col">
+              <div class="eyebrow-muted mb-3">{r.eyebrow}</div>
+              <h2 class="text-h3 text-sapin/60 mb-3">{r.title}</h2>
+              <p class="text-[15px] text-muted leading-relaxed mb-5">{r.desc}</p>
+              <span class="mt-auto inline-flex items-center gap-3">
+                <span class="block w-1.5 h-1.5 rounded-full bg-ocre"></span>
+                <span class="text-eyebrow uppercase text-muted">À venir</span>
+              </span>
+            </div>
+          )
+        )}
+      </div>
+    </section>
+
+    <!-- LIEN CARNET -->
+    <section class="mt-section fade-up">
+      <div class="bg-sapin text-cream rounded-md p-8 md:p-12">
+        <div class="max-w-editorial">
+          <div class="text-eyebrow uppercase tracking-widest text-ocre-soft mb-4">Pour aller plus loin que le pratique</div>
+          <h2 class="text-h2 mb-4">
+            Les histoires sont<br/>
+            <em class="italic font-normal">dans le carnet.</em>
+          </h2>
+          <p class="text-[15px] opacity-80 leading-relaxed mb-8 max-w-prose">
+            Ce guide donne les repères. Les portraits, les histoires et les
+            découvertes — comme celle du peintre Soutine qui passait ses étés
+            ici — sont dans les carnets de terrain.
+          </p>
+          <a
+            href="/carnets-de-terrain"
+            class="inline-flex items-center gap-2 text-eyebrow uppercase text-ocre-soft hover:text-cream transition-colors border-b border-ocre-soft pb-1"
+          >
+            Lire les carnets
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </article>
+</Layout>

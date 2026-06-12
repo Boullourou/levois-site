@@ -3,14 +3,9 @@ import Layout from '../layouts/Layout.astro';
 
 const indicateurs = [
   {
-    eyebrow: "Stock actif",
-    title: "Le marché en temps réel",
-    desc: "Nombre de biens en vente à Lèves, ventilation par typologie (appartements T2/T3/T4, maisons, terrains). Comparaison avec le mois précédent.",
-  },
-  {
     eyebrow: "Prix médians",
     title: "Combien ça vaut, vraiment",
-    desc: "Médiane des prix demandés et des prix de transaction par typologie. Évolution mois après mois, sans extrapolation hasardeuse.",
+    desc: "Médiane des prix demandés et des prix de transaction par typologie. Évolution trimestre après trimestre, sans extrapolation hasardeuse.",
   },
   {
     eyebrow: "Durée de marché",
@@ -18,42 +13,37 @@ const indicateurs = [
     desc: "Temps moyen qu'un bien passe en annonce avant retrait, baisse, ou conclusion. Un signal puissant sur l'état réel du marché.",
   },
   {
-    eyebrow: "Part FSBO / agences",
-    title: "Qui vend, comment",
-    desc: "Quelle proportion des biens à Lèves est confiée à des agences, et quelle part reste vendue par les propriétaires en direct.",
-  },
-  {
-    eyebrow: "Communes voisines",
-    title: "Lèves en perspective",
-    desc: "Comparaison rapide avec Chartres, Mainvilliers, Champhol, Lucé, Le Coudray, Luisant. Pour situer Lèves dans son bassin.",
+    eyebrow: "Stock actif",
+    title: "Le marché en temps réel",
+    desc: "Nombre de biens en vente à Lèves, ventilation par typologie (appartements T2/T3/T4, maisons, terrains). Comparaison avec le trimestre précédent.",
   },
 ];
 
 const garanties = [
   { title: "Sources transparentes", desc: "Toutes les données sont sourcées : DVF (données publiques de l'État), annonces actives, observation terrain." },
   { title: "Anonymisation", desc: "Aucun bien spécifique n'est jamais nommé sans accord explicite du propriétaire. Les données sont systématiquement agrégées." },
-  { title: "Mensuel, jamais en retard", desc: "Publication le premier lundi de chaque mois. Si le mois est creux en données, je l'écris au lieu d'inventer." },
+  { title: "Trimestriel, jamais inventé", desc: "Publication chaque trimestre, quand les données notaires sont fraîches. Si le trimestre est creux en données, je l'écris au lieu d'inventer." },
   { title: "Toujours gratuit", desc: "L'observatoire est et restera gratuit. Pas de version premium, pas de paywall, pas de publicité." },
 ];
 ---
 
 <Layout
   title="Observatoire immobilier de Lèves"
-  description="Données du marché immobilier à Lèves : prix médians, durée moyenne avant vente, tendances par secteur. Premier numéro prévu fin septembre. Inscrivez-vous pour le recevoir."
+  description="Données du marché immobilier à Lèves : prix médians, durée moyenne avant vente, stock actif. Trimestriel et gratuit, premier numéro été 2026. Inscrivez-vous pour le recevoir."
 >
 
   <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
 
     <!-- HERO -->
     <header class="mb-section md:mb-section-md max-w-editorial fade-up">
-      <div class="eyebrow mb-6">À venir · mensuel · gratuit</div>
+      <div class="eyebrow mb-6">À venir · trimestriel · gratuit</div>
       <h1 class="text-hero text-sapin leading-[0.95] mb-8">
         Observatoire<br/>
         <em class="font-normal italic text-sapin-deep">immobilier de Lèves.</em>
       </h1>
       <span class="rule-ocre"></span>
       <p class="text-body-lg text-muted max-w-prose">
-        Une fois par mois, des données concrètes sur le marché immobilier à
+        Chaque trimestre, des données concrètes sur le marché immobilier à
         Lèves et dans le bassin chartrain : annonces actives, prix médians,
         durée moyenne avant vente, tendances par secteur. Pas d'estimations
         à la louche, pas d'enthousiasme commercial — uniquement des chiffres
@@ -65,7 +55,7 @@ const garanties = [
     <div class="mb-16 md:mb-20 fade-up">
       <div class="inline-flex items-center gap-3 border border-beige rounded-full px-5 py-2.5 bg-cream-soft">
         <span class="block w-1.5 h-1.5 rounded-full bg-ocre"></span>
-        <span class="text-eyebrow uppercase text-muted">Premier numéro · fin septembre</span>
+        <span class="text-eyebrow uppercase text-muted">Premier numéro · été 2026</span>
       </div>
     </div>
 
@@ -88,7 +78,7 @@ const garanties = [
         <p>
           L'observatoire vise à combler ce manque pour Lèves et le bassin chartrain.
           Il n'apportera pas la vérité absolue — aucun observatoire ne le peut —
-          mais il donnera des points de repère vérifiés, mois après mois, gratuitement.
+          mais il donnera des points de repère vérifiés, trimestre après trimestre, gratuitement.
         </p>
       </div>
     </section>
@@ -97,7 +87,7 @@ const garanties = [
     <section class="mb-section md:mb-section-md fade-up">
       <div class="eyebrow mb-4">Ce qu'on y trouvera</div>
       <h2 class="text-h2 text-sapin mb-3">
-        Les cinq indicateurs<br/>
+        Les trois indicateurs<br/>
         <em class="italic font-normal">de chaque édition.</em>
       </h2>
       <span class="rule-ocre"></span>
@@ -151,7 +141,7 @@ const garanties = [
           <em class="italic font-normal">dès le premier numéro.</em>
         </h2>
         <p class="text-[15px] opacity-80 leading-relaxed mb-10 max-w-prose">
-          Un email à chaque parution mensuelle. Vous pouvez vous désinscrire
+          Un email à chaque parution trimestrielle. Vous pouvez vous désinscrire
           en un clic à tout moment.
         </p>
 
@@ -196,7 +186,7 @@ const garanties = [
           <label class="flex items-start gap-3 text-xs opacity-80">
             <input type="checkbox" name="consentement" value="oui" required class="mt-0.5 accent-ocre" />
             <span>
-              J'accepte de recevoir l'observatoire mensuel par email. Je peux
+              J'accepte de recevoir l'observatoire trimestriel par email. Je peux
               me désabonner à tout moment via le lien en bas de chaque email.
             </span>
           </label>

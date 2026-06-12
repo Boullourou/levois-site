@@ -10,6 +10,20 @@ const carnet = [
     classes: 'md:col-span-8 md:row-span-2 bg-sapin text-cream group',
   },
   {
+    href: '/vivre-a-leves',
+    eyebrow: 'Le guide',
+    title: 'Vivre à Lèves',
+    desc: 'Balades, secteurs, commerces : le pratique de la commune, rangé au même endroit.',
+    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
+  },
+  {
+    href: '/vendre-a-leves',
+    eyebrow: 'À votre rythme',
+    title: "L'immobilier",
+    desc: "Vendre ou acheter à Lèves, avec quelqu'un qui connaît le terrain.",
+    classes: 'md:col-span-4 bg-beige text-ink',
+  },
+  {
     href: '/le-projet',
     eyebrow: 'Pour commencer',
     title: 'Le projet',
@@ -17,41 +31,20 @@ const carnet = [
     classes: 'md:col-span-4 bg-cream border border-beige text-ink',
   },
   {
-    href: '/pourquoi-vivre-a-leves',
-    eyebrow: 'À découvrir',
-    title: 'Pourquoi y vivre',
-    desc: "Les atouts de la commune, par ceux qui y vivent.",
-    classes: 'md:col-span-4 bg-beige text-ink',
-  },
-  {
-    href: '/secteurs',
-    eyebrow: 'Sur la carte',
-    title: 'Les secteurs',
-    desc: "À explorer avec les habitants, pas une vision figée.",
-    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
-  },
-  {
-    href: '/commerces',
-    eyebrow: 'Au quotidien',
-    title: 'Commerces & artisans',
-    desc: 'Les bonnes adresses du coin, au fil des rencontres.',
-    classes: 'md:col-span-4 bg-ink text-cream',
-  },
-  {
     href: '/contribuer',
     eyebrow: 'Aidez-moi',
     title: 'Contribuer',
     desc: "Vous vivez ici ? Votre regard m'intéresse vraiment.",
-    classes: 'md:col-span-4 bg-cream border border-ocre/40 text-ink',
+    classes: 'md:col-span-4 bg-ink text-cream',
   },
 ];
 
 const segmentation = [
   {
     question: 'Vous vivez à Lèves ou envisagez de vous y installer ?',
-    answer: 'Explorez le carnet de terrain et son observatoire immobilier (à venir).',
-    href: '/carnets-de-terrain',
-    cta: 'Découvrir le carnet',
+    answer: 'Explorez le guide pratique et les carnets de terrain.',
+    href: '/vivre-a-leves',
+    cta: 'Vivre à Lèves',
   },
   {
     question: 'Vous tenez un commerce ou un atelier sur la commune ?',
@@ -194,7 +187,7 @@ const segmentation = [
   <section class="py-section md:py-section-lg px-edge md:px-edge-md max-w-page mx-auto">
 
     <div class="mb-12 md:mb-16 fade-up">
-      <div class="eyebrow mb-4">Le carnet</div>
+      <div class="eyebrow mb-4">Par où commencer</div>
       <h2 class="text-display text-sapin">
         Lèves, <em class="italic font-normal">vue d'ici.</em>
       </h2>
