@@ -7,6 +7,21 @@ const types = [
   { eyebrow: "Observation", title: "Notes de terrain", desc: "Des observations brutes — une fête de quartier, une journée de marché, un détail d'urbanisme — pour fixer ce qui mérite de l'être." },
   { eyebrow: "Histoire", title: "Patrimoine & histoire locale", desc: "Quelques pièces sur l'histoire de Lèves, l'évolution de la commune, les lieux qui ont changé. Vérifié et sourcé." },
 ];
+
+const articles = [
+  {
+    href: "/carnets-de-terrain/pourquoi-la-salle-des-fetes-s-appelle-soutine",
+    eyebrow: "Histoire locale · Juin 2026",
+    title: "Pourquoi la salle des fêtes s'appelle Soutine",
+    desc: "En tirant sur le fil d'un nom croisé tous les jours, j'ai découvert que Lèves a hébergé l'avant-garde parisienne — Soutine, Cocteau, Satie, et la maison où le style Castaing est né.",
+  },
+  {
+    href: "/carnets-de-terrain/pourquoi-je-tiens-ce-carnet",
+    eyebrow: "Carnet de terrain · Juin 2026",
+    title: "Pourquoi je tiens ce carnet",
+    desc: "Une maison, ce n'est pas une surface et un diagnostic. Pourquoi je prends le temps d'observer Lèves avant de parler immobilier.",
+  },
+];
 ---
 
 <Layout
@@ -36,24 +51,25 @@ const types = [
       <h2 class="text-h2 text-sapin mb-3">À lire</h2>
       <span class="rule-ocre"></span>
 
-      <div class="mt-12 border border-beige rounded-md overflow-hidden">
-        <a
-          href="/carnets-de-terrain/pourquoi-je-tiens-ce-carnet"
-          class="block bg-cream hover:bg-cream-soft transition-colors p-6 md:p-10 group"
-        >
-          <div class="eyebrow-muted mb-3">Carnet de terrain · Juin 2026</div>
-          <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors">
-            Pourquoi je tiens ce carnet
-          </h3>
-          <p class="text-[15px] text-muted leading-relaxed mb-5 max-w-prose">
-            Une maison, ce n'est pas une surface et un diagnostic. Pourquoi je prends
-            le temps d'observer Lèves avant de parler immobilier.
-          </p>
-          <span class="inline-flex items-center gap-2 text-[14px] text-sapin">
-            Lire
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-          </span>
-        </a>
+      <div class="mt-12 border border-beige rounded-md overflow-hidden divide-y divide-beige">
+        {articles.map((a) => (
+          <a
+            href={a.href}
+            class="block bg-cream hover:bg-cream-soft transition-colors p-6 md:p-10 group"
+          >
+            <div class="eyebrow-muted mb-3">{a.eyebrow}</div>
+            <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors">
+              {a.title}
+            </h3>
+            <p class="text-[15px] text-muted leading-relaxed mb-5 max-w-prose">
+              {a.desc}
+            </p>
+            <span class="inline-flex items-center gap-2 text-[14px] text-sapin">
+              Lire
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+            </span>
+          </a>
+        ))}
       </div>
     </section>
 
