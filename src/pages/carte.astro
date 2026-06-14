@@ -1,0 +1,144 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Mouaad Boullourou — Conseiller immobilier à Lèves"
+  description="Ressources utiles sur l'immobilier à Lèves et contact direct avec Mouaad Boullourou, votre voisin conseiller SAFTI."
+>
+
+  <article class="max-w-xl mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
+
+    <!-- 1. ACCUEIL -->
+    <header class="mb-12 fade-up">
+      <h1 class="text-hero text-sapin leading-[0.95] mb-5">
+        Bonjour,<br/>
+        <em class="font-normal italic text-sapin-deep">c'est Mouaad.</em>
+      </h1>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted mt-6">
+        Merci d'avoir scanné — voici comment rester en lien
+        ou aller plus loin si vous le souhaitez.
+      </p>
+    </header>
+
+    <!-- 2. DEUX RESSOURCES DIRECTES -->
+    <section class="mb-12 fade-up space-y-4">
+      <a
+        href="/votre-rue"
+        class="group flex flex-col gap-2 bg-sapin text-cream rounded-md p-6 md:p-8 hover:bg-sapin-deep transition-colors"
+      >
+        <div class="text-eyebrow uppercase tracking-widest text-ocre-soft">Données notaires</div>
+        <h2 class="text-h3 group-hover:opacity-90 transition-opacity">Les prix réels à Lèves</h2>
+        <p class="text-[15px] opacity-80 leading-relaxed">
+          121 ventes enregistrées en 2024-2025, secteur par secteur. Sans inscription.
+        </p>
+        <div class="mt-2 inline-flex items-center gap-2 text-[13px] text-ocre-soft">
+          Voir les chiffres
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </div>
+      </a>
+
+      <a
+        href="/observatoire-immo"
+        class="group flex flex-col gap-2 bg-cream border border-beige rounded-md p-6 md:p-8 hover:bg-cream-soft transition-colors"
+      >
+        <div class="eyebrow-muted">Trimestriel · gratuit</div>
+        <h2 class="text-h3 text-sapin group-hover:text-sapin-deep transition-colors">L'observatoire immobilier</h2>
+        <p class="text-[15px] text-muted leading-relaxed">
+          Prix, durée de marché, stock actif — mis à jour chaque trimestre. Gratuit.
+        </p>
+        <div class="mt-2 inline-flex items-center gap-2 text-[13px] text-sapin">
+          En savoir plus
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </div>
+      </a>
+    </section>
+
+    <!-- 3. FORMULAIRE CONTACT -->
+    <section class="mb-12 fade-up">
+      <div class="border border-beige rounded-md p-6 md:p-8 bg-cream-soft">
+        <h2 class="text-h3 text-sapin mb-5">
+          Vous préférez qu'on reste<br/>
+          <em class="italic font-normal">en contact ?</em>
+        </h2>
+
+        <form
+          action="https://formspree.io/f/xnjynroj"
+          method="POST"
+          class="space-y-4"
+        >
+          <input type="hidden" name="_subject" value="Contact carte de visite" />
+          <input type="hidden" name="_next" value="https://levois.fr/merci" />
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-eyebrow uppercase text-muted">Prénom *</span>
+              <input
+                type="text"
+                name="prenom"
+                required
+                class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[15px]"
+              />
+            </label>
+            <label class="block">
+              <span class="text-eyebrow uppercase text-muted">Email *</span>
+              <input
+                type="email"
+                name="email"
+                required
+                class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[15px]"
+              />
+            </label>
+          </div>
+
+          <label class="block">
+            <span class="text-eyebrow uppercase text-muted">Un mot sur votre situation (facultatif)</span>
+            <textarea
+              name="message"
+              rows="3"
+              placeholder="un projet en cours, une question, ou juste garder le contact..."
+              class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[15px] resize-none"
+            ></textarea>
+          </label>
+
+          <button
+            type="submit"
+            class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]"
+          >
+            Envoyer
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+          </button>
+
+          <p class="text-[12px] text-muted leading-relaxed">
+            En envoyant ce message, vous acceptez d'être recontacté par Mouaad
+            Boullourou. Pas d'abonnement, pas de démarchage.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <!-- 4. CONTACT DIRECT -->
+    <section class="fade-up pt-8 border-t border-beige">
+      <p class="text-[15px] text-muted mb-4">Vous préférez appeler ou écrire directement ?</p>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a
+          href="tel:+33781380121"
+          class="inline-flex items-center gap-2 text-sapin hover:text-sapin-deep transition-colors text-[15px]"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          07 81 38 01 21
+        </a>
+        <span class="hidden sm:block text-muted">·</span>
+        <a
+          href="mailto:mouaad@levois.fr"
+          class="inline-flex items-center gap-2 text-sapin hover:text-sapin-deep transition-colors text-[15px]"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          mouaad@levois.fr
+        </a>
+      </div>
+    </section>
+
+  </article>
+</Layout>
