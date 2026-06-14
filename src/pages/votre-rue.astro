@@ -1,0 +1,245 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Données calculées depuis les CSV DVF officiels (commune 28209), millésimes 2024 et 2025.
+// 121 ventes de maisons et appartements, dédupliquées par id_mutation,
+// 4 ventes en bloc exclues (les lignes dupliquées d'un même logement ne comptent qu'une fois). Période réelle : 13/01/2024 → 29/12/2025.
+const secteurs = [
+  {
+    nom: "Sud — quartiers récents",
+    n: 36, detail: "10 maisons · 26 appartements",
+    medianes: [["Maisons", "235 450 €"], ["Appartements", "123 000 €"]],
+    exemples: [
+      "Rue George Sand — appartement ~39 m², vendu 104 900 € (novembre 2025)",
+      "Rue Primo Levi — appartement ~44 m², vendu 130 000 € (octobre 2025)",
+    ],
+    rues: "Rues Primo Levi, George Sand, Pablo Neruda, Louise Michel, Charles Darwin, Nelson Mandela, d'Ouarville, de Longsault, résidence des Marcoins",
+  },
+  {
+    nom: "Avenue de la Paix / Vaux de Lèves",
+    n: 28, detail: "9 maisons · 19 appartements",
+    medianes: [["Maisons", "178 250 €"], ["Appartements", "110 000 €"]],
+    exemples: [
+      "Avenue de la Paix — maison ~64 m², vendue 178 250 € (décembre 2025)",
+      "Rue des Vaux de Lèves — appartement ~49 m², vendu 149 900 € (septembre 2025)",
+    ],
+    rues: "Avenue de la Paix, rue des Vaux de Lèves, rue Hoche Allart",
+  },
+  {
+    nom: "Centre et abords",
+    n: 13, detail: "13 maisons",
+    medianes: [["Maisons", "230 000 €"]],
+    exemples: [
+      "Rue du Bois Lion — maison ~89 m², vendue 208 000 € (décembre 2025)",
+      "Rue Bernard Jumentier — maison ~111 m², vendue 300 000 € (septembre 2025)",
+    ],
+    rues: "Rues de la Voie Romaine, des Picheloups, des Osiers, du Bois Lion, Jean Jaurès, Bernard Jumentier, de la Chacatière, avenues Soutine et Gérard Philipe, allée des Charmes",
+  },
+  {
+    nom: "Nord-Ouest — Chavannes / Proust",
+    n: 17, detail: "17 maisons",
+    medianes: [["Maisons", "202 950 €"]],
+    exemples: [
+      "Allée du Clos Renault — maison ~108 m², vendue 217 800 € (décembre 2025)",
+      "Allée des Perdrix — maison ~67 m², vendue 205 000 € (septembre 2025)",
+    ],
+    rues: "Route de Chavannes, avenue Marcel Proust, rue des Hauts de Fresnay, allées du Clos Renault, des Buissons, des Perdrix et des Bleuets",
+  },
+  {
+    nom: "Nord-Est — Bailleau / Jean Moulin",
+    n: 27, detail: "26 maisons · 1 appartement",
+    medianes: [["Maisons", "206 450 €"]],
+    exemples: [
+      "Rue Jean Moulin — maison ~96 m², vendue 220 000 € (décembre 2025)",
+      "Rue de Bailleau — maison ~90 m², vendue 110 000 € (décembre 2025)",
+    ],
+    rues: "Rues de Bailleau, des Trois Maisons, Jean Moulin, Jules Vallain, du Bout du Val, Alphonse Jacquet, de la Ravaudière, route du Bois de Lèves, résidence des Cèdres",
+  },
+];
+---
+
+<Layout
+  title="Prix immobilier à Lèves — les ventes réelles, quartier par quartier"
+  description="Prix immobilier à Lèves (28300) : 121 ventes réelles 2024-2025 issues des données publiques des notaires (DVF). Prix médians par quartier, maisons et appartements."
+>
+
+  <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
+
+    <!-- HERO = question de l'encart -->
+    <header class="mb-12 md:mb-16 max-w-editorial fade-up">
+      <div class="eyebrow mb-6">Données notaires · Lèves 28300</div>
+      <h1 class="text-hero text-sapin leading-[0.95] mb-8">
+        Combien s'est vendue<br/>
+        <em class="font-normal italic text-sapin-deep">la dernière maison de votre rue ?</em>
+      </h1>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted max-w-prose">
+        Voici la réponse, sans inscription et sans détour : les ventes réellement
+        enregistrées par les notaires à Lèves en 2024 et 2025, quartier par quartier.
+      </p>
+    </header>
+
+    <!-- RÉPONSE GLOBALE IMMÉDIATE -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <div class="grid sm:grid-cols-3 gap-px bg-beige border border-beige">
+        <div class="bg-cream p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Sur deux ans</div>
+          <div class="text-display text-sapin leading-none mb-2">121</div>
+          <p class="text-[15px] text-muted">ventes de maisons et d'appartements enregistrées à Lèves en 2024 et 2025.</p>
+        </div>
+        <div class="bg-cream-soft p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Maisons · 75 ventes</div>
+          <div class="text-display text-sapin leading-none mb-2">210 000 €</div>
+          <p class="text-[15px] text-muted">prix médian, soit environ 2 329 €/m² (médiane).</p>
+        </div>
+        <div class="bg-cream-soft p-6 md:p-8">
+          <div class="eyebrow-muted mb-3">Appartements · 46 ventes</div>
+          <div class="text-display text-sapin leading-none mb-2">117 660 €</div>
+          <p class="text-[15px] text-muted">prix médian, soit environ 2 407 €/m² (médiane).</p>
+        </div>
+      </div>
+      <p class="text-[13px] text-muted mt-4">
+        Source : DVF, données publiques des notaires, arrêtées à décembre 2025
+        (les notaires publient avec environ six mois de décalage).
+        Prochaine mise à jour avec l'observatoire trimestriel.
+      </p>
+    </section>
+
+    <!-- PAR SECTEUR -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <h2 class="text-h2 text-sapin mb-3">Quartier par quartier</h2>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted max-w-prose mt-6 mb-10">
+        Retrouvez votre rue dans la liste sous chaque secteur — c'est elle qui compte,
+        plus que le nom du secteur.
+      </p>
+
+      <div class="space-y-5">
+        {secteurs.map((s) => (
+          <article class="border border-beige rounded-md bg-cream p-6 md:p-9">
+            <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-4">
+              <h3 class="text-h3 text-sapin">{s.nom}</h3>
+              <div class="eyebrow-muted shrink-0">{s.n} ventes · {s.detail}</div>
+            </div>
+
+            <div class="flex flex-wrap gap-x-10 gap-y-2 mb-5">
+              {s.medianes.map(([label, val]) => (
+                <div>
+                  <span class="text-[13px] uppercase tracking-wider text-muted">{label}, prix médian</span>
+                  <div class="text-h3 text-sapin">{val}</div>
+                </div>
+              ))}
+            </div>
+
+            <ul class="space-y-1.5 mb-5">
+              {s.exemples.map((e) => (
+                <li class="flex gap-2.5 text-[15px] text-muted"><span class="text-ocre mt-0.5">·</span><span>{e}</span></li>
+              ))}
+            </ul>
+
+            <p class="text-[13px] text-muted leading-relaxed border-t border-beige pt-4">
+              <span class="uppercase tracking-wider">Principales rues :</span> {s.rues}.
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <p class="text-[15px] text-muted mt-8 max-w-prose">
+        Et un mot sur le quartier de la Butte Celtique — celui où j'habite :
+        aucune vente de maison ou d'appartement n'y a été enregistrée en 2024-2025. C'est un quartier
+        récent, où l'on s'installe et où l'on reste.
+      </p>
+      <p class="text-[13px] italic text-muted mt-3">
+        Découpage indicatif, affiné au fil des retours d'habitants.
+      </p>
+    </section>
+
+    <!-- MICRO-IDENTITÉ -->
+    <section class="mb-section md:mb-section-md fade-up">
+      <div class="flex items-center gap-5 bg-cream-soft border border-beige rounded-md p-6 md:p-8 max-w-editorial">
+        <img
+          src="/portrait-avatar.webp"
+          alt="Mouaad Boullourou"
+          width="72"
+          height="72"
+          class="w-16 h-16 md:w-18 md:h-18 rounded-full object-cover border border-beige shrink-0"
+          loading="lazy"
+        />
+        <p class="text-[15px] text-ink/85 leading-relaxed">
+          Mouaad, votre voisin rue de la Butte Celtique. Conseiller immobilier
+          SAFTI, je tiens ces chiffres à jour pour les habitants de Lèves.
+        </p>
+      </div>
+    </section>
+
+    <!-- OPT-IN OBSERVATOIRE -->
+    <section class="bg-sapin text-cream rounded-md p-8 md:p-12 mb-section fade-up">
+      <div class="max-w-editorial">
+        <div class="text-eyebrow uppercase tracking-widest text-ocre-soft mb-4">Rester informé</div>
+        <h2 class="text-h2 mb-4">
+          Recevez la mise à jour de ces chiffres<br/>
+          <em class="italic font-normal">chaque trimestre.</em>
+        </h2>
+        <p class="text-[15px] opacity-80 leading-relaxed mb-10 max-w-prose">
+          L'observatoire immobilier de Lèves, gratuit, par email. Désinscription
+          en un clic à tout moment.
+        </p>
+
+        <form
+          action="https://formspree.io/f/xnjynroj"
+          method="POST"
+          class="space-y-5"
+        >
+          <input type="hidden" name="_subject" value="[Votre rue] Inscription observatoire" />
+          <input type="hidden" name="_next" value="https://levois.fr/merci" />
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-eyebrow uppercase text-ocre-soft">Prénom</span>
+              <input type="text" name="prenom" class="mt-1 w-full bg-sapin-deep border border-ocre/30 text-cream rounded-md px-4 py-2.5 focus:outline-none focus:border-ocre placeholder-cream/40" />
+            </label>
+            <label class="block">
+              <span class="text-eyebrow uppercase text-ocre-soft">Email *</span>
+              <input type="email" name="email" required class="mt-1 w-full bg-sapin-deep border border-ocre/30 text-cream rounded-md px-4 py-2.5 focus:outline-none focus:border-ocre placeholder-cream/40" />
+            </label>
+          </div>
+
+          <label class="flex items-start gap-3 text-xs opacity-80">
+            <input type="checkbox" name="consentement" value="oui" required class="mt-0.5 accent-ocre" />
+            <span>
+              J'accepte de recevoir l'observatoire trimestriel par email. Je peux
+              me désabonner à tout moment via le lien en bas de chaque email.
+            </span>
+          </label>
+
+          <button type="submit" class="bg-ocre text-sapin-deep px-7 py-3.5 rounded-full hover:bg-ocre-soft transition-colors text-[15px] font-medium inline-flex items-center gap-3">
+            M'inscrire
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- PORTE DE SORTIE UNIQUE -->
+    <section class="bg-cream-soft border border-beige rounded-md p-8 md:p-12 fade-up">
+      <div class="max-w-editorial">
+        <div class="eyebrow mb-4">Et pour votre bien ?</div>
+        <h2 class="text-h2 text-sapin mb-4">
+          Un doute sur le prix<br/>
+          <em class="italic font-normal">de votre bien ?</em>
+        </h2>
+        <p class="text-body-lg text-muted leading-relaxed mb-8 max-w-prose">
+          Je passe 20 minutes vous montrer ce qui s'est vendu autour de chez vous.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 sm:items-center">
+          <a href="tel:+33781380121" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
+            07 81 38 01 21
+          </a>
+          <a href="mailto:mouaad@levois.fr" class="inline-flex items-center gap-3 border border-sapin text-sapin px-7 py-3.5 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px]">
+            mouaad@levois.fr
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </article>
+</Layout>

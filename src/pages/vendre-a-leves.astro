@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
   title="Vendre à Lèves"
-  description="Vous vendez votre bien à Lèves ? Un agent immobilier expérimenté m'accompagne fin juin pour donner son avis sur votre bien, gratuitement et sans engagement."
+  description="Vous vendez votre bien à Lèves ? Les prix réels par quartier (données publiques des notaires) et un accompagnement à votre rythme, par un conseiller qui habite la commune."
 >
   <article class="max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-20 pb-24">
 
@@ -25,39 +25,25 @@ import Layout from '../layouts/Layout.astro';
       pourrait vraiment vous être utile si vous vendez actuellement votre bien.
     </p>
 
-    <!-- L'événement parrain -->
+    <!-- Les prix réels (votre-rue) -->
     <section class="mt-12 p-6 sm:p-9 border border-sapin/30 rounded-md bg-sapin/5">
       <div class="text-[11px] uppercase tracking-widest text-ocre mb-3">
-        Événement · fin juin
+        Données notaires · gratuit, sans inscription
       </div>
       <h3 class="text-2xl sm:text-3xl font-medium mb-4 text-sapin">
-        3 jours pour vous donner un vrai avis pro sur votre bien
+        Combien s'est vendue la dernière maison de votre rue ?
       </h3>
       <div class="space-y-4 text-ink/85 leading-relaxed">
         <p>
-          Fin juin, un agent immobilier expérimenté (10 ans de métier, plus de
-          200 ventes) m'accompagne pendant 3 jours à Lèves pour m'aider à démarrer
-          mon activité.
-        </p>
-        <p>
-          Pendant ces 3 jours, on peut venir voir votre bien <strong>ensemble</strong>,
-          chez vous, et vous donner un avis professionnel concret : prix réaliste,
-          délais probables, points forts et points faibles de votre annonce actuelle,
-          conseils pratiques.
-        </p>
-        <p>
-          <strong>Gratuit. Sans engagement. Sans suite obligatoire de votre part.</strong>
-        </p>
-        <p class="text-sm text-muted italic">
-          Pour vous, c'est l'occasion d'avoir un regard pro gratuit sur votre bien.
-          Pour moi, c'est l'occasion d'apprendre sur de vraies situations,
-          accompagné de quelqu'un d'expérimenté.
+          J'ai compilé les <strong>111 ventes réellement enregistrées par les
+          notaires à Lèves en 2024 et 2025</strong> — prix médians par quartier,
+          maisons et appartements, avec des exemples concrets. Des chiffres
+          publics, vérifiables, sans enthousiasme commercial.
         </p>
       </div>
-
       <div class="mt-8">
-        <a href="#reserver" class="inline-block bg-sapin text-cream px-6 py-3 rounded-full hover:bg-ink transition-colors">
-          Réserver un créneau
+        <a href="/votre-rue" class="inline-block bg-sapin text-cream px-6 py-3 rounded-full hover:bg-ink transition-colors">
+          Voir les prix par quartier
         </a>
       </div>
     </section>
@@ -72,9 +58,8 @@ import Layout from '../layouts/Layout.astro';
       </h3>
       <div class="space-y-4 text-ink/85 leading-relaxed max-w-prose">
         <p>
-          Un guide pratique de 8 à 10 pages, rédigé avec l'agent qui m'accompagne.
-          Il couvre les choses qu'on aurait toutes aimé savoir avant de mettre
-          son bien en vente :
+          Un guide pratique de 8 à 10 pages. Il couvre les choses qu'on aurait
+          toutes aimé savoir avant de mettre son bien en vente :
         </p>
         <ul class="space-y-2 list-none pl-0">
           <li class="flex gap-3"><span class="text-ocre mt-1.5">→</span><span>Comment estimer juste son bien (les 3 méthodes pro)</span></li>
@@ -83,9 +68,7 @@ import Layout from '../layouts/Layout.astro';
           <li class="flex gap-3"><span class="text-ocre mt-1.5">→</span><span>Comparables récents à Lèves</span></li>
         </ul>
         <p class="text-sm text-muted italic">
-          En préparation, disponible début juillet. Laissez-moi votre email pour
-          le recevoir dès qu'il sort, et choisir si vous voulez aussi un créneau
-          avec mon parrain.
+          En préparation. Laissez-moi votre email pour le recevoir dès qu'il sort.
         </p>
       </div>
 
@@ -120,11 +103,11 @@ import Layout from '../layouts/Layout.astro';
           <legend class="text-[11px] uppercase tracking-widest text-muted mb-2">Ce qui vous intéresse</legend>
           <label class="flex items-start gap-3 text-sm">
             <input type="checkbox" name="interet_guide" value="oui" checked class="mt-1" />
-            <span>Recevoir le guide du vendeur dès sa sortie (début juillet)</span>
+            <span>Recevoir le guide du vendeur dès sa sortie</span>
           </label>
           <label class="flex items-start gap-3 text-sm">
             <input type="checkbox" name="interet_rdv" value="oui" class="mt-1" />
-            <span>Réserver un créneau pour visiter mon bien fin juin avec votre parrain</span>
+            <span>Être recontacté pour parler de mon projet de vente</span>
           </label>
         </fieldset>
 

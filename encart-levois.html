@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Encart Levois — magazine de Lèves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    /* Palette : orange SAFTI en fond, accents levois.fr (cream / sapin / ocre) */
+    --orange:#E8651A;
+    --orange-deep:#C4500F;
+    --cream:#FBF6EE;
+    --cream-warm:#FFE9D6;
+    --sapin:#1E3A2F;
+    --ink:#3A2A1E;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:#2b2b2b;font-family:'Inter',sans-serif;display:flex;flex-direction:column;align-items:center;gap:18px;padding:18px;min-height:100vh;}
+
+  /* Barre d'outils (n'apparaît pas à l'impression / capture de l'artboard seul) */
+  .toolbar{width:100%;max-width:520px;background:#fff;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+  .toolbar h1{font-size:15px;color:#222;font-weight:600;}
+  .toolbar p{font-size:13px;color:#666;line-height:1.5;}
+  .toolbar label{font-size:13px;font-weight:600;color:#E8651A;display:inline-flex;align-items:center;gap:8px;cursor:pointer;border:1.5px dashed #E8651A;border-radius:10px;padding:10px 14px;justify-content:center;}
+  .toolbar input{display:none;}
+
+  /* Zone d'aperçu : on scale l'artboard pour qu'il tienne à l'écran */
+  .stage{width:100%;max-width:900px;overflow:hidden;display:flex;justify-content:center;}
+
+  /* ARTBOARD — A5 paysage à 300 DPI : 2480 x 1748 px */
+  .artboard{
+    width:2480px;height:1748px;flex:0 0 auto;
+    transform-origin:top center;
+    background:
+      radial-gradient(120% 120% at 100% 0%, #F07A2E 0%, var(--orange) 42%, var(--orange-deep) 100%);
+    position:relative;overflow:hidden;color:var(--cream);
+    font-family:'Inter',sans-serif;
+  }
+
+  /* Photo à gauche */
+  .photo-zone{position:absolute;left:0;top:0;bottom:0;width:760px;overflow:hidden;}
+  .photo-zone img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+  .photo-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.12);border-right:2px dashed rgba(255,255,255,.45);
+    font-size:34px;color:rgba(255,255,255,.7);text-align:center;padding:40px;line-height:1.5;}
+  /* fondu de la photo vers l'orange */
+  .photo-zone::after{content:"";position:absolute;top:0;right:0;bottom:0;width:160px;
+    background:linear-gradient(to right, rgba(232,101,26,0), var(--orange));}
+
+  /* Contenu à droite */
+  .content{position:absolute;left:820px;right:120px;top:120px;bottom:120px;display:flex;flex-direction:column;}
+
+  .kicker{font-size:34px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--cream-warm);margin-bottom:28px;}
+
+  .headline{font-family:'Lora',serif;font-style:italic;font-weight:600;
+    font-size:128px;line-height:1.04;color:#fff;letter-spacing:-.5px;}
+
+  .subline{font-size:42px;line-height:1.4;color:var(--cream-warm);margin-top:40px;max-width:1180px;}
+  .subline strong{color:#fff;font-weight:600;}
+
+  .spacer{flex:1;}
+
+  /* Bloc bas : identité + QR */
+  .bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:60px;}
+  .identity .name{font-family:'Lora',serif;font-size:62px;font-weight:600;color:#fff;}
+  .identity .role{font-size:34px;color:var(--cream-warm);margin-top:10px;}
+  .identity .contact{font-size:32px;color:#fff;margin-top:30px;font-weight:500;}
+  .identity .safti{font-size:28px;color:var(--cream-warm);margin-top:8px;letter-spacing:.05em;}
+
+  .qr-card{background:#fff;border-radius:24px;padding:34px;display:flex;flex-direction:column;align-items:center;gap:18px;flex:0 0 auto;}
+  .qr-card #qr{width:300px;height:300px;}
+  .qr-card #qr img{display:block;width:300px !important;height:300px !important;}
+  .qr-card .qr-label{font-family:'Inter',sans-serif;text-align:center;line-height:1.3;}
+  .qr-card .qr-label .top{font-size:30px;color:var(--ink);font-weight:500;}
+  .qr-card .qr-label .url{font-size:34px;color:var(--orange-deep);font-weight:700;margin-top:4px;}
+</style>
+</head>
+<body>
+
+  <div class="toolbar" id="toolbar">
+    <h1>Ton encart — prêt à exporter</h1>
+    <p>1. Charge ta photo détourée (fond déjà géré). 2. Le QR pointe déjà vers <b>levois.fr/votre-rue?src=guide</b>. 3. Fais une capture, ou ouvre ce fichier sur PC et imprime en PDF pour l'imprimeur.</p>
+    <label for="photo">📷&nbsp; Charger ma photo</label>
+    <input type="file" id="photo" accept="image/*" />
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="artboard" id="artboard">
+      <div class="photo-zone" id="photoZone">
+        <div class="photo-empty" id="photoEmpty">Votre photo<br/>détourée ici</div>
+      </div>
+
+      <div class="content">
+        <div class="kicker">Habitant·e de Lèves ?</div>
+        <div class="headline">Combien s'est vendue la dernière maison de votre&nbsp;quartier&nbsp;?</div>
+        <div class="subline">Les prix réels de votre secteur, à Lèves. <strong>Sans inscription, sans qu'on vous rappelle.</strong></div>
+
+        <div class="spacer"></div>
+
+        <div class="bottom">
+          <div class="identity">
+            <div class="name">Mouaad Boullourou</div>
+            <div class="role">Votre voisin à Lèves · Conseiller immobilier</div>
+            <div class="contact">07 81 38 01 21&nbsp;&nbsp;·&nbsp;&nbsp;mouaad@levois.fr</div>
+            <div class="safti">Réseau SAFTI</div>
+          </div>
+          <div class="qr-card">
+            <div id="qr"></div>
+            <div class="qr-label">
+              <div class="top">La réponse en 30 secondes</div>
+              <div class="url">levois.fr</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // QR vers la page d'atterrissage, avec suffixe de mesure des scans magazine
+  new QRCode(document.getElementById("qr"), {
+    text: "https://levois.fr/votre-rue?src=guide",
+    width: 300, height: 300,
+    colorDark: "#3A2A1E", colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  // Chargement de la photo depuis l'appareil (rien n'est envoyé : tout reste local)
+  document.getElementById("photo").addEventListener("change", function(e){
+    const f = e.target.files[0]; if(!f) return;
+    const r = new FileReader();
+    r.onload = function(ev){
+      const zone = document.getElementById("photoZone");
+      document.getElementById("photoEmpty").remove();
+      const img = document.createElement("img");
+      img.src = ev.target.result;
+      zone.insertBefore(img, zone.firstChild);
+    };
+    r.readAsDataURL(f);
+  });
+
+  // Ajuste l'aperçu de l'artboard à la largeur de l'écran
+  function fit(){
+    const stage = document.getElementById("stage");
+    const art = document.getElementById("artboard");
+    const scale = Math.min(1, stage.clientWidth / 2480);
+    art.style.transform = "scale(" + scale + ")";
+    stage.style.height = (1748 * scale) + "px";
+  }
+  window.addEventListener("resize", fit);
+  fit();
+</script>
+</body>
+</html>

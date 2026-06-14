@@ -8,7 +8,7 @@
   </url>
   <url>
     <loc>https://levois.fr/le-projet</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-06-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -43,6 +43,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://levois.fr/votre-rue</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://levois.fr/observatoire-immo</loc>
     <lastmod>2026-06-12</lastmod>
     <changefreq>monthly</changefreq>
@@ -50,7 +56,7 @@
   </url>
   <url>
     <loc>https://levois.fr/vendre-a-leves</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-06-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
