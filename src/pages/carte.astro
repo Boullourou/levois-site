@@ -4,81 +4,112 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
   title="Mouaad Boullourou — Conseiller immobilier à Lèves"
-  description="Ressources utiles sur l'immobilier à Lèves et contact direct avec Mouaad Boullourou, votre voisin conseiller SAFTI."
+  description="Les vrais chiffres de l'immobilier à Lèves, données notaires, et une réponse à chaque question. Mouaad Boullourou, conseiller SAFTI."
 >
 
   <article class="max-w-xl mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
 
     <!-- 1. ACCROCHE -->
-    <header class="mb-10 fade-up">
+    <header class="mb-8 fade-up">
       <h1 class="text-hero text-sapin leading-[0.95] mb-5">
         Bonjour,<br/>
         <em class="font-normal italic text-sapin-deep">c'est Mouaad.</em>
       </h1>
       <span class="rule-ocre"></span>
       <p class="text-body-lg text-muted mt-6">
-        Conseiller immobilier indépendant à Lèves. Dites-moi ce qui vous amène — je vous montre ce qui peut vous être utile.
+        Conseiller immobilier à Lèves. Les vrais chiffres du secteur —
+        et une réponse à chaque question, même la plus simple.
       </p>
     </header>
 
-    <!-- 2. SÉLECTION DE PROFIL -->
+    <!-- 2. LE DON UNIVERSEL — STATS VISIBLES DIRECT -->
+    <section class="mb-6 fade-up">
+      <div class="bg-sapin text-cream rounded-md p-6 md:p-8">
+        <div class="text-eyebrow uppercase tracking-widest text-ocre-soft mb-4">
+          Ventes réelles · données notaires · 2024-2025
+        </div>
+
+        <!-- Grille de chiffres -->
+        <div class="grid grid-cols-3 gap-4 mb-5">
+          <div>
+            <div class="text-h2 leading-none">121</div>
+            <div class="text-[12px] opacity-70 mt-1 leading-tight">ventes enregistrées</div>
+          </div>
+          <div>
+            <!-- À COMPLÉTER : prix médian maison depuis /votre-rue -->
+            <div class="text-h2 leading-none">[XXX k€]</div>
+            <div class="text-[12px] opacity-70 mt-1 leading-tight">maison médiane (75 ventes)</div>
+          </div>
+          <div>
+            <!-- À COMPLÉTER : prix médian appartement depuis /votre-rue -->
+            <div class="text-h2 leading-none">[X XXX €/m²]</div>
+            <div class="text-[12px] opacity-70 mt-1 leading-tight">appartement (46 ventes)</div>
+          </div>
+        </div>
+
+        <a
+          href="/votre-rue"
+          class="inline-flex items-center gap-2 bg-cream text-sapin px-6 py-3 rounded-full hover:bg-cream-soft transition-colors text-[15px] font-medium"
+        >
+          Voir les prix de votre rue
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </a>
+        <p class="text-[12px] opacity-70 mt-3">Gratuit, sans inscription. Secteur par secteur.</p>
+      </div>
+    </section>
+
+    <!-- 3. INVITE À ALLER PLUS LOIN -->
+    <section class="mb-6 fade-up">
+      <p class="text-[15px] text-muted leading-relaxed">
+        Ces chiffres ne suffisent pas&nbsp;? Dites-moi votre cas —
+        je réponds à chaque demande, même si c'est juste une question.
+      </p>
+    </section>
+
+    <!-- 4. SÉLECTION DE PROFIL -->
     <section class="mb-8 fade-up">
-      <p class="text-eyebrow uppercase tracking-widest text-muted mb-4">Ce qui vous amène :</p>
       <div class="grid grid-cols-2 gap-3" id="profil-buttons">
         <button
           data-profil="vendre"
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">🏠</span>
-          <span class="block text-[14px] font-medium text-sapin leading-snug">Je veux vendre</span>
+          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Je veux vendre</span>
         </button>
         <button
           data-profil="acheter"
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">🔍</span>
-          <span class="block text-[14px] font-medium text-sapin leading-snug">Je cherche à acheter</span>
-        </button>
-        <button
-          data-profil="marche"
-          class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
-        >
-          <span class="block text-xl mb-1">📊</span>
-          <span class="block text-[14px] font-medium text-sapin leading-snug">Je suis le marché</span>
+          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Je cherche à acheter</span>
         </button>
         <button
           data-profil="recommander"
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">👥</span>
-          <span class="block text-[14px] font-medium text-sapin leading-snug">Je recommande un proche</span>
+          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Je connais quelqu'un</span>
+        </button>
+        <button
+          data-profil="metier"
+          class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
+        >
+          <span class="block text-xl mb-1">✨</span>
+          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Le métier m'intéresse</span>
         </button>
       </div>
     </section>
 
-    <!-- 3. BLOCS PROFIL (cachés par défaut) -->
+    <!-- 5. BLOCS PROFIL -->
 
     <!-- PROFIL A — VENDRE -->
     <section id="bloc-vendre" class="profil-bloc hidden mb-10 fade-up">
-      <div class="bg-sapin text-cream rounded-md p-6 md:p-8 mb-4">
-        <p class="text-[15px] leading-relaxed opacity-90">
-          Vendre sans se tromper de prix ni de cible, c'est ce sur quoi je peux vous aider concrètement. Voici ce qui s'est vendu dans votre rue ces derniers mois.
-        </p>
-      </div>
-      <div class="space-y-3 mb-6">
-        <a href="/votre-rue" class="group flex flex-col gap-1 border border-beige rounded-md p-5 bg-cream hover:bg-cream-soft transition-colors">
-          <div class="text-eyebrow uppercase tracking-widest text-muted">Données notaires</div>
-          <div class="text-[15px] font-medium text-sapin group-hover:text-sapin-deep transition-colors">Les prix réels à Lèves →</div>
-          <div class="text-[13px] text-muted">121 ventes enregistrées, secteur par secteur.</div>
-        </a>
-        <a href="/observatoire-immo" class="group flex flex-col gap-1 border border-beige rounded-md p-5 bg-cream hover:bg-cream-soft transition-colors">
-          <div class="text-eyebrow uppercase tracking-widest text-muted">Trimestriel · gratuit</div>
-          <div class="text-[15px] font-medium text-sapin group-hover:text-sapin-deep transition-colors">L'observatoire immobilier →</div>
-          <div class="text-[13px] text-muted">Prix, durée de marché, stock actif.</div>
-        </a>
-      </div>
+      <p class="text-[15px] text-sapin leading-relaxed mb-5">
+        Avant de mettre en vente&nbsp;: ce qui part vraiment dans votre rue,
+        à quel prix, en combien de temps. Je vous le dis sans détour,
+        même si ce n'est pas ce que vous espériez.
+      </p>
       <div class="border border-beige rounded-md p-6 bg-cream-soft">
-        <h2 class="text-h3 text-sapin mb-5">Me contacter</h2>
         <form action="https://formspree.io/f/xnjynroj" method="POST" class="space-y-4">
           <input type="hidden" name="_subject" value="Contact carte — Vendeur" />
           <input type="hidden" name="_next" value="https://levois.fr/merci" />
@@ -94,34 +125,26 @@ import Layout from '../layouts/Layout.astro';
             </label>
           </div>
           <label class="block">
-            <span class="text-eyebrow uppercase text-muted">Adresse ou rue du bien (facultatif)</span>
-            <input type="text" name="message" placeholder="ex : rue du Moulin, Lèves…" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
+            <span class="text-eyebrow uppercase text-muted">Votre rue, ou votre question (facultatif)</span>
+            <input type="text" name="message" placeholder="ex : combien vaut une maison rue du Moulin ?" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
           </label>
           <button type="submit" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
             Envoyer
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
           </button>
-          <p class="text-[12px] text-muted leading-relaxed">Mouaad vous rappelle sous 24h. Pas d'engagement. Pas de démarchage.</p>
+          <p class="text-[12px] text-muted leading-relaxed">C'est moi qui réponds, sous 24h. Un échange, rien de plus.</p>
         </form>
       </div>
     </section>
 
     <!-- PROFIL B — ACHETER -->
     <section id="bloc-acheter" class="profil-bloc hidden mb-10 fade-up">
-      <div class="bg-sapin text-cream rounded-md p-6 md:p-8 mb-4">
-        <p class="text-[15px] leading-relaxed opacity-90">
-          Je connais les biens qui ne sont pas encore en ligne et les secteurs où les prix bougent. Dites-moi ce que vous cherchez.
-        </p>
-      </div>
-      <div class="mb-6">
-        <a href="/votre-rue" class="group flex flex-col gap-1 border border-beige rounded-md p-5 bg-cream hover:bg-cream-soft transition-colors">
-          <div class="text-eyebrow uppercase tracking-widest text-muted">Données notaires</div>
-          <div class="text-[15px] font-medium text-sapin group-hover:text-sapin-deep transition-colors">Comprendre les prix du secteur →</div>
-          <div class="text-[13px] text-muted">121 ventes enregistrées, secteur par secteur.</div>
-        </a>
-      </div>
+      <p class="text-[15px] text-sapin leading-relaxed mb-5">
+        Je vois passer des biens avant leur mise en ligne. Dites-moi ce que
+        vous cherchez&nbsp;: je vous fais signe quand ça colle, et seulement
+        à ce moment-là.
+      </p>
       <div class="border border-beige rounded-md p-6 bg-cream-soft">
-        <h2 class="text-h3 text-sapin mb-5">Me contacter</h2>
         <form action="https://formspree.io/f/xnjynroj" method="POST" class="space-y-4">
           <input type="hidden" name="_subject" value="Contact carte — Acheteur" />
           <input type="hidden" name="_next" value="https://levois.fr/merci" />
@@ -137,76 +160,29 @@ import Layout from '../layouts/Layout.astro';
             </label>
           </div>
           <label class="block">
-            <span class="text-eyebrow uppercase text-muted">Type de bien et secteur recherché (facultatif)</span>
+            <span class="text-eyebrow uppercase text-muted">Ce que vous cherchez, ou votre question (facultatif)</span>
             <input type="text" name="message" placeholder="ex : maison avec jardin, Lèves ou Champhol…" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
           </label>
           <button type="submit" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
             Envoyer
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
           </button>
-          <p class="text-[12px] text-muted leading-relaxed">Pas d'inscription, pas de démarchage. Un échange, c'est tout.</p>
+          <p class="text-[12px] text-muted leading-relaxed">C'est moi qui réponds, sous 24h. Un échange, rien de plus.</p>
         </form>
       </div>
     </section>
 
-    <!-- PROFIL C — MARCHÉ -->
-    <section id="bloc-marche" class="profil-bloc hidden mb-10 fade-up">
-      <div class="bg-sapin text-cream rounded-md p-6 md:p-8 mb-4">
-        <p class="text-[15px] leading-relaxed opacity-90">
-          Prix réels, durée de vente, stock actif — les données du marché à Lèves et alentours, mises à jour chaque trimestre.
-        </p>
-      </div>
-      <div class="space-y-3 mb-6">
-        <a href="/observatoire-immo" class="group flex flex-col gap-1 border border-beige rounded-md p-5 bg-cream hover:bg-cream-soft transition-colors">
-          <div class="text-eyebrow uppercase tracking-widest text-muted">Trimestriel · gratuit</div>
-          <div class="text-[15px] font-medium text-sapin group-hover:text-sapin-deep transition-colors">L'observatoire immobilier →</div>
-          <div class="text-[13px] text-muted">Prix, durée de marché, stock actif.</div>
-        </a>
-        <a href="/votre-rue" class="group flex flex-col gap-1 border border-beige rounded-md p-5 bg-cream hover:bg-cream-soft transition-colors">
-          <div class="text-eyebrow uppercase tracking-widest text-muted">Données notaires</div>
-          <div class="text-[15px] font-medium text-sapin group-hover:text-sapin-deep transition-colors">Les prix réels à Lèves →</div>
-          <div class="text-[13px] text-muted">121 ventes enregistrées, secteur par secteur.</div>
-        </a>
-      </div>
-      <div class="border border-beige rounded-md p-6 bg-cream-soft">
-        <h2 class="text-h3 text-sapin mb-5">Recevoir les mises à jour</h2>
-        <form action="https://formspree.io/f/xnjynroj" method="POST" class="space-y-4">
-          <input type="hidden" name="_subject" value="Contact carte — Marché" />
-          <input type="hidden" name="_next" value="https://levois.fr/merci" />
-          <input type="hidden" name="profil" value="Je suis le marché" />
-          <input type="hidden" name="message" value="Souhaite recevoir les mises à jour de l'observatoire" />
-          <div class="grid sm:grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-eyebrow uppercase text-muted">Prénom *</span>
-              <input type="text" name="prenom" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
-            </label>
-            <label class="block">
-              <span class="text-eyebrow uppercase text-muted">Email *</span>
-              <input type="email" name="email" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
-            </label>
-          </div>
-          <button type="submit" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
-            M'inscrire
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-          </button>
-          <p class="text-[12px] text-muted leading-relaxed">Gratuit. Trimestriel. Désabonnement en un clic.</p>
-        </form>
-      </div>
-    </section>
-
-    <!-- PROFIL D — RECOMMANDER -->
+    <!-- PROFIL C — RECOMMANDER -->
     <section id="bloc-recommander" class="profil-bloc hidden mb-10 fade-up">
-      <div class="bg-sapin text-cream rounded-md p-6 md:p-8 mb-4">
-        <p class="text-[15px] leading-relaxed opacity-90">
-          Merci pour la confiance. Laissez-moi les coordonnées de votre proche — je le contacte de votre part, avec soin.
-        </p>
-      </div>
+      <p class="text-[15px] text-sapin leading-relaxed mb-5">
+        Un proche vend, achète, ou hésite&nbsp;? Présentez-le-moi.
+        Je m'en occupe avec soin, et je vous tiens au courant.
+      </p>
       <div class="border border-beige rounded-md p-6 bg-cream-soft">
-        <h2 class="text-h3 text-sapin mb-5">Recommander un proche</h2>
         <form action="https://formspree.io/f/xnjynroj" method="POST" class="space-y-4">
           <input type="hidden" name="_subject" value="Contact carte — Recommandation" />
           <input type="hidden" name="_next" value="https://levois.fr/merci" />
-          <input type="hidden" name="profil" value="Je recommande un proche" />
+          <input type="hidden" name="profil" value="Je connais quelqu'un" />
           <label class="block">
             <span class="text-eyebrow uppercase text-muted">Votre prénom *</span>
             <input type="text" name="prenom" required placeholder="Pour que je puisse mentionner qui vous envoie" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
@@ -220,22 +196,60 @@ import Layout from '../layouts/Layout.astro';
             <input type="text" name="proche_contact" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
           </label>
           <label class="block">
-            <span class="text-eyebrow uppercase text-muted">Situation en quelques mots (facultatif)</span>
+            <span class="text-eyebrow uppercase text-muted">Sa situation en quelques mots (facultatif)</span>
             <input type="text" name="message" placeholder="vente, achat, autre…" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
           </label>
           <button type="submit" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
             Envoyer
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
           </button>
-          <p class="text-[12px] text-muted leading-relaxed">Je le contacte dans les 24h en mentionnant votre prénom. Pas de démarchage, juste un échange.</p>
+          <p class="text-[12px] text-muted leading-relaxed">Je le contacte sous 24h en mentionnant votre prénom. Un échange, rien de plus.</p>
           <p class="text-[11px] text-muted leading-relaxed border-t border-beige pt-3">En soumettant ce formulaire, vous confirmez avoir l'accord de votre proche pour transmettre ses coordonnées.</p>
         </form>
       </div>
     </section>
 
-    <!-- 4. CONTACT DIRECT (toujours visible) -->
+    <!-- PROFIL D — MÉTIER -->
+    <section id="bloc-metier" class="profil-bloc hidden mb-10 fade-up">
+      <p class="text-[15px] text-sapin leading-relaxed mb-5">
+        Vous vous demandez à quoi ressemble ce métier, fait proprement&nbsp;?
+        Je vous montre comment je travaille. On en parle, juste pour voir.
+      </p>
+      <div class="border border-beige rounded-md p-6 bg-cream-soft">
+        <form action="https://formspree.io/f/xnjynroj" method="POST" class="space-y-4">
+          <input type="hidden" name="_subject" value="Contact carte — Métier" />
+          <input type="hidden" name="_next" value="https://levois.fr/merci" />
+          <input type="hidden" name="profil" value="Le métier m'intéresse" />
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-eyebrow uppercase text-muted">Prénom *</span>
+              <input type="text" name="prenom" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
+            </label>
+            <label class="block">
+              <span class="text-eyebrow uppercase text-muted">Email ou téléphone *</span>
+              <input type="text" name="contact" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
+            </label>
+          </div>
+          <label class="block">
+            <span class="text-eyebrow uppercase text-muted">Votre situation actuelle, ou votre question (facultatif)</span>
+            <input type="text" name="message" placeholder="ex : en reconversion, curieux, déjà dans l'immo…" class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
+          </label>
+          <button type="submit" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
+            Envoyer
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+          </button>
+          <p class="text-[12px] text-muted leading-relaxed">C'est moi qui réponds, sous 24h. Un échange, rien de plus.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- 6. ANCRE FINALE + CONTACT DIRECT -->
     <section class="fade-up pt-8 border-t border-beige">
-      <p class="text-[15px] text-muted mb-4">Vous préférez appeler ou écrire directement ?</p>
+      <p class="text-[15px] text-sapin leading-relaxed mb-6">
+        Que vous me contactiez ou non, vous repartez avec les vrais chiffres.
+        C'est déjà ça.
+      </p>
+      <p class="text-[15px] text-muted mb-4">Pour me joindre directement&nbsp;:</p>
       <div class="flex flex-col sm:flex-row gap-3">
         <a
           href="tel:+33781380121"
@@ -258,55 +272,46 @@ import Layout from '../layouts/Layout.astro';
   </article>
 
   <script>
-    // Gestion des boutons profil
     const buttons = document.querySelectorAll('.profil-btn');
     const blocs = document.querySelectorAll('.profil-bloc');
 
-    // Classes états
-    const BTN_ACTIVE = ['bg-sapin', 'text-cream', 'border-sapin'];
-    const BTN_INACTIVE = ['bg-cream', 'text-sapin', 'border-beige'];
+    const BTN_ACTIVE = ['bg-sapin', 'border-sapin'];
+    const BTN_INACTIVE = ['bg-cream', 'border-beige'];
 
     buttons.forEach((btn) => {
       btn.addEventListener('click', () => {
         const profil = btn.getAttribute('data-profil');
 
-        // Reset tous les boutons
         buttons.forEach((b) => {
           BTN_ACTIVE.forEach((c) => b.classList.remove(c));
           BTN_INACTIVE.forEach((c) => b.classList.add(c));
-          b.querySelector('span:last-child').classList.remove('text-cream');
-          b.querySelector('span:last-child').classList.add('text-sapin');
+          const label = b.querySelector('.profil-label');
+          label.classList.remove('text-cream');
+          label.classList.add('text-sapin');
         });
 
-        // Activer le bouton cliqué
         BTN_INACTIVE.forEach((c) => btn.classList.remove(c));
         BTN_ACTIVE.forEach((c) => btn.classList.add(c));
-        btn.querySelector('span:last-child').classList.remove('text-sapin');
-        btn.querySelector('span:last-child').classList.add('text-cream');
+        const activeLabel = btn.querySelector('.profil-label');
+        activeLabel.classList.remove('text-sapin');
+        activeLabel.classList.add('text-cream');
 
-        // Cacher tous les blocs
         blocs.forEach((b) => b.classList.add('hidden'));
 
-        // Afficher le bon bloc
         const target = document.getElementById(`bloc-${profil}`);
         if (target) {
           target.classList.remove('hidden');
-          // Scroll doux vers le bloc sur mobile
           setTimeout(() => {
             target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }, 50);
         }
 
-        // Tracking GA4 (si gtag disponible)
         if (typeof window.gtag === 'function') {
-          window.gtag('event', 'profil_select', {
-            profil_type: profil
-          });
+          window.gtag('event', 'profil_select', { profil_type: profil });
         }
       });
     });
 
-    // Paramètre UTM ?src= (tracking source carte)
     const params = new URLSearchParams(window.location.search);
     const src = params.get('src');
     if (src) {
