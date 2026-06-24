@@ -11,16 +11,20 @@ import Layout from '../layouts/Layout.astro';
 
     <!-- 1. ACCROCHE -->
     <header class="mb-8 fade-up">
-      <h1 class="text-h1 md:text-hero text-sapin leading-[1.05] mb-5">
-        Avant de vendre ou d'acheter à Lèves,<br/>
-        <em class="font-normal italic text-sapin-deep">regardez ce qui s'est vraiment vendu autour de chez vous.</em>
+      <p class="text-eyebrow uppercase tracking-widest text-ocre mb-4">
+        Avant de vendre ou d'acheter à Lèves
+      </p>
+      <h1 class="text-hero text-sapin leading-[0.98] mb-5">
+        Regardez ce qui s'est<br/>
+        <em class="font-normal italic text-sapin-deep">vraiment vendu</em><br/>
+        près de chez vous.
       </h1>
       <span class="rule-ocre"></span>
       <p class="text-body-lg text-muted mt-6">
         Prix réellement signés, secteur par secteur. Je donne les chiffres
         d'abord — vous voyez ensuite si vous avez envie qu'on en parle.
       </p>
-      <p class="text-[15px] text-muted leading-relaxed mt-4 italic">
+      <p class="text-[16px] text-muted leading-relaxed mt-4 italic">
         Moi c'est Mouaad, conseiller immobilier à Lèves. Je commence toujours
         par donner ce qui est utile. Le reste, vous décidez.
       </p>
@@ -33,23 +37,23 @@ import Layout from '../layouts/Layout.astro';
           Ce qui s'est vraiment vendu · données notaires · 2024-2025
         </div>
 
-        <!-- Grille de chiffres -->
-        <div class="grid grid-cols-3 gap-4 mb-5">
-          <div>
-            <div class="text-h2 leading-none">121</div>
-            <div class="text-[12px] opacity-70 mt-1 leading-tight">ventes près de chez vous</div>
+        <!-- Chiffres empilés, gros et lisibles -->
+        <div class="space-y-5 mb-6">
+          <div class="flex items-baseline gap-4">
+            <div class="text-[2.75rem] md:text-[3.25rem] font-medium leading-none whitespace-nowrap text-cream">121</div>
+            <div class="text-[14px] opacity-80 leading-tight">ventes signées<br/>près de chez vous</div>
           </div>
-          <div>
-            <div class="text-h2 leading-none">210 000 €</div>
-            <div class="text-[12px] opacity-70 mt-1 leading-tight">le prix d'une maison du coin</div>
+          <div class="flex items-baseline gap-4 border-t border-cream/20 pt-5">
+            <div class="text-[2.75rem] md:text-[3.25rem] font-medium leading-none whitespace-nowrap text-cream">210 000 €</div>
+            <div class="text-[14px] opacity-80 leading-tight">le prix d'une<br/>maison du coin</div>
           </div>
-          <div>
-            <div class="text-h2 leading-none">2 407 €</div>
-            <div class="text-[12px] opacity-70 mt-1 leading-tight">le m² d'un appartement</div>
+          <div class="flex items-baseline gap-4 border-t border-cream/20 pt-5">
+            <div class="text-[2.75rem] md:text-[3.25rem] font-medium leading-none whitespace-nowrap text-cream">2 407 €</div>
+            <div class="text-[14px] opacity-80 leading-tight">le m²<br/>d'un appartement</div>
           </div>
         </div>
 
-        <p class="text-[13px] opacity-75 leading-relaxed mb-5">
+        <p class="text-[14px] opacity-75 leading-relaxed mb-6">
           Une moyenne donne le ton. Votre rue, la surface et l'état du bien
           font le reste.
         </p>
@@ -84,28 +88,28 @@ import Layout from '../layouts/Layout.astro';
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">🏠</span>
-          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Je me demande ce que vaut mon bien</span>
+          <span class="profil-label block text-[15px] font-medium text-sapin leading-snug">Je me demande ce que vaut mon bien</span>
         </button>
         <button
           data-profil="acheter"
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">🔍</span>
-          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Je prépare un achat dans le coin</span>
+          <span class="profil-label block text-[15px] font-medium text-sapin leading-snug">Je prépare un achat dans le coin</span>
         </button>
         <button
           data-profil="recommander"
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">🤝</span>
-          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Je connais quelqu'un qui y pense</span>
+          <span class="profil-label block text-[15px] font-medium text-sapin leading-snug">Je connais quelqu'un qui y pense</span>
         </button>
         <button
           data-profil="metier"
           class="profil-btn text-left border border-beige rounded-md px-4 py-4 bg-cream hover:bg-cream-soft transition-colors"
         >
           <span class="block text-xl mb-1">✨</span>
-          <span class="profil-label block text-[14px] font-medium text-sapin leading-snug">Le métier m'intrigue</span>
+          <span class="profil-label block text-[15px] font-medium text-sapin leading-snug">Le métier m'intrigue</span>
         </button>
       </div>
     </section>
