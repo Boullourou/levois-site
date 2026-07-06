@@ -5,10 +5,9 @@ const year = new Date().getFullYear();
 <footer class="mt-section-md md:mt-section-lg border-t border-beige/60 bg-cream-soft">
   <div class="max-w-page mx-auto px-edge md:px-edge-md py-section md:py-section-md">
 
-    <!-- Bloc principal : signature personnelle + sitemap -->
     <div class="grid md:grid-cols-2 gap-12 md:gap-16 mb-16">
 
-      <!-- Colonne signature (large) -->
+      <!-- Signature -->
       <div class="space-y-6 max-w-md">
         <div class="flex items-center gap-4">
           <img
@@ -21,7 +20,7 @@ const year = new Date().getFullYear();
           />
           <div>
             <div class="font-medium text-ink text-base">Mouaad Boullourou</div>
-            <div class="text-sm text-muted">Habitant de Lèves · Conseiller immobilier SAFTI</div>
+            <div class="text-sm text-muted">Habitant de Lèves · Conseiller immobilier SAFTI · 7j/7</div>
           </div>
         </div>
 
@@ -31,20 +30,22 @@ const year = new Date().getFullYear();
             et les projets — avant de parler immobilier.
           </p>
         </div>
+
+        <div class="space-y-1 text-[14px] text-muted">
+          <div>07 81 38 01 21</div>
+          <div>mouaad@levois.fr</div>
+        </div>
       </div>
 
-      <!-- Colonne sitemap -->
+      <!-- Sitemap nettoyé -->
       <div class="md:justify-self-end">
         <div class="eyebrow-muted mb-5">Sur le site</div>
         <ul class="space-y-2.5 text-[15px]">
           <li><a href="/carnets-de-terrain" class="text-ink/80 hover:text-sapin transition-colors">Carnets de terrain</a></li>
-          <li><a href="/vivre-a-leves" class="text-ink/80 hover:text-sapin transition-colors">Vivre à Lèves</a></li>
-          <li><a href="/vendre-a-leves" class="text-ink/80 hover:text-sapin transition-colors">Immobilier</a></li>
-          <li><a href="/observatoire-immo" class="text-ink/80 hover:text-sapin transition-colors">Observatoire immo</a></li>
+          <li><a href="/vendre-a-leves" class="text-ink/80 hover:text-sapin transition-colors">Immobilier à Lèves</a></li>
           <li><a href="/votre-rue" class="text-ink/80 hover:text-sapin transition-colors">Prix à Lèves</a></li>
+          <li><a href="/observatoire-immo" class="text-ink/80 hover:text-sapin transition-colors">Observatoire immo</a></li>
           <li><a href="/le-projet" class="text-ink/80 hover:text-sapin transition-colors">Le projet</a></li>
-          <li><a href="/pour-les-commerces" class="text-ink/80 hover:text-sapin transition-colors">Sites web pour commerces</a></li>
-          <li><a href="/contribuer" class="text-ink/80 hover:text-sapin transition-colors">Contribuer</a></li>
           <li><a href="/contact" class="text-ink/80 hover:text-sapin transition-colors">Contact</a></li>
           <li class="pt-2"><a href="/mentions-legales" class="text-muted text-sm hover:text-sapin transition-colors">Mentions légales</a></li>
           <li><a href="/carte" class="text-muted text-sm hover:text-sapin transition-colors">Contact direct</a></li>
@@ -52,7 +53,6 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
-    <!-- Bas du footer : copyright minimal -->
     <div class="pt-8 border-t border-beige/40 flex flex-col md:flex-row md:justify-between gap-2 text-xs text-muted">
       <div>© {year} · Mouaad Boullourou · Carnet de terrain sur Lèves (28300)</div>
       <div class="italic">Made with care for Lèves</div>
