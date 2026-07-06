@@ -1,102 +1,51 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const carnet = [
-  {
-    href: '/carnets-de-terrain',
-    eyebrow: 'Le journal',
-    title: 'Carnet de terrain',
-    desc: 'Portraits, notes et observations sur Lèves, au fil des rencontres. Le cœur du site.',
-    classes: 'md:col-span-8 md:row-span-2 bg-sapin text-cream group',
-  },
-  {
-    href: '/vivre-a-leves',
-    eyebrow: 'Le guide',
-    title: 'Vivre à Lèves',
-    desc: 'Balades, secteurs, commerces : le pratique de la commune, rangé au même endroit.',
-    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
-  },
-  {
-    href: '/vendre-a-leves',
-    eyebrow: 'À votre rythme',
-    title: "L'immobilier",
-    desc: "Vendre ou acheter à Lèves, avec quelqu'un qui connaît le terrain.",
-    classes: 'md:col-span-4 bg-beige text-ink',
-  },
-  {
-    href: '/le-projet',
-    eyebrow: 'Pour commencer',
-    title: 'Le projet',
-    desc: 'Pourquoi ce site existe, et ce que vous pouvez attendre de moi.',
-    classes: 'md:col-span-4 bg-cream border border-beige text-ink',
-  },
-  {
-    href: '/contribuer',
-    eyebrow: 'Aidez-moi',
-    title: 'Contribuer',
-    desc: "Vous vivez ici ? Votre regard m'intéresse vraiment.",
-    classes: 'md:col-span-4 bg-ink text-cream',
-  },
-];
-
-const segmentation = [
-  {
-    question: 'Vous vivez à Lèves ou envisagez de vous y installer ?',
-    answer: 'Explorez le guide pratique et les carnets de terrain.',
-    href: '/vivre-a-leves',
-    cta: 'Vivre à Lèves',
-  },
-  {
-    question: 'Vous tenez un commerce ou un atelier sur la commune ?',
-    answer: 'Voir comment je peux aider votre visibilité avec un site simple et soigné.',
-    href: '/pour-les-commerces',
-    cta: 'Pour les commerces',
-  },
-  {
-    question: 'Vous vendez ou achetez un bien à Lèves ?',
-    answer: 'Voir mon accompagnement immobilier à votre rythme.',
-    href: '/vendre-a-leves',
-    cta: 'Mon accompagnement',
-  },
-];
 ---
 
 <Layout
-  title="Accueil"
-  description="Carnet de terrain public sur Lèves (28300), tenu par Mouaad Boullourou, habitant et conseiller immobilier SAFTI. Raconter Lèves, de l'intérieur : un carnet de terrain, des sites pour les commerces, et un accompagnement immobilier patient et attentif."
+  title="Mouaad Boullourou — Conseiller immobilier à Lèves"
+  description="Conseiller immobilier indépendant SAFTI à Lèves, disponible 7j/7. Les vrais prix du secteur, une relation de confiance, et un seul objectif : votre bien vendu au bon prix."
 >
 
-  <!-- ================================================================ -->
-  <!-- SECTION 1 · HERO (asymétrique, photo dominante desktop) -->
-  <!-- ================================================================ -->
+  <!-- ============================================================ -->
+  <!-- 1. HERO -->
+  <!-- ============================================================ -->
   <section class="min-h-[88vh] md:min-h-screen px-edge md:px-edge-md py-section md:py-section-md max-w-page mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-12 items-center h-full">
 
-      <!-- Bloc typo + bio -->
       <div class="md:col-span-5 md:col-start-1 order-2 md:order-1 fade-up">
-        <div class="eyebrow mb-6 md:mb-8">Carnet de terrain · Lèves 28300</div>
+        <div class="eyebrow mb-6 md:mb-8">Conseiller immobilier · Lèves 28300</div>
 
         <h1 class="text-hero text-sapin mb-8 leading-[0.95]">
-          Je découvre Lèves<br/>
-          <em class="font-normal italic text-sapin-deep">avec ceux qui y vivent.</em>
+          Votre bien<br/>
+          <em class="font-normal italic text-sapin-deep">va se vendre.</em>
         </h1>
 
         <span class="rule-ocre"></span>
 
-        <p class="text-body-lg text-muted max-w-md">
-          Bonjour, je suis <strong class="text-ink font-medium">Mouaad Boullourou</strong>,
-          habitant de Lèves depuis un an et conseiller immobilier SAFTI sur la commune.
-          Ce site est un <em>carnet de terrain public</em>, enrichi au fil des rencontres
-          avec les habitants, les commerçants et les acteurs de Lèves.
+        <p class="text-body-lg text-muted max-w-md mt-6">
+          Il faut juste le bon prix — pas un prix fantasmé, le prix maximum
+          auquel votre bien se vendra vraiment. Je m'appelle
+          <strong class="text-ink font-medium">Mouaad Boullourou</strong>,
+          conseiller indépendant SAFTI à Lèves, disponible 7j/7.
         </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <a href="/votre-rue" class="inline-flex items-center gap-2 bg-sapin text-cream px-6 py-3 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
+            Les prix de votre rue
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+          </a>
+          <a href="/vendre-a-leves" class="inline-flex items-center gap-2 border border-sapin text-sapin px-6 py-3 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px]">
+            Mon approche
+          </a>
+        </div>
       </div>
 
-      <!-- Bloc photo dominante (parallax léger sur desktop) -->
       <div class="md:col-span-7 md:col-start-6 order-1 md:order-2 fade-up">
         <div class="relative aspect-[3/4] md:aspect-[4/5] md:h-[80vh] overflow-hidden">
           <img
             src="/portrait-hero.webp"
-            alt="Mouaad Boullourou, devant un mur de pierre"
+            alt="Mouaad Boullourou, conseiller immobilier à Lèves"
             width="800"
             height="1200"
             class="parallax absolute inset-0 w-full h-full object-cover scale-[1.02]"
@@ -107,189 +56,203 @@ const segmentation = [
     </div>
   </section>
 
-  <!-- ================================================================ -->
-  <!-- SECTION 2 · MANIFESTO "Raconter Lèves, de l'intérieur" -->
-  <!-- ================================================================ -->
-  <section class="py-section md:py-section-lg px-edge md:px-edge-md bg-cream-soft border-y border-beige/40 grain">
-    <div class="max-w-editorial mx-auto relative z-10">
-
-      <div class="text-center fade-up mb-16 md:mb-20">
-        <div class="eyebrow mb-6">Pourquoi ce site</div>
-        <h2 class="text-display text-sapin mb-8">
-          Raconter Lèves,<br/>
-          <em class="italic font-normal">de l'intérieur.</em>
-        </h2>
-        <span class="rule-ocre mx-auto"></span>
-      </div>
-
-      <div class="space-y-6 text-body-lg text-ink/85 leading-relaxed mb-16 fade-up">
-        <p>
-          J'ai vite réalisé deux choses en m'installant ici : personne ne raconte vraiment
-          cette commune comme un habitant la vit, et beaucoup d'acteurs locaux —
-          commerçants, propriétaires, futurs habitants — auraient besoin d'un coup de
-          main concret pour être plus visibles.
-        </p>
-        <p>
-          Donc j'aide, à ma manière. Trois directions, un seul but : que Lèves vive mieux,
-          soit mieux connue, et que ceux qui y construisent quelque chose soient mieux soutenus.
-        </p>
-      </div>
-
-      <!-- 3 pillars éditoriaux numérotés (Stitch style) -->
-      <div class="space-y-0">
-
-        <div class="border-t border-beige py-8 md:py-10 fade-up">
-          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
-            <div class="text-h3 italic text-ocre">01.</div>
-            <div>
-              <h3 class="text-h3 text-sapin mb-3">Pour les habitants</h3>
-              <p class="text-body-lg text-muted leading-relaxed">
-                Un carnet de terrain enrichi avec ceux qui y vivent.
-              </p>
-            </div>
-          </div>
+  <!-- ============================================================ -->
+  <!-- 2. LES VRAIS CHIFFRES (le don) -->
+  <!-- ============================================================ -->
+  <section class="py-section md:py-section-lg px-edge md:px-edge-md bg-sapin text-cream">
+    <div class="max-w-page mx-auto">
+      <div class="grid md:grid-cols-12 gap-gutter items-end mb-12 fade-up">
+        <div class="md:col-span-7">
+          <div class="eyebrow text-ocre-soft mb-4">Données notaires · 2024-2025</div>
+          <h2 class="text-display text-cream leading-[0.98]">
+            Ce qui s'est<br/>
+            <em class="italic font-normal text-ocre-soft">vraiment vendu</em><br/>
+            à Lèves.
+          </h2>
         </div>
-
-        <div class="border-t border-beige py-8 md:py-10 fade-up">
-          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
-            <div class="text-h3 italic text-ocre">02.</div>
-            <div>
-              <h3 class="text-h3 text-sapin mb-3">Pour les commerçants</h3>
-              <p class="text-body-lg text-muted leading-relaxed">
-                Des sites web simples et rapides, qui les présentent vraiment.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-t border-b border-beige py-8 md:py-10 fade-up">
-          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
-            <div class="text-h3 italic text-ocre">03.</div>
-            <div>
-              <h3 class="text-h3 text-sapin mb-3">Pour les particuliers qui vendent ou achètent</h3>
-              <p class="text-body-lg text-muted leading-relaxed">
-                Un accompagnement immobilier à votre rythme, basé sur l'écoute et la connaissance du terrain.
-              </p>
-            </div>
-          </div>
+        <div class="md:col-span-5 text-body-lg text-cream/75 leading-relaxed">
+          Pas des estimations, pas des moyennes nationales. Les actes signés
+          chez les notaires, secteur par secteur. Gratuit, sans inscription.
         </div>
       </div>
 
-      <p class="mt-12 md:mt-16 text-center italic text-ocre text-body-lg fade-up">
-        Même posture, trois supports.
-      </p>
-    </div>
-  </section>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-12 fade-up">
+        <div class="border-t border-cream/20 pt-6">
+          <div class="text-[3rem] md:text-[3.5rem] font-medium leading-none text-cream">121</div>
+          <div class="text-[14px] text-cream/70 mt-2 leading-tight">ventes signées<br/>près de chez vous</div>
+        </div>
+        <div class="border-t border-cream/20 pt-6">
+          <div class="text-[3rem] md:text-[3.5rem] font-medium leading-none text-cream">210 000 €</div>
+          <div class="text-[14px] text-cream/70 mt-2 leading-tight">prix médian<br/>d'une maison</div>
+        </div>
+        <div class="border-t border-cream/20 pt-6">
+          <div class="text-[3rem] md:text-[3.5rem] font-medium leading-none text-cream">2 407 €</div>
+          <div class="text-[14px] text-cream/70 mt-2 leading-tight">le m²<br/>d'un appartement</div>
+        </div>
+      </div>
 
-  <!-- ================================================================ -->
-  <!-- SECTION 3 · LE CARNET (bento layout éditorial sans stocks) -->
-  <!-- ================================================================ -->
-  <section class="py-section md:py-section-lg px-edge md:px-edge-md max-w-page mx-auto">
-
-    <div class="mb-12 md:mb-16 fade-up">
-      <div class="eyebrow mb-4">Par où commencer</div>
-      <h2 class="text-display text-sapin">
-        Lèves, <em class="italic font-normal">vue d'ici.</em>
-      </h2>
-      <span class="rule-ocre"></span>
-    </div>
-
-    <!-- Bento grid asymétrique -->
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5 md:auto-rows-[260px]">
-      {carnet.map((card) => (
-        <a
-          href={card.href}
-          class={`${card.classes} p-6 md:p-10 flex flex-col justify-between transition-all duration-700 hover:opacity-90 fade-up overflow-hidden relative`}
-        >
-          <div>
-            <div class="text-eyebrow uppercase tracking-widest opacity-70 mb-3">
-              {card.eyebrow}
-            </div>
-            <h3 class={`${card.classes.includes('md:col-span-8') ? 'text-display' : 'text-h2'} leading-[1.05]`}>
-              {card.title}
-            </h3>
-          </div>
-          <div class="mt-6 md:mt-0">
-            <p class="text-[15px] opacity-80 max-w-sm mb-4">{card.desc}</p>
-            <div class="text-sm flex items-center gap-2 opacity-60">
-              Lire
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="13 6 19 12 13 18" />
-              </svg>
-            </div>
-          </div>
+      <div class="fade-up">
+        <a href="/votre-rue" class="inline-flex items-center gap-2 border border-cream/40 text-cream px-6 py-3 rounded-full hover:bg-cream hover:text-sapin transition-colors text-[15px]">
+          Trouver mon quartier dans les chiffres
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
         </a>
-      ))}
+        <p class="text-[12px] text-cream/50 mt-3">Gratuit, sans inscription. Rue par rue.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ================================================================ -->
-  <!-- SECTION 4 · SEGMENTATION DOUCE (lignes éditoriales, questions visiteur) -->
-  <!-- ================================================================ -->
-  <section class="py-section md:py-section-lg bg-cream-soft border-y border-beige/40">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
+  <!-- ============================================================ -->
+  <!-- 3. MON APPROCHE (la philosophie, courte) -->
+  <!-- ============================================================ -->
+  <section class="py-section md:py-section-lg px-edge md:px-edge-md bg-cream-soft border-y border-beige/40">
+    <div class="max-w-editorial mx-auto">
 
-      <div class="mb-12 md:mb-16 fade-up">
-        <div class="eyebrow mb-4">Pour aller plus loin</div>
-        <h2 class="text-display text-sapin">
-          Selon votre situation,<br/>
-          <em class="italic font-normal">par où aller ?</em>
+      <div class="fade-up mb-16">
+        <div class="eyebrow mb-6">Ma démarche</div>
+        <h2 class="text-display text-sapin mb-8">
+          La confiance<br/>
+          <em class="italic font-normal">avant le mandat.</em>
         </h2>
         <span class="rule-ocre"></span>
       </div>
 
-      <!-- 3 lignes éditoriales (pas des cartes commerciales) -->
-      <div class="space-y-0">
-        {segmentation.map((item, idx) => (
-          <a
-            href={item.href}
-            class={`group block py-8 md:py-12 ${idx === 0 ? 'border-t' : ''} border-b border-beige hover:pl-2 md:hover:pl-4 transition-all duration-500 fade-up`}
-          >
-            <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-4 md:gap-12">
-              <h3 class="text-h2 text-sapin group-hover:text-ocre transition-colors flex-1">
-                {item.question}
-              </h3>
-              <div class="md:w-1/3 md:text-right">
-                <p class="text-body-lg text-muted mb-2 md:mb-3 leading-snug">{item.answer}</p>
-                <div class="text-eyebrow text-ocre uppercase inline-flex items-center gap-2">
-                  {item.cta}
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="group-hover:translate-x-1 transition-transform">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="13 6 19 12 13 18" />
-                  </svg>
-                </div>
-              </div>
+      <div class="space-y-0 fade-up">
+        <div class="border-t border-beige py-8 md:py-10">
+          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
+            <div class="text-h3 italic text-ocre">01.</div>
+            <div>
+              <h3 class="text-h3 text-sapin mb-3">Je donne d'abord.</h3>
+              <p class="text-body-lg text-muted leading-relaxed">
+                Les vrais prix de votre secteur, accessibles avant qu'on se parle.
+                Pas pour vous impressionner — pour que vous arriviez informé, et qu'on parte
+                d'une base réelle, pas d'un espoir.
+              </p>
             </div>
-          </a>
-        ))}
+          </div>
+        </div>
+
+        <div class="border-t border-beige py-8 md:py-10">
+          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
+            <div class="text-h3 italic text-ocre">02.</div>
+            <div>
+              <h3 class="text-h3 text-sapin mb-3">Vous connaissez votre bien. Je connais le marché.</h3>
+              <p class="text-body-lg text-muted leading-relaxed">
+                On définit le prix ensemble — le prix maximum auquel votre bien se vendra vraiment.
+                Une vente au juste prix, c'est une vente qui tient.
+                Pas de désistement de dernière minute parce que l'acheteur a surpayé.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-b border-beige py-8 md:py-10">
+          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
+            <div class="text-h3 italic text-ocre">03.</div>
+            <div>
+              <h3 class="text-h3 text-sapin mb-3">Indépendant, disponible 7j/7, sans hiérarchie au-dessus.</h3>
+              <p class="text-body-lg text-muted leading-relaxed">
+                Je suis mon propre patron. Pas de chef à convaincre, pas de réunion d'agence
+                à attendre. Diffusion sur 40+ plateformes, un seul interlocuteur,
+                un message clair pour l'acheteur.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
   </section>
 
-  <!-- ================================================================ -->
-  <!-- SECTION 5 · SIGNATURE ANTI-VENTE -->
-  <!-- ================================================================ -->
+  <!-- ============================================================ -->
+  <!-- 4. LE CARNET (preuve de terrain, 2 articles) -->
+  <!-- ============================================================ -->
+  <section class="py-section md:py-section-lg px-edge md:px-edge-md max-w-page mx-auto">
+
+    <div class="mb-12 md:mb-16 fade-up">
+      <div class="eyebrow mb-4">Carnet de terrain</div>
+      <h2 class="text-display text-sapin">
+        Je connais Lèves<br/>
+        <em class="italic font-normal">parce que j'y vis.</em>
+      </h2>
+      <span class="rule-ocre"></span>
+      <p class="text-body-lg text-muted mt-6 max-w-prose">
+        Ce carnet n'est pas là pour remplir un site. Il documente ce que j'observe en
+        habitant ici — et ce que seul un voisin peut vraiment savoir sur un secteur.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-5 fade-up">
+      <a href="/carnets-de-terrain/pourquoi-la-salle-des-fetes-s-appelle-soutine"
+         class="group block border border-beige rounded-md p-6 md:p-8 bg-cream hover:bg-cream-soft transition-colors">
+        <div class="eyebrow-muted mb-3">Histoire locale · Juin 2026</div>
+        <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors leading-snug">
+          Pourquoi la salle des fêtes s'appelle Soutine
+        </h3>
+        <p class="text-[14px] text-muted leading-relaxed mb-6">
+          En tirant sur le fil d'un nom croisé tous les jours, j'ai découvert que Lèves
+          a hébergé l'avant-garde parisienne — Soutine, Cocteau, Satie, et la maison
+          où le style Castaing est né.
+        </p>
+        <div class="text-eyebrow text-ocre uppercase inline-flex items-center gap-2">
+          Lire
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="group-hover:translate-x-1 transition-transform">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/>
+          </svg>
+        </div>
+      </a>
+
+      <a href="/carnets-de-terrain/pourquoi-je-tiens-ce-carnet"
+         class="group block border border-beige rounded-md p-6 md:p-8 bg-cream hover:bg-cream-soft transition-colors">
+        <div class="eyebrow-muted mb-3">Carnet de terrain · Juin 2026</div>
+        <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors leading-snug">
+          Pourquoi je tiens ce carnet
+        </h3>
+        <p class="text-[14px] text-muted leading-relaxed mb-6">
+          Une maison, ce n'est pas une surface et un diagnostic. Pourquoi je prends le
+          temps d'observer Lèves avant de parler immobilier.
+        </p>
+        <div class="text-eyebrow text-ocre uppercase inline-flex items-center gap-2">
+          Lire
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="group-hover:translate-x-1 transition-transform">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/>
+          </svg>
+        </div>
+      </a>
+    </div>
+
+    <div class="mt-8 fade-up">
+      <a href="/carnets-de-terrain" class="inline-flex items-center gap-2 text-eyebrow uppercase tracking-widest text-ocre hover:text-sapin transition-colors pb-1 border-b border-ocre hover:border-sapin text-[13px]">
+        Tous les carnets
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- 5. SIGNATURE + CTA -->
+  <!-- ============================================================ -->
   <section class="py-section-md md:py-section-lg px-edge md:px-edge-md">
     <div class="max-w-2xl mx-auto text-center fade-up">
       <span class="block w-px h-20 md:h-24 bg-ocre mx-auto mb-10 md:mb-12"></span>
 
-      <p class="text-h3 italic text-sapin leading-relaxed mb-10 md:mb-12">
-        Prendre le temps<br/>
-        de comprendre les lieux, les gens et les projets,<br class="hidden md:block"/>
+      <p class="text-h3 italic text-sapin leading-relaxed mb-4">
+        Prendre le temps de comprendre<br/>
+        les lieux, les gens et les projets —<br/>
         avant de parler immobilier.
       </p>
 
-      <a
-        href="/le-projet"
-        class="inline-flex items-center gap-3 text-eyebrow uppercase tracking-widest text-ocre hover:text-sapin transition-colors pb-1 border-b border-ocre hover:border-sapin"
-      >
-        Lire le projet en entier
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="13 6 19 12 13 18" />
-        </svg>
-      </a>
+      <p class="text-body-lg text-muted mb-10">
+        Mouaad Boullourou · 07 81 38 01 21 · mouaad@levois.fr
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="tel:+33781380121" class="inline-flex items-center justify-center gap-2 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
+          Appeler
+        </a>
+        <a href="/vendre-a-leves" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-7 py-3.5 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px]">
+          Mon approche
+        </a>
+      </div>
     </div>
   </section>
 
