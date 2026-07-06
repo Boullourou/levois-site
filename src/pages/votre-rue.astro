@@ -245,8 +245,7 @@ const secteurs = [
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
           </button>
           <p class="text-[12px] text-muted">
-            En envoyant ce message, vous acceptez d'être recontacté par Mouaad
-            Boullourou à propos de votre demande. Pas d'abonnement, pas de démarchage.
+            C'est moi qui réponds, sous 24h. Un échange, rien de plus.
           </p>
         </form>
       </div>
@@ -290,7 +289,8 @@ const secteurs = [
         />
         <p class="text-[15px] text-ink/85 leading-relaxed">
           Mouaad, votre voisin rue de la Butte Celtique. Conseiller immobilier
-          SAFTI, je tiens ces chiffres à jour pour les habitants de Lèves.
+          indépendant SAFTI, disponible 7j/7. Je tiens ces chiffres à jour pour
+          les habitants de Lèves.
         </p>
       </div>
     </section>
@@ -349,14 +349,21 @@ const secteurs = [
           en ce moment, ce qui n'a pas trouvé preneur et pourquoi — ça, c'est ce que je vous
           apporte en 20 minutes.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 sm:items-center">
-          <a href="tel:+33781380121" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
-            07 81 38 01 21
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <a href="tel:+33781380121" class="inline-flex items-center justify-center gap-2 bg-sapin text-cream px-5 py-3 rounded-full hover:bg-sapin-deep transition-colors text-[15px] font-medium">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            Appeler
           </a>
-          <a href="mailto:mouaad@levois.fr" class="inline-flex items-center gap-3 border border-sapin text-sapin px-7 py-3.5 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px]">
-            mouaad@levois.fr
+          <a href="sms:+33781380121" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-5 py-3 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px] font-medium">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+            SMS
+          </a>
+          <a href="mailto:mouaad@levois.fr" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-5 py-3 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px] font-medium">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Écrire
           </a>
         </div>
+        <p class="text-[12px] text-muted mt-3">07 81 38 01 21 · mouaad@levois.fr · Disponible 7j/7</p>
       </div>
     </section>
 
