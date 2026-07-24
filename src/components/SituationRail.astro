@@ -124,8 +124,9 @@ const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    /* pan-x : le rail glisse à l'horizontale ; pan-y reste à la page */
-    touch-action: pan-x;
+    /* pan-x pan-y : le navigateur gère les deux axes — geste horizontal → rail,
+       geste vertical → page. pan-x seul bloquait le scroll vertical sur iOS. */
+    touch-action: pan-x pan-y;
     padding-block: 2rem;
     outline: none;
   }

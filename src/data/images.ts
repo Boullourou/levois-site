@@ -61,9 +61,48 @@ export const images: Record<string, ImageAsset> = {
     alt: 'Un propriétaire analyse sa situation devant son ordinateur',
     posDesktop: 'center', posMobile: 'center',
   },
-  // Pas de photo définitive → traitement graphique (composant)
-  'situation-visites': { slug: null, widths: [], w: 4, h: 3, alt: '' },
-  'situation-longtemps': { slug: null, widths: [], w: 4, h: 3, alt: '' },
+  'situation-visites': {
+    slug: 'situation-visites', widths: [1000, 640, 420], w: 1000, h: 750,
+    alt: 'Des propriétaires attendent des nouvelles après plusieurs visites',
+    posDesktop: 'center', posMobile: 'center',
+  },
+  'situation-longtemps': {
+    slug: 'situation-longtemps', widths: [1000, 640, 420], w: 1000, h: 750,
+    alt: 'Un propriétaire consulte son annonce après une longue période de commercialisation',
+    posDesktop: 'center', posMobile: 'center',
+  },
+
+  // ——— Ressources (vignettes éditoriales) ———
+  'ressource-lancement-coherent': {
+    slug: 'ressource-lancement-coherent', widths: [800, 560, 360], w: 800, h: 533,
+    alt: 'Documents et notes posés sur un bureau pour préparer un lancement immobilier',
+    posDesktop: 'center', posMobile: 'center',
+  },
+  'ressource-premiere-impression': {
+    slug: 'ressource-premiere-impression', widths: [800, 560, 360], w: 800, h: 533,
+    alt: 'Un acheteur consulte une annonce immobilière sur son téléphone',
+    posDesktop: 'center', posMobile: 'center',
+  },
+  'ressource-peu-contacts': {
+    slug: 'ressource-peu-contacts', widths: [800, 560, 360], w: 800, h: 533,
+    alt: 'Un propriétaire analyse les résultats de son annonce',
+    posDesktop: 'center', posMobile: 'center',
+  },
+  'ressource-retours-visite': {
+    slug: 'ressource-retours-visite', widths: [800, 560, 360], w: 800, h: 533,
+    alt: 'Une personne prend des notes après une visite immobilière',
+    posDesktop: 'center', posMobile: 'center',
+  },
+  'ressource-verifier-prix': {
+    slug: 'ressource-verifier-prix', widths: [800, 560, 360], w: 800, h: 533,
+    alt: "Des documents et un stylo pour analyser le positionnement d'un prix de vente",
+    posDesktop: 'center', posMobile: 'center',
+  },
+  'ressource-reprendre-commercialisation': {
+    slug: 'ressource-reprendre-commercialisation', widths: [800, 560, 360], w: 800, h: 600,
+    alt: 'Une maison et des éléments de stratégie pour reprendre une vente',
+    posDesktop: 'center', posMobile: 'center',
+  },
 
   // ——— Quatre profils illustratifs (jamais présentés comme clients réels) ———
   'profil-couple': {
