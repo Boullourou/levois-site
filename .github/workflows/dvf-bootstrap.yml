@@ -1,0 +1,91 @@
+name: (temporaire) Bootstrap dataset DVF sur la branche de refonte
+
+# ⚠️ WORKFLOW TEMPORAIRE — À SUPPRIMER AVANT FUSION.
+#
+# But unique : générer le PREMIER dataset DVF réel depuis un runner GitHub
+# (qui dispose d'Internet), et le committer SUR CETTE BRANCHE, afin que
+# Cloudflare produise une preview de branche avec de vraies données — pour
+# valider /votre-rue AVANT toute fusion, sans exécution locale.
+#
+# Ce qu'il NE fait PAS :
+#   — ne touche pas la production (commit uniquement sur la branche de refonte) ;
+#   — n'active pas /votre-rue publiquement (la redirection de _redirects reste) ;
+#   — ne modifie pas le backend lead ;
+#   — ne se déclenche PAS à chaque changement de code : le filtre `paths` le
+#     limite strictement aux modifications de CE fichier. Le pousser suffit à
+#     lancer une génération ; aucun autre push de code ne le réveille.
+#
+# Le workflow définitif (.github/workflows/dvf-update.yml, workflow_dispatch +
+# schedule) reste la solution pérenne pour l'après-fusion. Celui-ci est jetable.
+
+on:
+  push:
+    branches:
+      - claude/levois-site-vision-vmuyp1
+    paths:
+      - '.github/workflows/dvf-bootstrap.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dvf-bootstrap
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer la branche
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Modules natifs Node uniquement : pas de `npm ci`. En cas d'échec réseau,
+      # le script sort proprement (code 0) SANS écraser les fichiers existants.
+      - name: Générer le dataset DVF réel
+        run: node scripts/build-dvf.mjs
+
+      - name: Valider puis committer sur la branche (données réellement changées)
+        run: |
+          set -euo pipefail
+          git add -A public/data
+
+          if git diff --cached --quiet -- public/data/dvf-secteur.json; then
+            echo "::warning::Aucune donnée générée (échec réseau ?) ou inchangée — aucun commit."
+            git reset -q
+            exit 0
+          fi
+
+          node -e '
+            const fs = require("fs");
+            const meta = JSON.parse(fs.readFileSync("public/data/dvf-meta.json","utf8"));
+            const data = JSON.parse(fs.readFileSync("public/data/dvf-secteur.json","utf8"));
+            if (meta.status !== "ready") { console.error("status != ready"); process.exit(1); }
+            if (!Array.isArray(data) || data.length === 0) { console.error("dataset vide/invalide"); process.exit(1); }
+            console.log("OK :", data.length, "transactions ; vente la plus récente :", meta.dateVenteLaPlusRecente);
+          '
+
+          COUNT=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("public/data/dvf-secteur.json","utf8")).length)')
+          RECENTE=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("public/data/dvf-meta.json","utf8")).dateVenteLaPlusRecente || "n/c")')
+
+          git config user.name "levois-dvf-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "data(dvf): premier dataset réel du secteur (bootstrap preview) — ${COUNT} transactions, dernière ${RECENTE}"
+          git push origin "HEAD:${{ github.ref_name }}"
+          echo "Dataset committé sur la branche — Cloudflare produira la preview."
+
+      # Repli : le dataset reste récupérable en artifact même si le commit-back
+      # était bloqué par les réglages « Workflow permissions » du dépôt.
+      - name: Publier le dataset en artifact (repli)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dvf-dataset
+          path: public/data/dvf-*.json
+          if-no-files-found: warn
