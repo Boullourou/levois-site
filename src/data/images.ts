@@ -99,8 +99,12 @@ export const images: Record<string, ImageAsset> = {
     posDesktop: 'center 25%', posMobile: 'center 20%',
   },
 
-  // ——— Léa : pas de photo dans le pack → traitement éditorial graphique ———
-  'lea-portrait': { slug: null, widths: [], w: 1, h: 1, alt: '' },
+  // ——— Léa (portrait réel) ———
+  'lea-portrait': {
+    slug: 'lea-portrait', widths: [1022, 680, 440], w: 1122, h: 1402,
+    alt: 'Léa, la voix des contenus LEVOIS',
+    posDesktop: 'center 25%', posMobile: 'center 20%',
+  },
 
   // ——— Méthode : cinq étapes ———
   'methode-comprendre': {

@@ -61,12 +61,13 @@ import { site } from '../config/site';
         <a href="/ressources" class="btn-secondaire">Découvrir les ressources</a>
       </div>
       <div class="md:col-span-5 order-1 md:order-2">
-        <div class="lea-card" role="img" aria-label="Léa, la voix des contenus LEVOIS">
-          <span class="lea-monogram">L</span>
-          <div class="lea-lines" aria-hidden="true">
-            <span></span><span></span><span></span>
-          </div>
-          <p class="lea-caption">Contenus &amp; pédagogie</p>
+        <!-- Composition prête à accueillir 2 images supplémentaires (préparation / tournage) :
+             la grille .lea-gallery bascule alors en mosaïque, le portrait restant en vedette. -->
+        <div class="lea-gallery" data-lea-slots="1">
+          <figure class="lea-portrait-frame">
+            <ResponsiveImage slot="lea-portrait" ratio="4/5" sizes="(min-width:768px) 34vw, 88vw" class="w-full h-full" />
+            <figcaption class="lea-badge">Contenus &amp; pédagogie</figcaption>
+          </figure>
         </div>
       </div>
     </div>
@@ -93,16 +94,20 @@ import { site } from '../config/site';
 
   .lea-scene { background: linear-gradient(140deg, #FDFBF6 0%, #F5EAD9 100%); border: 1px solid #EDE2CF; border-radius: 28px; padding: 2rem 1.5rem; }
   @media (min-width: 768px) { .lea-scene { padding: 3rem; } }
-  .lea-card {
-    position: relative; aspect-ratio: 4/5; border-radius: 20px; overflow: hidden;
-    background: radial-gradient(120% 90% at 25% 15%, #F3D9AE 0%, #E9C48C 45%, #D8A45E 100%);
-    display: flex; flex-direction: column; justify-content: space-between; padding: 1.75rem;
+  /* Galerie Léa : une image en vedette aujourd'hui, extensible en mosaïque demain */
+  .lea-gallery { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+  .lea-portrait-frame {
+    position: relative; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 26px 54px -30px rgba(58,40,20,0.5);
   }
-  .lea-monogram { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(5rem, 16vw, 9rem); line-height: 0.8; color: rgba(58,40,20,0.82); }
-  .lea-lines { display: flex; flex-direction: column; gap: 0.5rem; }
-  .lea-lines span { height: 3px; border-radius: 3px; background: rgba(58,40,20,0.28); }
-  .lea-lines span:nth-child(1) { width: 70%; }
-  .lea-lines span:nth-child(2) { width: 45%; }
-  .lea-lines span:nth-child(3) { width: 58%; }
-  .lea-caption { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; color: rgba(58,40,20,0.72); }
+  .lea-portrait-frame :global(.ri) { width: 100%; height: 100%; }
+  .lea-badge {
+    position: absolute; left: 0.9rem; bottom: 0.9rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; letter-spacing: 0.04em;
+    color: #FBF3EA; background: rgba(33,28,22,0.55); backdrop-filter: blur(3px);
+    padding: 0.32rem 0.8rem; border-radius: 999px;
+  }
+  /* Extension future : avec data-lea-slots="3", passer en mosaïque
+     .lea-gallery[data-lea-slots="3"] { grid-template-columns: 1fr 1fr; }
+     et donner au portrait principal grid-column: 1 / -1. */
 </style>
