@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "data:dvf": "node scripts/build-dvf.mjs"
+    "data:dvf": "node scripts/build-dvf.mjs",
+    "data:verify": "node scripts/verify-dvf.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
