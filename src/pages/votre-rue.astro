@@ -99,7 +99,11 @@ import Layout from '../layouts/Layout.astro';
   </div>
 </Layout>
 
-<style>
+<!-- is:global OBLIGATOIRE : l'infographie est injectée en JS (innerHTML), donc
+     sans l'attribut de scope Astro (data-astro-cid). Une feuille scopée ne
+     matcherait aucun élément injecté → contenu rendu sans aucun style.
+     Tous les sélecteurs sont préfixés .vr- : aucun risque de collision. -->
+<style is:global>
   .vr-titre {
     font-family: 'Fraunces', Georgia, serif; font-weight: 500;
     font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;
