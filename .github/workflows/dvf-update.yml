@@ -1,0 +1,82 @@
+name: Mise à jour des données DVF (/votre-rue)
+
+# Prépare le jeu de données de ventes de /votre-rue de façon découplée du build.
+#
+# Architecture (indépendante de l'hébergeur) :
+#   Source DVF officielle → scripts/build-dvf.mjs → public/data/dvf-secteur.json
+#   → commit versionné dans GitHub → l'hébergeur (Cloudflare Pages) redéploie
+#     automatiquement sur ce commit, exactement comme pour tout autre changement.
+#
+# Le build du site ne dépend JAMAIS du téléchargement DVF : il consomme
+# uniquement le JSON déjà versionné. Ce workflow est la seule brique qui touche
+# au réseau DVF, et il ne s'exécute que manuellement ou périodiquement.
+#
+# Note : les workflows planifiés / manuels ne tournent que depuis la branche
+# par défaut (une fois cette branche fusionnée). Sur une branche de travail, ce
+# fichier reste dormant.
+
+on:
+  workflow_dispatch: # déclenchement manuel depuis l'onglet Actions
+  schedule:
+    - cron: '30 5 8 * *' # le 8 de chaque mois à 05h30 UTC (DVF publie ~2×/an)
+
+# Autorise le workflow à committer le dataset régénéré.
+permissions:
+  contents: write
+
+# Évite deux exécutions concurrentes qui se marcheraient dessus.
+concurrency:
+  group: dvf-update
+  cancel-in-progress: false
+
+jobs:
+  update-dvf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # scripts/build-dvf.mjs n'utilise que des modules natifs Node : pas de
+      # `npm ci` nécessaire. En cas d'échec réseau, le script sort proprement
+      # (code 0) SANS écraser les fichiers existants.
+      - name: Générer le dataset DVF
+        run: node scripts/build-dvf.mjs
+
+      - name: Committer uniquement si les données ont réellement changé
+        run: |
+          set -euo pipefail
+
+          git add -A public/data
+
+          # Décision fondée sur le fichier de DONNÉES seul : le meta contient un
+          # horodatage qui change à chaque exécution et ne doit pas, à lui seul,
+          # déclencher un commit.
+          if git diff --cached --quiet -- public/data/dvf-secteur.json; then
+            echo "Aucun changement de données — rien à committer."
+            git reset -q            # abandonne un éventuel changement de meta seul
+            exit 0
+          fi
+
+          # Les données ont changé : garde-fou de validité avant de committer.
+          node -e '
+            const fs = require("fs");
+            const meta = JSON.parse(fs.readFileSync("public/data/dvf-meta.json","utf8"));
+            const data = JSON.parse(fs.readFileSync("public/data/dvf-secteur.json","utf8"));
+            if (meta.status !== "ready") { console.error("Meta status != ready — commit annulé."); process.exit(1); }
+            if (!Array.isArray(data) || data.length === 0) { console.error("Dataset vide/invalide — commit annulé."); process.exit(1); }
+            console.log("Validé :", data.length, "transactions ; vente la plus récente :", meta.dateVenteLaPlusRecente);
+          '
+
+          COUNT=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("public/data/dvf-secteur.json","utf8")).length)')
+          RECENTE=$(node -e 'console.log(JSON.parse(require("fs").readFileSync("public/data/dvf-meta.json","utf8")).dateVenteLaPlusRecente || "n/c")')
+
+          git config user.name "levois-dvf-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git commit -m "data(dvf): rafraîchit les ventes du secteur (${COUNT} transactions, dernière ${RECENTE})"
+          git push
+          echo "Dataset mis à jour et poussé — l'hébergeur redéploiera automatiquement."
