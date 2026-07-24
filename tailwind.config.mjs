@@ -4,55 +4,48 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Palette "carnet de terrain" — hospitality editorial
-        cream: '#F7F2EA',      // fond, sensation papier
-        'cream-soft': '#FAF7F0', // surface alt, pages secondaires
-        ink: '#1F1B16',        // texte principal, charbon-café
-        sapin: '#2C4A3E',      // accent principal, paysage
-        'sapin-deep': '#153328', // hover, accents profonds
-        ocre: '#C9924A',       // accent secondaire, terre/tuiles
-        'ocre-soft': '#E0B57A', // ocre lumière, états hover
-        beige: '#E8DFD0',      // filets, bordures douces
-        muted: '#6B6258',      // texte secondaire
+        // Palette LEVOIS — papier chaud, encre, argile
+        papier: '#F7F2EA',        // fond dominant, sensation papier chaud
+        'papier-vif': '#FDFBF6',  // surfaces relevées, cartes
+        encre: '#211C16',         // texte principal, scènes sombres
+        'encre-2': '#2E2820',     // surfaces sombres secondaires
+        brun: '#6B5D4F',          // texte secondaire, légendes
+        argile: '#A85638',        // écart, sélection, décision, action
+        'argile-lum': '#C97B52',  // hover, états actifs, accents sur encre
+        'argile-pale': '#F0E2D8', // fonds très légers teintés argile
+        beige: '#E8DFD0',         // filets, bordures douces
       },
       fontFamily: {
-        sans: ['"Fraunces"', 'Georgia', 'serif'],
         display: ['"Fraunces"', 'Georgia', 'serif'],
+        sans: ['"Instrument Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
-        // Display sizes éditoriaux avec responsive clamp
-        'hero': ['clamp(2.75rem, 9vw, 6rem)', { lineHeight: '1.0', letterSpacing: '-0.03em', fontWeight: '500' }],
-        'display': ['clamp(2.25rem, 6vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '500' }],
-        'h2': ['clamp(1.75rem, 4vw, 2.5rem)', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '500' }],
-        'h3': ['clamp(1.375rem, 2.5vw, 1.75rem)', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '500' }],
-        'body-lg': ['1.125rem', { lineHeight: '1.65' }],
-        'eyebrow': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.2em', fontWeight: '500' }],
-      },
-      letterSpacing: {
-        tightest: '-0.04em',
-        widest: '0.2em',
+        'hero': ['clamp(2.5rem, 8.5vw, 6.5rem)', { lineHeight: '1.02', letterSpacing: '-0.03em', fontWeight: '500' }],
+        'display': ['clamp(2.1rem, 5.5vw, 4rem)', { lineHeight: '1.08', letterSpacing: '-0.02em', fontWeight: '500' }],
+        'h2': ['clamp(1.7rem, 4vw, 2.5rem)', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '500' }],
+        'h3': ['clamp(1.3rem, 2.5vw, 1.7rem)', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '500' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.7' }],
+        'eyebrow': ['0.6875rem', { lineHeight: '1', letterSpacing: '0.18em', fontWeight: '500' }],
       },
       maxWidth: {
         prose: '68ch',
-        editorial: '720px',
+        editorial: '760px',
         page: '1280px',
         wide: '1440px',
       },
       spacing: {
-        'gutter': '24px',
-        'edge': '24px',
+        'edge': '20px',
         'edge-md': '48px',
-        'edge-lg': '64px',
-        'section': '80px',
-        'section-md': '120px',
-        'section-lg': '160px',
-      },
-      transitionDuration: {
-        '600': '600ms',
-        '700': '700ms',
+        'section': '88px',
+        'section-md': '128px',
+        'section-lg': '168px',
       },
       transitionTimingFunction: {
         'out-soft': 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
+      borderRadius: {
+        'card': '14px',
+        'panel': '22px',
       },
     },
   },

@@ -1,5 +1,5 @@
 {
-  "name": "leves-site",
+  "name": "levois-site",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -8,12 +8,16 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "vitest run"
   },
   "dependencies": {
-    "astro": "^4.16.0",
-    "@astrojs/tailwind": "^5.1.2",
     "@astrojs/sitemap": "^3.2.1",
+    "@astrojs/tailwind": "^5.1.2",
+    "astro": "^4.16.0",
     "tailwindcss": "^3.4.13"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
   }
 }

@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://levois.fr/</loc><lastmod>2026-06-12</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://levois.fr/le-projet</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://levois.fr/carnets-de-terrain</loc><lastmod>2026-06-12</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://levois.fr/carnets-de-terrain/pourquoi-je-tiens-ce-carnet</loc><lastmod>2026-06-07</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/carnets-de-terrain/pourquoi-la-salle-des-fetes-s-appelle-soutine</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/vivre-a-leves</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/balades</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/votre-rue</loc><lastmod>2026-06-21</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/carte</loc><lastmod>2026-06-14</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://levois.fr/observatoire-immo</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://levois.fr/vendre-a-leves</loc><lastmod>2026-06-12</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/pour-les-commerces</loc><lastmod>2026-06-06</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://levois.fr/secteurs</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://levois.fr/commerces</loc><lastmod>2026-06-08</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://levois.fr/contribuer</loc><lastmod>2026-06-06</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://levois.fr/contact</loc><lastmod>2026-06-06</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://levois.fr/mentions-legales</loc><lastmod>2026-06-06</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://levois.fr/</loc><priority>1.0</priority></url>
+  <url><loc>https://levois.fr/situer-ma-vente</loc><priority>0.9</priority></url>
+  <url><loc>https://levois.fr/methode</loc><priority>0.8</priority></url>
+  <url><loc>https://levois.fr/ressources</loc><priority>0.8</priority></url>
+  <url><loc>https://levois.fr/ressources/lancement-coherent</loc></url>
+  <url><loc>https://levois.fr/ressources/premiere-impression-annonce</loc></url>
+  <url><loc>https://levois.fr/ressources/annonce-vue-peu-de-contacts</loc></url>
+  <url><loc>https://levois.fr/ressources/retours-de-visite</loc></url>
+  <url><loc>https://levois.fr/ressources/verifier-avant-baisse-prix</loc></url>
+  <url><loc>https://levois.fr/ressources/reprendre-commercialisation</loc></url>
+  <url><loc>https://levois.fr/accompagnement</loc></url>
+  <url><loc>https://levois.fr/mouaad</loc></url>
+  <url><loc>https://levois.fr/lea</loc></url>
+  <url><loc>https://levois.fr/contact</loc></url>
+  <url><loc>https://levois.fr/mentions-legales</loc><priority>0.2</priority></url>
+  <url><loc>https://levois.fr/confidentialite</loc><priority>0.2</priority></url>
 </urlset>

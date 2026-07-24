@@ -1,0 +1,37 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { situations } from '../data/situations';
+---
+
+<Layout title="Page introuvable" description="Cette page n'existe pas — mais votre situation, si.">
+  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-16 md:pt-24 pb-section text-center">
+    <span class="ligne-ecart mx-auto mb-8"></span>
+    <p class="eyebrow mb-4">Erreur 404</p>
+    <h1 class="text-display text-encre mb-4">Cette page n’existe pas.</h1>
+    <p class="font-sans text-body-lg text-brun mb-10 max-w-prose mx-auto">
+      Un écart entre ce que vous cherchiez et ce qui existe — ça tombe bien,
+      c’est notre spécialité. Voici les chemins utiles :
+    </p>
+
+    <div class="grid sm:grid-cols-2 gap-3 text-left mb-10">
+      <a href="/situer-ma-vente" class="carte p-5 group transition-all duration-200 hover:border-argile">
+        <p class="font-display text-lg text-encre group-hover:text-argile transition-colors">Situer ma vente</p>
+        <p class="font-sans text-sm text-brun mt-1">Le parcours en trois minutes</p>
+      </a>
+      <a href="/ressources" class="carte p-5 group transition-all duration-200 hover:border-argile">
+        <p class="font-display text-lg text-encre group-hover:text-argile transition-colors">Les ressources</p>
+        <p class="font-sans text-sm text-brun mt-1">Six réponses aux questions réelles</p>
+      </a>
+      <a href="/methode" class="carte p-5 group transition-all duration-200 hover:border-argile">
+        <p class="font-display text-lg text-encre group-hover:text-argile transition-colors">La méthode</p>
+        <p class="font-sans text-sm text-brun mt-1">Le Système des Écarts</p>
+      </a>
+      <a href="/contact" class="carte p-5 group transition-all duration-200 hover:border-argile">
+        <p class="font-display text-lg text-encre group-hover:text-argile transition-colors">Contact</p>
+        <p class="font-sans text-sm text-brun mt-1">Écrire directement à Mouaad</p>
+      </a>
+    </div>
+
+    <a href="/" class="btn-secondaire">Retour à l’accueil</a>
+  </div>
+</Layout>

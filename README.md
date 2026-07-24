@@ -1,95 +1,75 @@
-# Site Lèves — carnet de terrain
+# LEVOIS — levois.fr
 
-Starter Astro + Tailwind pour le site cartographe de Lèves.
-Posture : carnet de terrain public, pas vitrine commerciale.
+**Une expérience numérique de décision immobilière.** Le propriétaire choisit sa
+situation, répond à trois à cinq questions, reçoit une lecture réellement liée à
+ses réponses — et ne transmet ses coordonnées que s'il le souhaite, après la valeur.
+
+Voir `PROPOSITION.md` pour la vision, la direction artistique et l'architecture.
 
 ## Stack
-- **Astro 4** (sites statiques rapides, contenu en Markdown)
-- **Tailwind CSS** (atomic CSS, payload mince)
-- **Fraunces** (Google Fonts, variable, une seule famille)
 
-## Installation locale
+- **Astro 4** — statique par défaut, le parcours est la seule « île » interactive
+- **Tailwind CSS** — tokens LEVOIS (papier, encre, argile) dans `tailwind.config.mjs`
+- **Fraunces + Instrument Sans** (Google Fonts, licences SIL OFL)
+- **Vitest** — le moteur de personnalisation est testé (cas de recette du CdC §17)
+- **Netlify** — hébergement + fonction serveur pour les formulaires
+
+## Démarrer
 
 ```bash
-# Node 18+ requis
 npm install
-npm run dev
+npm run dev        # http://localhost:4321
+npm test           # tests du moteur de signaux
+npm run build      # production dans dist/
 ```
 
-Puis ouvre `http://localhost:4321` dans le navigateur.
+## Architecture du contenu (administrable sans toucher aux composants)
 
-## Mise en ligne
+| Quoi | Où |
+|---|---|
+| Coordonnées, textes de rôle | `src/config/site.ts` |
+| Les 5 situations : questions, options, signaux, résultats | `src/data/situations.ts` |
+| Les 6 ressources : métadonnées | `src/data/resources.ts` |
+| Les 6 ressources : contenu complet | `src/data/resourceContent.ts` |
+| Manifeste des images (slots, alt, recadrages) | `src/data/images.ts` |
+| Moteur de décision | `src/lib/engine.ts` (+ tests `engine.test.ts`) |
 
-### 1. Achat du domaine
-- Domaine proposé : `vivre-a-leves.fr` (à vérifier)
-- Alternatives : `leves.info`, `tout-leves.fr`
-- Registrar recommandé : OVH ou Gandi (FR, support correct)
+**Règle absolue** : après toute modification de `situations.ts`, lancer `npm test` —
+les trois exemples du cahier des charges (§17) doivent continuer de passer.
 
-### 2. Repo GitHub
-```bash
-git init
-git add .
-git commit -m "Initial commit — starter Astro carnet Lèves"
-gh repo create leves-site --private --source=. --push
-```
+## Images
 
-### 3. Déploiement Netlify
-- Connecte le repo GitHub à Netlify
-- Build command : `npm run build`
-- Publish directory : `dist`
-- Active l'auto-deploy sur la branche `main`
+Les emplacements sont définitifs, les fichiers arrivent quand ils arrivent :
+déposer l'image dans `/public/images/` puis renseigner `file:` dans
+`src/data/images.ts`. Le traitement provisoire disparaît automatiquement.
 
-### 4. Formulaire Contribuer
-- Crée un compte Formspree (gratuit jusqu'à 50 soumissions/mois)
-- Récupère ton endpoint
-- Remplace `REMPLACE_PAR_TON_ID` dans `src/pages/contribuer.astro`
+⚠️ Visuels « Piloter » et « Apprendre » : recadrage obligatoire (zoom/position
+déjà configurés dans le manifeste) pour que les chiffres fictifs ne soient
+jamais lisibles — et jamais mentionnés dans les textes alternatifs.
+⚠️ La photographie de rue avec une autre personne ne doit jamais être
+présentée comme une photographie de Mouaad.
 
-### 5. Plausible Analytics
-- Crée un compte sur plausible.io (payant ~9€/mois) OU plausible.umami.is (gratuit, self-hosted)
-- Ajoute le script dans `src/layouts/Layout.astro`, juste avant `</head>`
+## Formulaires (transmission à Mouaad + contact)
 
-## Structure
+Route serveur : `netlify/functions/lead.mts` (via `/api/lead`).
+Variables d'environnement à définir dans Netlify (Site configuration → Environment variables) :
 
-```
-src/
-├── layouts/
-│   └── Layout.astro          # layout principal avec header/footer/SEO
-├── components/
-│   ├── Header.astro          # navigation
-│   ├── Footer.astro          # phrase anti-vente + signature deux casquettes
-│   └── PageEnConstruction.astro  # étiquette réutilisable
-├── pages/
-│   ├── index.astro           # accueil
-│   ├── le-projet.astro       # page-âme du site
-│   ├── pourquoi-vivre-a-leves.astro
-│   ├── secteurs.astro
-│   ├── ecoles.astro
-│   ├── commerces.astro
-│   ├── carnets-de-terrain.astro
-│   ├── contribuer.astro      # formulaire 3 questions
-│   ├── contact.astro
-│   └── mentions-legales.astro
-└── styles/
-    └── global.css            # base Tailwind + Fraunces
-```
+| Variable | Rôle |
+|---|---|
+| `RESEND_API_KEY` | Clé API [Resend](https://resend.com) — **obligatoire** pour activer l'envoi |
+| `LEAD_TO_EMAIL` | Destinataire (défaut : mouaad@levois.fr) |
+| `LEAD_FROM_EMAIL` | Expéditeur vérifié Resend (défaut : onboarding@resend.dev) |
 
-## Tokens de marque
+Sans clé, le formulaire affiche une erreur honnête avec les coordonnées directes —
+jamais de fausse confirmation.
 
-Définis dans `tailwind.config.mjs` :
-- `cream` `#F7F2EA` — fond, sensation papier
-- `ink` `#1F1B16` — texte principal
-- `sapin` `#2C4A3E` — accent paysage
-- `ocre` `#C9924A` — accent terre
-- `beige` `#E8DFD0` — filets/bordures
-- `muted` `#6B6258` — texte secondaire
+## Déploiement
 
-## À remplacer dans le code (recherche `[ton ...]`)
-- `[ton nom]` dans `Footer.astro`, `index.astro`, `le-projet.astro`, `mentions-legales.astro`
-- `[ton email]` dans `contact.astro`, `mentions-legales.astro`
-- `[ton téléphone]` dans `contact.astro`, `mentions-legales.astro`
-- `REMPLACE_PAR_TON_ID` dans `contribuer.astro` (endpoint Formspree)
-- SIRET et adresse dans `mentions-legales.astro`
+- `main` → production (levois.fr) via Netlify
+- Branches → prévisualisations (activer *Branch deploys* ou passer par une Pull Request)
+- Redirections des anciennes URLs : `public/_redirects`
 
-## Règle d'or éditoriale
-Ne jamais publier ce qu'on n'a pas vérifié ou ce qu'on ne sait pas vrai.
-Préférer le vide ou le "à enrichir" à l'invention.
+## Propriété
+
+Code, créations, contenus, domaine, données et comptes techniques appartiennent
+à Mouaad Boullourou. Licences typographiques : SIL OFL (aucun achat requis).

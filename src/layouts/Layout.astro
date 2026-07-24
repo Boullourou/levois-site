@@ -1,25 +1,27 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { site } from '../config/site';
 import '../styles/global.css';
 
 export interface Props {
   title: string;
   description?: string;
   image?: string;
+  /** Header intégré sur fond papier (Hero) ou solide dès l'arrivée. */
+  headerTransparent?: boolean;
 }
-
-const siteUrl = 'https://levois.fr';
 
 const {
   title,
-  description = "Carnet de terrain public sur Lèves (28300), tenu par Mouaad Boullourou, habitant et conseiller immobilier SAFTI. Raconter Lèves, de l'intérieur.",
-  image = "/portrait-headshot.webp"
+  description = site.description,
+  image = '/portrait-hero.webp',
+  headerTransparent = false,
 } = Astro.props;
 
-const fullTitle = title === 'Accueil' ? 'Lèves, carnet de terrain · Mouaad Boullourou' : `${title} · Lèves, carnet de terrain`;
-const canonical = siteUrl + Astro.url.pathname;
-const ogImage = image.startsWith('http') ? image : siteUrl + image;
+const fullTitle = title === 'Accueil' ? `LEVOIS · ${site.baseline}` : `${title} · LEVOIS`;
+const canonical = site.url + Astro.url.pathname;
+const ogImage = image.startsWith('http') ? image : site.url + image;
 ---
 
 <!doctype html>
@@ -33,119 +35,89 @@ const ogImage = image.startsWith('http') ? image : siteUrl + image;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    <!-- Preconnect Google Fonts pour Fraunces -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Open Graph -->
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content="Lèves, carnet de terrain" />
+    <meta property="og:site_name" content="LEVOIS" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Schema.org Person + WebSite -->
     <script type="application/ld+json" set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Mouaad Boullourou",
-      "jobTitle": "Conseiller immobilier",
-      "worksFor": { "@type": "Organization", "name": "SAFTI" },
-      "address": { "@type": "PostalAddress", "addressLocality": "Lèves", "postalCode": "28300", "addressCountry": "FR" }
+      '@context': 'https://schema.org',
+      '@type': 'ProfessionalService',
+      name: 'LEVOIS',
+      description: site.description,
+      url: site.url,
+      areaServed: site.communes.map((c) => ({ '@type': 'City', name: c })),
+      founder: {
+        '@type': 'Person',
+        name: site.mouaad.nom,
+        jobTitle: 'Conseiller immobilier indépendant',
+        worksFor: { '@type': 'Organization', name: 'SAFTI' },
+      },
     })} />
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-GR4DPGLJMM"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-GR4DPGLJMM');
-  </script>
-</head>
+  </head>
 
-  <body class="min-h-screen flex flex-col has-custom-cursor">
-    <!-- Custom cursor (desktop only via CSS media query) -->
-    <div id="cursor" aria-hidden="true"></div>
+  <body class="min-h-screen flex flex-col">
+    <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-argile focus:text-papier-vif focus:px-4 focus:py-2 focus:rounded-full font-sans">
+      Aller au contenu
+    </a>
 
-    <Header />
-    <main class="flex-1">
+    <Header transparent={headerTransparent} />
+    <main id="contenu" class="flex-1">
       <slot />
     </main>
     <Footer />
 
-    <!-- Intersection Observer pour fade-up + parallax léger sur hero -->
     <script is:inline>
-      document.addEventListener('DOMContentLoaded', () => {
-        // === Fade-up à l'intersection ===
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
+      // Marqueur JS actif — sans lui, le CSS n'applique aucun état masqué.
+      document.documentElement.classList.add('js');
+    </script>
+    <script>
+      // Révélation à l'entrée dans le viewport — famille A (narration).
+      // Avec prefers-reduced-motion, le CSS affiche tout directement.
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
             if (entry.isIntersecting) {
               entry.target.classList.add('is-visible');
               observer.unobserve(entry.target);
             }
+          }
+        },
+        { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
+      );
+      document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
+
+      // Filet de sécurité : quoi qu'il arrive, tout est visible après 2,5 s.
+      setTimeout(() => {
+        document.querySelectorAll('.fade-up:not(.is-visible)').forEach((el) => el.classList.add('is-visible'));
+      }, 2500);
+
+      // Parallaxe très légère (max 24px), désactivée si mouvement réduit.
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const parallaxEls = document.querySelectorAll<HTMLElement>('.parallax');
+      if (parallaxEls.length && !reduced && window.innerWidth > 768) {
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            const y = Math.min(window.scrollY * 0.08, 24);
+            parallaxEls.forEach((el) => (el.style.transform = `translateY(${y}px)`));
+            ticking = false;
           });
-        }, { threshold: 0.1, rootMargin: '0px 0px -80px 0px' });
-
-        document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
-
-        // === Parallax léger sur image hero (max 30px) ===
-        const parallaxElements = document.querySelectorAll('.parallax');
-        if (parallaxElements.length && window.innerWidth > 768) {
-          let ticking = false;
-          window.addEventListener('scroll', () => {
-            if (!ticking) {
-              window.requestAnimationFrame(() => {
-                const scrollY = window.scrollY;
-                parallaxElements.forEach((el) => {
-                  const translate = Math.min(scrollY * 0.12, 30);
-                  el.style.transform = `translateY(${translate}px) scale(1.02)`;
-                });
-                ticking = false;
-              });
-              ticking = true;
-            }
-          });
-        }
-
-        // === Custom cursor avec lag fluide (desktop only) ===
-        const cursor = document.getElementById('cursor');
-        if (cursor && window.innerWidth > 768) {
-          let mouseX = window.innerWidth / 2;
-          let mouseY = window.innerHeight / 2;
-          let cursorX = mouseX;
-          let cursorY = mouseY;
-
-          document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-          });
-
-          const renderCursor = () => {
-            cursorX += (mouseX - cursorX) * 0.22;
-            cursorY += (mouseY - cursorY) * 0.22;
-            cursor.style.left = cursorX + 'px';
-            cursor.style.top = cursorY + 'px';
-            requestAnimationFrame(renderCursor);
-          };
-          requestAnimationFrame(renderCursor);
-
-          // Cursor expand sur éléments interactifs
-          const interactables = document.querySelectorAll('a, button, [role="button"]');
-          interactables.forEach((el) => {
-            el.addEventListener('mouseenter', () => cursor.classList.add('is-hovering'));
-            el.addEventListener('mouseleave', () => cursor.classList.remove('is-hovering'));
-          });
-        }
-      });
+        }, { passive: true });
+      }
     </script>
   </body>
 </html>
-

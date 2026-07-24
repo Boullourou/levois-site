@@ -1,0 +1,374 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Votre première lecture"
+  description="Le résultat de votre parcours LEVOIS : reformulation, écart probable, limites et prochaine décision utile."
+>
+  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section">
+
+    <!-- État vide : arrivée directe sans parcours -->
+    <section id="resultat-vide" class="hidden text-center py-20">
+      <span class="ligne-ecart mx-auto mb-8"></span>
+      <h1 class="text-h2 text-encre mb-4">Aucun parcours en cours.</h1>
+      <p class="font-sans text-body-lg text-brun mb-8 max-w-prose mx-auto">
+        Cette page présente le résultat d’un parcours « Situer ma vente ».
+        Commencez par choisir votre situation — trois minutes suffisent.
+      </p>
+      <a href="/situer-ma-vente" class="btn-primaire">Situer ma vente</a>
+    </section>
+
+    <!-- Résultat -->
+    <article id="resultat" class="hidden">
+      <header class="mb-10">
+        <p class="eyebrow mb-4">Votre première lecture</p>
+        <h1 class="text-display text-encre mb-2">Ce que vos réponses<br/>permettent de lire.</h1>
+        <p class="font-sans text-sm text-brun">
+          Situation · <span id="r-situation" class="text-encre font-medium"></span>
+          <a href="/situer-ma-vente" class="text-argile underline underline-offset-2 ml-3 hover:text-encre">Modifier mes réponses</a>
+        </p>
+      </header>
+
+      <!-- 1 · Reformulation -->
+      <section class="mb-10" aria-labelledby="titre-reformulation">
+        <h2 id="titre-reformulation" class="sr-only">Ce que vous nous avez dit</h2>
+        <p id="r-reformulation" class="font-display text-xl md:text-2xl text-encre leading-relaxed" style="font-variation-settings: 'opsz' 30;"></p>
+      </section>
+
+      <!-- 2 · Première lecture -->
+      <section class="mb-10" aria-labelledby="titre-lecture">
+        <h2 id="titre-lecture" class="text-h3 text-encre mb-3">Ce que vos réponses suggèrent</h2>
+        <p id="r-interpretation" class="font-sans text-body-lg text-encre/85 leading-relaxed"></p>
+      </section>
+
+      <!-- 3 · Écart principal + niveau -->
+      <section class="mb-10 carte p-6 md:p-8" aria-labelledby="titre-ecart">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class="ligne-ecart !w-8"></span>
+          <h2 id="titre-ecart" class="font-sans text-sm text-argile uppercase tracking-widest">Écart probable</h2>
+        </div>
+        <p id="r-ecart-titre" class="font-display text-2xl text-encre mb-2"></p>
+        <p id="r-ecart-definition" class="font-sans text-[15px] text-brun leading-relaxed mb-6"></p>
+
+        <div class="border-t border-beige pt-5">
+          <p class="font-sans text-sm font-medium text-encre mb-1" id="r-niveau"></p>
+          <p class="font-sans text-sm text-brun" id="r-niveau-explication"></p>
+        </div>
+
+        <div id="r-seconde-piste" class="hidden border-t border-beige pt-5 mt-5">
+          <p class="font-sans text-sm font-medium text-encre mb-1">Seconde piste à distinguer</p>
+          <p class="font-sans text-sm text-brun"><span id="r-seconde-titre" class="text-encre"></span> — <span id="r-seconde-definition"></span></p>
+        </div>
+      </section>
+
+      <!-- 4 · Ce que l'on ne peut pas conclure (obligatoire) -->
+      <section class="mb-10 encart-limite py-1" aria-labelledby="titre-limite">
+        <h2 id="titre-limite" class="font-sans text-sm uppercase tracking-widest text-argile mb-2 pt-1">Ce que l’on ne peut pas encore conclure</h2>
+        <p id="r-limite" class="font-sans text-[15px] leading-relaxed"></p>
+      </section>
+
+      <!-- 5 · Prochaine décision utile -->
+      <section class="mb-10" aria-labelledby="titre-action">
+        <h2 id="titre-action" class="text-h3 text-encre mb-3">Votre prochaine décision utile</h2>
+        <p id="r-action" class="font-sans text-body-lg text-encre/85 leading-relaxed"></p>
+      </section>
+
+      <!-- 6 · Ressource recommandée -->
+      <section class="mb-12" aria-labelledby="titre-ressource">
+        <h2 id="titre-ressource" class="sr-only">Ressource recommandée</h2>
+        <a id="r-ressource-lien" href="/ressources" class="group carte p-6 md:p-7 flex flex-col md:flex-row md:items-center gap-4 transition-all duration-200 hover:border-argile hover:shadow-[0_16px_40px_-24px_rgba(168,86,56,0.4)]">
+          <div class="flex-1">
+            <p class="font-sans text-sm text-argile mb-1.5">Ressource recommandée</p>
+            <p id="r-ressource-titre" class="font-display text-xl text-encre mb-1"></p>
+            <p id="r-ressource-raison" class="font-sans text-[15px] text-brun leading-relaxed"></p>
+          </div>
+          <span class="btn-secondaire shrink-0 group-hover:border-argile group-hover:text-argile" id="r-ressource-cta">Lire</span>
+        </a>
+      </section>
+
+      <!-- 7 · Actions : garder une trace -->
+      <div class="flex flex-wrap gap-3 mb-16 font-sans text-sm">
+        <button id="btn-copier" class="btn-secondaire !py-2.5 !px-5">Copier mon résumé</button>
+        <button id="btn-imprimer" class="btn-secondaire !py-2.5 !px-5">Imprimer / enregistrer en PDF</button>
+        <span id="copie-ok" class="hidden self-center text-argile">Résumé copié.</span>
+      </div>
+
+      <!-- 8 · Transmission à Mouaad — après la valeur, jamais avant -->
+      <section class="rounded-panel bg-encre text-papier p-7 md:p-10" aria-labelledby="titre-transmission">
+        <span class="ligne-ecart !bg-argile-lum mb-6"></span>
+        <h2 id="titre-transmission" class="text-h2 text-papier mb-3">Poursuivre avec un regard humain ?</h2>
+        <p class="font-sans text-body-lg text-papier/75 mb-2 max-w-prose">
+          Vous n’aurez pas à raconter une nouvelle fois votre situation :
+          Mouaad recevra la synthèse que vous venez de construire.
+        </p>
+        <p class="font-sans text-sm text-papier/55 mb-8">
+          Sans engagement, sans pression — et votre lecture ci-dessus reste acquise, transmission ou non.
+        </p>
+
+        <form id="form-lead" novalidate class="grid gap-4 font-sans">
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="f-prenom" class="block text-sm text-papier/80 mb-1.5">Prénom <span aria-hidden="true">*</span></label>
+              <input id="f-prenom" name="prenom" type="text" required autocomplete="given-name"
+                class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum" />
+            </div>
+            <div>
+              <label for="f-nom" class="block text-sm text-papier/80 mb-1.5">Nom <span aria-hidden="true">*</span></label>
+              <input id="f-nom" name="nom" type="text" required autocomplete="family-name"
+                class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum" />
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="f-email" class="block text-sm text-papier/80 mb-1.5">Email <span aria-hidden="true">*</span></label>
+              <input id="f-email" name="email" type="email" required autocomplete="email" inputmode="email"
+                class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum" />
+            </div>
+            <div>
+              <label for="f-commune" class="block text-sm text-papier/80 mb-1.5">Commune du bien <span aria-hidden="true">*</span></label>
+              <input id="f-commune" name="commune" type="text" required
+                class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum" />
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="f-telephone" class="block text-sm text-papier/80 mb-1.5">Téléphone <span class="text-papier/45">(facultatif)</span></label>
+              <input id="f-telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel"
+                class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum" />
+            </div>
+            <div id="champ-annonce">
+              <label for="f-annonce" class="block text-sm text-papier/80 mb-1.5">Lien de l’annonce <span class="text-papier/45">(facultatif)</span></label>
+              <input id="f-annonce" name="annonce" type="url" inputmode="url" placeholder="https://…"
+                class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum" />
+            </div>
+          </div>
+          <div>
+            <label for="f-detail" class="block text-sm text-papier/80 mb-1.5">Un détail à ajouter ? <span class="text-papier/45">(facultatif)</span></label>
+            <textarea id="f-detail" name="detail" rows="3"
+              class="w-full rounded-lg bg-encre-2 border border-papier/20 px-4 py-3 text-base text-papier placeholder:text-papier/35 focus:border-argile-lum"></textarea>
+          </div>
+
+          <!-- Honeypot anti-spam — invisible pour les humains -->
+          <div class="hidden" aria-hidden="true">
+            <label for="f-site">Votre site web</label>
+            <input id="f-site" name="site_web" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <label class="flex items-start gap-3 text-sm text-papier/75 leading-relaxed cursor-pointer">
+            <input id="f-consentement" name="consentement" type="checkbox" required
+              class="mt-0.5 w-5 h-5 rounded accent-[#C97B52]" />
+            <span>
+              J’accepte que ma situation et mes coordonnées soient transmises à Mouaad Boullourou
+              pour qu’il me réponde. Aucune inscription à une newsletter, aucun autre usage.
+              <a href="/confidentialite" class="underline underline-offset-2 hover:text-papier">En savoir plus</a>.
+            </span>
+          </label>
+
+          <p id="form-erreur" class="hidden text-sm text-argile-lum" role="alert"></p>
+
+          <button type="submit" id="btn-envoyer" class="btn-sur-encre mt-2 w-full sm:w-auto">
+            Transmettre ma situation à Mouaad
+          </button>
+        </form>
+
+        <!-- Confirmation -->
+        <div id="form-succes" class="hidden" role="status">
+          <p class="font-display text-2xl text-papier mb-3">Votre situation a bien été transmise.</p>
+          <p class="font-sans text-[15px] text-papier/75 mb-6 max-w-prose">
+            Mouaad disposera déjà du contexte nécessaire pour vous répondre utilement.
+            Votre lecture reste affichée ci-dessus — vous pouvez la copier ou l’imprimer.
+          </p>
+          <p class="font-sans text-sm text-papier/55">
+            Besoin d’un échange direct ? <a href="tel:+33781380121" class="underline underline-offset-2 hover:text-papier">07 81 38 01 21</a>
+            · <a href="mailto:mouaad@levois.fr" class="underline underline-offset-2 hover:text-papier">mouaad@levois.fr</a>
+          </p>
+        </div>
+      </section>
+    </article>
+  </div>
+</Layout>
+
+<script>
+  import { situations, getSituation } from '../../data/situations';
+  import { computeResult, NIVEAU_LABELS } from '../../lib/engine';
+  import { getResource } from '../../data/resources';
+  import type { ComputedResult } from '../../data/types';
+
+  const $ = (id: string) => document.getElementById(id)!;
+
+  // ——— Restaurer le résultat : code partageable ?r= prioritaire, sinon session ———
+  function chargerResultat(): ComputedResult | null {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('r');
+    if (code) {
+      const [sid, ...idx] = code.split('.');
+      const situation = getSituation(sid);
+      if (situation) {
+        const reponses: Record<string, string> = {};
+        situation.questions.forEach((q, i) => {
+          const n = parseInt(idx[i] ?? 'x', 10);
+          if (!Number.isNaN(n) && q.options[n]) reponses[q.id] = q.options[n].value;
+        });
+        if (Object.keys(reponses).length > 0) return computeResult(situation, reponses);
+      }
+    }
+    try {
+      const raw = sessionStorage.getItem('levois.resultat');
+      if (raw) return JSON.parse(raw) as ComputedResult;
+    } catch {}
+    return null;
+  }
+
+  const resultat = chargerResultat();
+
+  if (!resultat) {
+    $('resultat-vide').classList.remove('hidden');
+  } else {
+    const situation = situations.find((s) => s.id === resultat.situationId)!;
+    const ressource = getResource(resultat.regle.resourceId);
+
+    $('resultat').classList.remove('hidden');
+    $('r-situation').textContent = situation.titre;
+    $('r-reformulation').textContent = resultat.reformulation || 'Vos réponses ont été prises en compte.';
+    $('r-interpretation').textContent = resultat.regle.interpretation;
+    $('r-ecart-titre').textContent = resultat.regle.titre;
+    $('r-ecart-definition').textContent = resultat.regle.definition;
+
+    const niveau = NIVEAU_LABELS[resultat.niveau];
+    $('r-niveau').textContent = niveau.label;
+    $('r-niveau-explication').textContent = niveau.explication;
+
+    if (resultat.secondePiste) {
+      $('r-seconde-piste').classList.remove('hidden');
+      $('r-seconde-titre').textContent = resultat.secondePiste.titre;
+      $('r-seconde-definition').textContent = resultat.secondePiste.definition;
+    }
+
+    $('r-limite').textContent = resultat.regle.limite;
+    $('r-action').textContent = resultat.regle.action;
+
+    ($('r-ressource-lien') as HTMLAnchorElement).href = `/ressources/${ressource.slug}`;
+    $('r-ressource-titre').textContent = ressource.titre;
+    $('r-ressource-raison').textContent = `${ressource.benefice} (${ressource.duree})`;
+    $('r-ressource-cta').textContent = resultat.regle.ctaLabel;
+
+    // Lien annonce affiché surtout quand le bien est déjà publié.
+    if (resultat.situationId === 'preparer') {
+      $('champ-annonce').classList.add('hidden');
+    }
+
+    // ——— Copier / imprimer le résumé ———
+    function resumeTexte(): string {
+      const lignes = [
+        `LEVOIS — Première lecture · ${situation.titre}`,
+        '',
+        resultat.reformulation,
+        '',
+        `Ce que vos réponses suggèrent : ${resultat.regle.interpretation}`,
+        '',
+        `Écart probable : ${resultat.regle.titre} — ${resultat.regle.definition}`,
+        `Niveau : ${niveau.label}`,
+        '',
+        `Ce que l'on ne peut pas encore conclure : ${resultat.regle.limite}`,
+        '',
+        `Prochaine décision utile : ${resultat.regle.action}`,
+        `Ressource recommandée : ${ressource.titre} — ${location.origin}/ressources/${ressource.slug}`,
+      ];
+      return lignes.join('\n');
+    }
+
+    $('btn-copier').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(resumeTexte());
+        $('copie-ok').classList.remove('hidden');
+        setTimeout(() => $('copie-ok').classList.add('hidden'), 2500);
+      } catch {}
+    });
+    $('btn-imprimer').addEventListener('click', () => window.print());
+
+    // ——— Formulaire de transmission ———
+    const form = $('form-lead') as HTMLFormElement;
+    const btnEnvoyer = $('btn-envoyer') as HTMLButtonElement;
+    let envoiEnCours = false;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (envoiEnCours) return;
+
+      const erreur = $('form-erreur');
+      erreur.classList.add('hidden');
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      envoiEnCours = true;
+      btnEnvoyer.disabled = true;
+      btnEnvoyer.textContent = 'Transmission en cours…';
+
+      const donnees = new FormData(form);
+      const corps = {
+        type: 'parcours',
+        prenom: donnees.get('prenom'),
+        nom: donnees.get('nom'),
+        email: donnees.get('email'),
+        commune: donnees.get('commune'),
+        telephone: donnees.get('telephone') || null,
+        annonce: donnees.get('annonce') || null,
+        detail: donnees.get('detail') || null,
+        site_web: donnees.get('site_web') || '',
+        contexte: {
+          situation: situation.titre,
+          date: new Date().toISOString(),
+          reponses: resultat.reponses,
+          reformulation: resultat.reformulation,
+          ecart: resultat.regle.titre,
+          niveau: niveau.label,
+          limite: resultat.regle.limite,
+          action: resultat.regle.action,
+          ressource: ressource.titre,
+          secondePiste: resultat.secondePiste?.titre ?? null,
+        },
+      };
+
+      try {
+        const rep = await fetch('/api/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(corps),
+        });
+        if (rep.ok) {
+          form.classList.add('hidden');
+          $('form-succes').classList.remove('hidden');
+        } else {
+          const data = await rep.json().catch(() => null);
+          afficherErreur(data?.message);
+        }
+      } catch {
+        afficherErreur();
+      } finally {
+        envoiEnCours = false;
+        btnEnvoyer.disabled = false;
+        btnEnvoyer.textContent = 'Transmettre ma situation à Mouaad';
+      }
+    });
+
+    function afficherErreur(message?: string) {
+      const erreur = $('form-erreur');
+      erreur.textContent =
+        message ??
+        'La transmission n’a pas abouti. Vos réponses restent disponibles sur cette page. Vous pouvez réessayer ou contacter Mouaad directement : mouaad@levois.fr · 07 81 38 01 21.';
+      erreur.classList.remove('hidden');
+    }
+  }
+</script>
+
+<style is:global>
+  @media print {
+    header, footer, #titre-transmission, #form-lead, #form-succes, .btn-primaire, .btn-secondaire { display: none !important; }
+    section[aria-labelledby='titre-transmission'] { display: none !important; }
+    body { background: white; }
+  }
+</style>
