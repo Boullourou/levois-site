@@ -59,23 +59,10 @@ const etapes = [
       <a href="/methode" class="btn-secondaire mt-6 md:mt-0 shrink-0">Page complète de la méthode</a>
     </div>
 
-    <!-- Index : les cinq noms visibles d'emblée -->
-    <ol class="method-index fade-up" aria-label="Les cinq temps de la méthode">
-      {etapes.map((e, i) => (
-        <li>
-          <a href={`#etape-${e.n}`} class="method-index-item">
-            <span class="method-index-dot" style={`background:${e.dot}`}></span>
-            <span class="method-index-n">{e.n}</span>
-            <span class="method-index-nom">{e.nom}</span>
-          </a>
-          {i < etapes.length - 1 && <span class="method-index-line" aria-hidden="true"></span>}
-        </li>
-      ))}
-    </ol>
   </div>
 
   <!-- Les cinq panneaux -->
-  <div class="max-w-page mx-auto px-edge md:px-edge-md mt-8 space-y-4 md:space-y-5">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md mt-10 md:mt-14 space-y-4 md:space-y-5">
     {etapes.map((e) => (
       <article
         id={`etape-${e.n}`}
@@ -97,26 +84,6 @@ const etapes = [
 </section>
 
 <style>
-  /* Index */
-  .method-index {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0;
-    list-style: none; margin-top: 2.5rem;
-    border-top: 1px solid #E8DFD0; border-bottom: 1px solid #E8DFD0;
-    padding: 0.9rem 0;
-  }
-  .method-index li { display: flex; align-items: center; }
-  .method-index-item {
-    display: inline-flex; align-items: center; gap: 0.55rem;
-    font-family: 'Instrument Sans', sans-serif; padding: 0.3rem 0.5rem;
-    color: #6B5D4F; transition: color 0.2s;
-  }
-  .method-index-item:hover { color: #A85638; }
-  .method-index-dot { width: 10px; height: 10px; border-radius: 999px; }
-  .method-index-n { font-size: 0.78rem; letter-spacing: 0.1em; color: #A85638; font-weight: 600; }
-  .method-index-nom { font-size: 0.98rem; color: #211C16; }
-  .method-index-line { width: 1.5rem; height: 1px; background: #D8CBB6; margin: 0 0.25rem; }
-  @media (max-width: 640px) { .method-index-line { display: none; } .method-index { gap: 0.4rem 0.5rem; } }
-
   /* Panneaux */
   .method-panel {
     background: var(--bg); color: var(--ink);
