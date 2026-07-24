@@ -80,8 +80,12 @@ import Layout from '../layouts/Layout.astro';
         <p>
           Les prix « médians » et les fourchettes sont calculés sur les ventes du même type de
           bien (maison ou appartement) dans un rayon autour de l’adresse. L’évolution est estimée
-          par une tendance sur les médianes annuelles du prix au m² (2021 à 2025), pour éviter
-          qu’une seule année atypique ne fausse la lecture.
+          par une droite de tendance (régression) sur les médianes annuelles du prix au m²
+          (2021 à 2025), pour éviter qu’une seule année atypique ne fausse la lecture.
+          Le pourcentage affiché compare la valeur de cette droite en 2025 à sa valeur en 2021
+          (année de référence fixe, identique pour toutes les adresses) ; en dessous de ±3 %,
+          les prix sont considérés comme globalement stables. Le pourcentage justifie la
+          conclusion, il n’en est pas l’essentiel.
         </p>
         <p>
           Ce que ces données <strong>ne disent pas</strong> : la valeur précise de votre bien, la
@@ -396,16 +400,31 @@ import Layout from '../layouts/Layout.astro';
       if (g.length >= 20) { xs.push(y); ys.push(median(g) as number); } // année fiable seulement
     }
     if (xs.length < 3) return null; // pas assez de recul → pas de tendance affichée
+
+    // Droite de régression (moindres carrés) sur les médianes annuelles.
+    const ANNEE_REF = 2021, ANNEE_FIN = 2025; // bornes FIXES, identiques pour toute adresse
     const n = xs.length, x0 = xs[0];
     const X = xs.map((y) => y - x0);
     const sx = X.reduce((a, b) => a + b, 0), sy = ys.reduce((a, b) => a + b, 0);
     const sxx = X.reduce((a, b) => a + b * b, 0), sxy = X.reduce((a, b, i) => a + b * ys[i], 0);
-    const slope = (n * sxy - sx * sy) / (n * sxx - sx * sx);
+    const slope = (n * sxy - sx * sy) / (n * sxx - sx * sx); // €/m² par an
     const intercept = (sy - slope * sx) / n;
-    const first = intercept, last = intercept + slope * X[X.length - 1];
-    const delta = ((last - first) / first) * 100; // % total sur la période observée
+
+    // ——— Conversion pente → pourcentage : RÈGLE UNIQUE, indépendante de l'adresse ———
+    // On évalue la droite ajustée à deux années FIXES (2021 et 2025), jamais aux
+    // années réellement présentes. Le pourcentage est la variation de la valeur
+    // ajustée entre ces deux bornes, normalisée par la valeur ajustée de l'année
+    // de RÉFÉRENCE CONSTANTE (2021) :
+    //     delta% = (ajustée(2025) − ajustée(2021)) / ajustée(2021) × 100
+    // La référence (2021) et l'amplitude (4 ans) ne dépendent jamais de l'adresse ;
+    // seule la pente, elle, reflète les données locales.
+    const yhat = (annee: number) => intercept + slope * (annee - x0);
+    const ref = yhat(ANNEE_REF);
+    const delta = ((yhat(ANNEE_FIN) - ref) / ref) * 100;
+
+    // Seuil de stabilité : |delta| < 3 % → prix globalement stables.
     const dir = delta >= 3 ? 'hausse' : delta <= -3 ? 'baisse' : 'stable';
-    return { delta, dir, anneeDebut: xs[0], anneeFin: xs[xs.length - 1] };
+    return { delta, dir, anneeDebut: ANNEE_REF, anneeFin: ANNEE_FIN };
   }
 
   // ——— Modèle : tous les indicateurs, calculés sur les vraies données ———
