@@ -10,13 +10,16 @@ export interface Props {
   image?: string;
   /** Header intégré sur fond papier (Hero) ou solide dès l'arrivée. */
   headerTransparent?: boolean;
+  /** Exclut la page de l'indexation (pages internes). */
+  noindex?: boolean;
 }
 
 const {
   title,
   description = site.description,
-  image = '/portrait-hero.webp',
+  image = '/images/hero-proprietaires-1152.webp',
   headerTransparent = false,
+  noindex = false,
 } = Astro.props;
 
 const fullTitle = title === 'Accueil' ? `LEVOIS · ${site.baseline}` : `${title} · LEVOIS`;
@@ -33,6 +36,7 @@ const ogImage = image.startsWith('http') ? image : site.url + image;
     <meta name="generator" content={Astro.generator} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="canonical" href={canonical} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />

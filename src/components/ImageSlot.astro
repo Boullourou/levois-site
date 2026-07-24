@@ -1,52 +1,49 @@
 ---
 /**
- * Emplacement d'image définitif.
- * — Si l'image est disponible : rendu <img> optimisé, sans filtre ni voile.
- * — Sinon : traitement provisoire cohérent (surface papier/argile, grain,
- *   filet d'écart) qui tient la composition jusqu'à réception du fichier.
- * Le recadrage de protection (zoom + object-position) s'applique dans les
- * deux cas — il garantit notamment que les chiffres fictifs des visuels
- * « Piloter » et « Apprendre » ne soient jamais lisibles.
+ * Emplacement d'image — pont vers ResponsiveImage.
+ * — slot avec photo : rend ResponsiveImage (AVIF/WebP, sans voile).
+ * — slot sans photo (slug null) : traitement graphique cohérent
+ *   (surface papier/argile + ligne d'écart), jamais un rectangle vide.
  */
 import { images } from '../data/images';
+import ResponsiveImage from './ResponsiveImage.astro';
 
 export interface Props {
   slot: string;
   class?: string;
-  /** Ratio CSS ex. "4/3", "16/10", "3/4" */
   ratio?: string;
+  sizes?: string;
   loading?: 'eager' | 'lazy';
+  priority?: boolean;
   rounded?: boolean;
-  /** Variante provisoire sombre (pour scènes encre) */
   dark?: boolean;
 }
 
-const { slot: slotId, class: className = '', ratio = '4/3', loading = 'lazy', rounded = true, dark = false } = Astro.props;
-const img = images[slotId];
-if (!img) throw new Error(`Slot d'image inconnu : ${slotId}`);
+const {
+  slot, class: className = '', ratio = '4/3', sizes = '100vw',
+  loading = 'lazy', priority = false, rounded = true, dark = false,
+} = Astro.props;
 
+const asset = images[slot];
+if (!asset) throw new Error(`Slot d'image inconnu : ${slot}`);
 const radius = rounded ? 'rounded-card' : '';
-const posD = img.posDesktop ?? 'center';
-const zoom = img.zoom ?? 1;
 ---
 
-{img.file ? (
-  <div class={`overflow-hidden ${radius} ${className}`} style={`aspect-ratio: ${ratio};`}>
-    <img
-      src={`/${img.file}`}
-      alt={img.alt}
-      loading={loading}
-      decoding={loading === 'eager' ? 'sync' : 'async'}
-      class="w-full h-full object-cover"
-      style={`object-position: ${posD}; ${zoom !== 1 ? `transform: scale(${zoom});` : ''}`}
-    />
-  </div>
+{asset.slug ? (
+  <ResponsiveImage
+    slot={slot}
+    ratio={ratio}
+    sizes={sizes}
+    loading={loading}
+    priority={priority}
+    class={`${radius} ${className}`}
+  />
 ) : (
   <div
     class={`slot-provisoire grain overflow-hidden ${radius} ${className} ${dark ? 'slot-sombre' : ''}`}
     style={`aspect-ratio: ${ratio};`}
     role="img"
-    aria-label={img.alt}
+    aria-label={asset.alt || 'Illustration LEVOIS'}
   >
     <span class="ligne-ecart"></span>
   </div>
@@ -58,14 +55,10 @@ const zoom = img.zoom ?? 1;
     display: flex;
     align-items: flex-end;
     padding: 1.25rem;
-    background:
-      linear-gradient(150deg, #F0E2D8 0%, #E8DFD0 45%, #DCCFBC 100%);
+    background: linear-gradient(150deg, #F0E2D8 0%, #E8DFD0 45%, #DCCFBC 100%);
   }
   .slot-provisoire.slot-sombre {
-    background:
-      linear-gradient(150deg, #3A3228 0%, #2E2820 55%, #211C16 100%);
+    background: linear-gradient(150deg, #3A3228 0%, #2E2820 55%, #211C16 100%);
   }
-  .slot-provisoire .ligne-ecart {
-    opacity: 0.7;
-  }
+  .slot-provisoire .ligne-ecart { opacity: 0.7; }
 </style>

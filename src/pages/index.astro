@@ -1,81 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ImageSlot from '../components/ImageSlot.astro';
-import { situations } from '../data/situations';
-import { resources } from '../data/resources';
-import { site } from '../config/site';
-
-const etapes = [
-  { nom: 'Comprendre', texte: 'Distinguer ce qui est observé de ce qui est supposé.' },
-  { nom: 'Aligner', texte: 'Faire coïncider le projet, le calendrier et les contraintes réelles.' },
-  { nom: 'Positionner', texte: 'Présenter le bien face aux alternatives que l’acheteur compare.' },
-  { nom: 'Piloter', texte: 'Modifier un levier à la fois et lire les réactions.' },
-  { nom: 'Apprendre', texte: 'Utiliser les signaux pour décider sans précipitation.' },
-];
-
-const methodeTeintes = ['#F7F2EA', '#F0E2D8', '#E5CDBB', '#D3A98C', '#C08157'];
+import Hero from '../components/Hero.astro';
+import SituationRail from '../components/SituationRail.astro';
+import MethodPanels from '../components/MethodPanels.astro';
+import ResourcesMosaic from '../components/ResourcesMosaic.astro';
+import ProfilesGallery from '../components/ProfilesGallery.astro';
+import TerritoryScene from '../components/TerritoryScene.astro';
+import TeamScene from '../components/TeamScene.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 ---
 
-<Layout title="Accueil" headerTransparent={true}>
+<Layout title="Accueil" headerTransparent={false}>
 
-  <!-- ═══════════ HERO — la réalité du propriétaire ═══════════ -->
-  <section class="relative -mt-16 md:-mt-[72px] pt-24 md:pt-32 pb-14 md:pb-20 overflow-hidden" aria-labelledby="hero-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="grid md:grid-cols-12 gap-8 md:gap-10 items-end">
-        <div class="md:col-span-7">
-          <p class="eyebrow mb-6">LEVOIS · Bassin chartrain</p>
-          <h1 id="hero-titre" class="text-hero text-encre">
-            Vous connaissez<br/>votre maison.
-          </h1>
-          <p class="font-display text-xl md:text-2xl text-brun italic mt-6" style="font-variation-settings: 'opsz' 30;">
-            Son histoire. Ses qualités. Ce que vous y avez investi.
-          </p>
-        </div>
-        <div class="md:col-span-5 parallax">
-          <ImageSlot slot="hero-proprietaire" ratio="4/5" loading="eager" class="shadow-[0_24px_60px_-30px_rgba(33,28,22,0.35)]" />
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- 1 · Hero — narration en trois temps -->
+  <Hero />
 
-  <!-- ═══════════ BASCULE — la lecture du marché ═══════════ -->
-  <section class="bg-encre text-papier py-16 md:py-24" aria-labelledby="bascule-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="grid md:grid-cols-12 gap-10 items-center">
-        <div class="md:col-span-6 fade-up">
-          <h2 id="bascule-titre" class="text-display text-papier">
-            Le marché, lui,<br/>la découvre en<br/><em class="text-argile-lum not-italic">quelques secondes.</em>
-          </h2>
-          <p class="font-sans text-body-lg text-papier/70 mt-6 max-w-md">
-            Un prix. Des images. Une localisation. Une promesse.
-          </p>
-        </div>
-
-        <!-- La même réalité, vue comme une annonce parmi d'autres (composition abstraite, aucune donnée fictive) -->
-        <div class="md:col-span-6 fade-up" aria-hidden="true">
-          <div class="grid grid-cols-2 gap-3 max-w-md md:ml-auto">
-            {[0, 1, 2, 3].map((i) => (
-              <div class:list={['rounded-lg p-2.5', i === 1 ? 'bg-papier ring-2 ring-argile-lum' : 'bg-encre-2']}>
-                {i === 1 ? (
-                  <ImageSlot slot="hero-proprietaire" ratio="16/10" rounded={false} class="rounded-md" />
-                ) : (
-                  <div class="rounded-md bg-encre/60 border border-papier/10" style="aspect-ratio: 16/10;"></div>
-                )}
-                <div class="mt-2 space-y-1.5 px-0.5 pb-1">
-                  <div class:list={['h-2 rounded-full w-2/5', i === 1 ? 'bg-argile' : 'bg-papier/20']}></div>
-                  <div class:list={['h-1.5 rounded-full w-4/5', i === 1 ? 'bg-encre/25' : 'bg-papier/10']}></div>
-                  <div class:list={['h-1.5 rounded-full w-3/5', i === 1 ? 'bg-encre/25' : 'bg-papier/10']}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p class="font-sans text-sm text-papier/45 mt-3 md:text-right">Votre bien, parmi les autres. C’est ici que tout se joue.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ SIGNATURE ═══════════ -->
+  <!-- 2 · Signature — respiration éditoriale (structure unique, papier) -->
   <section class="py-16 md:py-24" aria-labelledby="signature-titre">
     <div class="max-w-editorial mx-auto px-edge md:px-edge-md text-center fade-up">
       <span class="ligne-ecart mx-auto mb-8"></span>
@@ -84,127 +24,35 @@ const methodeTeintes = ['#F7F2EA', '#F0E2D8', '#E5CDBB', '#D3A98C', '#C08157'];
       </h2>
       <p class="font-sans text-body-lg text-brun mt-6 max-w-prose mx-auto">
         Cet écart ne signifie pas que votre bien a un problème. Il indique qu’une information
-        mérite d’être comprise. LEVOIS vous aide à distinguer les symptômes, les causes possibles
-        et la prochaine décision utile — avant toute demande de coordonnées.
+        mérite d’être comprise — avant toute demande de coordonnées.
       </p>
     </div>
   </section>
 
-  <!-- ═══════════ BIFURCATION — les cinq situations ═══════════ -->
-  <section id="situations" class="py-14 md:py-20 bg-papier-vif border-y border-beige/70 scroll-mt-20" aria-labelledby="situations-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="max-w-2xl mb-10 md:mb-14 fade-up">
-        <p class="eyebrow mb-4">Le point de départ</p>
-        <h2 id="situations-titre" class="text-display text-encre">Où en est votre vente aujourd’hui ?</h2>
-        <p class="font-sans text-body-lg text-brun mt-4">
-          Choisissez la situation qui se rapproche le plus de la vôtre.
-          Le parcours s’adaptera à vos réponses — trois minutes, sans coordonnées.
-        </p>
-      </div>
+  <!-- 3 · Bifurcation — rail éditorial des cinq situations -->
+  <SituationRail />
 
-      <div class="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {situations.map((s) => (
-          <a
-            href={`/situer-ma-vente?s=${s.id}`}
-            class="group carte p-6 md:p-7 flex flex-col justify-between min-h-[168px] transition-all duration-200 hover:border-argile hover:shadow-[0_16px_40px_-24px_rgba(168,86,56,0.4)] focus-visible:border-argile"
-          >
-            <div>
-              <div class="flex items-baseline justify-between mb-4">
-                <span class="font-sans text-sm text-argile font-medium tracking-widest">{s.ordinal}</span>
-                <span class="ligne-ecart !w-8 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200"></span>
-              </div>
-              <h3 class="text-h3 text-encre mb-2">{s.titre}</h3>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">{s.reconnaissance}</p>
-            </div>
-            <p class="font-sans text-[15px] text-argile font-medium mt-5 inline-flex items-center gap-1.5">
-              Commencer
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" class="transition-transform duration-200 group-hover:translate-x-0.5">
-                <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </p>
-          </a>
-        ))}
+  <!-- 4 · Méthode — cinq panneaux distincts, progression chromatique -->
+  <MethodPanels />
 
-        <div class="carte p-6 md:p-7 bg-argile-pale/50 border-dashed flex flex-col justify-center min-h-[168px]">
-          <p class="font-sans text-[15px] text-brun leading-relaxed">
-            Aucune de ces situations ne correspond exactement ?
-            Le parcours reste utile — choisissez la plus proche, ou
-            <a href="/contact" class="text-argile underline underline-offset-2 hover:text-encre">écrivez directement à Mouaad</a>.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- 5 · Quatre profils illustratifs (galerie asymétrique honnête) -->
+  <ProfilesGallery />
 
-  <!-- ═══════════ MÉTHODE — le Système des Écarts ═══════════ -->
-  <section class="py-section md:py-section-md" aria-labelledby="methode-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="md:flex items-end justify-between gap-10 mb-10 md:mb-14 fade-up">
-        <div class="max-w-xl">
-          <p class="eyebrow mb-4">La méthode</p>
-          <h2 id="methode-titre" class="text-display text-encre">Le Système des Écarts</h2>
-          <p class="font-sans text-body-lg text-brun mt-4">
-            Cinq temps pour passer de l’impression au signal, puis du signal à la décision.
-            Une progression — pas une recette automatique.
-          </p>
-        </div>
-        <a href="/methode" class="btn-secondaire mt-6 md:mt-0 shrink-0">Découvrir le Système des Écarts</a>
-      </div>
+  <!-- 6 · Ressources — mosaïque -->
+  <ResourcesMosaic />
 
-      <ol class="grid gap-3 md:grid-cols-5 list-none">
-        {etapes.map((e, i) => (
-          <li class="fade-up rounded-card overflow-hidden border border-beige/80" style={`transition-delay: ${i * 60}ms`}>
-            <div class="h-1.5" style={`background: ${methodeTeintes[i]};`}></div>
-            <div class="p-5 bg-papier-vif h-full">
-              <p class="font-sans text-xs text-brun/70 tracking-widest mb-3">ÉTAPE {i + 1}</p>
-              <h3 class="font-display text-xl text-encre mb-2">{e.nom}</h3>
-              <p class="font-sans text-sm text-brun leading-relaxed">{e.texte}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <!-- ═══════════ RESSOURCES ═══════════ -->
-  <section class="py-section md:py-section-md bg-papier-vif border-y border-beige/70" aria-labelledby="ressources-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="max-w-xl mb-10 md:mb-14 fade-up">
-        <p class="eyebrow mb-4">Ressources gratuites</p>
-        <h2 id="ressources-titre" class="text-display text-encre">Comprendre avant d’ajuster.</h2>
-        <p class="font-sans text-body-lg text-brun mt-4">
-          Six ressources construites autour des questions réelles des propriétaires.
-          Sans inscription, sans contrepartie.
-        </p>
-      </div>
-
-      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {resources.map((r) => (
-          <a href={`/ressources/${r.slug}`} class="group carte p-6 flex flex-col transition-all duration-200 hover:border-argile hover:shadow-[0_16px_40px_-24px_rgba(168,86,56,0.4)]">
-            <p class="font-sans text-sm text-argile mb-3">{r.question}</p>
-            <h3 class="font-display text-xl text-encre mb-2">{r.titre}</h3>
-            <p class="font-sans text-[15px] text-brun leading-relaxed flex-1">{r.benefice}</p>
-            <p class="font-sans text-sm text-brun/70 mt-5 flex items-center justify-between">
-              <span>{r.duree}</span>
-              <span class="text-argile font-medium group-hover:underline underline-offset-2">{r.cta}</span>
-            </p>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════ ENGAGEMENTS / CONFIANCE ═══════════ -->
-  <section class="py-section md:py-section-md" aria-labelledby="engagements-titre">
+  <!-- 7 · Engagements — liste manifeste sur encre (structure unique) -->
+  <section class="py-section md:py-section-md bg-encre text-papier" aria-labelledby="engagements-titre">
     <div class="max-w-page mx-auto px-edge md:px-edge-md grid md:grid-cols-12 gap-10">
       <div class="md:col-span-5 fade-up">
-        <p class="eyebrow mb-4">Engagements</p>
-        <h2 id="engagements-titre" class="text-display text-encre">Ce que LEVOIS<br/>ne fera jamais.</h2>
-        <p class="font-sans text-body-lg text-brun mt-4 max-w-md">
-          La crédibilité ne se décrète pas. Elle se construit par la précision — et par ce qu’on refuse de faire.
+        <p class="eyebrow !text-argile-lum mb-4">Engagements</p>
+        <h2 id="engagements-titre" class="text-display text-papier">Ce que LEVOIS<br/>ne fera jamais.</h2>
+        <p class="font-sans text-body-lg text-papier/70 mt-4 max-w-md">
+          La crédibilité ne se décrète pas. Elle se construit par la précision —
+          et par ce qu’on refuse de faire.
         </p>
       </div>
-      <ul class="md:col-span-7 grid sm:grid-cols-2 gap-x-8 gap-y-5 font-sans text-[15px] text-encre/85 fade-up">
+      <ul class="md:col-span-7 grid sm:grid-cols-2 gap-x-8 gap-y-6 font-sans text-[15px] text-papier/85 fade-up">
         {[
           'Aucune estimation automatique : un prix sérieux se construit, il ne se génère pas.',
           'Aucune donnée inventée : pas de compteurs, pas de faux pourcentages, pas de faux avis.',
@@ -214,7 +62,7 @@ const methodeTeintes = ['#F7F2EA', '#F0E2D8', '#E5CDBB', '#D3A98C', '#C08157'];
           'Votre situation n’est transmise à Mouaad que si vous le demandez explicitement.',
         ].map((t) => (
           <li class="flex gap-3">
-            <span class="ligne-ecart !w-5 mt-3 shrink-0"></span>
+            <span class="ligne-ecart !bg-argile-lum !w-5 mt-3 shrink-0"></span>
             <span class="leading-relaxed">{t}</span>
           </li>
         ))}
@@ -222,94 +70,29 @@ const methodeTeintes = ['#F7F2EA', '#F0E2D8', '#E5CDBB', '#D3A98C', '#C08157'];
     </div>
   </section>
 
-  <!-- ═══════════ TERRITOIRE ═══════════ -->
-  <section class="py-section md:py-section-md bg-encre text-papier" aria-labelledby="territoire-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md grid md:grid-cols-12 gap-10 items-center">
-      <div class="md:col-span-6 fade-up">
-        <p class="eyebrow mb-4">Le terrain</p>
-        <h2 id="territoire-titre" class="text-display text-papier">Un bien ne se compare pas<br/>à un marché abstrait.</h2>
-        <p class="font-sans text-body-lg text-papier/70 mt-5 max-w-lg">
-          Il se compare aux alternatives que les acheteurs regardent dans le même secteur,
-          au même moment et au même budget. LEVOIS lit le marché là où il existe vraiment :
-        </p>
-        <ul class="mt-6 flex flex-wrap gap-2.5 font-sans text-[15px]">
-          {site.communes.map((c) => (
-            <li class="border border-papier/25 rounded-full px-4 py-1.5 text-papier/85">{c}</li>
-          ))}
-        </ul>
-      </div>
-      <div class="md:col-span-6 fade-up">
-        <ImageSlot slot="territoire-rue" ratio="16/10" dark={true} />
-      </div>
-    </div>
-  </section>
+  <!-- 8 · Territoire — scène panoramique -->
+  <TerritoryScene />
 
-  <!-- ═══════════ LÉA PUIS MOUAAD ═══════════ -->
-  <section class="py-section md:py-section-md" aria-labelledby="humains-titre">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <h2 id="humains-titre" class="sr-only">Les personnes derrière LEVOIS</h2>
+  <!-- 9 · Les visages de LEVOIS -->
+  <TeamScene />
 
-      <div class="grid md:grid-cols-2 gap-6 md:gap-8">
-        <!-- Léa — la voix des contenus -->
-        <article class="carte p-7 md:p-9 fade-up">
-          <div class="flex items-start gap-5">
-            <ImageSlot slot="lea-portrait" ratio="1/1" class="w-20 md:w-24 shrink-0 !rounded-full" />
-            <div>
-              <p class="eyebrow mb-2">Les contenus</p>
-              <h3 class="font-display text-2xl text-encre">Léa</h3>
-            </div>
-          </div>
-          <p class="font-sans text-[15px] text-brun leading-relaxed mt-5">{site.lea.role}</p>
-          <a href="/ressources" class="font-sans text-[15px] text-argile font-medium mt-5 inline-block hover:underline underline-offset-2">
-            Découvrir les ressources
-          </a>
-        </article>
-
-        <!-- Mouaad — la continuité humaine -->
-        <article class="carte p-7 md:p-9 bg-argile-pale/40 fade-up">
-          <div class="flex items-start gap-5">
-            <ImageSlot slot="mouaad-portrait" ratio="1/1" class="w-20 md:w-24 shrink-0 !rounded-full" />
-            <div>
-              <p class="eyebrow mb-2">L’accompagnement</p>
-              <h3 class="font-display text-2xl text-encre">{site.mouaad.nom}</h3>
-              <p class="font-sans text-sm text-brun mt-1">{site.mouaad.titre}</p>
-            </div>
-          </div>
-          <blockquote class="font-display text-lg text-encre/90 italic mt-5 leading-relaxed" style="font-variation-settings: 'opsz' 30;">
-            « J’utilise la méthode LEVOIS pour comprendre le bien, le projet du propriétaire
-            et les réactions du marché avant de recommander une décision. »
-          </blockquote>
-          <p class="font-sans text-sm text-brun mt-4">{site.mouaad.signature}</p>
-          <a href="/mouaad" class="font-sans text-[15px] text-argile font-medium mt-5 inline-block hover:underline underline-offset-2">
-            Faire connaissance
-          </a>
-        </article>
-      </div>
-
-      <p class="font-sans text-sm text-brun/80 text-center mt-8 fade-up">
-        Mouaad exerce comme conseiller immobilier indépendant au sein du réseau SAFTI.
-        LEVOIS est sa méthode de lecture, de pédagogie et d’accompagnement.
-      </p>
-    </div>
-  </section>
-
-  <!-- ═══════════ CTA FINAL ═══════════ -->
+  <!-- 10 · CTA final — scène photographique -->
   <section class="pb-4" aria-labelledby="final-titre">
     <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="rounded-panel bg-papier-vif border border-beige overflow-hidden grid md:grid-cols-12">
-        <div class="md:col-span-7 p-8 md:p-14 flex flex-col justify-center fade-up">
+      <div class="rounded-panel overflow-hidden grid md:grid-cols-2 bg-papier-vif border border-beige">
+        <div class="p-8 md:p-14 flex flex-col justify-center fade-up">
           <span class="ligne-ecart mb-7"></span>
           <h2 id="final-titre" class="text-display text-encre">
-            Vous n’avez pas besoin de tout changer.<br/>
-            <em class="text-argile">Vous avez besoin de savoir quoi regarder en premier.</em>
+            Vous n’avez pas besoin de tout changer.
+            <em class="text-argile block mt-2">Vous avez besoin de savoir quoi regarder en premier.</em>
           </h2>
           <div class="flex flex-wrap gap-3 mt-8">
             <a href="/situer-ma-vente" class="btn-primaire">Situer ma vente</a>
             <a href="/contact" class="btn-secondaire">Échanger avec Mouaad</a>
           </div>
         </div>
-        <div class="md:col-span-5 min-h-[240px]">
-          <ImageSlot slot="conclusion" ratio="4/3" rounded={false} class="h-full !aspect-auto" />
+        <div class="min-h-[280px] md:min-h-0">
+          <ResponsiveImage slot="hero-dialogue" ratio="none" sizes="(min-width:768px) 50vw, 100vw" class="w-full h-full" />
         </div>
       </div>
     </div>

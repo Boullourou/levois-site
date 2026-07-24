@@ -1,0 +1,156 @@
+---
+/**
+ * Le Système des Écarts — cinq panneaux éditoriaux distincts.
+ *
+ * Volontairement différent du sélecteur de situations : ici, pile verticale
+ * de grands panneaux pleine largeur, mise en page alternée (image gauche /
+ * droite / bande), et progression chromatique papier → sable → argile →
+ * cuivre → encre. Un bandeau d'index montre d'emblée les cinq noms.
+ * Aucun contenu n'est masqué derrière une animation ; le sens ne dépend
+ * pas du mouvement.
+ */
+import ResponsiveImage from './ResponsiveImage.astro';
+
+const etapes = [
+  {
+    n: '01', nom: 'Comprendre', slot: 'methode-comprendre', layout: 'image-droite',
+    bg: '#F7F2EA', ink: '#211C16', sub: '#6B5D4F', accent: '#A85638', dot: '#D9C9A8',
+    resume: 'Distinguer ce qui est observé de ce qui est supposé.',
+    texte: 'Un fait : « l’annonce reçoit des vues mais pas de contacts ». Une supposition : « le prix est trop élevé ». La méthode commence par séparer les deux — parce que toutes les mauvaises décisions naissent de leur confusion.',
+  },
+  {
+    n: '02', nom: 'Aligner', slot: 'methode-aligner', layout: 'image-gauche',
+    bg: '#ECDFC8', ink: '#2C2413', sub: '#6B5A3B', accent: '#A8752F', dot: '#C9A85E',
+    resume: 'Faire coïncider le projet, le calendrier et les contraintes réelles.',
+    texte: 'Une vente sert un projet de vie. Quand le projet est flou ou que le calendrier a changé, aucun réglage d’annonce ne compense. L’alignement précède le positionnement.',
+  },
+  {
+    n: '03', nom: 'Positionner', slot: 'methode-positionner', layout: 'image-bande',
+    bg: '#E4CDB8', ink: '#38251A', sub: '#7A5540', accent: '#A85638', dot: '#C98A5E',
+    resume: 'Présenter le bien face aux alternatives que l’acheteur compare.',
+    texte: 'Les acheteurs voient votre annonce entre cinq et huit autres, au même budget, au même moment. C’est cette comparaison réelle qui définit la position — jamais une moyenne abstraite.',
+  },
+  {
+    n: '04', nom: 'Piloter', slot: 'methode-piloter', layout: 'image-gauche-portrait',
+    bg: '#C67B4A', ink: '#FBF3EC', sub: 'rgba(251,243,236,0.82)', accent: '#FBE3D0', dot: '#8A4E29',
+    resume: 'Modifier un levier à la fois et lire les réactions.',
+    texte: 'Changer le prix, les photos et le texte en même temps, c’est renoncer à comprendre. Le pilotage, c’est la discipline du levier unique : un changement, une période d’observation, une lecture.',
+  },
+  {
+    n: '05', nom: 'Apprendre', slot: 'methode-apprendre', layout: 'image-droite-portrait',
+    bg: '#221C15', ink: '#F5EFE6', sub: 'rgba(245,239,230,0.75)', accent: '#C97B52', dot: '#6B5D4F',
+    resume: 'Utiliser les signaux pour décider sans précipitation.',
+    texte: 'Chaque période d’observation produit un enseignement — même le silence. La décision suivante se construit sur ces acquis, pas sur l’inquiétude du moment ni sur l’avis le plus fort de l’entourage.',
+  },
+];
+---
+
+<section id="methode" class="py-section md:py-section-md" aria-labelledby="methode-titre">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md">
+    <div class="md:flex items-end justify-between gap-10 mb-8 fade-up">
+      <div class="max-w-xl">
+        <p class="eyebrow mb-4">La méthode</p>
+        <h2 id="methode-titre" class="text-display text-encre">Le Système des Écarts</h2>
+        <p class="font-sans text-body-lg text-brun mt-4">
+          Cinq temps pour passer de l’impression au signal, puis du signal à la décision.
+          Une progression — pas une recette automatique.
+        </p>
+      </div>
+      <a href="/methode" class="btn-secondaire mt-6 md:mt-0 shrink-0">Page complète de la méthode</a>
+    </div>
+
+    <!-- Index : les cinq noms visibles d'emblée -->
+    <ol class="method-index fade-up" aria-label="Les cinq temps de la méthode">
+      {etapes.map((e, i) => (
+        <li>
+          <a href={`#etape-${e.n}`} class="method-index-item">
+            <span class="method-index-dot" style={`background:${e.dot}`}></span>
+            <span class="method-index-n">{e.n}</span>
+            <span class="method-index-nom">{e.nom}</span>
+          </a>
+          {i < etapes.length - 1 && <span class="method-index-line" aria-hidden="true"></span>}
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <!-- Les cinq panneaux -->
+  <div class="max-w-page mx-auto px-edge md:px-edge-md mt-8 space-y-4 md:space-y-5">
+    {etapes.map((e) => (
+      <article
+        id={`etape-${e.n}`}
+        class={`method-panel ${e.layout}`}
+        style={`--bg:${e.bg};--ink:${e.ink};--sub:${e.sub};--accent:${e.accent};`}
+      >
+        <div class="method-media">
+          <ResponsiveImage slot={e.slot} ratio="none" sizes="(min-width:768px) 44vw, 100vw" class="method-img" />
+        </div>
+        <div class="method-copy">
+          <p class="method-n">{e.n} — Temps {e.n.replace('0', '')}</p>
+          <h3 class="method-nom">{e.nom}</h3>
+          <p class="method-resume">{e.resume}</p>
+          <p class="method-texte">{e.texte}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Index */
+  .method-index {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0;
+    list-style: none; margin-top: 2.5rem;
+    border-top: 1px solid #E8DFD0; border-bottom: 1px solid #E8DFD0;
+    padding: 0.9rem 0;
+  }
+  .method-index li { display: flex; align-items: center; }
+  .method-index-item {
+    display: inline-flex; align-items: center; gap: 0.55rem;
+    font-family: 'Instrument Sans', sans-serif; padding: 0.3rem 0.5rem;
+    color: #6B5D4F; transition: color 0.2s;
+  }
+  .method-index-item:hover { color: #A85638; }
+  .method-index-dot { width: 10px; height: 10px; border-radius: 999px; }
+  .method-index-n { font-size: 0.78rem; letter-spacing: 0.1em; color: #A85638; font-weight: 600; }
+  .method-index-nom { font-size: 0.98rem; color: #211C16; }
+  .method-index-line { width: 1.5rem; height: 1px; background: #D8CBB6; margin: 0 0.25rem; }
+  @media (max-width: 640px) { .method-index-line { display: none; } .method-index { gap: 0.4rem 0.5rem; } }
+
+  /* Panneaux */
+  .method-panel {
+    background: var(--bg); color: var(--ink);
+    border-radius: 28px; overflow: hidden;
+    display: grid; grid-template-columns: 1fr;
+  }
+  .method-media { position: relative; min-height: 240px; }
+  :global(.method-img) { width: 100%; height: 100%; min-height: 240px; }
+  :global(.method-media .ri) { height: 100%; }
+  .method-copy { padding: 2rem 1.5rem 2.25rem; display: flex; flex-direction: column; justify-content: center; }
+  .method-n { font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; letter-spacing: 0.14em; color: var(--accent); font-weight: 600; margin-bottom: 0.9rem; text-transform: uppercase; }
+  .method-nom { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.05; color: var(--ink); margin-bottom: 0.9rem; }
+  .method-resume { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.15rem; line-height: 1.4; color: var(--ink); opacity: 0.92; margin-bottom: 1rem; }
+  .method-texte { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; line-height: 1.6; color: var(--sub); max-width: 42ch; }
+
+  @media (min-width: 768px) {
+    .method-panel { grid-template-columns: 44% 56%; align-items: stretch; min-height: 400px; }
+    .method-copy { padding: 3rem 3.25rem; }
+    .method-media { min-height: 400px; }
+    :global(.method-img) { min-height: 400px; }
+
+    .image-gauche .method-media, .image-gauche-portrait .method-media { order: 0; }
+    .image-gauche .method-copy, .image-gauche-portrait .method-copy { order: 1; }
+    .image-droite .method-media, .image-droite-portrait .method-media { order: 1; }
+    .image-droite .method-copy, .image-droite-portrait .method-copy { order: 0; }
+
+    /* Bande fine (Positionner) : image en haut pleine largeur, texte dessous */
+    .image-bande { grid-template-columns: 1fr; }
+    .image-bande .method-media { min-height: 260px; }
+    .image-bande :global(.method-img) { min-height: 260px; }
+    .image-bande .method-copy { padding-top: 2rem; }
+
+    /* Portraits (Piloter/Apprendre) : colonne image plus étroite pour ne pas sur-zoomer */
+    .image-gauche-portrait { grid-template-columns: 34% 66%; }
+    .image-droite-portrait { grid-template-columns: 66% 34%; }
+  }
+</style>

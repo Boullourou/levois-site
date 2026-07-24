@@ -1,0 +1,79 @@
+---
+/**
+ * Image responsive LEVOIS — AVIF + WebP, srcset/sizes, dimensions intrinsèques
+ * (aucun saut de mise en page), object-position desktop/mobile documenté.
+ *
+ * Aucune désaturation, aucun voile : l'image est servie fidèle à ses couleurs.
+ * Les recadrages de protection (chiffres fictifs) sont déjà appliqués en amont
+ * dans le pipeline — cf. src/data/images.ts et /public/images.
+ */
+import { images } from '../data/images';
+
+export interface Props {
+  slot: string;
+  /** attribut sizes (largeur d'affichage selon viewport) */
+  sizes?: string;
+  class?: string;
+  /** ratio CSS forcé (sinon ratio intrinsèque). ex: "4/5" */
+  ratio?: string;
+  loading?: 'eager' | 'lazy';
+  priority?: boolean;
+}
+
+const {
+  slot,
+  sizes = '100vw',
+  class: className = '',
+  ratio,
+  loading = 'lazy',
+  priority = false,
+} = Astro.props;
+
+const asset = images[slot];
+if (!asset) throw new Error(`Slot image inconnu : ${slot}`);
+if (!asset.slug) throw new Error(`Slot ${slot} sans fichier — utiliser un traitement graphique, pas ResponsiveImage.`);
+
+const base = `/images/${asset.slug}`;
+const srcset = (ext: string) => asset.widths.map((w) => `${base}-${w}.${ext} ${w}w`).join(', ');
+const fallbackW = asset.widths[Math.min(1, asset.widths.length - 1)];
+const posD = asset.posDesktop ?? 'center';
+const posM = asset.posMobile ?? posD;
+const fill = ratio === 'none';
+const aspect = ratio && !fill ? ratio : `${asset.w} / ${asset.h}`;
+const styleAttr = fill
+  ? `--pos-d:${posD};--pos-m:${posM};height:100%;`
+  : `--pos-d:${posD};--pos-m:${posM};aspect-ratio:${aspect};`;
+---
+
+<picture class={`ri ${className}`} style={styleAttr}>
+  <source type="image/avif" srcset={srcset('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={srcset('webp')} sizes={sizes} />
+  <img
+    src={`${base}-${fallbackW}.webp`}
+    alt={asset.alt}
+    width={asset.w}
+    height={asset.h}
+    loading={priority ? 'eager' : loading}
+    decoding={priority ? 'sync' : 'async'}
+    fetchpriority={priority ? 'high' : 'auto'}
+  />
+</picture>
+
+<style>
+  .ri {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(150deg, #F0E2D8, #E8DFD0);
+  }
+  .ri img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos-m);
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .ri img { object-position: var(--pos-d); }
+  }
+</style>

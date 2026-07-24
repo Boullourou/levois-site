@@ -1,0 +1,217 @@
+---
+/**
+ * Hero LEVOIS — narration en trois temps.
+ *
+ * Desktop (JS + mouvement autorisé) : scène sticky 100svh, piste de 300svh.
+ * Le scroll naturel fait passer les trois temps en fondu croisé + légère
+ * échelle (≤ 1.03). Chaque temps est une composition à deux colonnes :
+ * une colonne de texte stable + la photographie. Le texte ne recouvre
+ * jamais un visage. Repère 01/03 + ligne de progression.
+ *
+ * Sans JS, sur mobile, ou avec prefers-reduced-motion : les trois temps
+ * deviennent trois scènes verticales lisibles en succession, sans sticky,
+ * sans zoom, sans translation. La valeur est identique.
+ */
+import ResponsiveImage from './ResponsiveImage.astro';
+
+const scenes = [
+  {
+    n: '01',
+    slot: 'hero-proprietaires',
+    theme: 'clair',
+    titre: 'Vous connaissez votre maison.',
+    texte: 'Vous la voyez avec votre histoire, vos repères, vos souvenirs et vos certitudes.',
+  },
+  {
+    n: '02',
+    slot: 'hero-marche',
+    theme: 'sombre',
+    titre: 'Le marché la découvre en quelques secondes.',
+    texte: 'L’acheteur compare, trie et décide à partir de ce qu’il perçoit immédiatement.',
+  },
+  {
+    n: '03',
+    slot: 'hero-dialogue',
+    theme: 'argile',
+    titre: 'LEVOIS fait dialoguer ces deux lectures.',
+    texte: 'Nous révélons l’écart entre votre perception du bien et la manière dont le marché le reçoit.',
+  },
+];
+---
+
+<section class="hero" data-hero aria-label="Présentation LEVOIS en trois temps">
+  <div class="hero-track">
+    <div class="hero-stage">
+      {scenes.map((s, i) => (
+        <article
+          class={`hero-scene hero-${s.theme}`}
+          data-scene={i}
+          aria-hidden={i === 0 ? 'false' : 'true'}
+        >
+          <div class="hero-copy">
+            <div class="hero-copy-inner">
+              <p class="hero-index"><span class="hero-index-n">{s.n}</span> <span class="hero-index-tot">/ 03</span></p>
+              <h1 class="hero-titre">{s.titre}</h1>
+              <p class="hero-texte">{s.texte}</p>
+              {i === 2 && (
+                <div class="hero-cta">
+                  <a href="/situer-ma-vente" class="btn-primaire">Situer ma vente</a>
+                  <a href="#methode" class="btn-secondaire">Comprendre le principe</a>
+                </div>
+              )}
+            </div>
+          </div>
+          <div class="hero-media">
+            <ResponsiveImage
+              slot={s.slot}
+              ratio="none"
+              priority={i === 0}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              sizes="(min-width: 768px) 60vw, 100vw"
+              class="hero-img"
+            />
+          </div>
+        </article>
+      ))}
+
+      <!-- Repère de progression (desktop sticky uniquement) -->
+      <div class="hero-progress" aria-hidden="true">
+        <span class="hero-progress-label" data-progress-label>01 / 03</span>
+        <span class="hero-progress-track"><span class="hero-progress-fill" data-progress-fill></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ——— Base (sans JS / mobile / reduced-motion) : 3 scènes verticales ——— */
+  .hero-scene {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: 68svh;
+  }
+  .hero-copy {
+    display: flex;
+    align-items: center;
+    padding: 3rem 1.25rem;
+  }
+  .hero-copy-inner { max-width: 34rem; }
+  .hero-media { position: relative; min-height: 46svh; }
+  :global(.hero-img) { width: 100%; height: 100%; }
+  :global(.hero-media .ri) { height: 100%; border-radius: 0; }
+
+  .hero-index { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; letter-spacing: 0.08em; margin-bottom: 1.25rem; }
+  .hero-index-n { color: #A85638; font-weight: 600; }
+  .hero-index-tot { color: #6B5D4F; }
+  .hero-titre {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    line-height: 1.04; letter-spacing: -0.02em;
+    color: #211C16;
+  }
+  .hero-texte {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    line-height: 1.6; color: #6B5D4F; margin-top: 1.25rem;
+  }
+  .hero-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+
+  .hero-clair .hero-copy { background: #F7F2EA; }
+  .hero-sombre .hero-copy { background: #211C16; }
+  .hero-sombre .hero-titre { color: #F7F2EA; }
+  .hero-sombre .hero-texte { color: rgba(247,242,234,0.72); }
+  .hero-sombre .hero-index-tot { color: rgba(247,242,234,0.55); }
+  .hero-sombre .hero-index-n { color: #C97B52; }
+  .hero-argile .hero-copy { background: #F0E2D8; }
+
+  .hero-progress { display: none; }
+
+  /* ——— Desktop enrichi (classe .hero-on posée par JS) ——— */
+  @media (min-width: 768px) {
+    .hero-scene {
+      grid-template-columns: 42% 58%;
+      min-height: 100svh;
+      align-items: stretch;
+    }
+    .hero-copy { padding: 2rem 3.5rem; }
+    .hero-media { min-height: 100svh; }
+  }
+
+  :global(.hero-on) .hero-track { height: 300svh; }
+  :global(.hero-on) .hero-stage {
+    position: sticky; top: 0; height: 100svh; overflow: hidden;
+  }
+  :global(.hero-on) .hero-scene {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.15s linear;
+    will-change: opacity;
+  }
+  :global(.hero-on) .hero-scene[data-active='true'] { opacity: 1; }
+  :global(.hero-on) :global(.hero-img) {
+    transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  :global(.hero-on) .hero-progress {
+    display: flex; align-items: center; gap: 0.9rem;
+    position: absolute; left: 3.5rem; bottom: 2rem; z-index: 5;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; letter-spacing: 0.08em;
+    color: #6B5D4F; mix-blend-mode: normal;
+  }
+  .hero-progress-track {
+    display: inline-block; width: 120px; height: 2px; background: rgba(107,93,79,0.25); position: relative; border-radius: 2px;
+  }
+  .hero-progress-fill {
+    position: absolute; left: 0; top: 0; height: 100%; width: 33%;
+    background: #A85638; border-radius: 2px; transition: width 0.2s linear;
+  }
+</style>
+
+<script>
+  const section = document.querySelector<HTMLElement>('[data-hero]');
+  if (section) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const desktop = window.matchMedia('(min-width: 768px)').matches;
+    const scenes = Array.from(section.querySelectorAll<HTMLElement>('.hero-scene'));
+    const label = section.querySelector<HTMLElement>('[data-progress-label]');
+    const fill = section.querySelector<HTMLElement>('[data-progress-fill]');
+
+    if (desktop && !reduced && scenes.length) {
+      section.classList.add('hero-on');
+      const track = section.querySelector<HTMLElement>('.hero-track')!;
+
+      let ticking = false;
+      const update = () => {
+        ticking = false;
+        const rect = track.getBoundingClientRect();
+        const total = track.offsetHeight - window.innerHeight;
+        const scrolled = Math.min(Math.max(-rect.top, 0), total);
+        const p = total > 0 ? scrolled / total : 0; // 0..1
+        const idx = Math.min(scenes.length - 1, Math.floor(p * scenes.length + 0.0001));
+        scenes.forEach((sc, i) => {
+          const active = i === idx;
+          sc.setAttribute('data-active', active ? 'true' : 'false');
+          sc.setAttribute('aria-hidden', active ? 'false' : 'true');
+          const img = sc.querySelector<HTMLElement>('.hero-img img') || sc.querySelector<HTMLElement>('.hero-img');
+          if (img) img.style.transform = active ? 'scale(1.03)' : 'scale(1)';
+        });
+        if (label) label.textContent = `0${idx + 1} / 03`;
+        if (fill) fill.style.width = `${((idx + 1) / scenes.length) * 100}%`;
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      update();
+    } else {
+      // Fallback : révélation douce de chaque scène au viewport.
+      scenes.forEach((sc) => sc.setAttribute('data-active', 'true'));
+      if (!reduced) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => { if (e.isIntersecting) { (e.target as HTMLElement).style.opacity = '1'; io.unobserve(e.target); } }),
+          { threshold: 0.15 }
+        );
+        scenes.forEach((sc) => { sc.style.opacity = '0'; sc.style.transition = 'opacity 0.7s cubic-bezier(0.22,1,0.36,1)'; io.observe(sc); });
+      }
+    }
+  }
+</script>

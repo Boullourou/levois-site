@@ -1,0 +1,74 @@
+---
+/**
+ * Territoire — scène panoramique du bassin chartrain.
+ *
+ * La carte aérienne occupe une grande scène ; les communes se révèlent au
+ * viewport (sans inventer de données). La rue de Lèves apporte ensuite la
+ * matière humaine et architecturale — son personnage n'est jamais nommé ni
+ * présenté comme Mouaad.
+ */
+import ResponsiveImage from './ResponsiveImage.astro';
+import { site } from '../config/site';
+---
+
+<section class="territoire" aria-labelledby="territoire-titre">
+  <!-- Grande scène panoramique -->
+  <div class="territoire-pano">
+    <div class="territoire-media">
+      <ResponsiveImage slot="territoire-carte" ratio="none" sizes="100vw" class="w-full h-full" />
+    </div>
+    <div class="territoire-overlay">
+      <div class="max-w-page mx-auto px-edge md:px-edge-md w-full">
+        <p class="eyebrow !text-argile-lum mb-4 fade-up">Le terrain</p>
+        <h2 id="territoire-titre" class="text-display text-papier max-w-2xl fade-up">
+          Un bien ne se compare pas<br/>à un marché abstrait.
+        </h2>
+        <p class="font-sans text-body-lg text-papier/80 max-w-lg mt-5 fade-up">
+          Il se compare aux alternatives visibles dans le même secteur, au même moment
+          et au même budget. LEVOIS lit le marché là où il existe vraiment.
+        </p>
+        <ul class="territoire-communes fade-up" aria-label="Communes couvertes">
+          {site.communes.map((c, i) => (
+            <li style={`transition-delay:${i * 70}ms`}>{c}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bande basse : rue de Lèves + texte -->
+  <div class="max-w-page mx-auto px-edge md:px-edge-md py-section grid md:grid-cols-12 gap-8 md:gap-10 items-center">
+    <div class="md:col-span-7 fade-up">
+      <ResponsiveImage slot="territoire-rue" ratio="16/10" sizes="(min-width:768px) 58vw, 100vw" class="rounded-panel" />
+    </div>
+    <div class="md:col-span-5 fade-up">
+      <h3 class="text-h3 text-encre mb-3">Une matière locale, réelle.</h3>
+      <p class="font-sans text-body-lg text-brun leading-relaxed">
+        De Lèves à Chartres, des rues pavées aux quartiers récents : la connaissance
+        du terrain n’est pas un argument, c’est la condition d’une lecture juste.
+        Chaque commune a ses acheteurs, ses rythmes et ses points de comparaison.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .territoire-pano { position: relative; min-height: 62svh; display: flex; align-items: center; overflow: hidden; }
+  @media (min-width: 768px) { .territoire-pano { min-height: 78svh; } }
+  .territoire-media { position: absolute; inset: 0; z-index: 0; }
+  .territoire-media :global(.ri) { width: 100%; height: 100%; }
+  /* Dégradé de lisibilité LOCAL au texte (bas-gauche), pas un voile permanent sur toute l'image */
+  .territoire-overlay {
+    position: relative; z-index: 2; width: 100%; padding: 3rem 0;
+    background: linear-gradient(90deg, rgba(20,16,12,0.68) 0%, rgba(20,16,12,0.38) 42%, rgba(20,16,12,0) 72%);
+  }
+  @media (max-width: 767px) {
+    .territoire-overlay { background: linear-gradient(0deg, rgba(20,16,12,0.78) 0%, rgba(20,16,12,0.45) 55%, rgba(20,16,12,0.15) 100%); padding: 2.5rem 0; }
+  }
+  .territoire-communes { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.75rem; }
+  .territoire-communes li {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem;
+    color: #F7F2EA; border: 1px solid rgba(247,242,234,0.4); border-radius: 999px;
+    padding: 0.4rem 1rem; background: rgba(20,16,12,0.25);
+  }
+</style>
