@@ -286,11 +286,16 @@ import Layout from '../layouts/Layout.astro';
   const distanceLisible = (m: number) =>
     m < 1000 ? `à environ ${Math.round(m / 50) * 50} m` : `à environ ${(m / 1000).toFixed(1).replace('.', ',')} km`;
 
+  // Une mutation multi-lots regroupe plusieurs logements : la surface affichée
+  // n'est que celle du logement principal → le prix ne s'y rapporte pas.
+  const multiLots = (t: Tx) => Boolean(t.lots && t.lots > 1);
+
   function ligneBien(t: Tx) {
     const bits: string[] = [t.t];
     if (t.sb) bits.push(`${t.sb} m²`);
     if (t.p) bits.push(`${t.p} pièce${t.p > 1 ? 's' : ''}`);
     if (t.st) bits.push(`${eur.format(t.st)} m² de terrain`);
+    if (multiLots(t)) bits.push(`vente de ${t.lots} lots`);
     return bits.join(' · ');
   }
   function adresseLisible(t: Tx) {
@@ -378,7 +383,8 @@ import Layout from '../layouts/Layout.astro';
 
   function afficherResultat(r: NonNullable<ReturnType<typeof rechercher>>, label: string) {
     const p = r.principal;
-    const m2 = p.sb ? `${eur.format(Math.round(p.v / p.sb))} €/m²` : '';
+    // €/m² seulement si une seule unité : sinon le prix couvre plusieurs lots.
+    const m2 = p.sb && !multiLots(p) ? `${eur.format(Math.round(p.v / p.sb))} €/m²` : '';
     const metaLigne = majMeta();
 
     const autresHtml = r.autres.length
