@@ -141,7 +141,10 @@ const scenes = [
   /* Piste longue : transitions et maintiens ont chacun de la place. */
   :global(.hero-on) .hero-track { height: 340svh; }
   :global(.hero-on) .hero-stage {
-    position: sticky; top: 0; height: 100svh; overflow: hidden;
+    position: sticky;
+    top: var(--header-height, 72px);
+    height: calc(100svh - var(--header-height, 72px));
+    overflow: hidden;
   }
   /* Les trois scènes restent superposées dans le même cadre.
      Opacité / échelle / position sont pilotées en continu par JS (rAF),
@@ -186,6 +189,9 @@ const scenes = [
     if (desktop && !reduced && scenes.length === 3) {
       section.classList.add('hero-on');
       const track = section.querySelector<HTMLElement>('.hero-track')!;
+      const siteHeader = document.getElementById('site-header');
+      let headerH = siteHeader?.offsetHeight ?? 72;
+      document.documentElement.style.setProperty('--header-height', `${headerH}px`);
 
       // Fenêtres continues (maintien + fondu croisé prolongé) sur la progression p∈[0,1].
       // Chaque scène : apparition, maintien lisible, disparition — sans seuil brutal.
@@ -241,8 +247,17 @@ const scenes = [
       const wake = () => { if (!running) { running = true; requestAnimationFrame(loop); } };
 
       const measure = () => {
-        const total = track.offsetHeight - window.innerHeight;
-        const scrolled = -track.getBoundingClientRect().top;
+        // Re-measure header on resize in case it changed (e.g. font load shifts).
+        const h = siteHeader?.offsetHeight ?? headerH;
+        if (h !== headerH) {
+          headerH = h;
+          document.documentElement.style.setProperty('--header-height', `${h}px`);
+        }
+        // Stage is sticky at top:headerH, height:(svh - headerH).
+        // Scrolled distance starts when track.top reaches headerH, not 0.
+        const stageH = window.innerHeight - headerH;
+        const total = track.offsetHeight - stageH;
+        const scrolled = -track.getBoundingClientRect().top + headerH;
         targetP = total > 0 ? clamp(scrolled / total) : 0;
         wake();
       };
