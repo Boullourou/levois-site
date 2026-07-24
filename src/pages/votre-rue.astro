@@ -1,24 +1,23 @@
 ---
 /**
- * /votre-rue — expérience dédiée au QR code de l'encart publicitaire.
+ * /votre-rue — expérience « infographie » du QR encart publicitaire.
  *
- * URL protégée (imprimée sur support physique) : ne jamais supprimer, renommer
- * ni rediriger sans validation explicite.
+ * URL protégée (imprimée). Ne pas supprimer/renommer/rediriger sans validation.
  *
- * Promesse imprimée, tenue littéralement :
- *   « Combien s'est vendue la dernière maison de votre quartier ? »
- *   « Les prix réels de votre secteur, à Lèves. »
- *   « Sans inscription, sans qu'on vous rappelle. La réponse en 30 secondes. »
+ * Transforme les DVF en une lecture immédiate, compréhensible en quelques
+ * secondes par quelqu'un qui ne connaît rien à l'immobilier :
+ *   adresse → courte analyse animée → 4 informations → « En clair »
+ *   → ventes détaillées (facultatif) → tunnel de conversion.
  *
- * Parcours : promesse → saisie d'adresse (géocodage Géoplateforme / BAN) →
- * vente réelle la plus récente retrouvée à proximité (données DVF locales) →
- * autres ventes proches → « un signal, pas une estimation » → aller plus loin.
+ * Honnêteté (impératif) : tout est calculé sur les vraies données DVF générées
+ * par scripts/build-dvf.mjs. Aucun chiffre fictif. Aucun indicateur non
+ * calculable (demande, délai de vente, visites, tension : jamais affichés ni
+ * sous-entendus). Aucune estimation du bien du visiteur. Aucun faux temps de
+ * chargement : les messages d'analyse accompagnent le calcul réel.
  *
- * Aucune collecte (email / téléphone / compte) avant délivrance de la valeur.
- * Aucune donnée inventée : les résultats proviennent du JSON DVF généré par
- * scripts/build-dvf.mjs. Tant que ce jeu de données n'est pas généré, la page
- * affiche un état honnête « données en cours de finalisation » — jamais de
- * fausse vente.
+ * Géocodage : Géoplateforme (BAN) — service actuel de l'État.
+ * Conversion : les réponses de qualification + le contexte sont destinés à
+ * /api/lead (backend migré à l'itération suivante — cf. commentaire d'envoi).
  */
 import Layout from '../layouts/Layout.astro';
 ---
@@ -30,7 +29,7 @@ import Layout from '../layouts/Layout.astro';
 >
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
 
-    <!-- ——— Zone 1 : Promesse + saisie ——— -->
+    <!-- ① Promesse + saisie -->
     <header class="mb-8 md:mb-10">
       <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
       <h1 class="vr-titre text-encre mb-4">
@@ -50,18 +49,11 @@ import Layout from '../layouts/Layout.astro';
       <div class="vr-field">
         <div class="vr-combo">
           <input
-            id="vr-adresse"
-            type="text"
-            name="adresse"
-            inputmode="text"
-            autocomplete="off"
-            spellcheck="false"
+            id="vr-adresse" type="text" name="adresse" inputmode="text"
+            autocomplete="off" spellcheck="false"
             placeholder="Ex : rue de la République, Lèves"
-            class="vr-input"
-            role="combobox"
-            aria-expanded="false"
-            aria-controls="vr-suggestions"
-            aria-autocomplete="list"
+            class="vr-input" role="combobox" aria-expanded="false"
+            aria-controls="vr-suggestions" aria-autocomplete="list"
           />
           <ul id="vr-suggestions" class="vr-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>
         </div>
@@ -73,160 +65,224 @@ import Layout from '../layouts/Layout.astro';
       <p id="vr-geo-erreur" class="font-sans text-sm text-argile mt-2 hidden" role="alert"></p>
     </form>
 
-    <!-- ——— Zone 2 : Résultats (injectés) ——— -->
-    <section id="vr-resultats" class="mt-10 md:mt-12" aria-live="polite" hidden></section>
+    <!-- ②③④⑤⑥ Scène (analyse → infographie → En clair → détails → conversion) -->
+    <section id="vr-scene" aria-live="polite" hidden></section>
 
-    <!-- ——— Zone 3 : Signal, pas estimation (toujours présente) ——— -->
-    <section class="vr-cadre mt-12 md:mt-16" aria-labelledby="vr-signal-titre">
-      <h2 id="vr-signal-titre" class="text-h3 text-encre mb-5">Une vente voisine est un signal, pas une estimation</h2>
-      <div class="grid sm:grid-cols-2 gap-6">
-        <div>
-          <p class="font-sans text-sm uppercase tracking-widest text-argile mb-2">Ce que ça permet de comprendre</p>
-          <ul class="space-y-2 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <li>Le niveau de prix pratiqué dans le secteur.</li>
-            <li>La dynamique récente du marché autour de chez vous.</li>
-            <li>Des points de comparaison concrets, réellement échangés.</li>
-          </ul>
-        </div>
-        <div>
-          <p class="font-sans text-sm uppercase tracking-widest text-argile mb-2">Ce que ça ne permet pas de conclure</p>
-          <ul class="space-y-2 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <li>Le prix de <em>votre</em> bien : surface, état, orientation et étage changent tout.</li>
-            <li>Une valeur à l’euro près : une vente voisine n’est pas une estimation.</li>
-            <li>L’état du marché aujourd’hui : la dernière vente connue peut dater de plusieurs mois.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ——— Zone 4 : Aller plus loin (facultatif) ——— -->
-    <section class="mt-10 md:mt-12">
-      <div class="carte bg-argile-pale/40 p-6 md:p-8">
-        <h2 class="font-display text-2xl text-encre mb-2">Vous envisagez de vendre dans ce secteur&nbsp;?</h2>
-        <p class="font-sans text-[15px] text-brun leading-relaxed mb-6 max-w-prose">
-          LEVOIS lit le marché là où votre bien sera réellement comparé — puis vous aide
-          à décider à partir des signaux, pas des suppositions. Sans engagement.
+    <!-- ⑦ Méthode & limites (accessibles mais discrètes) -->
+    <details id="vr-methode" class="vr-methode">
+      <summary>Méthode, source et limites</summary>
+      <div class="vr-methode-corps">
+        <p>
+          Source : Demandes de valeurs foncières (DVF), DGFiP — données publiques ouvertes,
+          géolocalisées par Etalab. Chaque vente affichée est une transaction réellement
+          enregistrée.
         </p>
-        <div class="flex flex-wrap gap-3">
-          <a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a>
-          <a href="/contact" class="btn-secondaire">Échanger avec Mouaad</a>
-        </div>
+        <p>
+          Les prix « médians » et les fourchettes sont calculés sur les ventes du même type de
+          bien (maison ou appartement) dans un rayon autour de l’adresse. L’évolution est estimée
+          par une tendance sur les médianes annuelles du prix au m² (2021 à 2025), pour éviter
+          qu’une seule année atypique ne fausse la lecture.
+        </p>
+        <p>
+          Ce que ces données <strong>ne disent pas</strong> : la valeur précise de votre bien, la
+          demande, les délais de vente, le nombre de visites. Une vente voisine est un repère de
+          prix, pas une estimation de votre bien. La base DVF n’est pas exhaustive : certaines
+          ventes peuvent en être absentes.
+        </p>
       </div>
-    </section>
-
-    <!-- Source / transparence -->
-    <p id="vr-source" class="font-sans text-[13px] text-brun/70 mt-10 leading-relaxed">
-      Source : Demandes de valeurs foncières (DVF), DGFiP — données publiques ouvertes.
-      La base DVF n’est pas exhaustive : certaines ventes peuvent en être absentes.
-    </p>
+    </details>
 
   </div>
 </Layout>
 
 <style>
   .vr-titre {
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 500;
-    font-size: clamp(1.9rem, 5vw, 3rem);
-    line-height: 1.08; letter-spacing: -0.02em;
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;
   }
-
   .vr-fraicheur {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    margin-top: 1rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem;
-    color: #6B5D4F;
+    display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F;
     background: #F0E2D8; border-radius: 999px; padding: 0.35rem 0.85rem;
   }
-  .vr-fraicheur::before {
-    content: ''; width: 7px; height: 7px; border-radius: 999px;
-    background: #A85638; flex: 0 0 auto;
-  }
+  .vr-fraicheur::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #A85638; flex: 0 0 auto; }
 
   .vr-field { display: flex; flex-direction: column; gap: 0.75rem; }
   @media (min-width: 560px) { .vr-field { flex-direction: row; align-items: flex-start; } }
-
   .vr-combo { position: relative; flex: 1; }
   .vr-input {
-    width: 100%;
-    background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
-    padding: 0.85rem 1rem; font-family: 'Instrument Sans', sans-serif;
-    font-size: 1rem; color: #211C16; min-height: 52px;
+    width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
+    padding: 0.85rem 1rem; font-family: 'Instrument Sans', sans-serif; font-size: 1rem;
+    color: #211C16; min-height: 52px;
   }
   .vr-input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
   .vr-submit { min-height: 52px; white-space: nowrap; }
   @media (max-width: 559px) { .vr-submit { width: 100%; } }
 
-  /* Liste de suggestions */
   .vr-suggestions {
     position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px);
     background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 12px;
-    box-shadow: 0 24px 48px -28px rgba(33, 28, 22, 0.5);
+    box-shadow: 0 24px 48px -28px rgba(33,28,22,0.5);
     list-style: none; margin: 0; padding: 0.35rem; max-height: 320px; overflow-y: auto;
   }
   .vr-suggestions li {
     padding: 0.65rem 0.75rem; border-radius: 8px; cursor: pointer;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16;
-    line-height: 1.35;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16; line-height: 1.35;
   }
   .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: #6B5D4F; }
-  .vr-suggestions li[aria-selected="true"],
-  .vr-suggestions li:hover { background: #F0E2D8; }
+  .vr-suggestions li[aria-selected="true"], .vr-suggestions li:hover { background: #F0E2D8; }
 
-  /* Cadre éditorial réutilisable */
-  .vr-cadre {
-    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px;
-    padding: 1.75rem 1.5rem;
+  /* ——— Analyse ——— */
+  .vr-analyse { padding: 2.5rem 0 1rem; }
+  .vr-analyse-step {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
+    font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; color: #B8AA97;
+    transition: color 0.3s ease;
   }
-  @media (min-width: 768px) { .vr-cadre { padding: 2.5rem; } }
+  .vr-analyse-step.is-active { color: #211C16; }
+  .vr-analyse-step.is-done { color: #6B5D4F; }
+  .vr-analyse-dot {
+    width: 20px; height: 20px; border-radius: 999px; flex: 0 0 auto; position: relative;
+    border: 2px solid currentColor;
+  }
+  .vr-analyse-step.is-active .vr-analyse-dot::after {
+    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: #A85638;
+    animation: vr-pulse 0.9s ease-in-out infinite;
+  }
+  .vr-analyse-step.is-done .vr-analyse-dot { background: #A85638; border-color: #A85638; }
+  .vr-analyse-step.is-done .vr-analyse-dot::after {
+    content: ''; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  @keyframes vr-pulse { 0%,100% { transform: scale(0.7); opacity: 0.6; } 50% { transform: scale(1); opacity: 1; } }
 
-  /* ——— Résultats ——— */
-  .vr-etat { display: flex; align-items: center; gap: 0.6rem; font-family: 'Instrument Sans', sans-serif; color: #6B5D4F; }
-  .vr-spin {
-    width: 18px; height: 18px; border-radius: 999px;
-    border: 2px solid rgba(168, 86, 56, 0.3); border-top-color: #A85638;
-    animation: vr-rot 0.7s linear infinite;
+  /* ——— Blocs infographie ——— */
+  .vr-block {
+    padding: 2.25rem 0; border-top: 1px solid #EDE3D4;
+    opacity: 0; transform: translateY(18px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
   }
-  @keyframes vr-rot { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .vr-spin { animation: none; } }
-
-  .vr-primary {
-    background: #211C16; color: #F7F2EA; border-radius: 20px;
-    padding: 1.5rem 1.4rem 1.6rem; overflow: hidden;
-  }
-  @media (min-width: 768px) { .vr-primary { padding: 2rem 2.25rem 2.25rem; } }
-  .vr-primary-label {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase; color: #C97B52; margin-bottom: 1rem;
-  }
-  .vr-primary-prix {
-    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
-    font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1; letter-spacing: -0.02em;
-    margin-bottom: 0.35rem;
-  }
-  .vr-primary-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem; color: rgba(247,242,234,0.7); margin-bottom: 1.4rem; }
-  .vr-primary-adresse { font-family: 'Fraunces', serif; font-size: 1.2rem; color: #F7F2EA; margin-bottom: 0.35rem; }
-  .vr-primary-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: rgba(247,242,234,0.72); line-height: 1.6; }
-  .vr-primary-dist { display: inline-block; margin-top: 1rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: rgba(247,242,234,0.6); }
-
-  .vr-note-maj {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; color: #6B5D4F;
-    margin-top: 0.9rem; display: flex; gap: 0.4rem; align-items: baseline;
+  .vr-block.is-in { opacity: 1; transform: none; }
+  .vr-block:first-child { border-top: 0; }
+  .vr-kicker {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: #A85638; margin-bottom: 0.9rem;
   }
 
-  .vr-autres { margin-top: 1.5rem; }
-  .vr-autres h3 { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #6B5D4F; margin-bottom: 0.75rem; }
-  .vr-autre {
-    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1rem;
-    padding: 0.9rem 0; border-top: 1px solid #E8DFD0;
-    font-family: 'Instrument Sans', sans-serif;
+  /* A — dernière vente */
+  .vr-derniere { background: #211C16; color: #F7F2EA; border-radius: 22px; padding: 1.75rem 1.5rem; }
+  @media (min-width: 768px) { .vr-derniere { padding: 2.25rem 2.5rem; } }
+  .vr-derniere .vr-kicker { color: #C97B52; }
+  .vr-derniere-prix { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(2.6rem, 9vw, 4rem); line-height: 1; letter-spacing: -0.02em; }
+  .vr-derniere-bien { font-family: 'Instrument Sans', sans-serif; font-size: 1.05rem; margin-top: 0.6rem; color: rgba(247,242,234,0.9); }
+  .vr-derniere-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: rgba(247,242,234,0.68); margin-top: 0.5rem; line-height: 1.5; }
+  .vr-derniere-ico { font-size: 1.5rem; margin-bottom: 0.4rem; }
+
+  /* B — compteur */
+  .vr-compteur-n { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(3rem, 12vw, 5rem); line-height: 1; color: #211C16; }
+  .vr-compteur-l { font-family: 'Instrument Sans', sans-serif; font-size: 1.1rem; color: #6B5D4F; margin-top: 0.3rem; }
+  .vr-compteur-sub { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; opacity: 0.8; margin-top: 0.5rem; }
+
+  /* C — prix + jauge */
+  .vr-prix-med { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(2.4rem, 9vw, 3.6rem); line-height: 1; color: #211C16; }
+  .vr-prix-l { font-family: 'Instrument Sans', sans-serif; font-size: 1.05rem; color: #6B5D4F; margin-top: 0.3rem; }
+  .vr-prix-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; opacity: 0.8; margin-top: 0.35rem; }
+  .vr-jauge { margin-top: 1.5rem; }
+  .vr-jauge-track { position: relative; height: 10px; border-radius: 999px; background: #EDE3D4; overflow: hidden; }
+  .vr-jauge-band { position: absolute; top: 0; bottom: 0; left: 0; width: 0; background: linear-gradient(90deg, #C97B52, #A85638); border-radius: 999px; transition: width 1s cubic-bezier(0.22,1,0.36,1); }
+  .vr-jauge-marker { position: absolute; top: -4px; width: 3px; height: 18px; background: #211C16; border-radius: 2px; left: 0; opacity: 0; transition: opacity 0.4s ease 0.8s; }
+  .vr-jauge-ends { display: flex; justify-content: space-between; margin-top: 0.6rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; }
+  .vr-jauge-phrase { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16; margin-top: 1rem; line-height: 1.5; }
+
+  /* D — tendance */
+  .vr-tendance { display: flex; align-items: center; gap: 1.1rem; }
+  .vr-tendance-ico { width: 56px; height: 56px; flex: 0 0 auto; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: #F0E2D8; }
+  .vr-tendance-ico svg { width: 30px; height: 30px; opacity: 0; transform: scale(0.6); transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  .vr-block.is-in .vr-tendance-ico svg { opacity: 1; transform: scale(1); }
+  .vr-tendance-txt { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.4rem, 4.5vw, 2rem); line-height: 1.12; color: #211C16; }
+  .vr-tendance-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 0.4rem; }
+
+  /* En clair */
+  .vr-enclair { background: #F0E2D8; border-radius: 22px; padding: 1.75rem 1.5rem; }
+  @media (min-width: 768px) { .vr-enclair { padding: 2.25rem 2.5rem; } }
+  .vr-enclair-txt { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.35rem, 4.2vw, 1.9rem); line-height: 1.3; color: #211C16; }
+  .vr-enclair-txt span { display: block; }
+  .vr-enclair-txt span + span { margin-top: 0.5rem; }
+
+  .vr-maj { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #6B5D4F; margin-top: 1rem; }
+
+  /* Ventes détaillées */
+  .vr-details summary {
+    cursor: pointer; font-family: 'Instrument Sans', sans-serif; font-weight: 600; color: #A85638;
+    padding: 0.6rem 0; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem;
   }
-  .vr-autre-g { color: #211C16; }
-  .vr-autre-prix { color: #211C16; font-weight: 600; }
+  .vr-details summary::-webkit-details-marker { display: none; }
+  .vr-details summary::before { content: '＋'; font-weight: 400; }
+  .vr-details[open] summary::before { content: '－'; }
+  .vr-autre { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.85rem 0; border-top: 1px solid #EDE3D4; font-family: 'Instrument Sans', sans-serif; }
   .vr-autre-sub { display: block; font-size: 0.85rem; color: #6B5D4F; }
+  .vr-autre-prix { font-weight: 600; color: #211C16; }
 
-  .vr-vide {
-    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.75rem 1.5rem;
+  /* Conversion */
+  .vr-conv { background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 22px; padding: 1.75rem 1.5rem; }
+  @media (min-width: 768px) { .vr-conv { padding: 2.5rem; } }
+  .vr-conv-titre { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.5rem, 5vw, 2.1rem); line-height: 1.15; color: #211C16; margin-bottom: 0.6rem; }
+  .vr-conv-intro { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; line-height: 1.6; color: #6B5D4F; margin-bottom: 1.5rem; }
+  .vr-paths { display: grid; gap: 0.75rem; }
+  .vr-path {
+    text-align: left; width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 14px;
+    padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  }
+  .vr-path:hover { border-color: #A85638; transform: translateY(-2px); box-shadow: 0 16px 34px -24px rgba(168,86,56,0.5); }
+  .vr-path-t { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.15rem; color: #211C16; }
+  .vr-path-d { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 0.2rem; }
+  .vr-path-primary { background: #211C16; border-color: #211C16; }
+  .vr-path-primary .vr-path-t { color: #F7F2EA; }
+  .vr-path-primary .vr-path-d { color: rgba(247,242,234,0.7); }
+  .vr-path-arrow { color: #A85638; flex: 0 0 auto; }
+  .vr-path-primary .vr-path-arrow { color: #C97B52; }
+
+  /* Panneau (qualif / contact / explorer) */
+  .vr-panneau { margin-top: 1.25rem; border-top: 1px solid #EDE3D4; padding-top: 1.5rem; }
+  .vr-q-progress { display: flex; gap: 0.35rem; margin-bottom: 1.25rem; }
+  .vr-q-dot { height: 4px; flex: 1; border-radius: 999px; background: #E8DFD0; }
+  .vr-q-dot.is-on { background: #A85638; }
+  .vr-q-label { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.35rem; line-height: 1.2; color: #211C16; margin-bottom: 1.1rem; }
+  .vr-q-opts { display: grid; gap: 0.6rem; }
+  .vr-q-opt {
+    text-align: left; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
+    padding: 0.9rem 1.1rem; cursor: pointer; font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .vr-q-opt:hover { border-color: #A85638; background: #F0E2D8; }
+  .vr-q-back { background: none; border: 0; color: #6B5D4F; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; padding: 0.3rem 0; }
+  .vr-q-back:hover { color: #A85638; }
+
+  .vr-champ { display: block; margin-bottom: 0.9rem; }
+  .vr-champ label { display: block; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-bottom: 0.4rem; }
+  .vr-champ input {
+    width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px; padding: 0.8rem 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16; min-height: 50px;
+  }
+  .vr-champ input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
+  .vr-consent { display: flex; align-items: flex-start; gap: 0.6rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; line-height: 1.5; margin: 0.5rem 0 1rem; cursor: pointer; }
+  .vr-consent input { margin-top: 0.15rem; width: 18px; height: 18px; accent-color: #A85638; flex: 0 0 auto; }
+  .vr-contact-liens { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .vr-explorer { display: grid; gap: 0.6rem; }
+  .vr-explorer a { display: block; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px; padding: 0.9rem 1.1rem; font-family: 'Instrument Sans', sans-serif; color: #211C16; transition: border-color 0.15s; }
+  .vr-explorer a:hover { border-color: #A85638; }
+  .vr-explorer a b { font-family: 'Fraunces', serif; font-weight: 500; }
+
+  .vr-vide { background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.75rem 1.5rem; }
+
+  .vr-methode { margin-top: 2.5rem; font-family: 'Instrument Sans', sans-serif; }
+  .vr-methode summary { cursor: pointer; font-size: 0.85rem; color: #6B5D4F; }
+  .vr-methode-corps { margin-top: 0.8rem; display: grid; gap: 0.7rem; }
+  .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vr-block { opacity: 1; transform: none; transition: none; }
+    .vr-jauge-band, .vr-jauge-marker, .vr-tendance-ico svg { transition: none; }
+    .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
   }
 </style>
 
@@ -235,59 +291,51 @@ import Layout from '../layouts/Layout.astro';
     id: string; d: string; v: number; t: string; lat: number; lon: number;
     no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
   };
-  type Meta = {
-    status: string; generatedAt: string | null; communes: string[];
-    count: number; dateVenteLaPlusRecente: string | null;
-  };
+  type Meta = { status: string; generatedAt: string | null; dateVenteLaPlusRecente: string | null };
 
   const form = document.getElementById('vr-form') as HTMLFormElement;
   const input = document.getElementById('vr-adresse') as HTMLInputElement;
   const sugList = document.getElementById('vr-suggestions') as HTMLUListElement;
-  const submit = document.getElementById('vr-submit') as HTMLButtonElement;
-  const resultats = document.getElementById('vr-resultats') as HTMLElement;
+  const scene = document.getElementById('vr-scene') as HTMLElement;
   const geoErreur = document.getElementById('vr-geo-erreur') as HTMLElement;
+  const fraicheurEl = document.getElementById('vr-fraicheur') as HTMLElement;
 
-  // Point de biais pour le géocodage : centre approximatif du bassin chartrain.
   const BIAIS = { lon: 1.4890, lat: 48.4470 };
   const GEOCODE = 'https://data.geopf.fr/geocodage/search';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const eur = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
   const moisAn = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' });
   const jourMoisAn = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   const dateComplete = (d: string) => { const dt = new Date(d + 'T00:00:00'); return isNaN(dt.getTime()) ? d : jourMoisAn.format(dt); };
-
-  const fraicheurEl = document.getElementById('vr-fraicheur') as HTMLElement;
+  const dateMois = (d: string) => { const dt = new Date(d + 'T00:00:00'); return isNaN(dt.getTime()) ? d : moisAn.format(dt); };
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
 
   let dataset: Tx[] | null = null;
   let meta: Meta | null = null;
   let selection: { lon: number; lat: number; label: string } | null = null;
+  let lastModel: any = null;
 
-  // ——— Chargement paresseux du jeu de données + meta ———
-  async function chargerDonnees() {
-    if (dataset && meta) return;
-    const [dRep, mRep] = await Promise.all([
-      fetch('/data/dvf-secteur.json'),
-      fetch('/data/dvf-meta.json'),
-    ]);
-    dataset = (await dRep.json()) as Tx[];
-    meta = (await mRep.json()) as Meta;
-  }
-
-  // ——— Fraîcheur des données affichée d'emblée (sans attendre une recherche) ———
-  // Ne jamais laisser croire que la page couvre des ventes plus récentes que
-  // celles réellement disponibles.
-  async function afficherFraicheur() {
+  // ——— Fraîcheur affichée d'emblée ———
+  (async () => {
     try {
       const m = (await (await fetch('/data/dvf-meta.json')).json()) as Meta;
+      meta = m;
       if (m.status === 'ready' && m.dateVenteLaPlusRecente) {
         fraicheurEl.textContent = `Données DVF disponibles jusqu’au ${dateComplete(m.dateVenteLaPlusRecente)}`;
         fraicheurEl.hidden = false;
       }
-    } catch { /* silencieux : la ligne reste masquée */ }
-  }
-  afficherFraicheur();
+    } catch {}
+  })();
 
-  // ——— Géocodage Géoplateforme (BAN) — service actuel de l'État ———
+  async function chargerDonnees() {
+    if (dataset) return;
+    const [d, m] = await Promise.all([fetch('/data/dvf-secteur.json'), fetch('/data/dvf-meta.json')]);
+    dataset = (await d.json()) as Tx[];
+    meta = (await m.json()) as Meta;
+  }
+
   async function geocoder(q: string, autocomplete: boolean, limit: number) {
     const url = new URL(GEOCODE);
     url.searchParams.set('q', q);
@@ -299,268 +347,613 @@ import Layout from '../layouts/Layout.astro';
     if (!rep.ok) throw new Error(`geocode ${rep.status}`);
     const json = await rep.json();
     const feats = Array.isArray(json.features) ? json.features : [];
-    // On garde l'Eure-et-Loir (tout code INSEE commençant par 28).
     return feats.filter((f: any) => String(f?.properties?.citycode || '').startsWith('28'));
   }
 
-  // ——— Distance haversine (mètres) ———
   function distance(aLat: number, aLon: number, bLat: number, bLon: number) {
     const R = 6371000;
-    const dLat = ((bLat - aLat) * Math.PI) / 180;
-    const dLon = ((bLon - aLon) * Math.PI) / 180;
-    const la1 = (aLat * Math.PI) / 180;
-    const la2 = (bLat * Math.PI) / 180;
+    const dLat = ((bLat - aLat) * Math.PI) / 180, dLon = ((bLon - aLon) * Math.PI) / 180;
+    const la1 = (aLat * Math.PI) / 180, la2 = (bLat * Math.PI) / 180;
     const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
     return 2 * R * Math.asin(Math.sqrt(h));
   }
+  const distLisible = (m: number) => (m < 1000 ? `à environ ${Math.round(m / 50) * 50} m` : `à environ ${(m / 1000).toFixed(1).replace('.', ',')} km`);
+  const median = (a: number[]) => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const quantile = (a: number[], q: number) => { if (a.length < 2) return a[0] ?? null; const s = [...a].sort((x, y) => x - y); const pos = (s.length - 1) * q, b = Math.floor(pos), r = pos - b; return s[b + 1] !== undefined ? s[b] + r * (s[b + 1] - s[b]) : s[b]; };
 
-  const distanceLisible = (m: number) =>
-    m < 1000 ? `à environ ${Math.round(m / 50) * 50} m` : `à environ ${(m / 1000).toFixed(1).replace('.', ',')} km`;
-
-  // Une mutation multi-lots regroupe plusieurs logements : la surface affichée
-  // n'est que celle du logement principal → le prix ne s'y rapporte pas.
   const multiLots = (t: Tx) => Boolean(t.lots && t.lots > 1);
+  const typePluriel = (t: string) => (t === 'Maison' ? 'des maisons' : 'des appartements');
+  const typePlurielNu = (t: string) => (t === 'Maison' ? 'maisons' : 'appartements');
 
-  function ligneBien(t: Tx) {
-    const bits: string[] = [t.t];
-    if (t.sb) bits.push(`${t.sb} m²`);
-    if (t.p) bits.push(`${t.p} pièce${t.p > 1 ? 's' : ''}`);
-    if (t.st) bits.push(`${eur.format(t.st)} m² de terrain`);
-    if (multiLots(t)) bits.push(`vente de ${t.lots} lots`);
-    return bits.join(' · ');
+  function bienCourt(t: Tx) {
+    const b = [t.t]; if (t.sb) b.push(`${t.sb} m²`); if (t.p) b.push(`${t.p} pièce${t.p > 1 ? 's' : ''}`);
+    if (multiLots(t)) b.push(`vente de ${t.lots} lots`);
+    return b.join(' · ');
   }
-  function adresseLisible(t: Tx) {
-    const rue = [t.no, t.vo].filter(Boolean).join(' ');
-    const ville = [t.cp, t.co].filter(Boolean).join(' ');
-    if (rue && ville) return `${rue}, ${ville}`;
-    return rue || ville || 'Adresse approximative';
-  }
-  function dateLisible(d: string) {
-    const dt = new Date(d + 'T00:00:00');
-    return isNaN(dt.getTime()) ? d : moisAn.format(dt);
+  function adresse(t: Tx) {
+    const rue = [t.no, t.vo].filter(Boolean).join(' '), ville = [t.cp, t.co].filter(Boolean).join(' ');
+    return rue && ville ? `${rue}, ${ville}` : rue || ville || 'Adresse approximative';
   }
 
-  // ——— Recherche de proximité ———
-  function rechercher(lat: number, lon: number) {
-    const paliers = [700, 1500, 3000];
-    let proches: Array<Tx & { _dist: number }> = [];
-    for (const rayon of paliers) {
-      proches = (dataset as Tx[])
-        .map((t) => ({ ...t, _dist: distance(lat, lon, t.lat, t.lon) }))
-        .filter((t) => t._dist <= rayon);
-      if (proches.length > 0) break;
+  // ——— Tendance : régression linéaire sur les médianes ANNUELLES du €/m² ———
+  // Bien plus robuste que deux fenêtres isolées : utilise toutes les années
+  // (2021→2025), amortit le bruit d'une année atypique, et reflète la tendance
+  // de fond. Une comparaison de deux fenêtres pouvait afficher une « baisse »
+  // là où le marché est en réalité stable (retour après un pic ponctuel).
+  function computeTrend(all: any[], dom: string, minR: number) {
+    // Échelle « secteur » : rayon d'au moins 1500 m pour des médianes annuelles
+    // stables (les petits rayons font osciller la tendance d'année en année).
+    const radii = minR >= 3000 ? [3000] : [minR, 3000];
+    let arr: any[] = [];
+    for (const r of radii) {
+      const s = all.filter((t) => t._dist <= r && t.t === dom && !t.lots && t.sb);
+      arr = s;
+      if (s.length >= 150) break;
     }
-    if (proches.length === 0) return null;
-    // Résultat principal : la vente la plus récente parmi les proches.
-    const parDate = [...proches].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist));
-    const principal = parDate[0];
-    const autres = parDate.slice(1, 4);
-    return { principal, autres, total: proches.length };
+    const xs: number[] = [], ys: number[] = [];
+    for (let y = 2021; y <= 2025; y++) {
+      const g = arr.filter((t) => t.d.startsWith(String(y))).map((t) => t.v / t.sb);
+      if (g.length >= 20) { xs.push(y); ys.push(median(g) as number); } // année fiable seulement
+    }
+    if (xs.length < 3) return null; // pas assez de recul → pas de tendance affichée
+    const n = xs.length, x0 = xs[0];
+    const X = xs.map((y) => y - x0);
+    const sx = X.reduce((a, b) => a + b, 0), sy = ys.reduce((a, b) => a + b, 0);
+    const sxx = X.reduce((a, b) => a + b * b, 0), sxy = X.reduce((a, b, i) => a + b * ys[i], 0);
+    const slope = (n * sxy - sx * sy) / (n * sxx - sx * sx);
+    const intercept = (sy - slope * sx) / n;
+    const first = intercept, last = intercept + slope * X[X.length - 1];
+    const delta = ((last - first) / first) * 100; // % total sur la période observée
+    const dir = delta >= 3 ? 'hausse' : delta <= -3 ? 'baisse' : 'stable';
+    return { delta, dir, anneeDebut: xs[0], anneeFin: xs[xs.length - 1] };
   }
 
-  function majMeta() {
+  // ——— Modèle : tous les indicateurs, calculés sur les vraies données ———
+  function computeModel(lat: number, lon: number) {
+    const all = (dataset as Tx[]).map((t) => ({ ...t, _dist: distance(lat, lon, t.lat, t.lon) })).sort((a, b) => a._dist - b._dist);
+
+    // A — dernière vente à proximité (rayon serré)
+    let aSet: any[] = [];
+    for (const r of [700, 1500, 3000]) { aSet = all.filter((t) => t._dist <= r); if (aSet.length) break; }
+    if (!aSet.length) return null;
+    const derniere = [...aSet].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist))[0];
+
+    // Rayon de travail : plus petit rayon totalisant ≥ 150 ventes d'habitation
+    const hab = (arr: any[]) => arr.filter((t) => (t.t === 'Maison' || t.t === 'Appartement') && !t.lots);
+    let Rw = 3000, near = hab(all.filter((t) => t._dist <= 3000));
+    for (const r of [700, 1500, 3000]) {
+      const s = hab(all.filter((t) => t._dist <= r));
+      if (s.length >= 150) { Rw = r; near = s; break; }
+      if (r === 3000) { Rw = 3000; near = s; }
+    }
+    const nM = near.filter((t) => t.t === 'Maison').length, nA = near.filter((t) => t.t === 'Appartement').length;
+    const dom = nM >= nA ? 'Maison' : 'Appartement';
+    const domArr = near.filter((t) => t.t === dom);
+
+    // B — nombre de ventes (habitation, dans Rw)
+    const nbVentes = near.length;
+
+    // C — prix médian + fourchette Q1–Q3 + €/m² médian (type dominant)
+    const prices = domArr.map((t) => t.v);
+    const ppm = domArr.filter((t) => t.sb).map((t) => t.v / (t.sb as number));
+    const C = domArr.length >= 25 ? { median: median(prices), q1: quantile(prices, 0.25), q3: quantile(prices, 0.75), ppm: median(ppm), n: domArr.length } : null;
+
+    // D — tendance €/m² 2022-2023 vs 2024-2025 (type dominant).
+    // Rayon PROPRE, élargi jusqu'à ≥ 40 ventes/période pour éviter le bruit de
+    // petit échantillon (une médiane locale sur ~15 ventes est instable et
+    // pourrait afficher une « baisse » là où le secteur est en réalité stable).
+    const D = computeTrend(all, dom, Math.max(Rw, 1500));
+
+    const activite = domArr.filter((t) => t.d >= '2025').length >= 5;
+    const autres = [...aSet].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere.id).slice(0, 4);
+
+    return { derniere, dom, nbVentes, Rw, C, D, activite, autres };
+  }
+
+  // ——— « En clair » : phrases par règles fixes ———
+  function enClair(model: any) {
+    const s1 = model.activite
+      ? `Autour de cette adresse, ${typePluriel(model.dom)} continuent de se vendre.`
+      : `Autour de cette adresse, ${typePluriel(model.dom)} se vendent, mais plus rarement.`;
+    let s2 = '';
+    if (model.D) {
+      if (model.D.dir === 'stable') s2 = 'Les prix observés sont globalement stables ces dernières années.';
+      else if (model.D.dir === 'hausse') s2 = 'Les prix observés sont plutôt orientés à la hausse ces dernières années.';
+      else s2 = 'Les prix observés sont plutôt orientés à la baisse ces dernières années.';
+    }
+    return { s1, s2 };
+  }
+
+  // ——— Animations ———
+  function animeCompteur(el: HTMLElement, to: number, dur = 1100) {
+    if (reduced) { el.textContent = eur.format(to); return; }
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = eur.format(Math.round(to * e));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target as HTMLElement;
+      el.classList.add('is-in');
+      const anim = el.dataset.anim;
+      if (anim === 'compteur') { const n = el.querySelector<HTMLElement>('[data-count]'); if (n) animeCompteur(n, Number(n.dataset.count)); }
+      if (anim === 'jauge') { const band = el.querySelector<HTMLElement>('.vr-jauge-band'); const mk = el.querySelector<HTMLElement>('.vr-jauge-marker'); if (band) band.style.width = band.dataset.w || '100%'; if (mk) mk.style.opacity = '1'; }
+      observer.unobserve(el);
+    }
+  }, { threshold: 0.35, rootMargin: '0px 0px -8% 0px' });
+
+  function reveler(el: HTMLElement) {
+    if (reduced) {
+      el.classList.add('is-in');
+      const anim = el.dataset.anim;
+      if (anim === 'compteur') { const n = el.querySelector<HTMLElement>('[data-count]'); if (n) n.textContent = eur.format(Number(n.dataset.count)); }
+      if (anim === 'jauge') { const band = el.querySelector<HTMLElement>('.vr-jauge-band'); const mk = el.querySelector<HTMLElement>('.vr-jauge-marker'); if (band) band.style.width = band.dataset.w || '100%'; if (mk) mk.style.opacity = '1'; }
+      return;
+    }
+    observer.observe(el);
+  }
+
+  // ——— Rendu de l'infographie ———
+  function iconeTendance(dir: string) {
+    if (dir === 'hausse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#A85638" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17L11 10l4 4 6-6"/><path d="M15 8h6v6"/></svg>';
+    if (dir === 'baisse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#6B5D4F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l7 7 4-4 6 6"/><path d="M15 16h6v-6"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="#6B5D4F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M16 8l4 4-4 4"/></svg>';
+  }
+  function tendancePhrase(dir: string) {
+    if (dir === 'hausse') return 'Les prix observés montent';
+    if (dir === 'baisse') return 'Les prix observés baissent';
+    return 'Les prix observés restent plutôt stables';
+  }
+
+  function construireInfographie(model: any) {
+    const ec = enClair(model);
+    const d = model.derniere;
+    const blocs: string[] = [];
+
+    // A
+    blocs.push(`
+      <div class="vr-block" data-anim="fade">
+        <div class="vr-derniere">
+          <div class="vr-derniere-ico" aria-hidden="true">${d.t === 'Maison' ? '🏠' : '🏢'}</div>
+          <p class="vr-kicker">La dernière vente près de chez vous</p>
+          <p class="vr-derniere-prix">${eur.format(d.v)} €</p>
+          <p class="vr-derniere-bien">${esc(bienCourt(d))}</p>
+          <p class="vr-derniere-meta">${esc(distLisible(d._dist))} · ${esc(dateMois(d.d))}</p>
+        </div>
+      </div>`);
+
+    // B
+    blocs.push(`
+      <div class="vr-block" data-anim="compteur">
+        <p class="vr-kicker">Combien de biens se sont vendus autour</p>
+        <p class="vr-compteur-n"><span data-count="${model.nbVentes}">0</span></p>
+        <p class="vr-compteur-l">ventes retrouvées autour de cette adresse</p>
+        <p class="vr-compteur-sub">dans un rayon d’environ ${model.Rw < 1000 ? model.Rw + ' m' : (model.Rw / 1000) + ' km'} · depuis 2021</p>
+      </div>`);
+
+    // C
+    if (model.C) {
+      const q1 = Math.round(model.C.q1), q3 = Math.round(model.C.q3), med = Math.round(model.C.median);
+      const markerPct = q3 > q1 ? Math.max(0, Math.min(100, ((med - q1) / (q3 - q1)) * 100)) : 50;
+      blocs.push(`
+        <div class="vr-block" data-anim="jauge">
+          <p class="vr-kicker">À quels prix ça se vend</p>
+          <p class="vr-prix-med">≈ ${eur.format(med)} €</p>
+          <p class="vr-prix-l">prix médian des ${esc(typePlurielNu(model.dom))} vendues autour</p>
+          ${model.C.ppm ? `<p class="vr-prix-m2">soit environ ${eur.format(Math.round(model.C.ppm))} €/m²</p>` : ''}
+          <div class="vr-jauge">
+            <div class="vr-jauge-track">
+              <div class="vr-jauge-band" data-w="100%"></div>
+              <div class="vr-jauge-marker" style="left:${markerPct.toFixed(0)}%"></div>
+            </div>
+            <div class="vr-jauge-ends"><span>${eur.format(q1)} €</span><span>${eur.format(q3)} €</span></div>
+            <p class="vr-jauge-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)} €</strong> et <strong>${eur.format(q3)} €</strong>.</p>
+          </div>
+        </div>`);
+    }
+
+    // D
+    if (model.D) {
+      const pct = `${model.D.delta >= 0 ? '+' : ''}${model.D.delta.toFixed(1).replace('.', ',')} %`;
+      blocs.push(`
+        <div class="vr-block" data-anim="fade">
+          <p class="vr-kicker">Les prix, dans le temps</p>
+          <div class="vr-tendance">
+            <span class="vr-tendance-ico" aria-hidden="true">${iconeTendance(model.D.dir)}</span>
+            <span>
+              <span class="vr-tendance-txt">${tendancePhrase(model.D.dir)}</span>
+              <span class="vr-tendance-pct">${pct} sur le prix au m² médian, estimé sur ${model.D.anneeDebut}–${model.D.anneeFin}</span>
+            </span>
+          </div>
+        </div>`);
+    }
+
+    // En clair
+    blocs.push(`
+      <div class="vr-block" data-anim="fade">
+        <div class="vr-enclair">
+          <p class="vr-kicker">En clair</p>
+          <p class="vr-enclair-txt"><span>${esc(ec.s1)}</span>${ec.s2 ? `<span>${esc(ec.s2)}</span>` : ''}</p>
+        </div>
+        <p class="vr-maj">${majLigne()}</p>
+      </div>`);
+
+    // Ventes détaillées (secondaire)
+    if (model.autres.length) {
+      blocs.push(`
+        <div class="vr-block" data-anim="fade">
+          <details class="vr-details">
+            <summary>Voir les ventes autour de chez moi</summary>
+            <div>
+              <div class="vr-autre">
+                <span>${esc(bienCourt(d))}<span class="vr-autre-sub">${esc(adresse(d))} · ${esc(dateMois(d.d))} · ${esc(distLisible(d._dist))}</span></span>
+                <span class="vr-autre-prix">${eur.format(d.v)} €</span>
+              </div>
+              ${model.autres.map((t: any) => `
+                <div class="vr-autre">
+                  <span>${esc(bienCourt(t))}<span class="vr-autre-sub">${esc(adresse(t))} · ${esc(dateMois(t.d))} · ${esc(distLisible(t._dist))}</span></span>
+                  <span class="vr-autre-prix">${eur.format(t.v)} €</span>
+                </div>`).join('')}
+            </div>
+          </details>
+        </div>`);
+    }
+
+    // Conversion
+    blocs.push(construireConversion());
+
+    scene.innerHTML = blocs.join('');
+    scene.querySelectorAll<HTMLElement>('.vr-block').forEach((b) => reveler(b));
+    brancherConversion(model);
+  }
+
+  function majLigne() {
     if (!meta) return '';
     const parts: string[] = [];
     if (meta.dateVenteLaPlusRecente) parts.push(`Données DVF disponibles jusqu’au ${dateComplete(meta.dateVenteLaPlusRecente)}`);
     if (meta.generatedAt) parts.push(`extraites le ${jourMoisAn.format(new Date(meta.generatedAt))}`);
-    return parts.join(' · ');
+    return esc(parts.join(' · ')) + ' · Source : DVF (DGFiP).';
   }
 
-  function escapeHtml(s: string) {
-    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  // ——— Conversion : 3 chemins ———
+  function construireConversion() {
+    return `
+      <div class="vr-block" data-anim="fade">
+        <div class="vr-conv" id="vr-conv">
+          <p class="vr-conv-titre">Et votre bien dans tout ça&nbsp;?</p>
+          <p class="vr-conv-intro">Ces ventes parlent de votre quartier. Votre bien possède ses propres caractéristiques — surface, état, orientation, étage. LEVOIS peut aller plus loin pour votre situation.</p>
+          <div class="vr-paths" id="vr-paths">
+            <button type="button" class="vr-path vr-path-primary" data-path="lecture">
+              <span><span class="vr-path-t">Recevoir ma lecture personnalisée</span><span class="vr-path-d">Comprendre ce que ces données signifient pour votre situation</span></span>
+              <span class="vr-path-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" class="vr-path" data-path="mouaad">
+              <span><span class="vr-path-t">Échanger directement avec Mouaad</span><span class="vr-path-d">Vous êtes prêt à en parler ? Contact direct, sans étape.</span></span>
+              <span class="vr-path-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" class="vr-path" data-path="explorer">
+              <span><span class="vr-path-t">Continuer à explorer LEVOIS</span><span class="vr-path-d">Comprendre le marché, situer sa vente, la méthode</span></span>
+              <span class="vr-path-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+          <div id="vr-panneau"></div>
+        </div>
+      </div>`;
   }
 
-  // ——— Rendu ———
-  function afficherChargement() {
-    resultats.hidden = false;
-    resultats.innerHTML = `<p class="vr-etat"><span class="vr-spin" aria-hidden="true"></span> Recherche des ventes autour de cette adresse…</p>`;
+  // Intentions (qualification commerciale) — clés lisibles côté lead
+  const INTENTIONS = [
+    { key: 'curieux', label: 'Je suis simplement curieux', tag: 'Curieux' },
+    { key: 'reflexion', label: 'Je réfléchis à vendre', tag: 'Vendeur potentiel' },
+    { key: 'prochainement', label: 'Je vais vendre prochainement', tag: 'Vendeur prochainement' },
+    { key: 'envente', label: 'Mon bien est déjà en vente', tag: 'Déjà en vente' },
+    { key: 'acheteur', label: 'Je souhaite acheter dans le secteur', tag: 'Acheteur' },
+  ];
+  const OPTS_TYPE = [
+    { value: 'maison', label: 'Une maison' }, { value: 'appartement', label: 'Un appartement' },
+    { value: 'terrain', label: 'Un terrain' }, { value: 'autre', label: 'Autre / je ne sais pas' },
+  ];
+  const QUALIF: Record<string, Array<{ key: string; label: string; options: Array<{ value: string; label: string }> }>> = {
+    curieux: [
+      { key: 'curiosite', label: 'Qu’est-ce qui vous amène ?', options: [
+        { value: 'prix-quartier', label: 'Le prix des ventes de mon quartier' },
+        { value: 'valeur-bien', label: 'La valeur d’un bien précis' },
+        { value: 'curiosite', label: 'Simple curiosité' } ] },
+    ],
+    reflexion: [
+      { key: 'horizon', label: 'Quand envisagez-vous de vendre ?', options: [
+        { value: 'dans-annee', label: 'Dans l’année' }, { value: '1-2-ans', label: 'Dans 1 à 2 ans' }, { value: 'sans-date', label: 'Pas encore de date' } ] },
+      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
+      { key: 'besoin', label: 'Votre besoin principal ?', options: [
+        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
+        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
+    ],
+    prochainement: [
+      { key: 'horizon', label: 'Dans quel délai ?', options: [
+        { value: 'ce-mois', label: 'Ce mois-ci' }, { value: '1-3-mois', label: 'Dans 1 à 3 mois' }, { value: '3-6-mois', label: 'Dans 3 à 6 mois' } ] },
+      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
+      { key: 'besoin', label: 'Votre besoin principal ?', options: [
+        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
+        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
+    ],
+    envente: [
+      { key: 'dureeEnVente', label: 'Depuis combien de temps est-il en vente ?', options: [
+        { value: 'moins-1-mois', label: 'Moins d’un mois' }, { value: '1-3-mois', label: '1 à 3 mois' },
+        { value: '3-6-mois', label: '3 à 6 mois' }, { value: 'plus-6-mois', label: 'Plus de 6 mois' } ] },
+      { key: 'problemePrincipal', label: 'Qu’est-ce qui bloque le plus ?', options: [
+        { value: 'peu-visites', label: 'Peu de visites' }, { value: 'visites-sans-offre', label: 'Des visites mais pas d’offre' },
+        { value: 'offres-basses', label: 'Des offres trop basses' }, { value: 'peu-vue', label: 'L’annonce est peu vue' },
+        { value: 'je-ne-sais-pas', label: 'Je ne sais pas' } ] },
+    ],
+    acheteur: [
+      { key: 'typeRecherche', label: 'Que recherchez-vous ?', options: OPTS_TYPE },
+      { key: 'budget', label: 'Votre budget approximatif ?', options: [
+        { value: 'moins-150', label: 'Moins de 150 000 €' }, { value: '150-250', label: '150 à 250 000 €' },
+        { value: '250-400', label: '250 à 400 000 €' }, { value: 'plus-400', label: 'Plus de 400 000 €' },
+        { value: 'nsp', label: 'Je ne sais pas encore' } ] },
+      { key: 'horizon', label: 'Dans quel délai ?', options: [
+        { value: 'rapidement', label: 'Rapidement' }, { value: 'dans-annee', label: 'Dans l’année' }, { value: 'sans-date', label: 'Pas pressé' } ] },
+    ],
+  };
+
+  function brancherConversion(model: any) {
+    const paths = document.getElementById('vr-paths')!;
+    const panneau = document.getElementById('vr-panneau')!;
+    paths.querySelectorAll<HTMLButtonElement>('.vr-path').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.path;
+        if (p === 'mouaad') panneauMouaad(panneau);
+        else if (p === 'explorer') panneauExplorer(panneau);
+        else panneauQualif(panneau, model);
+        panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+      });
+    });
   }
 
+  function panneauMouaad(panneau: HTMLElement) {
+    panneau.innerHTML = `
+      <div class="vr-panneau">
+        <p class="vr-q-label">Parlons de votre projet.</p>
+        <p class="font-sans text-[15px] text-brun leading-relaxed" style="margin-bottom:1.1rem">
+          Pas d’étape à remplir : contactez Mouaad directement, il vous répond personnellement.
+        </p>
+        <div class="vr-contact-liens">
+          <a href="tel:+33781380121" class="btn-primaire">Appeler Mouaad</a>
+          <a href="mailto:mouaad@levois.fr" class="btn-secondaire">Écrire un e-mail</a>
+          <a href="/contact?src=votre-rue" class="btn-secondaire">Être rappelé</a>
+        </div>
+      </div>`;
+  }
+
+  function panneauExplorer(panneau: HTMLElement) {
+    panneau.innerHTML = `
+      <div class="vr-panneau">
+        <p class="vr-q-label">Continuer à comprendre.</p>
+        <div class="vr-explorer">
+          <a href="/situer-ma-vente?src=votre-rue"><b>Situer ma vente</b> — un diagnostic en 3 minutes, sans coordonnées</a>
+          <a href="/methode"><b>La méthode LEVOIS</b> — lire le marché avant de décider</a>
+          <a href="/ressources/annonce-vue-peu-de-contacts"><b>Pourquoi une vente bloque</b> — annonce vue, peu de contacts</a>
+          <a href="/ressources"><b>Toutes les ressources</b> — comprendre chaque étape</a>
+        </div>
+      </div>`;
+  }
+
+  // Micro-qualification : une question par écran, progression visible
+  function panneauQualif(panneau: HTMLElement, model: any) {
+    const state: any = { intentionKey: null, intention: null, tag: null, answers: {} };
+
+    const rendre = (steps: any[], idx: number) => {
+      const total = 1 + steps.length + 1; // intention + questions + contact
+      const dots = Array.from({ length: total }, (_, i) => `<span class="vr-q-dot ${i <= idx ? 'is-on' : ''}"></span>`).join('');
+      // idx 0 = intention ; 1..steps.length = questions ; total-1 = contact
+      if (idx === 0) {
+        panneau.innerHTML = `
+          <div class="vr-panneau">
+            <div class="vr-q-progress">${dots}</div>
+            <p class="vr-q-label">Où en êtes-vous ?</p>
+            <div class="vr-q-opts">${INTENTIONS.map((it) => `<button type="button" class="vr-q-opt" data-k="${it.key}">${it.label}</button>`).join('')}</div>
+          </div>`;
+        panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
+          const it = INTENTIONS.find((x) => x.key === b.dataset.k)!;
+          state.intentionKey = it.key; state.intention = it.label; state.tag = it.tag;
+          const st = QUALIF[it.key] || [];
+          if (st.length) rendre(st, 1); else rendreContact(st);
+        }));
+        return;
+      }
+      const q = steps[idx - 1];
+      panneau.innerHTML = `
+        <div class="vr-panneau">
+          <div class="vr-q-progress">${dots}</div>
+          <p class="vr-q-label">${esc(q.label)}</p>
+          <div class="vr-q-opts">${q.options.map((o: any) => `<button type="button" class="vr-q-opt" data-v="${o.value}">${esc(o.label)}</button>`).join('')}</div>
+          <button type="button" class="vr-q-back">← Revenir</button>
+        </div>`;
+      panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
+        state.answers[q.key] = { value: b.dataset.v, label: b.textContent };
+        if (idx < steps.length) rendre(steps, idx + 1); else rendreContact(steps);
+      }));
+      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (idx === 1) rendre(steps, 0); else rendre(steps, idx - 1); });
+    };
+
+    const rendreContact = (steps: any[]) => {
+      const total = 1 + steps.length + 1;
+      const dots = Array.from({ length: total }, () => `<span class="vr-q-dot is-on"></span>`).join('');
+      panneau.innerHTML = `
+        <div class="vr-panneau">
+          <div class="vr-q-progress">${dots}</div>
+          <p class="vr-q-label">Où vous envoyer votre lecture personnalisée ?</p>
+          <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
+            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c’est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
+          </p>
+          <form id="vr-lead" novalidate>
+            <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
+            <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
+            <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#B8AA97">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
+            <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
+            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J’accepte d’être recontacté au sujet de ma demande — et pour rien d’autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+            <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
+            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir ma lecture personnalisée</button>
+            <button type="button" class="vr-q-back">← Revenir</button>
+          </form>
+        </div>`;
+      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (steps.length) rendre(steps, steps.length); else rendre(steps, 0); });
+      brancherEnvoiLead(panneau, model, state);
+    };
+
+    rendre([], 0);
+  }
+
+  function brancherEnvoiLead(panneau: HTMLElement, model: any, state: any) {
+    const f = panneau.querySelector<HTMLFormElement>('#vr-lead')!;
+    const err = panneau.querySelector<HTMLElement>('#vr-lead-err')!;
+    const btn = panneau.querySelector<HTMLButtonElement>('#vr-lead-envoi')!;
+    let envoiEnCours = false;
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (envoiEnCours) return;
+      err.classList.add('hidden');
+      if (!f.checkValidity()) { f.reportValidity(); return; }
+      envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
+      const fd = new FormData(f);
+      const d = model.derniere;
+      // Charge utile destinée à /api/lead. Le backend est migré vers Cloudflare
+      // Pages Functions à l'itération suivante : ce format reste stable.
+      const payload = {
+        type: 'votre-rue',
+        source: 'QR /votre-rue',
+        adresseRecherchee: selection?.label || '',
+        commune: d?.co || '',
+        intention: state.intention, intentionKey: state.intentionKey, profil: state.tag,
+        qualification: Object.fromEntries(Object.entries(state.answers).map(([k, v]: any) => [k, v.label])),
+        prenom: fd.get('prenom'), email: fd.get('email'), telephone: fd.get('telephone') || null,
+        site_web: fd.get('site_web') || '',
+        contexteInfographie: {
+          derniereVente: d ? `${eur.format(d.v)} € · ${bienCourt(d)} · ${dateMois(d.d)}` : null,
+          nbVentes: model.nbVentes, rayon: model.Rw,
+          prixMedian: model.C ? Math.round(model.C.median) : null,
+          fourchette: model.C ? [Math.round(model.C.q1), Math.round(model.C.q3)] : null,
+          tendance: model.D ? { direction: model.D.dir, pct: Number(model.D.delta.toFixed(1)) } : null,
+        },
+      };
+      try {
+        const rep = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (rep.ok) {
+          panneau.innerHTML = `
+            <div class="vr-panneau">
+              <p class="vr-q-label">C’est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
+              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre lecture personnalisée et vous l’envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+            </div>`;
+        } else {
+          const data = await rep.json().catch(() => null);
+          err.textContent = data?.message || 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.';
+          err.classList.remove('hidden');
+        }
+      } catch {
+        err.textContent = 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.';
+        err.classList.remove('hidden');
+      } finally {
+        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir ma lecture personnalisée';
+      }
+    });
+  }
+
+  // ——— États vides / attente ———
   function afficherDonneesEnAttente() {
-    resultats.hidden = false;
-    resultats.innerHTML = `
-      <div class="vr-vide">
-        <p class="font-display text-xl text-encre mb-2">L’accès aux ventes de votre secteur est en cours de finalisation.</p>
-        <p class="font-sans text-[15px] text-brun leading-relaxed">
-          Les données publiques de ventes (DVF) pour votre quartier seront disponibles ici très prochainement.
-          En attendant, Mouaad peut vous transmettre directement les ventes récentes autour de votre adresse.
-        </p>
-        <div class="flex flex-wrap gap-3 mt-5">
-          <a href="/contact" class="btn-primaire">Demander à Mouaad</a>
-          <a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a>
-        </div>
-      </div>`;
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">L’accès aux ventes de votre secteur est en cours de finalisation.</p>
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Les données publiques de ventes (DVF) seront disponibles ici très prochainement. En attendant, Mouaad peut vous transmettre les ventes récentes autour de votre adresse.</p>
+      <div class="flex flex-wrap gap-3 mt-5"><a href="/contact?src=votre-rue" class="btn-primaire">Demander à Mouaad</a><a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a></div></div>`;
   }
-
   function afficherAucun(label: string) {
-    resultats.hidden = false;
-    resultats.innerHTML = `
-      <div class="vr-vide">
-        <p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
-        <p class="font-sans text-[15px] text-brun leading-relaxed">
-          Autour de « ${escapeHtml(label)} », aucune vente ne figure pour l’instant dans les données publiques
-          disponibles (DVF). Cette base n’est pas exhaustive, et certains secteurs y sont moins couverts.
-        </p>
-        <div class="flex flex-wrap gap-3 mt-5">
-          <a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a>
-          <a href="/contact" class="btn-secondaire">Échanger avec Mouaad</a>
-        </div>
-      </div>`;
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de « ${esc(label)} », aucune vente ne figure pour l’instant dans les données publiques disponibles (DVF). Cette base n’est pas exhaustive.</p>
+      <div class="flex flex-wrap gap-3 mt-5"><a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a><a href="/contact?src=votre-rue" class="btn-secondaire">Échanger avec Mouaad</a></div></div>`;
   }
 
-  function afficherResultat(r: NonNullable<ReturnType<typeof rechercher>>, label: string) {
-    const p = r.principal;
-    // €/m² seulement si une seule unité : sinon le prix couvre plusieurs lots.
-    const m2 = p.sb && !multiLots(p) ? `${eur.format(Math.round(p.v / p.sb))} €/m²` : '';
-    const metaLigne = majMeta();
+  // ——— Moment d'analyse (adossé au calcul réel, sans fausse attente) ———
+  async function jouerAnalyseEtRendre(lat: number, lon: number) {
+    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', 'Lecture de l’évolution du secteur…'];
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-analyse">${messages.map((m, i) => `<div class="vr-analyse-step" data-i="${i}"><span class="vr-analyse-dot"></span><span>${m}</span></div>`).join('')}</div>`;
+    const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-analyse-step'));
+    const activer = (i: number) => steps.forEach((s, j) => { s.classList.toggle('is-active', j === i); s.classList.toggle('is-done', j < i); });
 
-    const autresHtml = r.autres.length
-      ? `<div class="vr-autres">
-          <h3>${r.autres.length === 1 ? 'Une autre vente proche' : `${r.autres.length} autres ventes proches`}</h3>
-          ${r.autres.map((t) => `
-            <div class="vr-autre">
-              <span class="vr-autre-g">${escapeHtml(ligneBien(t))}
-                <span class="vr-autre-sub">${escapeHtml(adresseLisible(t))} · ${escapeHtml(dateLisible(t.d))} · ${escapeHtml(distanceLisible((t as any)._dist))}</span>
-              </span>
-              <span class="vr-autre-prix">${eur.format(t.v)} €</span>
-            </div>`).join('')}
-        </div>`
-      : '';
+    activer(0); await wait(450);
+    const model = computeModel(lat, lon); // calcul réel
+    steps[0].classList.add('is-done');
+    activer(1); await wait(450);
+    activer(2); await wait(450);
+    steps.forEach((s) => { s.classList.remove('is-active'); s.classList.add('is-done'); });
+    await wait(200);
 
-    resultats.hidden = false;
-    resultats.innerHTML = `
-      <div class="vr-primary">
-        <p class="vr-primary-label">La vente la plus récente retrouvée à proximité, dans les données publiques disponibles</p>
-        <p class="vr-primary-prix">${eur.format(p.v)} €</p>
-        ${m2 ? `<p class="vr-primary-m2">${m2}</p>` : '<p class="vr-primary-m2"></p>'}
-        <p class="vr-primary-adresse">${escapeHtml(ligneBien(p))}</p>
-        <p class="vr-primary-meta">${escapeHtml(adresseLisible(p))}<br/>Vendu en ${escapeHtml(dateLisible(p.d))}</p>
-        <span class="vr-primary-dist">${escapeHtml(distanceLisible(p._dist))} de l’adresse indiquée${r.total > r.autres.length + 1 ? ` · ${r.total} ventes proches au total` : ''}</span>
-      </div>
-      ${metaLigne ? `<p class="vr-note-maj"><span aria-hidden="true">ⓘ</span><span>${escapeHtml(metaLigne)}. Source : DVF (DGFiP).</span></p>` : ''}
-      ${autresHtml}`;
+    if (!model) { afficherAucun(selection?.label || input.value); return; }
+    lastModel = model;
+    construireInfographie(model);
+    if (!reduced) { const first = scene.querySelector<HTMLElement>('.vr-block'); if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   }
 
   // ——— Autocomplétion ———
-  let debounce = 0;
-  let activeIdx = -1;
-  let currentSugs: any[] = [];
-
-  function fermerSug() {
-    sugList.hidden = true;
-    input.setAttribute('aria-expanded', 'false');
-    activeIdx = -1;
-  }
+  let debounce = 0, activeIdx = -1, currentSugs: any[] = [];
+  const fermerSug = () => { sugList.hidden = true; input.setAttribute('aria-expanded', 'false'); activeIdx = -1; };
   function rendreSug(feats: any[]) {
     currentSugs = feats;
-    if (feats.length === 0) { fermerSug(); return; }
-    sugList.innerHTML = feats.map((f, i) => {
-      const pr = f.properties || {};
-      const sub = [pr.postcode, pr.city].filter(Boolean).join(' ');
-      return `<li role="option" id="vr-sug-${i}" aria-selected="false" data-idx="${i}">
-        ${escapeHtml(pr.label || pr.name || '')}
-        <span class="vr-sug-sub">${escapeHtml(sub)}</span>
-      </li>`;
-    }).join('');
-    sugList.hidden = false;
-    input.setAttribute('aria-expanded', 'true');
-    activeIdx = -1;
+    if (!feats.length) { fermerSug(); return; }
+    sugList.innerHTML = feats.map((f, i) => { const pr = f.properties || {}; const sub = [pr.postcode, pr.city].filter(Boolean).join(' '); return `<li role="option" id="vr-sug-${i}" aria-selected="false" data-idx="${i}">${esc(pr.label || pr.name || '')}<span class="vr-sug-sub">${esc(sub)}</span></li>`; }).join('');
+    sugList.hidden = false; input.setAttribute('aria-expanded', 'true'); activeIdx = -1;
   }
   function choisir(i: number) {
-    const f = currentSugs[i];
-    if (!f) return;
+    const f = currentSugs[i]; if (!f) return;
     const [lon, lat] = f.geometry.coordinates;
-    const label = f.properties?.label || input.value;
-    selection = { lon, lat, label };
-    input.value = label;
-    fermerSug();
-    lancerRecherche();
+    selection = { lon, lat, label: f.properties?.label || input.value };
+    input.value = selection.label; fermerSug(); lancer();
   }
-
   input.addEventListener('input', () => {
-    selection = null;
-    geoErreur.classList.add('hidden');
-    const q = input.value.trim();
-    window.clearTimeout(debounce);
+    selection = null; geoErreur.classList.add('hidden');
+    const q = input.value.trim(); window.clearTimeout(debounce);
     if (q.length < 3) { fermerSug(); return; }
-    debounce = window.setTimeout(async () => {
-      try {
-        const feats = await geocoder(q, true, 6);
-        rendreSug(feats);
-      } catch { fermerSug(); }
-    }, 260);
+    debounce = window.setTimeout(async () => { try { rendreSug(await geocoder(q, true, 6)); } catch { fermerSug(); } }, 260);
   });
-
   input.addEventListener('keydown', (e) => {
     if (sugList.hidden) return;
     const items = Array.from(sugList.querySelectorAll('li'));
     if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); }
     else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); choisir(activeIdx); return; }
-    else if (e.key === 'Escape') { fermerSug(); return; }
-    else return;
+    else if (e.key === 'Escape') { fermerSug(); return; } else return;
     items.forEach((el, i) => el.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false'));
     if (items[activeIdx]) items[activeIdx].scrollIntoView({ block: 'nearest' });
   });
+  sugList.addEventListener('click', (e) => { const li = (e.target as HTMLElement).closest('li'); if (li) choisir(Number((li as HTMLElement).dataset.idx)); });
+  document.addEventListener('click', (e) => { if (!form.contains(e.target as Node)) fermerSug(); });
 
-  sugList.addEventListener('click', (e) => {
-    const li = (e.target as HTMLElement).closest('li');
-    if (li) choisir(Number(li.dataset.idx));
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!form.contains(e.target as Node)) fermerSug();
-  });
-
-  // ——— Lancement de la recherche ———
-  async function lancerRecherche() {
-    afficherChargement();
-    try {
-      await chargerDonnees();
-    } catch {
+  // ——— Lancement ———
+  async function lancer() {
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-analyse"><div class="vr-analyse-step is-active"><span class="vr-analyse-dot"></span><span>Recherche des ventes autour de chez vous…</span></div></div>`;
+    try { await chargerDonnees(); } catch {
       geoErreur.textContent = 'Impossible de charger les données pour le moment. Réessayez dans un instant.';
-      geoErreur.classList.remove('hidden');
-      resultats.hidden = true;
-      return;
+      geoErreur.classList.remove('hidden'); scene.hidden = true; return;
     }
+    if (!meta || meta.status !== 'ready' || !dataset || !dataset.length) { afficherDonneesEnAttente(); return; }
 
-    // Données pas encore générées → état honnête, jamais de fausse vente.
-    if (!meta || meta.status !== 'ready' || !dataset || dataset.length === 0) {
-      afficherDonneesEnAttente();
-      return;
-    }
-
-    // Coordonnées : sélection explicite, sinon géocodage du texte saisi.
     let coords = selection;
     if (!coords) {
       const q = input.value.trim();
-      if (q.length < 3) {
-        resultats.hidden = true;
-        geoErreur.textContent = 'Indiquez d’abord votre rue ou votre adresse.';
-        geoErreur.classList.remove('hidden');
-        return;
-      }
-      try {
-        const feats = await geocoder(q, false, 1);
-        if (feats.length === 0) { afficherAucun(q); return; }
-        const [lon, lat] = feats[0].geometry.coordinates;
-        coords = { lon, lat, label: feats[0].properties?.label || q };
-      } catch {
-        geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.';
-        geoErreur.classList.remove('hidden');
-        resultats.hidden = true;
-        return;
-      }
+      if (q.length < 3) { scene.hidden = true; geoErreur.textContent = 'Indiquez d’abord votre rue ou votre adresse.'; geoErreur.classList.remove('hidden'); return; }
+      try { const feats = await geocoder(q, false, 1); if (!feats.length) { afficherAucun(q); return; } const [lon, lat] = feats[0].geometry.coordinates; coords = { lon, lat, label: feats[0].properties?.label || q }; selection = coords; }
+      catch { geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.'; geoErreur.classList.remove('hidden'); scene.hidden = true; return; }
     }
-
-    const r = rechercher(coords.lat, coords.lon);
-    if (!r) { afficherAucun(coords.label); return; }
-    afficherResultat(r, coords.label);
+    await jouerAnalyseEtRendre(coords.lat, coords.lon);
   }
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    fermerSug();
-    lancerRecherche();
-  });
+  form.addEventListener('submit', (e) => { e.preventDefault(); fermerSug(); lancer(); });
 </script>
