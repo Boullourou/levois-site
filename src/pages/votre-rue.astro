@@ -40,6 +40,7 @@ import Layout from '../layouts/Layout.astro';
         Les ventes réellement enregistrées autour de chez vous.
         Sans inscription, sans qu’on vous rappelle. La réponse en 30&nbsp;secondes.
       </p>
+      <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
     </header>
 
     <form id="vr-form" class="vr-search carte p-5 md:p-6" autocomplete="off" novalidate>
@@ -128,6 +129,18 @@ import Layout from '../layouts/Layout.astro';
     font-weight: 500;
     font-size: clamp(1.9rem, 5vw, 3rem);
     line-height: 1.08; letter-spacing: -0.02em;
+  }
+
+  .vr-fraicheur {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    margin-top: 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem;
+    color: #6B5D4F;
+    background: #F0E2D8; border-radius: 999px; padding: 0.35rem 0.85rem;
+  }
+  .vr-fraicheur::before {
+    content: ''; width: 7px; height: 7px; border-radius: 999px;
+    background: #A85638; flex: 0 0 auto;
   }
 
   .vr-field { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -240,6 +253,10 @@ import Layout from '../layouts/Layout.astro';
 
   const eur = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
   const moisAn = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' });
+  const jourMoisAn = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateComplete = (d: string) => { const dt = new Date(d + 'T00:00:00'); return isNaN(dt.getTime()) ? d : jourMoisAn.format(dt); };
+
+  const fraicheurEl = document.getElementById('vr-fraicheur') as HTMLElement;
 
   let dataset: Tx[] | null = null;
   let meta: Meta | null = null;
@@ -255,6 +272,20 @@ import Layout from '../layouts/Layout.astro';
     dataset = (await dRep.json()) as Tx[];
     meta = (await mRep.json()) as Meta;
   }
+
+  // ——— Fraîcheur des données affichée d'emblée (sans attendre une recherche) ———
+  // Ne jamais laisser croire que la page couvre des ventes plus récentes que
+  // celles réellement disponibles.
+  async function afficherFraicheur() {
+    try {
+      const m = (await (await fetch('/data/dvf-meta.json')).json()) as Meta;
+      if (m.status === 'ready' && m.dateVenteLaPlusRecente) {
+        fraicheurEl.textContent = `Données DVF disponibles jusqu’au ${dateComplete(m.dateVenteLaPlusRecente)}`;
+        fraicheurEl.hidden = false;
+      }
+    } catch { /* silencieux : la ligne reste masquée */ }
+  }
+  afficherFraicheur();
 
   // ——— Géocodage Géoplateforme (BAN) — service actuel de l'État ———
   async function geocoder(q: string, autocomplete: boolean, limit: number) {
@@ -329,13 +360,9 @@ import Layout from '../layouts/Layout.astro';
 
   function majMeta() {
     if (!meta) return '';
-    const arret = meta.dateVenteLaPlusRecente ? dateLisible(meta.dateVenteLaPlusRecente) : null;
-    const maj = meta.generatedAt
-      ? new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(meta.generatedAt))
-      : null;
     const parts: string[] = [];
-    if (arret) parts.push(`vente la plus récente connue : ${arret}`);
-    if (maj) parts.push(`données mises à jour le ${maj}`);
+    if (meta.dateVenteLaPlusRecente) parts.push(`Données DVF disponibles jusqu’au ${dateComplete(meta.dateVenteLaPlusRecente)}`);
+    if (meta.generatedAt) parts.push(`extraites le ${jourMoisAn.format(new Date(meta.generatedAt))}`);
     return parts.join(' · ');
   }
 
