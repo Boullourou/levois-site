@@ -1,0 +1,12 @@
+{
+  "status": "pending",
+  "generatedAt": null,
+  "source": "Demandes de valeurs foncières (DVF) — DGFiP, géolocalisées par Etalab (geo-dvf)",
+  "sourceUrl": "https://files.data.gouv.fr/geo-dvf/latest/csv/",
+  "licence": "Licence ouverte / Etalab 2.0",
+  "departement": "28",
+  "communes": ["Lèves", "Chartres", "Mainvilliers", "Lucé", "Champhol", "Le Coudray", "Luisant"],
+  "count": 0,
+  "dateVenteLaPlusRecente": null,
+  "note": "Jeu de données pas encore généré. Lancer `npm run data:dvf` dans un environnement disposant d'un accès Internet ouvert (files.data.gouv.fr), puis committer public/data/dvf-secteur.json et public/data/dvf-meta.json."
+}

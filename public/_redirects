@@ -6,8 +6,23 @@
 /guide                /ressources       301
 /carnets-de-terrain   /ressources       301
 /carnets-de-terrain/* /ressources       301
-/votre-rue            /                 301
 /observatoire-immo    /                 301
-/carte                /                 301
 /vendre-a-leves       /situer-ma-vente  301
 /merci                /                 301
+
+# ——————————————————————————————————————————————————————————————
+# Routes protégées (QR codes imprimés) — ne jamais supprimer/renommer
+# sans validation explicite.
+# ——————————————————————————————————————————————————————————————
+
+# /carte — carte de visite : page dédiée ACTIVE.
+# (plus de redirection : la vraie page src/pages/carte.astro est servie)
+
+# /votre-rue — encart publicitaire : page construite mais MAINTENUE HORS LIGNE
+# tant que le jeu de données DVF n'est pas généré (`npm run data:dvf`) puis
+# validé. Redirection forcée TEMPORAIRE vers l'accueil — comportement identique
+# à aujourd'hui, aucune régression.
+# POUR METTRE LA PAGE EN LIGNE : supprimer les deux lignes ci-dessous une fois
+# public/data/dvf-secteur.json généré (status "ready") et committé.
+/votre-rue            /                 301!
+/votre-rue/*          /                 301!

@@ -1,0 +1,533 @@
+---
+/**
+ * /votre-rue — expérience dédiée au QR code de l'encart publicitaire.
+ *
+ * URL protégée (imprimée sur support physique) : ne jamais supprimer, renommer
+ * ni rediriger sans validation explicite.
+ *
+ * Promesse imprimée, tenue littéralement :
+ *   « Combien s'est vendue la dernière maison de votre quartier ? »
+ *   « Les prix réels de votre secteur, à Lèves. »
+ *   « Sans inscription, sans qu'on vous rappelle. La réponse en 30 secondes. »
+ *
+ * Parcours : promesse → saisie d'adresse (géocodage Géoplateforme / BAN) →
+ * vente réelle la plus récente retrouvée à proximité (données DVF locales) →
+ * autres ventes proches → « un signal, pas une estimation » → aller plus loin.
+ *
+ * Aucune collecte (email / téléphone / compte) avant délivrance de la valeur.
+ * Aucune donnée inventée : les résultats proviennent du JSON DVF généré par
+ * scripts/build-dvf.mjs. Tant que ce jeu de données n'est pas généré, la page
+ * affiche un état honnête « données en cours de finalisation » — jamais de
+ * fausse vente.
+ */
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="Les prix réels de votre secteur"
+  description="Combien s'est vendue la dernière maison de votre quartier ? Les ventes réelles de votre secteur, à partir des données publiques DVF. Sans inscription."
+  noindex={true}
+>
+  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
+
+    <!-- ——— Zone 1 : Promesse + saisie ——— -->
+    <header class="mb-8 md:mb-10">
+      <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
+      <h1 class="vr-titre text-encre mb-4">
+        Combien s’est vendue la dernière maison de votre quartier&nbsp;?
+      </h1>
+      <p class="font-sans text-body-lg text-brun max-w-prose">
+        Les ventes réellement enregistrées autour de chez vous.
+        Sans inscription, sans qu’on vous rappelle. La réponse en 30&nbsp;secondes.
+      </p>
+    </header>
+
+    <form id="vr-form" class="vr-search carte p-5 md:p-6" autocomplete="off" novalidate>
+      <label for="vr-adresse" class="block font-sans text-sm text-brun mb-2">
+        Votre rue ou votre adresse
+      </label>
+      <div class="vr-field">
+        <div class="vr-combo">
+          <input
+            id="vr-adresse"
+            type="text"
+            name="adresse"
+            inputmode="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Ex : rue de la République, Lèves"
+            class="vr-input"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="vr-suggestions"
+            aria-autocomplete="list"
+          />
+          <ul id="vr-suggestions" class="vr-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>
+        </div>
+        <button type="submit" id="vr-submit" class="btn-primaire vr-submit">Voir les ventes</button>
+      </div>
+      <p class="font-sans text-[13px] text-brun/70 mt-3">
+        Aucune création de compte. Aucun e-mail ni téléphone demandé pour obtenir le résultat.
+      </p>
+      <p id="vr-geo-erreur" class="font-sans text-sm text-argile mt-2 hidden" role="alert"></p>
+    </form>
+
+    <!-- ——— Zone 2 : Résultats (injectés) ——— -->
+    <section id="vr-resultats" class="mt-10 md:mt-12" aria-live="polite" hidden></section>
+
+    <!-- ——— Zone 3 : Signal, pas estimation (toujours présente) ——— -->
+    <section class="vr-cadre mt-12 md:mt-16" aria-labelledby="vr-signal-titre">
+      <h2 id="vr-signal-titre" class="text-h3 text-encre mb-5">Une vente voisine est un signal, pas une estimation</h2>
+      <div class="grid sm:grid-cols-2 gap-6">
+        <div>
+          <p class="font-sans text-sm uppercase tracking-widest text-argile mb-2">Ce que ça permet de comprendre</p>
+          <ul class="space-y-2 font-sans text-[15px] text-encre/85 leading-relaxed">
+            <li>Le niveau de prix pratiqué dans le secteur.</li>
+            <li>La dynamique récente du marché autour de chez vous.</li>
+            <li>Des points de comparaison concrets, réellement échangés.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="font-sans text-sm uppercase tracking-widest text-argile mb-2">Ce que ça ne permet pas de conclure</p>
+          <ul class="space-y-2 font-sans text-[15px] text-encre/85 leading-relaxed">
+            <li>Le prix de <em>votre</em> bien : surface, état, orientation et étage changent tout.</li>
+            <li>Une valeur à l’euro près : une vente voisine n’est pas une estimation.</li>
+            <li>L’état du marché aujourd’hui : la dernière vente connue peut dater de plusieurs mois.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ——— Zone 4 : Aller plus loin (facultatif) ——— -->
+    <section class="mt-10 md:mt-12">
+      <div class="carte bg-argile-pale/40 p-6 md:p-8">
+        <h2 class="font-display text-2xl text-encre mb-2">Vous envisagez de vendre dans ce secteur&nbsp;?</h2>
+        <p class="font-sans text-[15px] text-brun leading-relaxed mb-6 max-w-prose">
+          LEVOIS lit le marché là où votre bien sera réellement comparé — puis vous aide
+          à décider à partir des signaux, pas des suppositions. Sans engagement.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a>
+          <a href="/contact" class="btn-secondaire">Échanger avec Mouaad</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Source / transparence -->
+    <p id="vr-source" class="font-sans text-[13px] text-brun/70 mt-10 leading-relaxed">
+      Source : Demandes de valeurs foncières (DVF), DGFiP — données publiques ouvertes.
+      La base DVF n’est pas exhaustive : certaines ventes peuvent en être absentes.
+    </p>
+
+  </div>
+</Layout>
+
+<style>
+  .vr-titre {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(1.9rem, 5vw, 3rem);
+    line-height: 1.08; letter-spacing: -0.02em;
+  }
+
+  .vr-field { display: flex; flex-direction: column; gap: 0.75rem; }
+  @media (min-width: 560px) { .vr-field { flex-direction: row; align-items: flex-start; } }
+
+  .vr-combo { position: relative; flex: 1; }
+  .vr-input {
+    width: 100%;
+    background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
+    padding: 0.85rem 1rem; font-family: 'Instrument Sans', sans-serif;
+    font-size: 1rem; color: #211C16; min-height: 52px;
+  }
+  .vr-input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
+  .vr-submit { min-height: 52px; white-space: nowrap; }
+  @media (max-width: 559px) { .vr-submit { width: 100%; } }
+
+  /* Liste de suggestions */
+  .vr-suggestions {
+    position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px);
+    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 12px;
+    box-shadow: 0 24px 48px -28px rgba(33, 28, 22, 0.5);
+    list-style: none; margin: 0; padding: 0.35rem; max-height: 320px; overflow-y: auto;
+  }
+  .vr-suggestions li {
+    padding: 0.65rem 0.75rem; border-radius: 8px; cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16;
+    line-height: 1.35;
+  }
+  .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: #6B5D4F; }
+  .vr-suggestions li[aria-selected="true"],
+  .vr-suggestions li:hover { background: #F0E2D8; }
+
+  /* Cadre éditorial réutilisable */
+  .vr-cadre {
+    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px;
+    padding: 1.75rem 1.5rem;
+  }
+  @media (min-width: 768px) { .vr-cadre { padding: 2.5rem; } }
+
+  /* ——— Résultats ——— */
+  .vr-etat { display: flex; align-items: center; gap: 0.6rem; font-family: 'Instrument Sans', sans-serif; color: #6B5D4F; }
+  .vr-spin {
+    width: 18px; height: 18px; border-radius: 999px;
+    border: 2px solid rgba(168, 86, 56, 0.3); border-top-color: #A85638;
+    animation: vr-rot 0.7s linear infinite;
+  }
+  @keyframes vr-rot { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .vr-spin { animation: none; } }
+
+  .vr-primary {
+    background: #211C16; color: #F7F2EA; border-radius: 20px;
+    padding: 1.5rem 1.4rem 1.6rem; overflow: hidden;
+  }
+  @media (min-width: 768px) { .vr-primary { padding: 2rem 2.25rem 2.25rem; } }
+  .vr-primary-label {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: #C97B52; margin-bottom: 1rem;
+  }
+  .vr-primary-prix {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1; letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+  }
+  .vr-primary-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem; color: rgba(247,242,234,0.7); margin-bottom: 1.4rem; }
+  .vr-primary-adresse { font-family: 'Fraunces', serif; font-size: 1.2rem; color: #F7F2EA; margin-bottom: 0.35rem; }
+  .vr-primary-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: rgba(247,242,234,0.72); line-height: 1.6; }
+  .vr-primary-dist { display: inline-block; margin-top: 1rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: rgba(247,242,234,0.6); }
+
+  .vr-note-maj {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; color: #6B5D4F;
+    margin-top: 0.9rem; display: flex; gap: 0.4rem; align-items: baseline;
+  }
+
+  .vr-autres { margin-top: 1.5rem; }
+  .vr-autres h3 { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #6B5D4F; margin-bottom: 0.75rem; }
+  .vr-autre {
+    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.4rem 1rem;
+    padding: 0.9rem 0; border-top: 1px solid #E8DFD0;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  .vr-autre-g { color: #211C16; }
+  .vr-autre-prix { color: #211C16; font-weight: 600; }
+  .vr-autre-sub { display: block; font-size: 0.85rem; color: #6B5D4F; }
+
+  .vr-vide {
+    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.75rem 1.5rem;
+  }
+</style>
+
+<script>
+  type Tx = {
+    id: string; d: string; v: number; t: string; lat: number; lon: number;
+    no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
+  };
+  type Meta = {
+    status: string; generatedAt: string | null; communes: string[];
+    count: number; dateVenteLaPlusRecente: string | null;
+  };
+
+  const form = document.getElementById('vr-form') as HTMLFormElement;
+  const input = document.getElementById('vr-adresse') as HTMLInputElement;
+  const sugList = document.getElementById('vr-suggestions') as HTMLUListElement;
+  const submit = document.getElementById('vr-submit') as HTMLButtonElement;
+  const resultats = document.getElementById('vr-resultats') as HTMLElement;
+  const geoErreur = document.getElementById('vr-geo-erreur') as HTMLElement;
+
+  // Point de biais pour le géocodage : centre approximatif du bassin chartrain.
+  const BIAIS = { lon: 1.4890, lat: 48.4470 };
+  const GEOCODE = 'https://data.geopf.fr/geocodage/search';
+
+  const eur = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+  const moisAn = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' });
+
+  let dataset: Tx[] | null = null;
+  let meta: Meta | null = null;
+  let selection: { lon: number; lat: number; label: string } | null = null;
+
+  // ——— Chargement paresseux du jeu de données + meta ———
+  async function chargerDonnees() {
+    if (dataset && meta) return;
+    const [dRep, mRep] = await Promise.all([
+      fetch('/data/dvf-secteur.json'),
+      fetch('/data/dvf-meta.json'),
+    ]);
+    dataset = (await dRep.json()) as Tx[];
+    meta = (await mRep.json()) as Meta;
+  }
+
+  // ——— Géocodage Géoplateforme (BAN) — service actuel de l'État ———
+  async function geocoder(q: string, autocomplete: boolean, limit: number) {
+    const url = new URL(GEOCODE);
+    url.searchParams.set('q', q);
+    url.searchParams.set('limit', String(limit));
+    url.searchParams.set('lon', String(BIAIS.lon));
+    url.searchParams.set('lat', String(BIAIS.lat));
+    if (autocomplete) url.searchParams.set('autocomplete', '1');
+    const rep = await fetch(url.toString());
+    if (!rep.ok) throw new Error(`geocode ${rep.status}`);
+    const json = await rep.json();
+    const feats = Array.isArray(json.features) ? json.features : [];
+    // On garde l'Eure-et-Loir (tout code INSEE commençant par 28).
+    return feats.filter((f: any) => String(f?.properties?.citycode || '').startsWith('28'));
+  }
+
+  // ——— Distance haversine (mètres) ———
+  function distance(aLat: number, aLon: number, bLat: number, bLon: number) {
+    const R = 6371000;
+    const dLat = ((bLat - aLat) * Math.PI) / 180;
+    const dLon = ((bLon - aLon) * Math.PI) / 180;
+    const la1 = (aLat * Math.PI) / 180;
+    const la2 = (bLat * Math.PI) / 180;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  const distanceLisible = (m: number) =>
+    m < 1000 ? `à environ ${Math.round(m / 50) * 50} m` : `à environ ${(m / 1000).toFixed(1).replace('.', ',')} km`;
+
+  function ligneBien(t: Tx) {
+    const bits: string[] = [t.t];
+    if (t.sb) bits.push(`${t.sb} m²`);
+    if (t.p) bits.push(`${t.p} pièce${t.p > 1 ? 's' : ''}`);
+    if (t.st) bits.push(`${eur.format(t.st)} m² de terrain`);
+    return bits.join(' · ');
+  }
+  function adresseLisible(t: Tx) {
+    const rue = [t.no, t.vo].filter(Boolean).join(' ');
+    const ville = [t.cp, t.co].filter(Boolean).join(' ');
+    if (rue && ville) return `${rue}, ${ville}`;
+    return rue || ville || 'Adresse approximative';
+  }
+  function dateLisible(d: string) {
+    const dt = new Date(d + 'T00:00:00');
+    return isNaN(dt.getTime()) ? d : moisAn.format(dt);
+  }
+
+  // ——— Recherche de proximité ———
+  function rechercher(lat: number, lon: number) {
+    const paliers = [700, 1500, 3000];
+    let proches: Array<Tx & { _dist: number }> = [];
+    for (const rayon of paliers) {
+      proches = (dataset as Tx[])
+        .map((t) => ({ ...t, _dist: distance(lat, lon, t.lat, t.lon) }))
+        .filter((t) => t._dist <= rayon);
+      if (proches.length > 0) break;
+    }
+    if (proches.length === 0) return null;
+    // Résultat principal : la vente la plus récente parmi les proches.
+    const parDate = [...proches].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist));
+    const principal = parDate[0];
+    const autres = parDate.slice(1, 4);
+    return { principal, autres, total: proches.length };
+  }
+
+  function majMeta() {
+    if (!meta) return '';
+    const arret = meta.dateVenteLaPlusRecente ? dateLisible(meta.dateVenteLaPlusRecente) : null;
+    const maj = meta.generatedAt
+      ? new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(meta.generatedAt))
+      : null;
+    const parts: string[] = [];
+    if (arret) parts.push(`vente la plus récente connue : ${arret}`);
+    if (maj) parts.push(`données mises à jour le ${maj}`);
+    return parts.join(' · ');
+  }
+
+  function escapeHtml(s: string) {
+    return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  }
+
+  // ——— Rendu ———
+  function afficherChargement() {
+    resultats.hidden = false;
+    resultats.innerHTML = `<p class="vr-etat"><span class="vr-spin" aria-hidden="true"></span> Recherche des ventes autour de cette adresse…</p>`;
+  }
+
+  function afficherDonneesEnAttente() {
+    resultats.hidden = false;
+    resultats.innerHTML = `
+      <div class="vr-vide">
+        <p class="font-display text-xl text-encre mb-2">L’accès aux ventes de votre secteur est en cours de finalisation.</p>
+        <p class="font-sans text-[15px] text-brun leading-relaxed">
+          Les données publiques de ventes (DVF) pour votre quartier seront disponibles ici très prochainement.
+          En attendant, Mouaad peut vous transmettre directement les ventes récentes autour de votre adresse.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-5">
+          <a href="/contact" class="btn-primaire">Demander à Mouaad</a>
+          <a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a>
+        </div>
+      </div>`;
+  }
+
+  function afficherAucun(label: string) {
+    resultats.hidden = false;
+    resultats.innerHTML = `
+      <div class="vr-vide">
+        <p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
+        <p class="font-sans text-[15px] text-brun leading-relaxed">
+          Autour de « ${escapeHtml(label)} », aucune vente ne figure pour l’instant dans les données publiques
+          disponibles (DVF). Cette base n’est pas exhaustive, et certains secteurs y sont moins couverts.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-5">
+          <a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a>
+          <a href="/contact" class="btn-secondaire">Échanger avec Mouaad</a>
+        </div>
+      </div>`;
+  }
+
+  function afficherResultat(r: NonNullable<ReturnType<typeof rechercher>>, label: string) {
+    const p = r.principal;
+    const m2 = p.sb ? `${eur.format(Math.round(p.v / p.sb))} €/m²` : '';
+    const metaLigne = majMeta();
+
+    const autresHtml = r.autres.length
+      ? `<div class="vr-autres">
+          <h3>${r.autres.length === 1 ? 'Une autre vente proche' : `${r.autres.length} autres ventes proches`}</h3>
+          ${r.autres.map((t) => `
+            <div class="vr-autre">
+              <span class="vr-autre-g">${escapeHtml(ligneBien(t))}
+                <span class="vr-autre-sub">${escapeHtml(adresseLisible(t))} · ${escapeHtml(dateLisible(t.d))} · ${escapeHtml(distanceLisible((t as any)._dist))}</span>
+              </span>
+              <span class="vr-autre-prix">${eur.format(t.v)} €</span>
+            </div>`).join('')}
+        </div>`
+      : '';
+
+    resultats.hidden = false;
+    resultats.innerHTML = `
+      <div class="vr-primary">
+        <p class="vr-primary-label">La vente la plus récente retrouvée à proximité, dans les données publiques disponibles</p>
+        <p class="vr-primary-prix">${eur.format(p.v)} €</p>
+        ${m2 ? `<p class="vr-primary-m2">${m2}</p>` : '<p class="vr-primary-m2"></p>'}
+        <p class="vr-primary-adresse">${escapeHtml(ligneBien(p))}</p>
+        <p class="vr-primary-meta">${escapeHtml(adresseLisible(p))}<br/>Vendu en ${escapeHtml(dateLisible(p.d))}</p>
+        <span class="vr-primary-dist">${escapeHtml(distanceLisible(p._dist))} de l’adresse indiquée${r.total > r.autres.length + 1 ? ` · ${r.total} ventes proches au total` : ''}</span>
+      </div>
+      ${metaLigne ? `<p class="vr-note-maj"><span aria-hidden="true">ⓘ</span><span>${escapeHtml(metaLigne)}. Source : DVF (DGFiP).</span></p>` : ''}
+      ${autresHtml}`;
+  }
+
+  // ——— Autocomplétion ———
+  let debounce = 0;
+  let activeIdx = -1;
+  let currentSugs: any[] = [];
+
+  function fermerSug() {
+    sugList.hidden = true;
+    input.setAttribute('aria-expanded', 'false');
+    activeIdx = -1;
+  }
+  function rendreSug(feats: any[]) {
+    currentSugs = feats;
+    if (feats.length === 0) { fermerSug(); return; }
+    sugList.innerHTML = feats.map((f, i) => {
+      const pr = f.properties || {};
+      const sub = [pr.postcode, pr.city].filter(Boolean).join(' ');
+      return `<li role="option" id="vr-sug-${i}" aria-selected="false" data-idx="${i}">
+        ${escapeHtml(pr.label || pr.name || '')}
+        <span class="vr-sug-sub">${escapeHtml(sub)}</span>
+      </li>`;
+    }).join('');
+    sugList.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+    activeIdx = -1;
+  }
+  function choisir(i: number) {
+    const f = currentSugs[i];
+    if (!f) return;
+    const [lon, lat] = f.geometry.coordinates;
+    const label = f.properties?.label || input.value;
+    selection = { lon, lat, label };
+    input.value = label;
+    fermerSug();
+    lancerRecherche();
+  }
+
+  input.addEventListener('input', () => {
+    selection = null;
+    geoErreur.classList.add('hidden');
+    const q = input.value.trim();
+    window.clearTimeout(debounce);
+    if (q.length < 3) { fermerSug(); return; }
+    debounce = window.setTimeout(async () => {
+      try {
+        const feats = await geocoder(q, true, 6);
+        rendreSug(feats);
+      } catch { fermerSug(); }
+    }, 260);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (sugList.hidden) return;
+    const items = Array.from(sugList.querySelectorAll('li'));
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); }
+    else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); choisir(activeIdx); return; }
+    else if (e.key === 'Escape') { fermerSug(); return; }
+    else return;
+    items.forEach((el, i) => el.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false'));
+    if (items[activeIdx]) items[activeIdx].scrollIntoView({ block: 'nearest' });
+  });
+
+  sugList.addEventListener('click', (e) => {
+    const li = (e.target as HTMLElement).closest('li');
+    if (li) choisir(Number(li.dataset.idx));
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!form.contains(e.target as Node)) fermerSug();
+  });
+
+  // ——— Lancement de la recherche ———
+  async function lancerRecherche() {
+    afficherChargement();
+    try {
+      await chargerDonnees();
+    } catch {
+      geoErreur.textContent = 'Impossible de charger les données pour le moment. Réessayez dans un instant.';
+      geoErreur.classList.remove('hidden');
+      resultats.hidden = true;
+      return;
+    }
+
+    // Données pas encore générées → état honnête, jamais de fausse vente.
+    if (!meta || meta.status !== 'ready' || !dataset || dataset.length === 0) {
+      afficherDonneesEnAttente();
+      return;
+    }
+
+    // Coordonnées : sélection explicite, sinon géocodage du texte saisi.
+    let coords = selection;
+    if (!coords) {
+      const q = input.value.trim();
+      if (q.length < 3) {
+        resultats.hidden = true;
+        geoErreur.textContent = 'Indiquez d’abord votre rue ou votre adresse.';
+        geoErreur.classList.remove('hidden');
+        return;
+      }
+      try {
+        const feats = await geocoder(q, false, 1);
+        if (feats.length === 0) { afficherAucun(q); return; }
+        const [lon, lat] = feats[0].geometry.coordinates;
+        coords = { lon, lat, label: feats[0].properties?.label || q };
+      } catch {
+        geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.';
+        geoErreur.classList.remove('hidden');
+        resultats.hidden = true;
+        return;
+      }
+    }
+
+    const r = rechercher(coords.lat, coords.lon);
+    if (!r) { afficherAucun(coords.label); return; }
+    afficherResultat(r, coords.label);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    fermerSug();
+    lancerRecherche();
+  });
+</script>
