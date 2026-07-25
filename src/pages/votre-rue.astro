@@ -295,10 +295,79 @@ import Layout from '../layouts/Layout.astro';
   .vr-methode-corps { margin-top: 0.8rem; display: grid; gap: 0.7rem; }
   .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
 
+  /* ——————————————————————————————————————————————————————————————
+     Séquence cinématographique (scroll-driven, stage épinglé « à la Jack »)
+     Piloté en continu par le scroll : chaque temps naît du précédent, morphing
+     réversible. Repli empilé en reduced-motion (voir plus bas).
+     —————————————————————————————————————————————————————————————— */
+  .vr-cine { position: relative; }
+  .vr-stage {
+    position: sticky;
+    top: var(--vr-header, 64px);
+    height: calc(100svh - var(--vr-header, 64px));
+    overflow: hidden;
+    display: block;
+    background: #F7F2EA;
+    border-radius: 22px;
+  }
+  .vr-scene {
+    position: absolute; inset: 0;
+    display: flex; align-items: center;
+    padding: 1.5rem clamp(1.25rem, 6vw, 3.5rem);
+    opacity: 0; will-change: opacity, transform;
+    background: #F7F2EA; color: #211C16;
+  }
+  .vr-scene[data-bg="vif"] { background: #FDFBF6; }
+  .vr-scene[data-bg="encre"] { background: #211C16; color: #F7F2EA; }
+  .vr-scene[data-bg="argile"] { background: #F0E2D8; }
+  .vr-sc-inner { width: 100%; max-width: 34rem; margin: 0 auto; }
+
+  .vr-sc-kicker { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #A85638; margin-bottom: 1.1rem; }
+  .vr-scene[data-bg="encre"] .vr-sc-kicker { color: #C97B52; }
+  .vr-sc-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 0.98; letter-spacing: -0.02em; font-size: clamp(3.6rem, 20vw, 6.5rem); color: inherit; }
+  .vr-sc-lead { font-family: 'Instrument Sans', sans-serif; font-size: clamp(1.05rem, 3.5vw, 1.35rem); margin-top: 0.6rem; }
+  .vr-sc-note { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 0.6rem; line-height: 1.5; }
+  .vr-scene[data-bg="encre"] .vr-sc-note { color: rgba(247,242,234,0.66); }
+
+  /* C — prix + curseur de fourchette (plein écran) */
+  .vr-sc-range { margin-top: 2rem; }
+  .vr-sc-range .vr-range-line { position: relative; height: 3px; background: #E0D3BF; margin: 0 0.2rem; border-radius: 3px; }
+  .vr-sc-range .vr-range-dot { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border-radius: 999px; background: #A85638; box-shadow: 0 0 0 5px #FDFBF6, 0 2px 8px rgba(168,86,56,0.55); transform: translate(-50%, -50%); }
+  .vr-sc-range .vr-range-cap { position: absolute; top: -1.7rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16; font-weight: 600; }
+  .vr-sc-range .vr-range-cap.g { left: 0; } .vr-sc-range .vr-range-cap.d { right: 0; }
+  .vr-sc-range .vr-range-arrows { display: flex; justify-content: space-between; color: #C0B29B; font-size: 1.05rem; margin-top: 0.4rem; }
+  .vr-c-phrase { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #6B5D4F; margin-top: 1.2rem; line-height: 1.5; }
+  .vr-c-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; opacity: 0.85; margin-top: 0.55rem; }
+
+  /* D — tendance plein écran */
+  .vr-sc-dhead { display: flex; align-items: center; gap: 0.7rem; }
+  .vr-sc-dico { width: 40px; height: 40px; flex: 0 0 auto; } .vr-sc-dico svg { width: 100%; height: 100%; }
+  .vr-sc-title { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.7rem, 6.5vw, 2.6rem); line-height: 1.08; }
+  .vr-sc-gauge { margin-top: 1.7rem; }
+  .vr-sc-gauge .vr-gauge-track { position: relative; height: 14px; border-radius: 999px; background: linear-gradient(90deg, #DCD2C0 0 33%, #EFE6D6 33% 67%, #E6C3AB 67% 100%); }
+  .vr-sc-gauge .vr-gauge-cursor { position: absolute; top: -5px; left: 50%; width: 5px; height: 24px; border-radius: 2px; background: #211C16; transform: translateX(-50%); }
+  .vr-sc-gauge .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.6rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9C8E7C; }
+  .vr-sc-gauge .vr-gauge-lbls .on { color: #A85638; font-weight: 600; }
+  .vr-d-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 1rem; }
+
+  .vr-sc-ec { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.5rem, 5.4vw, 2.2rem); line-height: 1.32; }
+
+  /* Repère de progression de la séquence */
+  .vr-cine-dots { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 6; }
+  .vr-cine-dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(107,93,79,0.28); transition: background 0.3s, transform 0.3s; }
+  .vr-cine-dot.on { background: #A85638; transform: scale(1.35); }
+  .vr-scene[data-bg="encre"] ~ .vr-cine-dots .vr-cine-dot { background: rgba(247,242,234,0.3); }
+
+  .vr-after { margin-top: 1.5rem; }
+
   @media (prefers-reduced-motion: reduce) {
     .vr-block { opacity: 1; transform: none; transition: none; }
     .vr-range-dot, .vr-gauge-cursor { transition: none; }
     .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
+    /* Séquence cinématographique désactivée : repli empilé lisible */
+    .vr-stage { position: static; height: auto; overflow: visible; background: transparent; border-radius: 0; }
+    .vr-scene { position: relative; opacity: 1 !important; transform: none !important; margin-bottom: 0.75rem; border-radius: 20px; }
+    .vr-cine-dots { display: none; }
   }
 </style>
 
@@ -554,7 +623,8 @@ import Layout from '../layouts/Layout.astro';
     return 'Prix globalement stables';
   }
 
-  function construireInfographie(model: any) {
+  // Repli empilé (reduced-motion / secours) — cartes verticales lisibles.
+  function construireStack(model: any) {
     const ec = enClair(model);
     const d = model.derniere;
     const parts: string[] = [];
@@ -672,6 +742,193 @@ import Layout from '../layouts/Layout.astro';
     scene.innerHTML = `<div class="vr-results">${parts.join('')}</div>`;
     scene.querySelectorAll<HTMLElement>('.vr-block').forEach((b) => reveler(b));
     brancherConversion(model);
+  }
+
+  // Ventes détaillées (réutilisé par le repli et la séquence)
+  function blocDetails(model: any) {
+    const d = model.derniere;
+    if (!model.autres.length) return '';
+    return `
+      <details class="vr-details">
+        <summary>Voir les ventes autour de chez moi</summary>
+        <div>
+          <div class="vr-autre"><span>${esc(bienCourt(d))}<span class="vr-autre-sub">${esc(adresse(d))} · ${esc(dateMois(d.d))} · ${esc(distLisible(d._dist))}</span></span><span class="vr-autre-prix">${eur.format(d.v)} €</span></div>
+          ${model.autres.map((t: any) => `<div class="vr-autre"><span>${esc(bienCourt(t))}<span class="vr-autre-sub">${esc(adresse(t))} · ${esc(dateMois(t.d))} · ${esc(distLisible(t._dist))}</span></span><span class="vr-autre-prix">${eur.format(t.v)} €</span></div>`).join('')}
+        </div>
+      </details>`;
+  }
+
+  // ——— Séquence cinématographique (scroll-driven, stage épinglé) ———
+  let cineCleanup: null | (() => void) = null;
+
+  function construireCine(model: any) {
+    if (cineCleanup) { cineCleanup(); cineCleanup = null; }
+    const ec = enClair(model);
+    const d = model.derniere;
+    const C = model.C, D = model.D;
+    const posC = C && C.q3 > C.q1 ? Math.max(6, Math.min(94, ((C.median - C.q1) / (C.q3 - C.q1)) * 100)) : 50;
+    const posD = D ? gaugePos(D.delta) : 50;
+
+    const sc: string[] = [];
+    // ① ventes
+    sc.push(`
+      <div class="vr-scene" data-scene="0">
+        <div class="vr-sc-inner">
+          <p class="vr-sc-kicker">Autour de cette adresse</p>
+          <p class="vr-sc-num" data-count>0</p>
+          <p class="vr-sc-lead">ventes retrouvées près de vous</p>
+          <p class="vr-sc-note">dans un rayon d’environ ${rayonTxt(model.Rw)} · depuis 2021</p>
+        </div>
+      </div>`);
+    // ② prix du milieu
+    if (C) {
+      const q1 = Math.round(C.q1), q3 = Math.round(C.q3);
+      sc.push(`
+        <div class="vr-scene" data-scene="1" data-bg="vif">
+          <div class="vr-sc-inner">
+            <p class="vr-sc-kicker">Le prix du milieu</p>
+            <p class="vr-sc-num" data-price>0 €</p>
+            <div class="vr-sc-range">
+              <div class="vr-range-line">
+                <span class="vr-range-cap g">${eur.format(q1)} €</span>
+                <span class="vr-range-cap d">${eur.format(q3)} €</span>
+                <span class="vr-range-dot"></span>
+              </div>
+              <div class="vr-range-arrows" aria-hidden="true"><span>←</span><span>→</span></div>
+              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)} €</strong> et <strong>${eur.format(q3)} €</strong>.</p>
+              ${C.ppm ? `<p class="vr-c-m2">≈ ${eur.format(Math.round(C.ppm))} €/m²</p>` : ''}
+            </div>
+          </div>
+        </div>`);
+    }
+    // ③ tendance
+    if (D) {
+      const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} %`;
+      sc.push(`
+        <div class="vr-scene" data-scene="2">
+          <div class="vr-sc-inner">
+            <p class="vr-sc-kicker">Les prix, dans le temps</p>
+            <div class="vr-sc-dhead"><span class="vr-sc-dico" aria-hidden="true">${iconeTendance(D.dir)}</span><span class="vr-sc-title">${tendanceTitre(D.dir)}</span></div>
+            <div class="vr-sc-gauge">
+              <div class="vr-gauge-track"><span class="vr-gauge-cursor"></span></div>
+              <div class="vr-gauge-lbls"><span class="${D.dir === 'baisse' ? 'on' : ''}">Baisse</span><span class="${D.dir === 'stable' ? 'on' : ''}">Stable</span><span class="${D.dir === 'hausse' ? 'on' : ''}">Hausse</span></div>
+            </div>
+            <p class="vr-d-pct">${pct} sur le prix au m², estimé sur ${D.anneeDebut}–${D.anneeFin}</p>
+          </div>
+        </div>`);
+    }
+    // ④ dernière vente (chapitre sombre)
+    sc.push(`
+      <div class="vr-scene" data-scene="3" data-bg="encre">
+        <div class="vr-sc-inner">
+          <p class="vr-sc-kicker">Dernière vente près de chez vous</p>
+          <p class="vr-sc-num" data-aprice>0 €</p>
+          <p class="vr-sc-lead">${esc(bienCourt(d))}</p>
+          <p class="vr-sc-note">${esc(distLisible(d._dist))} · ${esc(dateMois(d.d))}</p>
+        </div>
+      </div>`);
+    // ⑤ en clair
+    sc.push(`
+      <div class="vr-scene" data-scene="4" data-bg="argile">
+        <div class="vr-sc-inner">
+          <p class="vr-sc-kicker">En clair</p>
+          <p class="vr-sc-ec">${esc(ec.s1)}${ec.s2 ? ' ' + esc(ec.s2) : ''}</p>
+        </div>
+      </div>`);
+
+    const N = sc.length;
+    const dots = Array.from({ length: N }, (_, i) => `<span class="vr-cine-dot${i === 0 ? ' on' : ''}"></span>`).join('');
+
+    scene.innerHTML = `
+      <div class="vr-cine" style="height:${N * 90 + 40}svh">
+        <div class="vr-stage">
+          ${sc.join('')}
+          <div class="vr-cine-dots" aria-hidden="true">${dots}</div>
+        </div>
+      </div>
+      <div class="vr-after">
+        <p class="vr-maj">${majLigne()}</p>
+        ${blocDetails(model)}
+        ${construireConversion()}
+      </div>`;
+    brancherConversion(model);
+
+    // Moteur scroll
+    const track = scene.querySelector<HTMLElement>('.vr-cine')!;
+    const scEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-scene'));
+    const dotEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-cine-dot'));
+    const header = document.getElementById('site-header');
+    let headerH = header?.offsetHeight ?? 64;
+    document.documentElement.style.setProperty('--vr-header', headerH + 'px');
+
+    const countEl = scene.querySelector<HTMLElement>('[data-count]');
+    const priceEl = scene.querySelector<HTMLElement>('[data-price]');
+    const apriceEl = scene.querySelector<HTMLElement>('[data-aprice]');
+    const dotC = scEls[1]?.querySelector<HTMLElement>('.vr-range-dot') || null;
+    const cursorD = scene.querySelector<HTMLElement>('.vr-gauge-cursor');
+
+    const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+    const lead = 0.12;
+    const seg = N > 1 ? (1 - 2 * lead) / (N - 1) : 1;
+    const centers = scEls.map((_, i) => lead + seg * i);
+    let targetP = 0, curP = 0, running = false;
+
+    const render = (p: number) => {
+      let best = 0, bestOp = -1;
+      scEls.forEach((el, i) => {
+        const t = (p - centers[i]) / seg;
+        // Opacité : plateau plein pour la 1re scène avant son centre et la
+        // dernière après le sien ; triangulaire (largeur seg) ailleurs → une
+        // scène dominante à la fois, fondu croisé continu.
+        let op: number;
+        if (i === 0 && p <= centers[0]) op = 1;
+        else if (i === N - 1 && p >= centers[N - 1]) op = 1;
+        else op = clamp01(1 - Math.abs(t));
+        if (op > bestOp) { bestOp = op; best = i; }
+        el.style.opacity = op.toFixed(3);
+        el.style.visibility = op < 0.01 ? 'hidden' : 'visible';
+        el.style.zIndex = String(Math.round(op * 100));
+        el.style.transform = `translateY(${(t * 16).toFixed(1)}px) scale(${(1 - Math.min(Math.abs(t), 1) * 0.05).toFixed(3)})`;
+        // Construction interne (compteur, curseurs) : 0→1 avec un léger maintien
+        // avant le centre. Réversible (décroît au scroll inverse).
+        const build = i === 0
+          ? clamp01(p / (lead * 0.6))
+          : clamp01((p - (centers[i] - seg)) / (seg * 0.7));
+        if (i === 0 && countEl) countEl.textContent = eur.format(Math.round(model.nbVentes * build));
+        if (i === 1) { if (priceEl && C) priceEl.textContent = eur.format(Math.round(C.median * build)) + ' €'; if (dotC) dotC.style.left = (50 + (posC - 50) * build).toFixed(1) + '%'; }
+        if (i === 2 && cursorD) cursorD.style.left = (50 + (posD - 50) * build).toFixed(1) + '%';
+        if (i === 3 && apriceEl) apriceEl.textContent = eur.format(Math.round(d.v * build)) + ' €';
+      });
+      dotEls.forEach((dt, i) => dt.classList.toggle('on', i === best));
+    };
+
+    const inView = () => { const r = track.getBoundingClientRect(); return r.bottom > -40 && r.top < window.innerHeight + 40; };
+    const loop = () => {
+      curP += (targetP - curP) * 0.16;
+      const settled = Math.abs(targetP - curP) < 0.0004;
+      if (settled) curP = targetP;
+      render(curP);
+      if (settled && !inView()) { running = false; return; }
+      requestAnimationFrame(loop);
+    };
+    const wake = () => { if (!running) { running = true; requestAnimationFrame(loop); } };
+    const measure = () => {
+      const h = header?.offsetHeight ?? headerH;
+      if (h !== headerH) { headerH = h; document.documentElement.style.setProperty('--vr-header', h + 'px'); }
+      const stageH = window.innerHeight - headerH;
+      const total = track.offsetHeight - stageH;
+      const scrolled = -track.getBoundingClientRect().top + headerH;
+      targetP = total > 0 ? clamp01(scrolled / total) : 0;
+      wake();
+    };
+    window.addEventListener('scroll', measure, { passive: true });
+    window.addEventListener('resize', measure, { passive: true });
+    cineCleanup = () => { window.removeEventListener('scroll', measure); window.removeEventListener('resize', measure); running = false; };
+    render(0);
+    measure();
+    // Amener le début de la séquence juste sous l'en-tête (p ≈ 0).
+    const y = track.getBoundingClientRect().top + window.scrollY - headerH - 4;
+    window.scrollTo({ top: y, behavior: 'smooth' });
   }
 
   function majLigne() {
@@ -958,9 +1215,14 @@ import Layout from '../layouts/Layout.astro';
 
     if (!model) { afficherAucun(selection?.label || input.value); return; }
     lastModel = model;
-    construireInfographie(model);
-    // Amener l'en-tête « Autour de cette adresse » en haut de l'écran.
-    if (!reduced) { const head = scene.querySelector<HTMLElement>('.vr-head'); if (head) head.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    // Motion : séquence cinématographique épinglée. Sinon : repli empilé lisible.
+    if (reduced) {
+      construireStack(model);
+      const head = scene.querySelector<HTMLElement>('.vr-head');
+      if (head) head.scrollIntoView({ block: 'start' });
+    } else {
+      construireCine(model);
+    }
   }
 
   // ——— Autocomplétion ———
@@ -999,6 +1261,7 @@ import Layout from '../layouts/Layout.astro';
 
   // ——— Lancement ———
   async function lancer() {
+    if (cineCleanup) { cineCleanup(); cineCleanup = null; } // détacher un moteur précédent
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-analyse"><div class="vr-analyse-step is-active"><span class="vr-analyse-dot"></span><span>Recherche des ventes autour de chez vous…</span></div></div>`;
     try { await chargerDonnees(); } catch {
