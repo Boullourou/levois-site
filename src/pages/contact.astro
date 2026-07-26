@@ -1,89 +1,145 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { site } from '../config/site';
 ---
 
 <Layout
-  title="Contact — Mouaad Boullourou"
-  description="Joindre Mouaad Boullourou, conseiller immobilier indépendant SAFTI à Lèves. Disponible 7j/7 par téléphone, SMS ou email."
+  title="Contact"
+  description="Écrire directement à Mouaad Boullourou — email, téléphone, ou message via le formulaire."
 >
-  <article class="max-w-xl mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
+  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
-    <header class="mb-10 fade-up">
-      <div class="eyebrow mb-6">Me joindre</div>
-      <h1 class="text-hero text-sapin leading-[0.98] mb-5">
-        Contact.
-      </h1>
-      <span class="rule-ocre"></span>
-      <p class="text-body-lg text-muted mt-6">
-        Une question sur un bien, sur le marché, ou juste de la curiosité —
-        je réponds à tout, même si c'est juste une question.
-        Disponible 7j/7.
+    <header class="mb-10">
+      <p class="eyebrow mb-4">Contact</p>
+      <h1 class="text-display text-encre mb-4">Écrire à Mouaad</h1>
+      <p class="font-sans text-body-lg text-brun max-w-prose">
+        Le chemin le plus utile reste le parcours
+        <a href="/situer-ma-vente" class="text-argile underline underline-offset-2 hover:text-encre">« Situer ma vente »</a> —
+        Mouaad reçoit alors tout votre contexte. Mais cette page est là pour tout le reste :
+        une question, une précision, un autre sujet.
       </p>
     </header>
 
-    <!-- CONTACT DIRECT TACTILE -->
-    <section class="mb-12 fade-up">
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <a href="tel:+33781380121" class="inline-flex items-center justify-center gap-2 bg-sapin text-cream px-5 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px] font-medium">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          Appeler
-        </a>
-        <a href="sms:+33781380121" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-5 py-3.5 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px] font-medium">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-          SMS
-        </a>
-        <a href="mailto:mouaad@levois.fr" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-5 py-3.5 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px] font-medium">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Écrire
-        </a>
+    <div class="grid sm:grid-cols-2 gap-4 mb-12 font-sans">
+      <a href={`mailto:${site.email}`} class="carte p-6 group transition-all duration-200 hover:border-argile">
+        <p class="text-sm text-brun mb-1">Email</p>
+        <p class="text-lg text-encre group-hover:text-argile transition-colors">{site.email}</p>
+      </a>
+      <a href={`tel:${site.phone}`} class="carte p-6 group transition-all duration-200 hover:border-argile">
+        <p class="text-sm text-brun mb-1">Téléphone</p>
+        <p class="text-lg text-encre group-hover:text-argile transition-colors">{site.phoneDisplay}</p>
+      </a>
+    </div>
+
+    <form id="form-contact" novalidate class="grid gap-4 font-sans carte p-6 md:p-8">
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label for="c-prenom" class="block text-sm text-brun mb-1.5">Prénom <span aria-hidden="true">*</span></label>
+          <input id="c-prenom" name="prenom" type="text" required autocomplete="given-name"
+            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
+        </div>
+        <div>
+          <label for="c-nom" class="block text-sm text-brun mb-1.5">Nom <span aria-hidden="true">*</span></label>
+          <input id="c-nom" name="nom" type="text" required autocomplete="family-name"
+            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
+        </div>
       </div>
-      <p class="text-[13px] text-muted mt-4">07 81 38 01 21 · mouaad@levois.fr</p>
-    </section>
-
-    <!-- FORMULAIRE -->
-    <section class="mb-12 fade-up">
-      <p class="text-[15px] text-muted leading-relaxed mb-6">
-        Vous préférez laisser un message écrit ?
-      </p>
-      <div class="border border-beige rounded-md p-6 bg-cream-soft">
-        <form action="https://formspree.io/f/xnjynroj" method="POST" class="space-y-4">
-          <input type="hidden" name="_subject" value="Contact levois.fr" />
-          <input type="hidden" name="_next" value="https://levois.fr/merci" />
-          <div class="grid sm:grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-eyebrow uppercase text-muted">Prénom *</span>
-              <input type="text" name="prenom" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
-            </label>
-            <label class="block">
-              <span class="text-eyebrow uppercase text-muted">Email ou téléphone *</span>
-              <input type="text" name="contact" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px]" />
-            </label>
-          </div>
-          <label class="block">
-            <span class="text-eyebrow uppercase text-muted">Votre message ou question *</span>
-            <textarea name="message" rows="4" required class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[16px] resize-none"></textarea>
-          </label>
-          <button type="submit" class="inline-flex items-center gap-3 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
-            Envoyer
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-          </button>
-          <p class="text-[12px] text-muted leading-relaxed">C'est moi qui réponds, sous 24h. Un échange, rien de plus.</p>
-        </form>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <label for="c-email" class="block text-sm text-brun mb-1.5">Email <span aria-hidden="true">*</span></label>
+          <input id="c-email" name="email" type="email" required autocomplete="email" inputmode="email"
+            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
+        </div>
+        <div>
+          <label for="c-telephone" class="block text-sm text-brun mb-1.5">Téléphone <span class="text-brun/60">(facultatif)</span></label>
+          <input id="c-telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel"
+            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
+        </div>
       </div>
-    </section>
+      <div>
+        <label for="c-objet" class="block text-sm text-brun mb-1.5">Objet <span aria-hidden="true">*</span></label>
+        <input id="c-objet" name="objet" type="text" required
+          class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
+      </div>
+      <div>
+        <label for="c-message" class="block text-sm text-brun mb-1.5">Message <span aria-hidden="true">*</span></label>
+        <textarea id="c-message" name="message" rows="5" required
+          class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile"></textarea>
+      </div>
 
-    <!-- SIGNATURE -->
-    <section class="fade-up pt-8 border-t border-beige">
-      <p class="text-[15px] italic text-sapin leading-relaxed">
-        Prendre le temps de comprendre les lieux, les gens et les projets —
-        avant de parler immobilier.
-      </p>
-      <p class="text-[13px] text-muted mt-3">
-        Mouaad Boullourou · Conseiller immobilier indépendant SAFTI ·
-        Lèves (28300) · Secteur : Lèves, Chartres, Mainvilliers,
-        Champhol, Lucé, Le Coudray, Luisant.
-      </p>
-    </section>
+      <div class="hidden" aria-hidden="true">
+        <label for="c-site">Votre site web</label>
+        <input id="c-site" name="site_web" type="text" tabindex="-1" autocomplete="off" />
+      </div>
 
-  </article>
+      <label class="flex items-start gap-3 text-sm text-brun leading-relaxed cursor-pointer">
+        <input id="c-consentement" name="consentement" type="checkbox" required class="mt-0.5 w-5 h-5 rounded accent-[#A85638]" />
+        <span>
+          J’accepte que ces informations soient utilisées pour me répondre — et pour rien d’autre.
+          <a href="/confidentialite" class="text-argile underline underline-offset-2">En savoir plus</a>.
+        </span>
+      </label>
+
+      <p id="c-erreur" class="hidden text-sm text-argile" role="alert"></p>
+
+      <button type="submit" id="c-envoyer" class="btn-primaire w-full sm:w-auto mt-1">Envoyer mon message</button>
+
+      <div id="c-succes" class="hidden pt-2" role="status">
+        <p class="font-display text-xl text-encre mb-1.5">Message bien envoyé.</p>
+        <p class="text-[15px] text-brun">Mouaad vous répondra personnellement, en général sous 24 à 48 h ouvrées.</p>
+      </div>
+    </form>
+  </div>
 </Layout>
+
+<script>
+  const form = document.getElementById('form-contact') as HTMLFormElement;
+  const btn = document.getElementById('c-envoyer') as HTMLButtonElement;
+  const erreur = document.getElementById('c-erreur')!;
+  let enCours = false;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (enCours) return;
+    erreur.classList.add('hidden');
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    enCours = true;
+    btn.disabled = true;
+    btn.textContent = 'Envoi en cours…';
+    const d = new FormData(form);
+    try {
+      const rep = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'contact',
+          prenom: d.get('prenom'),
+          nom: d.get('nom'),
+          email: d.get('email'),
+          telephone: d.get('telephone') || null,
+          objet: d.get('objet'),
+          message: d.get('message'),
+          site_web: d.get('site_web') || '',
+        }),
+      });
+      if (rep.ok) {
+        form.querySelectorAll('input, textarea, button[type="submit"], label').forEach((el) => el.classList.add('hidden'));
+        document.getElementById('c-succes')!.classList.remove('hidden');
+      } else {
+        const data = await rep.json().catch(() => null);
+        erreur.textContent = data?.message ?? 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
+        erreur.classList.remove('hidden');
+      }
+    } catch {
+      erreur.textContent = 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
+      erreur.classList.remove('hidden');
+    } finally {
+      enCours = false;
+      btn.disabled = false;
+      btn.textContent = 'Envoyer mon message';
+    }
+  });
+</script>

@@ -1,0 +1,367 @@
+---
+/**
+ * Sélecteur des cinq situations — rail éditorial en profondeur.
+ *
+ * Comportement (réf. « Jack » MotionSites, sans copier son identité) :
+ * — Défilement horizontal NATIF (overflow-x + scroll-snap) : la molette
+ *   verticale fait toujours défiler la PAGE, jamais interceptée.
+ * — Carte active plus grande et plus proche ; voisines réduites, dimmées et
+ *   inclinées en perspective ; profondeur continue selon la distance au centre.
+ * — Drag souris uniquement après détection d'une intention horizontale ; le
+ *   tactile et le trackpad passent par le scroll natif. Inertie courte puis
+ *   alignement (snap). Toute la carte est cliquable ; boutons + clavier gardés.
+ * — Survol/focus/actif : élévation, image qui évolue, révélation d'une info.
+ */
+import ResponsiveImage from './ResponsiveImage.astro';
+import { situations } from '../data/situations';
+import { images } from '../data/images';
+
+const hasPhoto = (slot: string) => Boolean(images[slot]?.slug);
+
+const styleMap: Record<string, { bg: string; accent: string; ink: string; sub: string; dark: boolean }> = {
+  preparer:       { bg: '#E9ECE1', accent: '#6E7C5A', ink: '#262A1F', sub: '#5C6350', dark: false },
+  publiee:        { bg: '#F2E3C6', accent: '#B27C34', ink: '#3A2E1A', sub: '#6E5A34', dark: false },
+  'peu-contacts': { bg: '#EFD9C8', accent: '#A85638', ink: '#38221A', sub: '#7A5442', dark: false },
+  visites:        { bg: '#B15E34', accent: '#FBE9D8', ink: '#FDF3EA', sub: 'rgba(253,243,234,0.82)', dark: true },
+  longtemps:      { bg: '#362539', accent: '#C79CB8', ink: '#F2E7EE', sub: 'rgba(242,231,238,0.8)', dark: true },
+};
+const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`;
+---
+
+<section id="situations" class="rail-section scroll-mt-20" aria-labelledby="rail-titre">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md">
+    <div class="md:flex items-end justify-between gap-8 mb-8 fade-up">
+      <div class="max-w-xl">
+        <p class="eyebrow mb-4">Le point de départ</p>
+        <h2 id="rail-titre" class="text-display text-encre">Où en est votre vente&nbsp;?</h2>
+        <p class="font-sans text-body-lg text-brun mt-4">
+          Cinq situations, une seule à choisir. Faites-les glisser, puis ouvrez la vôtre —
+          le diagnostic s’adapte à vos réponses. Trois minutes, sans coordonnées.
+        </p>
+      </div>
+      <div class="hidden md:flex items-center gap-3 shrink-0">
+        <span class="font-sans text-sm text-brun mr-1"><span data-rail-current>1</span> sur {situations.length}</span>
+        <button type="button" class="rail-arrow" data-rail-prev aria-label="Situation précédente">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="rail-arrow" data-rail-next aria-label="Situation suivante">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rail-scroller" data-rail role="group" aria-label="Cinq situations — défilement horizontal" tabindex="0">
+    <div class="rail-inner">
+      {situations.map((s, i) => {
+        const st = styleMap[s.id];
+        return (
+          <a
+            href={`/situer-ma-vente?s=${s.id}`}
+            class="rail-panel"
+            data-rail-item
+            data-index={i}
+            style={`--bg:${st.bg};--accent:${st.accent};--ink:${st.ink};--sub:${st.sub};`}
+            aria-label={`Situation ${s.ordinal} : ${s.titre}`}
+          >
+            <div class="rail-panel-inner">
+              <div class="rail-media">
+                {hasPhoto(s.imageSlot) ? (
+                  <ResponsiveImage slot={s.imageSlot} ratio="4/3" sizes="(min-width:1024px) 34vw, (min-width:768px) 48vw, 74vw" class="rail-img" />
+                ) : (
+                  <div class={`rail-graphic ${st.dark ? 'is-dark' : ''}`} role="img" aria-label={s.reconnaissance}>
+                    <span class="rail-graphic-num">{s.ordinal}</span>
+                    <svg class="rail-graphic-motif" viewBox="0 0 120 60" fill="none" aria-hidden="true">
+                      <path d="M4 44 H56" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.9"/>
+                      <path d="M64 16 H116" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                      <circle cx="60" cy="30" r="3" fill="currentColor"/>
+                    </svg>
+                  </div>
+                )}
+                <span class="rail-accent" aria-hidden="true"></span>
+              </div>
+
+              <div class="rail-body">
+                <p class="rail-ordinal">{s.ordinal}</p>
+                <h3 class="rail-panel-titre">{s.titre}</h3>
+                <p class="rail-reco">{s.reconnaissance}</p>
+                <div class="rail-reveal">
+                  <p class="rail-aide">{s.objectif}</p>
+                </div>
+                <div class="rail-foot">
+                  <span class="rail-duree">{duree(s.questions.length)}</span>
+                  <span class="rail-cta">
+                    Ouvrir
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </a>
+        );
+      })}
+      <div class="rail-spacer" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rail-section { padding-top: 3.5rem; padding-bottom: 4rem; }
+  @media (min-width: 768px) { .rail-section { padding-top: 5rem; padding-bottom: 6rem; } }
+
+  .rail-arrow {
+    width: 44px; height: 44px; border-radius: 999px;
+    border: 1px solid rgba(33,28,22,0.2); color: #211C16;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .rail-arrow:hover { border-color: #A85638; color: #A85638; }
+  .rail-arrow:disabled { opacity: 0.3; cursor: default; }
+
+  /* Défilement horizontal natif — ne capture jamais le scroll vertical */
+  .rail-scroller {
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* pan-x pan-y : le navigateur gère les deux axes — geste horizontal → rail,
+       geste vertical → page. pan-x seul bloquait le scroll vertical sur iOS. */
+    touch-action: pan-x pan-y;
+    padding-block: 2rem;
+    outline: none;
+  }
+  .rail-scroller::-webkit-scrollbar { display: none; }
+  .rail-scroller.is-dragging { scroll-snap-type: none; cursor: grabbing; }
+
+  .rail-inner {
+    display: flex; gap: 1rem;
+    perspective: 1700px;
+    /* Le rembourrage latéral est recalculé en JS pour centrer la carte active
+       (première et dernière comprises). Valeurs par défaut avant hydratation : */
+    padding-left: 1.25rem; padding-right: 1.25rem;
+  }
+  @media (min-width: 768px) { .rail-inner { gap: 1.25rem; } }
+  .rail-spacer { flex: 0 0 1px; }
+
+  .rail-panel {
+    scroll-snap-align: center;
+    flex: 0 0 74vw;
+    max-width: 300px;
+    transform-origin: center center;
+    /* la profondeur (transform/opacity) est pilotée par JS, sans transition ici */
+    will-change: transform, opacity;
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (min-width: 768px) { .rail-panel { flex-basis: 48vw; max-width: 380px; } }
+  @media (min-width: 1024px) { .rail-panel { flex-basis: 32vw; max-width: 400px; } }
+
+  /* Élévation & réactions internes (transitions propres, non écrasées par le JS) */
+  .rail-panel-inner {
+    background: var(--bg); color: var(--ink);
+    border-radius: 26px; overflow: hidden;
+    display: flex; flex-direction: column;
+    min-height: 452px;
+    box-shadow: 0 10px 30px -24px rgba(33,28,22,0.4);
+    transition: box-shadow 0.35s cubic-bezier(0.2,0.8,0.2,1), transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
+  }
+  @media (min-width: 768px) { .rail-panel-inner { min-height: 496px; } }
+  .rail-panel.is-active .rail-panel-inner,
+  .rail-panel:hover .rail-panel-inner,
+  .rail-panel:focus-visible .rail-panel-inner {
+    box-shadow: 0 40px 70px -34px rgba(33,28,22,0.55);
+    transform: translateY(-4px);
+  }
+
+  .rail-media { position: relative; overflow: hidden; }
+  :global(.rail-img) { width: 100%; display: block; transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); }
+  .rail-panel.is-active :global(.rail-img),
+  .rail-panel:hover :global(.rail-img) { transform: scale(1.06); }
+
+  .rail-graphic {
+    aspect-ratio: 4/3; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(120% 100% at 20% 0%, rgba(255,255,255,0.14), transparent 60%),
+      color-mix(in srgb, var(--bg) 78%, #000 12%);
+    color: var(--accent);
+    transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
+  }
+  .rail-panel.is-active .rail-graphic, .rail-panel:hover .rail-graphic { transform: scale(1.04); }
+  .rail-graphic-num { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(3.5rem, 12vw, 5.5rem); line-height: 1; color: color-mix(in srgb, var(--accent) 85%, transparent); }
+  .rail-graphic-motif { position: absolute; bottom: 1.4rem; left: 1.4rem; width: 96px; height: 48px; color: var(--accent); }
+
+  /* Ligne d'accent qui suit l'activation */
+  .rail-accent {
+    position: absolute; left: 0; bottom: 0; height: 3px; width: 0;
+    background: var(--accent);
+    transition: width 0.45s cubic-bezier(0.22,1,0.36,1);
+  }
+  .rail-panel.is-active .rail-accent, .rail-panel:hover .rail-accent { width: 100%; }
+
+  .rail-body { padding: 1.5rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
+  .rail-ordinal { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; letter-spacing: 0.16em; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+  .rail-panel-titre { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.4rem; line-height: 1.15; color: var(--ink); margin-bottom: 0.5rem; }
+  .rail-reco { font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem; line-height: 1.5; color: var(--ink); opacity: 0.92; }
+
+  /* Révélation progressive d'une info utile (jamais la seule source : l'essentiel
+     — titre + phrase de reconnaissance — reste toujours visible) */
+  .rail-reveal { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.22,1,0.36,1); }
+  .rail-reveal > .rail-aide { overflow: hidden; opacity: 0; transition: opacity 0.35s ease 0.05s; }
+  .rail-panel.is-active .rail-reveal, .rail-panel:hover .rail-reveal, .rail-panel:focus-visible .rail-reveal { grid-template-rows: 1fr; margin-top: 0.7rem; }
+  .rail-panel.is-active .rail-reveal > .rail-aide, .rail-panel:hover .rail-reveal > .rail-aide, .rail-panel:focus-visible .rail-reveal > .rail-aide { opacity: 1; }
+  .rail-aide { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; line-height: 1.55; color: var(--sub); }
+
+  .rail-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 1.25rem; }
+  .rail-duree { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: var(--sub); }
+  .rail-cta { font-family: 'Instrument Sans', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.4rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rail-scroller { scroll-behavior: auto; }
+    .rail-panel-inner, :global(.rail-img), .rail-graphic, .rail-accent, .rail-reveal, .rail-reveal > .rail-aide { transition: none !important; }
+    /* Mouvement réduit : pas de profondeur animée, cartes lisibles à plat */
+    .rail-reveal { grid-template-rows: 1fr; margin-top: 0.7rem; }
+    .rail-reveal > .rail-aide { opacity: 1; }
+  }
+</style>
+
+<script>
+  const scroller = document.querySelector<HTMLElement>('[data-rail]');
+  if (scroller) {
+    const items = Array.from(scroller.querySelectorAll<HTMLElement>('[data-rail-item]'));
+    const currentEl = document.querySelector<HTMLElement>('[data-rail-current]');
+    const prevBtn = document.querySelector<HTMLButtonElement>('[data-rail-prev]');
+    const nextBtn = document.querySelector<HTMLButtonElement>('[data-rail-next]');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const railInner = scroller.querySelector<HTMLElement>('.rail-inner')!;
+    const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+
+    // Rembourrage latéral symétrique : permet à CHAQUE carte (1re et dernière
+    // comprises) de venir se centrer → un point focal unique et sans ambiguïté.
+    const setPadding = () => {
+      const side = Math.max(20, (scroller.clientWidth - items[0].offsetWidth) / 2);
+      railInner.style.paddingLeft = `${side}px`;
+      railInner.style.paddingRight = `${side}px`;
+    };
+
+    // ——— Profondeur continue selon la distance au centre (piloté par le scroll natif) ———
+    let rafPending = false;
+    const paint = () => {
+      rafPending = false;
+      const center = scroller.scrollLeft + scroller.clientWidth / 2;
+      let bestI = 0, bestD = Infinity;
+      items.forEach((it, i) => {
+        const c = it.offsetLeft + it.offsetWidth / 2; // stable (non affecté par transform)
+        const d = (c - center) / it.offsetWidth;      // distance en largeurs de carte
+        const ad = Math.abs(d);
+        if (ad < bestD) { bestD = ad; bestI = i; }
+        if (!reduced) {
+          const scale = clamp(1 - ad * 0.19, 0.68, 1);   // active ≈ 1.0, voisines nettement réduites
+          const rot = clamp(d, -1.4, 1.4) * -8;          // rotation perspective des voisines
+          const ty = Math.min(ad, 2) * 10;
+          const op = clamp(1 - ad * 0.34, 0.44, 1);
+          it.style.transform = `translateY(${ty.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg) scale(${scale.toFixed(3)})`;
+          it.style.opacity = op.toFixed(3);
+          it.style.zIndex = String(100 - Math.round(ad * 10));
+        }
+        it.classList.toggle('is-active', ad < 0.42);
+      });
+      if (currentEl) currentEl.textContent = String(bestI + 1);
+      if (prevBtn) prevBtn.disabled = scroller.scrollLeft <= 2;
+      if (nextBtn) nextBtn.disabled = scroller.scrollLeft >= scroller.scrollWidth - scroller.clientWidth - 2;
+    };
+    const requestPaint = () => { if (!rafPending) { rafPending = true; requestAnimationFrame(paint); } };
+
+    scroller.addEventListener('scroll', requestPaint, { passive: true });
+    window.addEventListener('resize', () => { setPadding(); requestPaint(); }, { passive: true });
+
+    const activeIndex = () => {
+      const center = scroller.scrollLeft + scroller.clientWidth / 2;
+      let best = 0, bestD = Infinity;
+      items.forEach((it, i) => {
+        const d = Math.abs(it.offsetLeft + it.offsetWidth / 2 - center);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      return best;
+    };
+    const scrollToItem = (i: number) => {
+      const t = items[clamp(i, 0, items.length - 1)];
+      if (t) {
+        const left = t.offsetLeft - (scroller.clientWidth - t.offsetWidth) / 2;
+        scroller.scrollTo({ left, behavior: reduced ? 'auto' : 'smooth' });
+      }
+    };
+
+    prevBtn?.addEventListener('click', () => scrollToItem(activeIndex() - 1));
+    nextBtn?.addEventListener('click', () => scrollToItem(activeIndex() + 1));
+    // Clavier : flèches quand le rail (ou une carte) a le focus. La molette reste à la page.
+    scroller.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); scrollToItem(activeIndex() + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); scrollToItem(activeIndex() - 1); }
+    });
+
+    // ——— Drag SOURIS uniquement, après intention horizontale confirmée ———
+    // (tactile + trackpad = scroll natif ; molette verticale = page, jamais interceptée)
+    let down = false, startX = 0, startY = 0, startLeft = 0, mode: null | 'h' | 'v' = null, moved = false;
+    let lastX = 0, lastT = 0, vX = 0, momentumRAF = 0;
+
+    scroller.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return; // tactile/stylet : natif
+      cancelAnimationFrame(momentumRAF);
+      down = true; moved = false; mode = null;
+      startX = e.clientX; startY = e.clientY; startLeft = scroller.scrollLeft;
+      lastX = e.clientX; lastT = performance.now(); vX = 0;
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (mode === null) {
+        if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+          mode = 'h';
+          scroller.classList.add('is-dragging');
+          try { scroller.setPointerCapture(e.pointerId); } catch {}
+        } else if (Math.abs(dy) > 8) {
+          mode = 'v'; down = false; return; // intention verticale → on rend la main à la page
+        } else return;
+      }
+      if (mode === 'h') {
+        moved = true;
+        scroller.scrollLeft = startLeft - dx;
+        const now = performance.now();
+        const dt = now - lastT;
+        if (dt > 0) vX = (e.clientX - lastX) / dt; // px/ms
+        lastX = e.clientX; lastT = now;
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    const endDrag = (e?: PointerEvent) => {
+      if (!down && mode !== 'h') return;
+      down = false;
+      if (mode === 'h') {
+        try { if (e) scroller.releasePointerCapture(e.pointerId); } catch {}
+        // Inertie courte puis alignement sur la carte la plus proche
+        let vel = -vX * 16; // px/frame
+        const decay = 0.92;
+        const glide = () => {
+          vel *= decay;
+          scroller.scrollLeft += vel;
+          if (Math.abs(vel) > 0.6) { momentumRAF = requestAnimationFrame(glide); }
+          else { scroller.classList.remove('is-dragging'); scrollToItem(activeIndex()); }
+        };
+        if (Math.abs(vel) > 0.6) momentumRAF = requestAnimationFrame(glide);
+        else { scroller.classList.remove('is-dragging'); scrollToItem(activeIndex()); }
+      }
+      mode = null;
+    };
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointercancel', endDrag);
+
+    // Empêche la navigation du lien juste après un glissement horizontal
+    items.forEach((a) => a.addEventListener('click', (e) => { if (moved) { e.preventDefault(); moved = false; } }));
+
+    // Centrage initial de la première carte + première peinture
+    setPadding();
+    requestPaint();
+    // Recalage après chargement des polices/images (les largeurs peuvent bouger)
+    window.addEventListener('load', () => { setPadding(); requestPaint(); });
+  }
+</script>

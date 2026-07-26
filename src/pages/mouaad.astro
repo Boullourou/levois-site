@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ImageSlot from '../components/ImageSlot.astro';
+import { site } from '../config/site';
+
+const engagements = [
+  'Une lecture avant toute proposition — toujours.',
+  'Dire aussi ce qui est incertain, et ce que je ne sais pas encore.',
+  'Un levier à la fois : jamais trois changements simultanés illisibles.',
+  'Aucune pression de calendrier qui ne vienne pas de votre projet.',
+  'Votre contexte transmis via le site sert à vous répondre — à rien d’autre.',
+];
+---
+
+<Layout
+  title="Mouaad Boullourou"
+  description="Mouaad Boullourou, conseiller immobilier indépendant SAFTI sur le bassin chartrain. Écouter, reformuler, comprendre — décider ensuite."
+  image="/images/mouaad-terrain-1022.webp"
+>
+  <div class="max-w-page mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+
+    <div class="grid md:grid-cols-12 gap-10 md:gap-14 mb-16">
+      <div class="md:col-span-5">
+        <!-- Scène documentaire : deux images de Mouaad en léger décalage de profondeur -->
+        <div class="relative">
+          <ImageSlot slot="mouaad-terrain" ratio="4/5" loading="eager" sizes="(min-width:768px) 40vw, 100vw" class="shadow-[0_24px_60px_-30px_rgba(33,28,22,0.35)]" />
+          <div class="hidden sm:block absolute -bottom-8 -right-6 w-2/5 rounded-card overflow-hidden shadow-[0_24px_50px_-24px_rgba(33,28,22,0.5)] ring-4 ring-papier">
+            <ImageSlot slot="mouaad-rdv" ratio="1/1" sizes="20vw" rounded={false} />
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-7">
+        <p class="eyebrow mb-4">La continuité humaine</p>
+        <h1 class="text-display text-encre mb-2">{site.mouaad.nom}</h1>
+        <p class="font-sans text-body-lg text-brun mb-8">{site.mouaad.titre}</p>
+
+        <blockquote class="font-display text-2xl text-encre/90 italic leading-relaxed mb-8" style="font-variation-settings: 'opsz' 30;">
+          « J’utilise la méthode LEVOIS pour comprendre le bien, le projet du propriétaire
+          et les réactions du marché avant de recommander une décision. »
+        </blockquote>
+
+        <div class="space-y-4 font-sans text-body-lg text-encre/85 leading-relaxed mb-10">
+          <p>
+            Ma manière de travailler tient en quatre verbes : écouter, reformuler, comprendre,
+            puis seulement décider. La plupart des propriétaires que je rencontre n’ont pas
+            besoin qu’on leur vende quelque chose — ils ont besoin de comprendre ce que leur
+            vente leur dit, et de reprendre la main dessus.
+          </p>
+          <p>
+            Je vis et travaille sur le bassin chartrain — {site.communes.join(', ')}.
+            C’est un marché que je lis au quotidien : les biens qui sortent, ceux qui restent,
+            les écarts entre ce que les annonces promettent et ce que les acheteurs décident.
+            C’est cette lecture locale que la méthode LEVOIS structure.
+          </p>
+          <p>
+            J’exerce comme conseiller immobilier indépendant au sein du réseau SAFTI, qui
+            apporte le cadre professionnel et la force de diffusion. LEVOIS est ma méthode :
+            la lecture d’abord, la décision ensuite, la transparence tout du long.
+          </p>
+        </div>
+
+        <p class="font-sans text-sm text-brun border-l-2 border-argile/60 pl-4 mb-10">{site.mouaad.signature}</p>
+
+        <div class="flex flex-wrap gap-3">
+          <a href="/situer-ma-vente" class="btn-primaire">Situer ma vente</a>
+          <a href="/contact" class="btn-secondaire">Écrire à Mouaad</a>
+        </div>
+      </div>
+    </div>
+
+    <section class="max-w-editorial" aria-labelledby="engagements-mouaad">
+      <h2 id="engagements-mouaad" class="text-h3 text-encre mb-6">Mes engagements</h2>
+      <ul class="space-y-4 mb-14">
+        {engagements.map((e) => (
+          <li class="flex gap-3 font-sans text-[15px] text-encre/85 leading-relaxed">
+            <span class="ligne-ecart !w-5 mt-3 shrink-0"></span>
+            <span>{e}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="carte p-6 md:p-7 font-sans text-[15px] text-brun leading-relaxed">
+        <p class="text-encre font-medium mb-2">Coordonnées</p>
+        <p>
+          <a href={`mailto:${site.email}`} class="text-argile hover:underline underline-offset-2">{site.email}</a> ·
+          <a href={`tel:${site.phone}`} class="text-argile hover:underline underline-offset-2">{site.phoneDisplay}</a><br/>
+          {site.secteur}
+        </p>
+      </div>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,313 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Le parcours est une « île » interactive : tout le reste du site est statique.
+// Les données et le moteur sont importés par le script client ci-dessous.
+---
+
+<Layout
+  title="Situer ma vente"
+  description="Choisissez votre situation, répondez à quelques questions, recevez une première lecture liée à vos réponses — sans coordonnées."
+>
+  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section min-h-[70vh]">
+
+    <!-- Contexte : situation choisie + modifier -->
+    <div id="contexte" class="hidden items-center justify-between gap-4 mb-8 font-sans text-sm">
+      <p class="text-brun">
+        Votre situation · <span id="contexte-nom" class="text-encre font-medium"></span>
+      </p>
+      <button id="btn-modifier-situation" class="text-argile underline underline-offset-2 hover:text-encre min-h-[44px]">
+        Modifier
+      </button>
+    </div>
+
+    <!-- ——— Vue 1 · Sélecteur de situation ——— -->
+    <section id="vue-selecteur" aria-labelledby="selecteur-titre">
+      <p class="eyebrow mb-4">Faire le point</p>
+      <h1 id="selecteur-titre" class="text-display text-encre mb-3">Où en est votre vente aujourd’hui ?</h1>
+      <p class="font-sans text-body-lg text-brun mb-8 max-w-prose">
+        Choisissez la situation qui se rapproche le plus de la vôtre, puis validez.
+        Trois à cinq questions suivront — vos réponses construisent le résultat,
+        et aucune coordonnée ne vous sera demandée avant.
+      </p>
+      <div id="liste-situations" class="grid gap-3" role="radiogroup" aria-labelledby="selecteur-titre"></div>
+      <div class="mt-8 flex items-center gap-4">
+        <button id="btn-commencer" class="btn-primaire opacity-50 pointer-events-none" aria-disabled="true">Commencer</button>
+        <p id="selecteur-aide" class="font-sans text-sm text-brun">Sélectionnez d’abord une situation.</p>
+      </div>
+    </section>
+
+    <!-- ——— Vue 2 · Question ——— -->
+    <section id="vue-question" class="hidden" aria-live="polite">
+      <div class="mb-8">
+        <div class="flex items-center justify-between font-sans text-sm text-brun mb-3">
+          <span id="q-compteur"></span>
+          <span id="q-restant" class="text-brun/70"></span>
+        </div>
+        <div class="h-px bg-beige relative" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="q-progress-track">
+          <div id="q-progress" class="ligne-ecart !w-0 absolute left-0 top-0 transition-all duration-300 ease-out-soft"></div>
+        </div>
+      </div>
+
+      <h1 id="q-titre" class="text-h2 text-encre mb-3" tabindex="-1"></h1>
+      <p id="q-aide" class="font-sans text-[15px] text-brun mb-8"></p>
+
+      <div id="q-options" class="grid gap-2.5" role="radiogroup" aria-labelledby="q-titre"></div>
+
+      <p id="q-erreur" class="hidden font-sans text-sm text-argile mt-4" role="alert">
+        Choisissez une réponse pour continuer.
+      </p>
+
+      <div class="mt-9 flex items-center justify-between gap-4">
+        <button id="btn-precedent" class="btn-secondaire !px-5">Précédent</button>
+        <button id="btn-continuer" class="btn-primaire">Continuer</button>
+      </div>
+    </section>
+
+    <!-- ——— Vue 3 · Transition d'analyse ——— -->
+    <section id="vue-transition" class="hidden text-center py-20" aria-live="polite">
+      <span class="ligne-ecart mx-auto mb-8 animate-pulse"></span>
+      <p class="font-display text-2xl text-encre mb-3">Nous remettons vos réponses dans leur contexte.</p>
+      <p class="font-sans text-[15px] text-brun">
+        Le but n’est pas de conclure trop vite, mais d’identifier la prochaine question utile.
+      </p>
+    </section>
+
+  </div>
+</Layout>
+
+<script>
+  import { situations } from '../data/situations';
+  import { computeResult } from '../lib/engine';
+
+  type Answers = Record<string, string>;
+  interface Etat {
+    situationId: string | null;
+    etape: number; // index de question
+    reponses: Answers;
+  }
+
+  const CLE = 'levois.parcours';
+
+  const $ = (id: string) => document.getElementById(id)!;
+  const vues = { selecteur: $('vue-selecteur'), question: $('vue-question'), transition: $('vue-transition') };
+  const contexte = $('contexte');
+
+  let etat: Etat = { situationId: null, etape: 0, reponses: {} };
+
+  // ——— Persistance de session (jamais de coordonnées ici) ———
+  function sauver() {
+    try { sessionStorage.setItem(CLE, JSON.stringify(etat)); } catch {}
+  }
+  function restaurer(): Etat | null {
+    try {
+      const raw = sessionStorage.getItem(CLE);
+      return raw ? (JSON.parse(raw) as Etat) : null;
+    } catch { return null; }
+  }
+
+  function situationCourante() {
+    return situations.find((s) => s.id === etat.situationId) ?? null;
+  }
+
+  function montrer(nom: keyof typeof vues) {
+    for (const [k, el] of Object.entries(vues)) el.classList.toggle('hidden', k !== nom);
+    contexte.classList.toggle('hidden', !(nom === 'question' && etat.situationId));
+    contexte.classList.toggle('flex', nom === 'question' && !!etat.situationId);
+  }
+
+  // ——— Vue sélecteur ———
+  function rendreSelecteur() {
+    const liste = $('liste-situations');
+    liste.innerHTML = '';
+    for (const s of situations) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('role', 'radio');
+      btn.setAttribute('aria-checked', String(etat.situationId === s.id));
+      btn.dataset.id = s.id;
+      btn.className = optionClasses(etat.situationId === s.id) + ' text-left';
+      btn.innerHTML = `
+        <span class="flex items-start gap-4 w-full">
+          <span class="font-sans text-sm text-argile font-medium tracking-widest pt-1">${s.ordinal}</span>
+          <span class="flex-1">
+            <span class="block font-display text-lg md:text-xl text-encre">${s.titre}</span>
+            <span class="block font-sans text-[15px] text-brun mt-0.5">${s.reconnaissance}</span>
+          </span>
+          <span class="coche ${etat.situationId === s.id ? '' : 'invisible'} text-argile pt-1.5" aria-hidden="true">${svgCoche()}</span>
+        </span>`;
+      btn.addEventListener('click', () => {
+        etat.situationId = s.id;
+        etat.etape = 0;
+        etat.reponses = {};
+        sauver();
+        rendreSelecteur();
+        const go = $('btn-commencer');
+        go.classList.remove('opacity-50', 'pointer-events-none');
+        go.setAttribute('aria-disabled', 'false');
+        $('selecteur-aide').textContent = `${s.titre} — vous pourrez modifier ce choix à tout moment.`;
+      });
+      liste.appendChild(btn);
+    }
+  }
+
+  // ——— Vue question ———
+  function rendreQuestion(focus = true) {
+    const s = situationCourante();
+    if (!s) return montrer('selecteur');
+    const q = s.questions[etat.etape];
+    if (!q) return terminer();
+
+    $('contexte-nom').textContent = s.titre;
+    $('q-compteur').textContent = `Question ${etat.etape + 1} sur ${s.questions.length}`;
+    $('q-restant').textContent = etat.etape + 1 === s.questions.length ? 'Dernière question' : '';
+    const pct = Math.round(((etat.etape) / s.questions.length) * 100);
+    $('q-progress').style.width = `${Math.max(pct, 4)}%`;
+    $('q-progress-track').setAttribute('aria-valuenow', String(pct));
+    $('q-titre').textContent = q.label;
+    $('q-aide').textContent = q.aide;
+    $('q-erreur').classList.add('hidden');
+
+    const conteneur = $('q-options');
+    conteneur.innerHTML = '';
+    for (const opt of q.options) {
+      const sel = etat.reponses[q.id] === opt.value;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('role', 'radio');
+      btn.setAttribute('aria-checked', String(sel));
+      btn.className = optionClasses(sel) + ' text-left';
+      btn.innerHTML = `
+        <span class="flex items-center gap-3 w-full">
+          <span class="flex-1 font-sans text-base text-encre">${opt.label}</span>
+          <span class="coche ${sel ? '' : 'invisible'} text-argile" aria-hidden="true">${svgCoche()}</span>
+        </span>`;
+      btn.addEventListener('click', () => {
+        etat.reponses[q.id] = opt.value;
+        sauver();
+        rendreQuestion(false);
+      });
+      conteneur.appendChild(btn);
+    }
+
+    $('btn-precedent').textContent = etat.etape === 0 ? 'Changer de situation' : 'Précédent';
+    ($('btn-continuer') as HTMLButtonElement).textContent =
+      etat.etape + 1 === s.questions.length ? 'Voir ma première lecture' : 'Continuer';
+
+    montrer('question');
+    if (focus) {
+      requestAnimationFrame(() => $('q-titre').focus());
+    }
+  }
+
+  function terminer() {
+    const s = situationCourante();
+    if (!s) return;
+    montrer('transition');
+    const resultat = computeResult(s, etat.reponses);
+    try { sessionStorage.setItem('levois.resultat', JSON.stringify(resultat)); } catch {}
+    // Code d'état partageable — uniquement des index de réponses, aucune donnée personnelle.
+    const code = [s.id, ...s.questions.map((q) => {
+      const idx = q.options.findIndex((o) => o.value === etat.reponses[q.id]);
+      return idx >= 0 ? String(idx) : 'x';
+    })].join('.');
+    const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => {
+      window.location.href = `/situer-ma-vente/resultat?r=${encodeURIComponent(code)}`;
+    }, reduit ? 150 : 1100);
+  }
+
+  // ——— Styles partagés des options ———
+  function optionClasses(selected: boolean): string {
+    return [
+      'w-full carte px-5 py-4 min-h-[56px] transition-all duration-200 cursor-pointer',
+      selected
+        ? 'border-argile bg-argile-pale/40 shadow-[0_10px_28px_-18px_rgba(168,86,56,0.5)]'
+        : 'hover:border-argile/60',
+    ].join(' ');
+  }
+
+  function svgCoche(): string {
+    return '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 9.2l2.3 2.3 4.7-4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  // ——— Navigation ———
+  $('btn-commencer').addEventListener('click', () => {
+    if (!etat.situationId) return;
+    etat.etape = 0;
+    sauver();
+    rendreQuestion();
+  });
+
+  $('btn-precedent').addEventListener('click', () => {
+    if (etat.etape === 0) {
+      montrer('selecteur');
+      rendreSelecteur();
+      if (etat.situationId) {
+        const go = $('btn-commencer');
+        go.classList.remove('opacity-50', 'pointer-events-none');
+        go.setAttribute('aria-disabled', 'false');
+      }
+    } else {
+      etat.etape -= 1;
+      sauver();
+      rendreQuestion();
+    }
+  });
+
+  $('btn-continuer').addEventListener('click', () => {
+    const s = situationCourante();
+    if (!s) return;
+    const q = s.questions[etat.etape];
+    if (!etat.reponses[q.id]) {
+      $('q-erreur').classList.remove('hidden');
+      return;
+    }
+    if (etat.etape + 1 >= s.questions.length) {
+      terminer();
+    } else {
+      etat.etape += 1;
+      sauver();
+      rendreQuestion();
+    }
+  });
+
+  $('btn-modifier-situation').addEventListener('click', () => {
+    montrer('selecteur');
+    rendreSelecteur();
+    const go = $('btn-commencer');
+    go.classList.remove('opacity-50', 'pointer-events-none');
+    go.setAttribute('aria-disabled', 'false');
+  });
+
+  // ——— Démarrage : lien profond ?s=, reprise de session, ou sélecteur ———
+  const params = new URLSearchParams(window.location.search);
+  const lien = params.get('s');
+  const sauvegarde = restaurer();
+
+  if (lien && situations.some((s) => s.id === lien || s.slug === lien)) {
+    const cible = situations.find((s) => s.id === lien || s.slug === lien)!;
+    if (sauvegarde && sauvegarde.situationId === cible.id) {
+      etat = sauvegarde;
+      rendreQuestion(false);
+    } else {
+      etat = { situationId: cible.id, etape: 0, reponses: {} };
+      sauver();
+      rendreQuestion(false);
+    }
+  } else if (sauvegarde && sauvegarde.situationId) {
+    etat = sauvegarde;
+    if (Object.keys(etat.reponses).length > 0) {
+      rendreQuestion(false);
+    } else {
+      rendreSelecteur();
+      const go = $('btn-commencer');
+      go.classList.remove('opacity-50', 'pointer-events-none');
+      go.setAttribute('aria-disabled', 'false');
+      montrer('selecteur');
+    }
+  } else {
+    rendreSelecteur();
+    montrer('selecteur');
+  }
+</script>

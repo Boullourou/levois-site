@@ -1,82 +1,99 @@
 ---
-const currentPath = Astro.url.pathname;
+export interface Props {
+  transparent?: boolean;
+}
+const { transparent = false } = Astro.props;
 
-const nav = [
-  { href: '/carnets-de-terrain', label: 'Carnets' },
-  { href: '/vendre-a-leves', label: 'Immobilier' },
-  { href: '/votre-rue', label: 'Prix à Lèves' },
-  { href: '/contact', label: 'Contact' },
+const liens = [
+  { href: '/#situations', label: 'Votre situation' },
+  { href: '/methode', label: 'La méthode' },
+  { href: '/ressources', label: 'Ressources' },
+  { href: '/mouaad', label: 'Mouaad' },
 ];
 ---
 
-<header class="sticky top-0 z-40 bg-cream/95 backdrop-blur-md border-b border-beige/50">
-  <div class="max-w-page mx-auto px-edge md:px-edge-md py-5 md:py-6 flex items-center justify-between">
-
-    <a href="/" class="group">
-      <div class="text-2xl md:text-3xl font-display italic text-sapin tracking-tight leading-none">
-        Carnet <span class="not-italic font-normal text-sapin/70">de terrain</span>
-      </div>
+<header
+  id="site-header"
+  class:list={[
+    'sticky top-0 z-50 transition-colors duration-300',
+    transparent ? 'bg-papier/0' : 'bg-papier/95 backdrop-blur-sm border-b border-beige/60',
+  ]}
+  data-transparent={transparent ? 'true' : 'false'}
+>
+  <div class="max-w-page mx-auto px-edge md:px-edge-md flex items-center justify-between h-16 md:h-[72px]">
+    <a href="/" class="font-display text-xl md:text-2xl tracking-[0.14em] text-encre" aria-label="LEVOIS — retour à l’accueil">
+      L&thinsp;E&thinsp;V&thinsp;O&thinsp;I&thinsp;S
     </a>
 
-    <nav class="hidden md:block">
-      <ul class="flex items-center gap-7 lg:gap-9 text-[15px]">
-        {nav.map((item) => {
-          const isActive = currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href + '/'));
-          return (
-            <li>
-              <a
-                href={item.href}
-                class={`transition-colors hover:text-sapin pb-1 ${
-                  isActive
-                    ? 'text-sapin border-b border-sapin'
-                    : 'text-muted'
-                }`}
-              >
-                {item.label}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+    <nav class="hidden md:flex items-center gap-7" aria-label="Navigation principale">
+      {liens.map((l) => (
+        <a href={l.href} class="font-sans text-[15px] text-encre/80 hover:text-argile transition-colors duration-200">
+          {l.label}
+        </a>
+      ))}
+      <a href="/situer-ma-vente" class="btn-primaire !py-2.5 !px-5 text-[15px]">Faire le point</a>
     </nav>
 
     <button
-      id="menu-toggle"
-      class="md:hidden text-sapin p-2 -mr-2"
-      aria-label="Ouvrir le menu"
+      id="menu-btn"
+      class="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-encre"
       aria-expanded="false"
+      aria-controls="menu-mobile"
+      aria-label="Ouvrir le menu"
     >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <line x1="3" y1="8" x2="21" y2="8" />
-        <line x1="3" y1="16" x2="21" y2="16" />
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path class="menu-open" d="M2 6h18M2 11h18M2 16h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <path class="menu-close hidden" d="M5 5l12 12M17 5L5 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
       </svg>
     </button>
   </div>
 
-  <!-- Menu mobile -->
-  <div
-    id="mobile-menu"
-    class="hidden md:hidden border-t border-beige/50 bg-cream"
-    aria-hidden="true"
-  >
-    <ul class="px-edge py-6 space-y-4">
-      {nav.map((item) => (
-        <li>
-          <a href={item.href} class="block text-[17px] text-sapin py-1">
-            {item.label}
-          </a>
-        </li>
+  <div id="menu-mobile" class="hidden md:hidden bg-papier border-b border-beige">
+    <nav class="px-edge py-4 flex flex-col gap-1" aria-label="Navigation mobile">
+      {liens.map((l) => (
+        <a href={l.href} class="font-sans text-lg text-encre py-3 border-b border-beige/60 last:border-0">
+          {l.label}
+        </a>
       ))}
-    </ul>
+      <a href="/situer-ma-vente" class="btn-primaire mt-3 w-full">Faire le point</a>
+    </nav>
   </div>
 </header>
 
 <script>
-  const toggle = document.getElementById('menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  toggle?.addEventListener('click', () => {
-    const isOpen = !menu?.classList.contains('hidden');
-    menu?.classList.toggle('hidden', isOpen);
-    toggle.setAttribute('aria-expanded', String(!isOpen));
+  const btn = document.getElementById('menu-btn');
+  const menu = document.getElementById('menu-mobile');
+  const header = document.getElementById('site-header');
+
+  btn?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    btn.querySelector('.menu-open')?.classList.toggle('hidden', open);
+    btn.querySelector('.menu-close')?.classList.toggle('hidden', !open);
+    if (open) header?.classList.add('bg-papier', 'border-b', 'border-beige');
   });
+
+  // Fermer le menu au clic sur un lien (ancres internes).
+  menu?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      btn?.setAttribute('aria-expanded', 'false');
+      btn?.querySelector('.menu-open')?.classList.remove('hidden');
+      btn?.querySelector('.menu-close')?.classList.add('hidden');
+    })
+  );
+
+  // Header transparent sur la Hero → devient solide après le premier écran.
+  if (header?.dataset.transparent === 'true') {
+    const solidify = () => {
+      const solid = window.scrollY > 40;
+      header.classList.toggle('bg-papier/95', solid);
+      header.classList.toggle('backdrop-blur-sm', solid);
+      header.classList.toggle('border-b', solid);
+      header.classList.toggle('border-beige/60', solid);
+    };
+    window.addEventListener('scroll', solidify, { passive: true });
+    solidify();
+  }
 </script>

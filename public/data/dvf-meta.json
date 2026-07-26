@@ -1,0 +1,28 @@
+{
+  "status": "ready",
+  "generatedAt": "2026-07-24T19:57:24.717Z",
+  "source": "Demandes de valeurs foncières (DVF) — DGFiP, géolocalisées par Etalab (geo-dvf)",
+  "sourceUrl": "https://files.data.gouv.fr/geo-dvf/latest/csv/",
+  "licence": "Licence ouverte / Etalab 2.0",
+  "departement": "28",
+  "communes": [
+    "Lèves",
+    "Chartres",
+    "Mainvilliers",
+    "Lucé",
+    "Champhol",
+    "Le Coudray",
+    "Luisant"
+  ],
+  "anneesIncluses": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "count": 6318,
+  "dateVenteLaPlusRecente": "2025-12-31",
+  "dateVenteLaPlusAncienne": "2021-01-04",
+  "note": "Chaque entrée représente une mutation (vente) unique, regroupée depuis les lignes DVF. Les biens sans coordonnées, sans local d’habitation ou de prix nul sont écartés. La base DVF n’est pas exhaustive : certaines ventes peuvent en être absentes."
+}

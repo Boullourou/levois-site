@@ -1,371 +1,1759 @@
 ---
+/**
+ * /votre-rue — expérience « infographie » du QR encart publicitaire.
+ *
+ * URL protégée (imprimée). Ne pas supprimer/renommer/rediriger sans validation.
+ *
+ * Transforme les DVF en une lecture immédiate, compréhensible en quelques
+ * secondes par quelqu'un qui ne connaît rien à l'immobilier :
+ *   adresse → courte analyse animée → 4 informations → « En clair »
+ *   → ventes détaillées (facultatif) → tunnel de conversion.
+ *
+ * Honnêteté (impératif) : tout est calculé sur les vraies données DVF générées
+ * par scripts/build-dvf.mjs. Aucun chiffre fictif. Aucun indicateur non
+ * calculable (demande, délai de vente, visites, tension : jamais affichés ni
+ * sous-entendus). Aucune estimation du bien du visiteur. Aucun faux temps de
+ * chargement : les messages d'analyse accompagnent le calcul réel.
+ *
+ * Géocodage : Géoplateforme (BAN) — service actuel de l'État.
+ * Conversion : les réponses de qualification + le contexte sont destinés à
+ * /api/lead (backend migré à l'itération suivante — cf. commentaire d'envoi).
+ */
 import Layout from '../layouts/Layout.astro';
-
-// Données calculées depuis les CSV DVF officiels (commune 28209), millésimes 2024 et 2025.
-// 121 ventes de maisons et appartements, dédupliquées par id_mutation + (type, surface, pièces, parcelle).
-// 4 vraies ventes en bloc exclues. Méthode validée par contre-vérification externe juin 2026.
-// Images : vues streetview Yanport (pix.yanport.com), anonymes, sans identification du bien.
-
-const secteurs = [
-  {
-    nom: "Sud — quartiers récents",
-    n: 36, detail: "10 maisons · 26 appartements",
-    medianes: [["Maisons", "235 450 €"], ["Appartements", "123 000 €"]],
-    rues: "Rues Primo Levi, George Sand, Pablo Neruda, Louise Michel, Charles Darwin, Nelson Mandela, d'Ouarville, de Longsault, résidence des Marcoins",
-    biens: [
-      { type: "Appartement", surface: 39, pieces: 2, prix: "104 900 €", rue: "Rue George Sand", date: "nov 2025", img: "https://pix.yanport.com/cities/47893941/streetview/2-rue-george-sand.jpeg" },
-      { type: "Appartement", surface: 44, pieces: 2, prix: "130 000 €", rue: "Rue Primo Levi", date: "oct 2025", img: "https://pix.yanport.com/cities/47893941/streetview/15-rue-primo-levi.jpeg" },
-    ],
-  },
-  {
-    nom: "Avenue de la Paix / Vaux de Lèves",
-    n: 28, detail: "9 maisons · 19 appartements",
-    medianes: [["Maisons", "178 250 €"], ["Appartements", "110 000 €"]],
-    rues: "Avenue de la Paix, rue des Vaux de Lèves, rue Hoche Allart",
-    biens: [
-      { type: "Maison", surface: 64, pieces: 4, prix: "178 250 €", rue: "Avenue de la Paix", date: "déc 2025", img: "https://pix.yanport.com/cities/47893941/streetview/66-av-de-la-paix.jpeg" },
-      { type: "Appartement", surface: 49, pieces: 2, prix: "149 900 €", rue: "Rue des Vaux de Lèves", date: "sep 2025", img: "https://pix.yanport.com/cities/47893941/streetview/4-rue-des-vaux-de-leves.jpeg" },
-    ],
-  },
-  {
-    nom: "Centre et abords",
-    n: 13, detail: "13 maisons",
-    medianes: [["Maisons", "230 000 €"]],
-    rues: "Rues de la Voie Romaine, des Picheloups, des Osiers, du Bois Lion, Jean Jaurès, Bernard Jumentier, de la Chacatière, avenues Soutine et Gérard Philipe, allée des Charmes",
-    biens: [
-      { type: "Maison", surface: 89, pieces: 5, prix: "208 000 €", rue: "Rue du Bois Lion", date: "déc 2025", img: "https://pix.yanport.com/cities/47893941/streetview/1-rue-du-bois-lion.jpeg" },
-      { type: "Maison", surface: 111, pieces: 5, prix: "300 000 €", rue: "Rue Bernard Jumentier", date: "sep 2025", img: "https://pix.yanport.com/cities/47893941/streetview/4-rue-bernard-jumentier.jpeg" },
-    ],
-  },
-  {
-    nom: "Nord-Ouest — Chavannes / Proust",
-    n: 17, detail: "17 maisons",
-    medianes: [["Maisons", "202 950 €"]],
-    rues: "Route de Chavannes, avenue Marcel Proust, rue des Hauts de Fresnay, allées du Clos Renault, des Buissons, des Perdrix et des Bleuets",
-    biens: [
-      { type: "Maison", surface: 67, pieces: 4, prix: "205 000 €", rue: "Allée des Perdrix", date: "sep 2025", img: "https://pix.yanport.com/cities/47893941/streetview/3-all-des-perdrix.jpeg" },
-      { type: "Maison", surface: 94, pieces: 4, prix: "175 000 €", rue: "Avenue Marcel Proust", date: "aoû 2025", img: "https://pix.yanport.com/cities/47893941/streetview/72-av-marcel-proust.jpeg" },
-    ],
-  },
-  {
-    nom: "Nord-Est — Bailleau / Jean Moulin",
-    n: 24, detail: "23 maisons · 1 appartement",
-    medianes: [["Maisons", "206 450 €"]],
-    rues: "Rues de Bailleau, des Trois Maisons, Jean Moulin, Jules Vallain, du Bout du Val, Alphonse Jacquet, route du Bois de Lèves",
-    biens: [
-      { type: "Maison", surface: 96, pieces: 4, prix: "220 000 €", rue: "Rue Jean Moulin", date: "déc 2025", img: "https://pix.yanport.com/cities/47893941/streetview/9-rue-jean-moulin.jpeg" },
-      { type: "Maison", surface: 90, pieces: 4, prix: "110 000 €", rue: "Rue de Bailleau", date: "déc 2025", img: "https://pix.yanport.com/cities/47893941/streetview/6-rue-de-bailleau.jpeg" },
-    ],
-  },
-];
 ---
 
 <Layout
-  title="Prix immobilier à Lèves — les ventes réelles, quartier par quartier"
-  description="Prix immobilier à Lèves (28300) : 121 ventes réelles 2024-2025 issues des données publiques des notaires (DVF). Prix médians par quartier, exemples concrets avec photos."
+  title="Les prix réels de votre secteur"
+  description="Combien s'est vendue la dernière maison de votre quartier ? Les ventes réelles de votre secteur, à partir des données publiques DVF. Sans inscription."
+  noindex={true}
 >
+  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
 
-  <article class="max-w-page mx-auto px-edge md:px-edge-md pt-section md:pt-section-md pb-section-md">
-
-    <!-- HERO -->
-    <header class="mb-12 md:mb-16 max-w-editorial fade-up">
-      <div class="eyebrow mb-6">Données notaires · Lèves 28300</div>
-      <h1 class="text-hero text-sapin leading-[0.95] mb-8">
-        Combien s'est vendue<br/>
-        <em class="font-normal italic text-sapin-deep">la dernière maison de votre rue ?</em>
+    <!-- ① Promesse + saisie -->
+    <header class="mb-8 md:mb-10">
+      <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
+      <h1 class="vr-titre text-encre mb-4">
+        Combien s'est vendue la dernière maison de votre quartier&nbsp;?
       </h1>
-      <span class="rule-ocre"></span>
+      <p class="font-sans text-body-lg text-brun max-w-prose">
+        Les ventes réellement enregistrées autour de chez vous.
+        Sans inscription, sans qu'on vous rappelle. La réponse en 30&nbsp;secondes.
+      </p>
+      <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
     </header>
 
-    <!-- INTRO PERSONNELLE -->
-    <section class="mb-12 max-w-prose fade-up">
-      <p class="text-body-lg text-muted leading-relaxed">
-        J'ai compilé ces chiffres parce qu'ils n'existaient pas sous cette forme pour Lèves.
-        Quand un habitant me demande ce que vaut sa maison, je préfère lui montrer ce qui
-        s'est réellement vendu autour de chez lui — plutôt que de balancer un chiffre sorti
-        d'un algorithme qui n'a jamais mis les pieds dans le quartier.
-      </p>
-      <p class="text-body-lg text-muted leading-relaxed mt-4">
-        Ce que vous voyez ici, c'est la réalité du marché. Pas des estimations, pas des
-        moyennes nationales — des actes de vente enregistrés chez les notaires. La différence
-        entre un bien qui se vend en quelques semaines et le même bien qui reste invendu un an,
-        c'est rarement ce qu'on croit : c'est souvent une question de comprendre à qui il
-        correspond, pourquoi il est vendu, et comment le mettre en valeur pour que les bonnes
-        personnes s'y projettent.
-      </p>
-    </section>
-
-    <!-- CHIFFRES GLOBAUX -->
-    <section class="mb-section md:mb-section-md fade-up">
-      <div class="grid sm:grid-cols-3 gap-px bg-beige border border-beige">
-        <div class="bg-cream p-6 md:p-8">
-          <div class="eyebrow-muted mb-3">Sur deux ans</div>
-          <div class="text-display text-sapin leading-none mb-2">121</div>
-          <p class="text-[15px] text-muted">ventes de maisons et d'appartements enregistrées à Lèves en 2024 et 2025.</p>
+    <form id="vr-form" class="vr-search carte p-5 md:p-6" autocomplete="off" novalidate>
+      <label for="vr-adresse" class="block font-sans text-sm text-brun mb-2">
+        Votre rue ou votre adresse
+      </label>
+      <div class="vr-field">
+        <div class="vr-combo">
+          <input
+            id="vr-adresse" type="text" name="adresse" inputmode="text"
+            autocomplete="off" spellcheck="false"
+            placeholder="Ex : rue de la République, Lèves"
+            class="vr-input" role="combobox" aria-expanded="false"
+            aria-controls="vr-suggestions" aria-autocomplete="list"
+          />
+          <ul id="vr-suggestions" class="vr-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>
         </div>
-        <div class="bg-cream-soft p-6 md:p-8">
-          <div class="eyebrow-muted mb-3">Maisons · 75 ventes</div>
-          <div class="text-display text-sapin leading-none mb-2">210 000 €</div>
-          <p class="text-[15px] text-muted">prix médian, soit environ 2 329 €/m².</p>
-        </div>
-        <div class="bg-cream-soft p-6 md:p-8">
-          <div class="eyebrow-muted mb-3">Appartements · 46 ventes</div>
-          <div class="text-display text-sapin leading-none mb-2">117 660 €</div>
-          <p class="text-[15px] text-muted">prix médian, soit environ 2 407 €/m².</p>
-        </div>
+        <button type="submit" id="vr-submit" class="btn-primaire vr-submit">Voir les ventes</button>
       </div>
-      <p class="text-[13px] text-muted mt-4">
-        Source : données publiques DVF · arrêtées à décembre 2025 · prochaine mise à jour avec l'observatoire trimestriel.
+      <p class="font-sans text-[13px] text-brun/70 mt-3">
+        Aucune création de compte. Aucun e-mail ni téléphone demandé pour obtenir le résultat.
       </p>
-    </section>
+      <p id="vr-geo-erreur" class="font-sans text-sm text-argile mt-2 hidden" role="alert"></p>
+    </form>
 
-    <!-- PAR SECTEUR avec cartes visuelles -->
-    <section class="mb-section md:mb-section-md">
-      <h2 class="text-h2 text-sapin mb-3 fade-up">Quartier par quartier</h2>
-      <span class="rule-ocre fade-up"></span>
-      <p class="text-body-lg text-muted max-w-prose mt-6 mb-12 fade-up">
-        Retrouvez votre rue dans la liste sous chaque secteur — c'est elle qui compte,
-        plus que le nom du secteur.
-      </p>
+    <!-- ②③④⑤⑥ Scène (analyse → infographie → En clair → détails → conversion) -->
+    <section id="vr-scene" aria-live="polite" hidden></section>
 
-      <div class="space-y-12">
-        {secteurs.map((s) => (
-          <div class="fade-up">
-            <!-- En-tête secteur -->
-            <div class="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-4 pb-4 border-b border-beige">
-              <h3 class="text-h3 text-sapin">{s.nom}</h3>
-              <div class="eyebrow-muted shrink-0">{s.n} ventes · {s.detail}</div>
-            </div>
-
-            <!-- Médianes -->
-            <div class="flex flex-wrap gap-x-10 gap-y-2 mb-6">
-              {s.medianes.map(([label, val]) => (
-                <div>
-                  <span class="text-[13px] uppercase tracking-wider text-muted">{label}, prix médian</span>
-                  <div class="text-h3 text-sapin">{val}</div>
-                </div>
-              ))}
-            </div>
-
-            <!-- Cartes visuelles -->
-            <div class="grid sm:grid-cols-2 gap-4 mb-5">
-              {s.biens.map((b) => (
-                <div class="border border-beige rounded-md overflow-hidden bg-cream">
-                  <div class="aspect-[16/9] overflow-hidden bg-beige">
-                    <img
-                      src={b.img}
-                      alt={`Vue de ${b.rue} à Lèves`}
-                      class="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div class="p-4">
-                    <div class="flex items-start justify-between gap-2 mb-2">
-                      <div>
-                        <div class="eyebrow-muted mb-1">{b.type} · {b.date}</div>
-                        <div class="text-[15px] text-ink font-medium">{b.rue}</div>
-                      </div>
-                      <div class="text-right shrink-0">
-                        <div class="text-h3 text-sapin">{b.prix}</div>
-                      </div>
-                    </div>
-                    <div class="flex gap-4 text-[13px] text-muted mt-2">
-                      <span>{b.surface} m²</span>
-                      {b.pieces && <span>{b.pieces} pièces</span>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <!-- Rues du secteur -->
-            <p class="text-[13px] text-muted leading-relaxed">
-              <span class="uppercase tracking-wider">Principales rues :</span> {s.rues}.
-            </p>
-          </div>
-        ))}
-      </div>
-
-      <!-- Butte Celtique + disclaimer -->
-      <div class="mt-10 max-w-prose fade-up">
-        <p class="text-[15px] text-muted">
-          Et un mot sur le quartier de la Butte Celtique — celui où j'habite :
-          aucune revente n'y a été enregistrée en 2024-2025. C'est un quartier
-          récent, où l'on s'installe et où l'on reste.
+    <!-- ⑦ Méthode & limites (accessibles mais discrètes) -->
+    <details id="vr-methode" class="vr-methode">
+      <summary>Méthode, source et limites</summary>
+      <div class="vr-methode-corps">
+        <p>
+          Source : Demandes de valeurs foncières (DVF), DGFiP — données publiques ouvertes,
+          géolocalisées par Etalab. Chaque vente affichée est une transaction réellement
+          enregistrée.
         </p>
-        <p class="text-[13px] italic text-muted mt-3">
-          Découpage indicatif, affiné au fil des retours d'habitants. Les vues de rue
-          sont fournies par Yanport et n'identifient pas le bien vendu.
+        <p>
+          Les prix « médians » et les fourchettes sont calculés sur les ventes du même type de
+          bien (maison ou appartement) dans un rayon autour de l'adresse. L'évolution est estimée
+          par une droite de tendance (régression) sur les médianes annuelles du prix au m²
+          (2021 à 2025), pour éviter qu'une seule année atypique ne fausse la lecture.
+          Le pourcentage affiché compare la valeur de cette droite en 2025 à sa valeur en 2021
+          (année de référence fixe, identique pour toutes les adresses) ; en dessous de ±3 %,
+          les prix sont considérés comme globalement stables. Le pourcentage justifie la
+          conclusion, il n'en est pas l'essentiel.
+        </p>
+        <p>
+          Ce que ces données <strong>ne disent pas</strong> : la valeur précise de votre bien, la
+          demande, les délais de vente, le nombre de visites. Une vente voisine est un repère de
+          prix, pas une estimation de votre bien. La base DVF n'est pas exhaustive : certaines
+          ventes peuvent en être absentes.
         </p>
       </div>
-    </section>
+    </details>
 
-    <!-- VOTRE RUE N'APPARAÎT PAS -->
-    <section class="mb-section md:mb-section-md fade-up">
-      <div class="border border-beige rounded-md p-6 md:p-8 max-w-editorial">
-        <h2 class="text-h3 text-sapin mb-3">Votre rue n'est pas dans les données ?</h2>
-        <p class="text-[15px] text-muted leading-relaxed mb-6">
-          Les données DVF couvrent les ventes enregistrées chez les notaires —
-          certaines rues n'ont eu aucune transaction en 2024-2025. C'est aussi
-          une information : un quartier stable où l'on reste. Si vous voulez
-          un point précis sur votre adresse, dites-le moi directement : je vous
-          réponds personnellement.
-        </p>
-        <form
-          action="https://formspree.io/f/xnjynroj"
-          method="POST"
-          class="space-y-4"
-        >
-          <input type="hidden" name="_subject" value="Demande adresse spécifique" />
-          <input type="hidden" name="_next" value="https://levois.fr/merci" />
-          <label class="block">
-            <span class="text-eyebrow uppercase text-muted">Votre email (facultatif)</span>
-            <input
-              type="email"
-              name="email"
-              class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[15px]"
-              placeholder="prenom@exemple.fr"
-            />
-          </label>
-          <label class="block">
-            <span class="text-eyebrow uppercase text-muted">Votre rue</span>
-            <input
-              type="text"
-              name="rue"
-              required
-              class="mt-1 w-full bg-cream border border-beige rounded-md px-4 py-2.5 focus:outline-none focus:border-sapin text-[15px]"
-              placeholder="Ex : Allée des Bleuets"
-            />
-          </label>
-          <button
-            type="submit"
-            class="inline-flex items-center gap-3 bg-sapin text-cream px-6 py-3 rounded-full hover:bg-sapin-deep transition-colors text-[15px]"
-          >
-            M'envoyer une réponse personnelle
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-          </button>
-          <p class="text-[12px] text-muted">
-            C'est moi qui réponds, sous 24h. Un échange, rien de plus.
-          </p>
-        </form>
-      </div>
-    </section>
-
-    <!-- GÉORISQUES -->
-    <section class="mb-section md:mb-section-md fade-up">
-      <div class="border border-beige/60 rounded-md p-6 md:p-8 max-w-editorial bg-cream-soft">
-        <div class="eyebrow-muted mb-3">Autre ressource utile pour votre bien</div>
-        <h2 class="text-h3 text-sapin mb-3">État des risques de votre adresse</h2>
-        <p class="text-[15px] text-muted leading-relaxed mb-5">
-          Avant toute vente ou achat à Lèves, vous pouvez consulter l'état des
-          risques de votre adresse en 30 secondes — c'est gratuit, officiel,
-          et obligatoire dans tout compromis de vente.
-        </p>
-        <a
-          href="https://errial.georisques.gouv.fr"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 text-eyebrow uppercase text-sapin hover:text-ocre transition-colors border-b border-sapin pb-1"
-        >
-          Consulter les risques de mon adresse (Géorisques)
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-        </a>
-        <p class="text-[12px] text-muted mt-3">
-          Service public officiel, aucune donnée transmise à levois.fr.
-        </p>
-      </div>
-    </section>
-
-    <!-- MICRO-IDENTITÉ -->
-    <section class="mb-section md:mb-section-md fade-up">
-      <div class="flex items-center gap-5 bg-cream-soft border border-beige rounded-md p-6 md:p-8 max-w-editorial">
-        <img
-          src="/portrait-avatar.webp"
-          alt="Mouaad Boullourou"
-          width="72"
-          height="72"
-          class="w-16 h-16 rounded-full object-cover border border-beige shrink-0"
-          loading="lazy"
-        />
-        <p class="text-[15px] text-ink/85 leading-relaxed">
-          Mouaad, votre voisin rue de la Butte Celtique. Conseiller immobilier
-          indépendant SAFTI, disponible 7j/7. Je tiens ces chiffres à jour pour
-          les habitants de Lèves.
-        </p>
-      </div>
-    </section>
-
-    <!-- OPT-IN OBSERVATOIRE -->
-    <section class="bg-sapin text-cream rounded-md p-8 md:p-12 mb-section fade-up">
-      <div class="max-w-editorial">
-        <div class="text-eyebrow uppercase tracking-widest text-ocre-soft mb-4">Rester informé</div>
-        <h2 class="text-h2 mb-4">
-          Recevez la mise à jour de ces chiffres<br/>
-          <em class="italic font-normal">chaque trimestre.</em>
-        </h2>
-        <p class="text-[15px] opacity-80 leading-relaxed mb-10 max-w-prose">
-          L'observatoire immobilier de Lèves, gratuit, par email. Désinscription
-          en un clic à tout moment.
-        </p>
-        <form
-          action="https://formspree.io/f/xnjynroj"
-          method="POST"
-          class="space-y-5"
-        >
-          <input type="hidden" name="_subject" value="[Votre rue] Inscription observatoire" />
-          <input type="hidden" name="_next" value="https://levois.fr/merci" />
-          <div class="grid sm:grid-cols-2 gap-4">
-            <label class="block">
-              <span class="text-eyebrow uppercase text-ocre-soft">Prénom</span>
-              <input type="text" name="prenom" class="mt-1 w-full bg-sapin-deep border border-ocre/30 text-cream rounded-md px-4 py-2.5 focus:outline-none focus:border-ocre placeholder-cream/40" />
-            </label>
-            <label class="block">
-              <span class="text-eyebrow uppercase text-ocre-soft">Email *</span>
-              <input type="email" name="email" required class="mt-1 w-full bg-sapin-deep border border-ocre/30 text-cream rounded-md px-4 py-2.5 focus:outline-none focus:border-ocre placeholder-cream/40" />
-            </label>
-          </div>
-          <label class="flex items-start gap-3 text-xs opacity-80">
-            <input type="checkbox" name="consentement" value="oui" required class="mt-0.5 accent-ocre" />
-            <span>J'accepte de recevoir l'observatoire trimestriel par email. Désinscription en un clic à tout moment.</span>
-          </label>
-          <button type="submit" class="bg-ocre text-sapin-deep px-7 py-3.5 rounded-full hover:bg-ocre-soft transition-colors text-[15px] font-medium inline-flex items-center gap-3">
-            M'inscrire
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-          </button>
-        </form>
-      </div>
-    </section>
-
-    <!-- PORTE DE SORTIE UNIQUE -->
-    <section class="bg-cream-soft border border-beige rounded-md p-8 md:p-12 fade-up">
-      <div class="max-w-editorial">
-        <div class="eyebrow mb-4">Et pour votre bien ?</div>
-        <h2 class="text-h2 text-sapin mb-4">
-          Un doute sur le prix<br/>
-          <em class="italic font-normal">de votre bien ?</em>
-        </h2>
-        <p class="text-body-lg text-muted leading-relaxed mb-8 max-w-prose">
-          Ce qui s'est vendu dans votre secteur, c'est sur cette page. Ce qui est en vente
-          en ce moment, ce qui n'a pas trouvé preneur et pourquoi — ça, c'est ce que je vous
-          apporte en 20 minutes.
-        </p>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <a href="tel:+33781380121" class="inline-flex items-center justify-center gap-2 bg-sapin text-cream px-5 py-3 rounded-full hover:bg-sapin-deep transition-colors text-[15px] font-medium">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-            Appeler
-          </a>
-          <a href="sms:+33781380121" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-5 py-3 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px] font-medium">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
-            SMS
-          </a>
-          <a href="mailto:mouaad@levois.fr" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-5 py-3 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px] font-medium">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Écrire
-          </a>
-        </div>
-        <p class="text-[12px] text-muted mt-3">07 81 38 01 21 · mouaad@levois.fr · Disponible 7j/7</p>
-      </div>
-    </section>
-
-  </article>
+  </div>
 </Layout>
+
+<!-- is:global OBLIGATOIRE : l'infographie est injectée en JS (innerHTML), donc
+     sans l'attribut de scope Astro (data-astro-cid). Une feuille scopée ne
+     matcherait aucun élément injecté → contenu rendu sans aucun style.
+     Tous les sélecteurs sont préfixés .vr- : aucun risque de collision. -->
+<style is:global>
+  .vr-titre {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;
+  }
+  .vr-fraicheur {
+    display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F;
+    background: #F0E2D8; border-radius: 999px; padding: 0.35rem 0.85rem;
+  }
+  .vr-fraicheur::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #A85638; flex: 0 0 auto; }
+
+  .vr-field { display: flex; flex-direction: column; gap: 0.75rem; }
+  @media (min-width: 560px) { .vr-field { flex-direction: row; align-items: flex-start; } }
+  .vr-combo { position: relative; flex: 1; }
+  .vr-input {
+    width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
+    padding: 0.85rem 1rem; font-family: 'Instrument Sans', sans-serif; font-size: 1rem;
+    color: #211C16; min-height: 52px;
+  }
+  .vr-input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
+  .vr-submit { min-height: 52px; white-space: nowrap; }
+  @media (max-width: 559px) { .vr-submit { width: 100%; } }
+
+  .vr-suggestions {
+    position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px);
+    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 12px;
+    box-shadow: 0 24px 48px -28px rgba(33,28,22,0.5);
+    list-style: none; margin: 0; padding: 0.35rem; max-height: 320px; overflow-y: auto;
+  }
+  .vr-suggestions li {
+    padding: 0.65rem 0.75rem; border-radius: 8px; cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16; line-height: 1.35;
+  }
+  .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: #6B5D4F; }
+  .vr-suggestions li[aria-selected="true"], .vr-suggestions li:hover { background: #F0E2D8; }
+
+  /* ——— Analyse ——— */
+  .vr-analyse { padding: 2.5rem 0 1rem; }
+  .vr-analyse-step {
+    display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
+    font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; color: #B8AA97;
+    transition: color 0.3s ease;
+  }
+  .vr-analyse-step.is-active { color: #211C16; }
+  .vr-analyse-step.is-done { color: #6B5D4F; }
+  .vr-analyse-dot {
+    width: 20px; height: 20px; border-radius: 999px; flex: 0 0 auto; position: relative;
+    border: 2px solid currentColor;
+  }
+  .vr-analyse-step.is-active .vr-analyse-dot::after {
+    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: #A85638;
+    animation: vr-pulse 0.9s ease-in-out infinite;
+  }
+  .vr-analyse-step.is-done .vr-analyse-dot { background: #A85638; border-color: #A85638; }
+  .vr-analyse-step.is-done .vr-analyse-dot::after {
+    content: ''; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  @keyframes vr-pulse { 0%,100% { transform: scale(0.7); opacity: 0.6; } 50% { transform: scale(1); opacity: 1; } }
+
+  /* ——— Résultats : séquence compacte de cartes ——— */
+  .vr-results { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+  .vr-head { margin: 0.25rem 0 0.1rem; }
+  .vr-head-eyebrow { font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #A85638; }
+  .vr-head-adr { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 0.25rem; }
+
+  .vr-block { opacity: 0; transform: translateY(14px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+  .vr-block.is-in { opacity: 1; transform: none; }
+
+  .vr-card { background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.5rem 1.35rem; }
+  @media (min-width: 768px) { .vr-card { padding: 1.9rem; } }
+  .vr-card--dark { background: #211C16; border-color: #211C16; }
+  .vr-card--warm { background: #F0E2D8; border-color: #EAD9C7; }
+
+  .vr-label { font-family: 'Instrument Sans', sans-serif; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #A85638; }
+  .vr-card--dark .vr-label { color: #C97B52; }
+  .vr-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 1; letter-spacing: -0.02em; color: #211C16; }
+  .vr-card--dark .vr-num { color: #F7F2EA; }
+  .vr-sub { font-family: 'Instrument Sans', sans-serif; color: #6B5D4F; }
+  .vr-card--dark .vr-sub { color: rgba(247,242,234,0.7); }
+
+  /* B — compteur de ventes */
+  .vr-b-num { font-size: clamp(3.4rem, 16vw, 5rem); }
+  .vr-b-l { font-family: 'Instrument Sans', sans-serif; font-size: 1.1rem; color: #211C16; margin-top: 0.15rem; }
+  .vr-b-sub { font-size: 0.9rem; margin-top: 0.45rem; }
+
+  /* C — prix du milieu + curseur de fourchette */
+  .vr-c-num { font-size: clamp(2.7rem, 12vw, 3.8rem); }
+  .vr-c-lbl { margin-top: 0.55rem; }
+  .vr-range { margin-top: 1.8rem; }
+  .vr-range-line { position: relative; height: 3px; background: #E0D3BF; margin: 0 0.2rem; border-radius: 3px; }
+  .vr-range-dot { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 999px; background: #A85638; box-shadow: 0 0 0 4px #FDFBF6, 0 2px 8px rgba(168,86,56,0.55); transform: translate(-50%, -50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .vr-range-cap { position: absolute; top: -1.55rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; color: #211C16; font-weight: 600; }
+  .vr-range-cap.g { left: 0; } .vr-range-cap.d { right: 0; }
+  .vr-range-arrows { display: flex; justify-content: space-between; color: #C0B29B; font-size: 1rem; margin-top: 0.35rem; padding: 0 0.1rem; }
+  .vr-c-phrase { font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem; color: #6B5D4F; margin-top: 1rem; line-height: 1.5; }
+  .vr-c-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; opacity: 0.85; margin-top: 0.55rem; }
+
+  /* D — tendance : titre + jauge baisse/stable/hausse */
+  .vr-d-head { display: flex; align-items: center; gap: 0.65rem; margin-top: 0.7rem; }
+  .vr-d-ico { width: 32px; height: 32px; flex: 0 0 auto; }
+  .vr-d-ico svg { width: 100%; height: 100%; }
+  .vr-d-title { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.4rem, 5vw, 1.9rem); line-height: 1.1; color: #211C16; }
+  .vr-d-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 0.9rem; }
+  .vr-gauge { margin-top: 1.3rem; }
+  .vr-gauge-track { position: relative; height: 12px; border-radius: 999px; background: linear-gradient(90deg, #DCD2C0 0 33%, #EFE6D6 33% 67%, #E6C3AB 67% 100%); }
+  .vr-gauge-cursor { position: absolute; top: -5px; width: 4px; height: 22px; border-radius: 2px; background: #211C16; transform: translateX(-50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.55rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9C8E7C; }
+  .vr-gauge-lbls .on { color: #A85638; font-weight: 600; }
+
+  /* A — dernière vente */
+  .vr-a-num { font-size: clamp(2.5rem, 11vw, 3.4rem); margin-top: 0.7rem; }
+  .vr-a-bien { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; margin-top: 0.5rem; color: rgba(247,242,234,0.92); }
+  .vr-a-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; margin-top: 0.35rem; }
+
+  /* En clair */
+  .vr-ec { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.3rem, 4.6vw, 1.8rem); line-height: 1.32; color: #211C16; margin-top: 0.7rem; }
+  .vr-maj { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; color: #6B5D4F; margin-top: 0.9rem; }
+
+  /* Ventes détaillées (secondaire) */
+  .vr-details { margin-top: 0.1rem; }
+  .vr-details summary {
+    cursor: pointer; font-family: 'Instrument Sans', sans-serif; font-weight: 600; color: #A85638;
+    padding: 0.9rem 0; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .vr-details summary::-webkit-details-marker { display: none; }
+  .vr-details summary::before { content: '＋'; font-weight: 400; }
+  .vr-details[open] summary::before { content: '－'; }
+  .vr-autre { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.85rem 0; border-top: 1px solid #EDE3D4; font-family: 'Instrument Sans', sans-serif; }
+  .vr-autre-sub { display: block; font-size: 0.85rem; color: #6B5D4F; }
+  .vr-autre-prix { font-weight: 600; color: #211C16; }
+
+  /* ——— Conversion : rupture forte (carte sombre) ——— */
+  .vr-conv { background: #211C16; color: #F7F2EA; border-radius: 24px; padding: 2rem 1.5rem; margin-top: 1.75rem; }
+  @media (min-width: 768px) { .vr-conv { padding: 2.75rem; } }
+  .vr-conv-eyebrow { font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #C97B52; margin-bottom: 0.8rem; }
+  .vr-conv-titre { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.8rem, 6.5vw, 2.6rem); line-height: 1.08; color: #F7F2EA; margin-bottom: 0.7rem; }
+  .vr-conv-intro { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; line-height: 1.6; color: rgba(247,242,234,0.72); margin-bottom: 1.6rem; }
+  .vr-paths { display: grid; gap: 0.7rem; }
+  .vr-path { text-align: left; width: 100%; border: 0; border-radius: 16px; padding: 1.15rem 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s; }
+  .vr-path-t { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.18rem; display: block; }
+  .vr-path-d { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; margin-top: 0.2rem; display: block; }
+  .vr-path-arrow { flex: 0 0 auto; font-size: 1.15rem; }
+  .vr-path--1 { background: #A85638; }
+  .vr-path--1 .vr-path-t { color: #FBF3EC; } .vr-path--1 .vr-path-d { color: rgba(251,243,236,0.82); } .vr-path--1 .vr-path-arrow { color: #FBF3EC; }
+  .vr-path--1:hover { background: #B5623F; transform: translateY(-2px); box-shadow: 0 18px 40px -22px rgba(168,86,56,0.85); }
+  .vr-path--2 { background: #F7F2EA; }
+  .vr-path--2 .vr-path-t { color: #211C16; } .vr-path--2 .vr-path-d { color: #6B5D4F; } .vr-path--2 .vr-path-arrow { color: #A85638; }
+  .vr-path--2:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -24px rgba(0,0,0,0.55); }
+  .vr-path--3 { background: transparent; border: 1px solid rgba(247,242,234,0.26); }
+  .vr-path--3 .vr-path-t { color: #F7F2EA; font-size: 1.04rem; } .vr-path--3 .vr-path-d { color: rgba(247,242,234,0.6); } .vr-path--3 .vr-path-arrow { color: rgba(247,242,234,0.6); }
+  .vr-path--3:hover { border-color: #C97B52; }
+
+  /* Panneau (qualif / contact / explorer) — carte claire imbriquée dans la conversion sombre */
+  .vr-panneau { margin-top: 1.35rem; background: #FDFBF6; border-radius: 16px; padding: 1.5rem 1.35rem; }
+  .vr-panneau:empty { display: none; }
+  .vr-q-progress { display: flex; gap: 0.35rem; margin-bottom: 1.25rem; }
+  .vr-q-dot { height: 4px; flex: 1; border-radius: 999px; background: #E8DFD0; }
+  .vr-q-dot.is-on { background: #A85638; }
+  .vr-q-label { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.35rem; line-height: 1.2; color: #211C16; margin-bottom: 1.1rem; }
+  .vr-q-opts { display: grid; gap: 0.6rem; }
+  .vr-q-opt {
+    text-align: left; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
+    padding: 0.9rem 1.1rem; cursor: pointer; font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .vr-q-opt:hover { border-color: #A85638; background: #F0E2D8; }
+  .vr-q-back { background: none; border: 0; color: #6B5D4F; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; padding: 0.3rem 0; }
+  .vr-q-back:hover { color: #A85638; }
+
+  .vr-champ { display: block; margin-bottom: 0.9rem; }
+  .vr-champ label { display: block; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-bottom: 0.4rem; }
+  .vr-champ input {
+    width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px; padding: 0.8rem 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16; min-height: 50px;
+  }
+  .vr-champ input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
+  .vr-consent { display: flex; align-items: flex-start; gap: 0.6rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; line-height: 1.5; margin: 0.5rem 0 1rem; cursor: pointer; }
+  .vr-consent input { margin-top: 0.15rem; width: 18px; height: 18px; accent-color: #A85638; flex: 0 0 auto; }
+  .vr-contact-liens { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .vr-explorer { display: grid; gap: 0.6rem; }
+  .vr-explorer a { display: block; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px; padding: 0.9rem 1.1rem; font-family: 'Instrument Sans', sans-serif; color: #211C16; transition: border-color 0.15s; }
+  .vr-explorer a:hover { border-color: #A85638; }
+  .vr-explorer a b { font-family: 'Fraunces', serif; font-weight: 500; }
+
+  .vr-vide { background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.75rem 1.5rem; }
+
+  .vr-methode { margin-top: 2.5rem; font-family: 'Instrument Sans', sans-serif; }
+  .vr-methode summary { cursor: pointer; font-size: 0.85rem; color: #6B5D4F; }
+  .vr-methode-corps { margin-top: 0.8rem; display: grid; gap: 0.7rem; }
+  .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
+
+  /* ——————————————————————————————————————————————————————————————
+     Infographique premium — 7 blocs, IntersectionObserver
+     Repli empilé : construireStack (prefers-reduced-motion).
+     —————————————————————————————————————————————————————————————— */
+
+  .vr-cine-wrap { display: grid; gap: 0; border-radius: 22px; overflow: hidden; }
+
+  .vr-bloc { padding: 2rem clamp(1.25rem, 5vw, 2.25rem) 2.25rem; }
+  .vr-bloc--hero  { background: #1B4332; padding-top: 2.75rem; padding-bottom: 2.75rem; }
+  .vr-bloc--b1    { background: #F3EDE4; }
+  .vr-bloc--b2    { background: #EDE7DC; }
+  .vr-bloc--surf  { background: #F3EDE4; }
+  .vr-bloc--spark { background: #EDE7DC; }
+  .vr-bloc--tx    { background: #FDFBF6; border-top: 1px solid #E8DFD0; }
+  .vr-bloc--conc  { background: #1F2937; }
+
+  .vr-kicker {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .vr-kicker--light { color: rgba(255,255,255,0.5); }
+  .vr-kicker--terra { color: #C15A2B; }
+  .vr-kicker--ink   { color: #9C8E7C; }
+
+  .vr-titre {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.2rem, 4.2vw, 1.6rem); line-height: 1.22;
+    margin-bottom: 1.25rem;
+  }
+  .vr-titre--dark { color: #211C16; }
+
+  /* Héro */
+  .vr-hero-counter {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(3.5rem, 14vw, 6rem); line-height: 1;
+    color: #A8D5A2; letter-spacing: -0.02em;
+    margin: 0.2rem 0 0.05rem;
+  }
+  .vr-hero-count-lbl {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55); font-weight: 500;
+  }
+  .vr-hero-bars { margin-top: 1.75rem; display: grid; gap: 0.65rem; }
+  .vr-hero-bar-row {
+    display: grid; grid-template-columns: 2.8rem 1fr 2.8rem;
+    align-items: center; gap: 0.65rem;
+  }
+  .vr-hero-bar-yr {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.5);
+  }
+  .vr-hero-bar-track {
+    height: 12px; border-radius: 999px;
+    background: rgba(255,255,255,0.12); overflow: hidden;
+  }
+  .vr-hero-bar-fill {
+    height: 100%; border-radius: 999px;
+    background: #A8D5A2; width: 0%;
+    transition: width 1.1s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .vr-hero-bar-n {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75);
+    text-align: right;
+  }
+  .vr-hero-badge {
+    display: inline-flex; align-items: center;
+    background: rgba(168,213,162,0.15); border: 1px solid rgba(168,213,162,0.3);
+    border-radius: 999px; padding: 0.2rem 0.65rem; margin-top: 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+    color: #A8D5A2;
+  }
+
+  /* Bloc dots — nuage de points */
+  .vr-dots-svg { display: block; width: 100%; height: 130px; margin: 0 auto 0.5rem; }
+  .vr-dot { transition: transform 0.95s cubic-bezier(0.25,0.46,0.45,0.94), fill 0.5s ease, opacity 0.6s ease; }
+
+  .vr-dot-legend {
+    display: flex; gap: 1.75rem; justify-content: center; margin-bottom: 0.75rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem;
+    color: #211C16; align-items: center;
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .vr-dot-legend-ico {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 999px; margin-right: 0.35rem;
+    vertical-align: middle; position: relative; top: -1px;
+  }
+  .vr-dot-counts {
+    display: flex; gap: 2.5rem; justify-content: center;
+    margin-bottom: 1rem;
+    opacity: 0; transition: opacity 0.55s ease;
+  }
+  .vr-dot-count {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: 1; display: block;
+    letter-spacing: -0.02em;
+  }
+  .vr-dot-count--M { color: #C15A2B; }
+  .vr-dot-count--A { color: #3A6FB0; }
+  .vr-dot-count-item {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem;
+    color: #6B5D4F; font-weight: 500; letter-spacing: 0.04em; text-align: center;
+  }
+
+  /* Textes narratifs des phases */
+  .vr-phase-txt {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: clamp(0.9rem, 2.8vw, 1rem); line-height: 1.62; color: #6B5D4F;
+    transition: opacity 0.5s ease;
+  }
+  .vr-pt1 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(1rem, 3.5vw, 1.2rem); color: #211C16;
+    margin-top: 0.25rem; margin-bottom: 0.25rem;
+  }
+  .vr-pt2 { margin-top: 0.85rem; }
+
+  /* Distribution */
+  .vr-dist-type-pill {
+    display: inline-block; border-radius: 999px;
+    padding: 0.18rem 0.75rem; margin-bottom: 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.07em; text-transform: uppercase;
+  }
+  .vr-dist-type-pill--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
+  .vr-dist-type-pill--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
+
+  .vr-dist-wrap { max-width: 42rem; }
+  .vr-dist-svg { display: block; width: 100%; overflow: visible; }
+  .vr-dist-zone { transition: opacity 0.8s ease; }
+  .vr-dist-dot { opacity: 0; transition: opacity 0.25s ease; }
+  .vr-dist-med-line { transition: opacity 0.5s ease; }
+  .vr-dist-axis-lbl {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.62rem; fill: #BBAA96; letter-spacing: 0.04em;
+  }
+  .vr-dist-zone-lbl {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 0.85rem; fill: #211C16;
+    transition: opacity 0.5s ease;
+  }
+  .vr-dist-zone-sub {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.6rem; fill: #9C8E7C;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    transition: opacity 0.5s ease;
+  }
+  .vr-dist-med-big {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 0.88rem; fill: #C15A2B;
+    transition: opacity 0.5s ease;
+  }
+  .vr-dist-note {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
+    color: #6B5D4F; line-height: 1.58; margin-top: 0.9rem;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+
+  /* Effet surface */
+  .vr-surf-trio {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 0.5rem; max-width: 24rem; text-align: center;
+  }
+  .vr-surf-col-val {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.3rem, 5vw, 1.85rem); line-height: 1.1; color: #211C16;
+  }
+  .vr-surf-col-lbl {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem;
+    color: #6B5D4F; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem;
+  }
+  .vr-surf-delta-wrap { text-align: center; padding: 0 0.25rem; }
+  .vr-surf-delta {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(1.8rem, 8vw, 2.8rem); line-height: 1; color: #C15A2B;
+    opacity: 0; transform: scale(0.7);
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .vr-surf-delta.on { opacity: 1; transform: none; }
+  .vr-surf-arrow { font-size: 0.85rem; color: #9C8E7C; display: block; margin-top: 0.15rem; }
+  .vr-surf-note {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
+    color: #6B5D4F; line-height: 1.58; margin-top: 1.1rem; max-width: 24rem;
+  }
+
+  /* Sparkline — grande */
+  .vr-spark-wrap { max-width: 42rem; }
+  .vr-spark-svg { display: block; width: 100%; overflow: visible; }
+  .vr-spark-path { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .vr-spark-dot { opacity: 0; transition: opacity 0.3s ease; }
+  .vr-spark-dot.on { opacity: 1; }
+  .vr-spark-yr { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; fill: #9C8E7C; text-anchor: middle; }
+  .vr-spark-val { font-family: 'Fraunces', serif; font-size: 0.78rem; font-weight: 500; fill: #211C16; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+  .vr-spark-val.on { opacity: 1; }
+  .vr-spark-dir { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.05rem,3.5vw,1.35rem); color: #211C16; margin-top: 0.65rem; }
+  .vr-spark-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; margin-top: 0.15rem; }
+
+  /* Ventes réelles — cartes avec stagger */
+  .vr-tx-cards { display: grid; gap: 0.7rem; }
+  .vr-tx-card {
+    background: #FFFFFF; border: 1px solid #E8DFD0; border-radius: 14px;
+    padding: 0.85rem 1rem; display: grid;
+    grid-template-columns: 2.2rem 1fr auto; gap: 0.6rem; align-items: start;
+    opacity: 0; transform: translateY(10px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+  .vr-tx-card.on { opacity: 1; transform: none; }
+  .vr-tx-ico {
+    width: 2.1rem; height: 2.1rem; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .vr-tx-ico--M { background: rgba(193,90,43,0.1); }
+  .vr-tx-ico--A { background: rgba(58,111,176,0.1); }
+  .vr-tx-info { min-width: 0; }
+  .vr-tx-name { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: #211C16; }
+  .vr-tx-addr {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem;
+    color: #6B5D4F; margin-top: 0.12rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .vr-tx-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; color: #9C8E7C; margin-top: 0.1rem; }
+  .vr-tx-right { text-align: right; flex-shrink: 0; }
+  .vr-tx-price { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1rem; color: #211C16; white-space: nowrap; }
+  .vr-tx-ppm {
+    display: inline-block; margin-top: 0.25rem;
+    border-radius: 999px; padding: 0.1rem 0.5rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600; white-space: nowrap;
+  }
+  .vr-tx-ppm--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
+  .vr-tx-ppm--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
+  .vr-tx-more summary { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; cursor: pointer; padding: 0.4rem 0; list-style: none; }
+  .vr-tx-more summary::-webkit-details-marker { display: none; }
+  .vr-tx-more[open] summary { margin-bottom: 0.7rem; }
+
+  /* Conclusion */
+  .vr-conc-eyebrow {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: rgba(243,237,228,0.45);
+    margin-bottom: 0.75rem;
+  }
+  .vr-conc-hl {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.3rem,5vw,1.75rem); line-height: 1.25; color: #FFFFFF;
+    margin-bottom: 1.25rem;
+  }
+  .vr-conc-body {
+    font-family: 'Instrument Sans', sans-serif; font-size: clamp(0.9rem,3vw,1rem);
+    line-height: 1.68; color: rgba(243,237,228,0.75); margin-bottom: 1.75rem;
+  }
+  .vr-conc-body p + p { margin-top: 0.75rem; }
+  .vr-conc-cta {
+    display: block; width: 100%; background: #C15A2B; color: #FFFFFF;
+    border-radius: 12px; padding: 0.95rem 1.5rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    letter-spacing: 0.04em; text-align: center; text-decoration: none;
+    border: none; cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .vr-conc-cta:hover { background: #A84D23; transform: translateY(-1px); }
+  .vr-conc-cta:active { transform: none; }
+
+  /* Animation entrée (IntersectionObserver) */
+  .vr-bloc-anim {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .vr-bloc-anim.is-on { opacity: 1; transform: none; }
+
+  /* Gardées — utilisées par construireStack */
+  .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E8DFD0; }
+  .vr-ppm-alt-type { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7C6A; }
+  .vr-ppm-alt-val { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.3rem; color: #211C16; margin-top: 0.25rem; }
+  .vr-ppm-alt-range { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; margin-top: 0.15rem; }
+
+  .vr-after { margin-top: 1.5rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vr-block { opacity: 1; transform: none; transition: none; }
+    .vr-range-dot, .vr-gauge-cursor { transition: none; }
+    .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
+    .vr-bloc-anim { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-dot { transition: none !important; }
+    .vr-dot-legend { opacity: 1 !important; transition: none !important; }
+    .vr-dot-counts { opacity: 1 !important; transition: none !important; }
+    .vr-phase-txt { transition: none !important; }
+    .vr-b1-phrase { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-dist-zone { opacity: 1 !important; transition: none !important; }
+    .vr-dist-dot { opacity: 0.72 !important; transition: none !important; }
+    .vr-dist-med-line { opacity: 1 !important; transition: none !important; }
+    .vr-dist-zone-lbl, .vr-dist-zone-sub, .vr-dist-med-big { opacity: 1 !important; transition: none !important; }
+    .vr-dist-note { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-surf-delta { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-spark-dot { opacity: 1 !important; transition: none !important; }
+    .vr-spark-val { opacity: 1 !important; transition: none !important; }
+    .vr-hero-bar-fill { transition: none !important; }
+    .vr-tx-card { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+
+</style>
+
+<script>
+  type Tx = {
+    id: string; d: string; v: number; t: string; lat: number; lon: number;
+    no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
+  };
+  type Meta = { status: string; generatedAt: string | null; dateVenteLaPlusRecente: string | null };
+
+  const form = document.getElementById('vr-form') as HTMLFormElement;
+  const input = document.getElementById('vr-adresse') as HTMLInputElement;
+  const sugList = document.getElementById('vr-suggestions') as HTMLUListElement;
+  const scene = document.getElementById('vr-scene') as HTMLElement;
+  const geoErreur = document.getElementById('vr-geo-erreur') as HTMLElement;
+  const fraicheurEl = document.getElementById('vr-fraicheur') as HTMLElement;
+
+  const BIAIS = { lon: 1.4890, lat: 48.4470 };
+  const GEOCODE = 'https://data.geopf.fr/geocodage/search';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const eur = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 });
+  const moisAn = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' });
+  const jourMoisAn = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  const dateComplete = (d: string) => { const dt = new Date(d + 'T00:00:00'); return isNaN(dt.getTime()) ? d : jourMoisAn.format(dt); };
+  const dateMois = (d: string) => { const dt = new Date(d + 'T00:00:00'); return isNaN(dt.getTime()) ? d : moisAn.format(dt); };
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
+
+  let dataset: Tx[] | null = null;
+  let meta: Meta | null = null;
+  let selection: { lon: number; lat: number; label: string } | null = null;
+  let lastModel: any = null;
+
+  // ——— Fraîcheur affichée d'emblée ———
+  (async () => {
+    try {
+      const m = (await (await fetch('/data/dvf-meta.json')).json()) as Meta;
+      meta = m;
+      if (m.status === 'ready' && m.dateVenteLaPlusRecente) {
+        fraicheurEl.textContent = `Données DVF disponibles jusqu'au ${dateComplete(m.dateVenteLaPlusRecente)}`;
+        fraicheurEl.hidden = false;
+      }
+    } catch {}
+  })();
+
+  async function chargerDonnees() {
+    if (dataset) return;
+    const [d, m] = await Promise.all([fetch('/data/dvf-secteur.json'), fetch('/data/dvf-meta.json')]);
+    dataset = (await d.json()) as Tx[];
+    meta = (await m.json()) as Meta;
+  }
+
+  async function geocoder(q: string, autocomplete: boolean, limit: number) {
+    const url = new URL(GEOCODE);
+    url.searchParams.set('q', q);
+    url.searchParams.set('limit', String(limit));
+    url.searchParams.set('lon', String(BIAIS.lon));
+    url.searchParams.set('lat', String(BIAIS.lat));
+    if (autocomplete) url.searchParams.set('autocomplete', '1');
+    const rep = await fetch(url.toString());
+    if (!rep.ok) throw new Error(`geocode ${rep.status}`);
+    const json = await rep.json();
+    const feats = Array.isArray(json.features) ? json.features : [];
+    return feats.filter((f: any) => String(f?.properties?.citycode || '').startsWith('28'));
+  }
+
+  function distance(aLat: number, aLon: number, bLat: number, bLon: number) {
+    const R = 6371000;
+    const dLat = ((bLat - aLat) * Math.PI) / 180, dLon = ((bLon - aLon) * Math.PI) / 180;
+    const la1 = (aLat * Math.PI) / 180, la2 = (bLat * Math.PI) / 180;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  const distLisible = (m: number) => (m < 1000 ? `à environ ${Math.round(m / 50) * 50} m` : `à environ ${(m / 1000).toFixed(1).replace('.', ',')} km`);
+  const median = (a: number[]) => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const quantile = (a: number[], q: number) => { if (a.length < 2) return a[0] ?? null; const s = [...a].sort((x, y) => x - y); const pos = (s.length - 1) * q, b = Math.floor(pos), r = pos - b; return s[b + 1] !== undefined ? s[b] + r * (s[b + 1] - s[b]) : s[b]; };
+
+  const multiLots = (t: Tx) => Boolean(t.lots && t.lots > 1);
+  const typePluriel = (t: string) => (t === 'Maison' ? 'des maisons' : 'des appartements');
+  const typePlurielNu = (t: string) => (t === 'Maison' ? 'maisons' : 'appartements');
+
+  function bienCourt(t: Tx) {
+    const b = [t.t]; if (t.sb) b.push(`${t.sb} m²`); if (t.p) b.push(`${t.p} pièce${t.p > 1 ? 's' : ''}`);
+    if (multiLots(t)) b.push(`vente de ${t.lots} lots`);
+    return b.join(' · ');
+  }
+  function adresse(t: Tx) {
+    const rue = [t.no, t.vo].filter(Boolean).join(' '), ville = [t.cp, t.co].filter(Boolean).join(' ');
+    return rue && ville ? `${rue}, ${ville}` : rue || ville || 'Adresse approximative';
+  }
+
+  // ——— Tendance : régression linéaire sur les médianes ANNUELLES du €/m² ———
+  // Bien plus robuste que deux fenêtres isolées : utilise toutes les années
+  // (2021→2025), amortit le bruit d'une année atypique, et reflète la tendance
+  // de fond. Une comparaison de deux fenêtres pouvait afficher une « baisse »
+  // là où le marché est en réalité stable (retour après un pic ponctuel).
+  function computeTrend(all: any[], dom: string, minR: number) {
+    // Échelle « secteur » : rayon d'au moins 1500 m pour des médianes annuelles
+    // stables (les petits rayons font osciller la tendance d'année en année).
+    const radii = minR >= 3000 ? [3000] : [minR, 3000];
+    let arr: any[] = [];
+    for (const r of radii) {
+      const s = all.filter((t) => t._dist <= r && t.t === dom && !t.lots && t.sb);
+      arr = s;
+      if (s.length >= 150) break;
+    }
+    const xs: number[] = [], ys: number[] = [];
+    for (let y = 2021; y <= 2025; y++) {
+      const g = arr.filter((t) => t.d.startsWith(String(y))).map((t) => t.v / t.sb);
+      if (g.length >= 20) { xs.push(y); ys.push(median(g) as number); } // année fiable seulement
+    }
+    if (xs.length < 3) return null; // pas assez de recul → pas de tendance affichée
+
+    // Droite de régression (moindres carrés) sur les médianes annuelles.
+    const ANNEE_REF = 2021, ANNEE_FIN = 2025; // bornes FIXES, identiques pour toute adresse
+    const n = xs.length, x0 = xs[0];
+    const X = xs.map((y) => y - x0);
+    const sx = X.reduce((a, b) => a + b, 0), sy = ys.reduce((a, b) => a + b, 0);
+    const sxx = X.reduce((a, b) => a + b * b, 0), sxy = X.reduce((a, b, i) => a + b * ys[i], 0);
+    const slope = (n * sxy - sx * sy) / (n * sxx - sx * sx); // €/m² par an
+    const intercept = (sy - slope * sx) / n;
+
+    // ——— Conversion pente → pourcentage : RÈGLE UNIQUE, indépendante de l'adresse ———
+    // On évalue la droite ajustée à deux années FIXES (2021 et 2025), jamais aux
+    // années réellement présentes. Le pourcentage est la variation de la valeur
+    // ajustée entre ces deux bornes, normalisée par la valeur ajustée de l'année
+    // de RÉFÉRENCE CONSTANTE (2021) :
+    //     delta% = (ajustée(2025) − ajustée(2021)) / ajustée(2021) × 100
+    // La référence (2021) et l'amplitude (4 ans) ne dépendent jamais de l'adresse ;
+    // seule la pente, elle, reflète les données locales.
+    const yhat = (annee: number) => intercept + slope * (annee - x0);
+    const ref = yhat(ANNEE_REF);
+    const delta = ((yhat(ANNEE_FIN) - ref) / ref) * 100;
+
+    // Seuil de stabilité : |delta| < 3 % → prix globalement stables.
+    const dir = delta >= 3 ? 'hausse' : delta <= -3 ? 'baisse' : 'stable';
+    return { delta, dir, anneeDebut: ANNEE_REF, anneeFin: ANNEE_FIN, annualMeds: xs.map((y, i) => ({ year: y, med: Math.round(ys[i]) })) };
+  }
+
+  // ——— Modèle : tous les indicateurs, calculés sur les vraies données ———
+  function computeModel(lat: number, lon: number) {
+    const all = (dataset as Tx[]).map((t) => ({ ...t, _dist: distance(lat, lon, t.lat, t.lon) })).sort((a, b) => a._dist - b._dist);
+
+    const hab = (arr: any[]) => arr.filter((t) => (t.t === 'Maison' || t.t === 'Appartement') && !t.lots);
+    let Rw = 3000, near = hab(all.filter((t) => t._dist <= 3000));
+    for (const r of [700, 1500, 3000]) {
+      const s = hab(all.filter((t) => t._dist <= r));
+      if (s.length >= 150) { Rw = r; near = s; break; }
+      if (r === 3000) { Rw = 3000; near = s; }
+    }
+    if (!near.length) return null;
+
+    const nM = near.filter((t) => t.t === 'Maison').length;
+    const nA = near.filter((t) => t.t === 'Appartement').length;
+    const dom = nM >= nA ? 'Maison' : 'Appartement';
+    const nbVentes = near.length;
+
+    const ppmStats = (arr: any[]) => {
+      const vals = arr.filter((t: any) => t.sb > 0).map((t: any) => t.v / t.sb);
+      if (vals.length < 20) return null;
+      return { median: median(vals)!, q1: quantile(vals, 0.25)!, q3: quantile(vals, 0.75)!, n: vals.length };
+    };
+    const ppmM = ppmStats(near.filter((t) => t.t === 'Maison'));
+    const ppmA = ppmStats(near.filter((t) => t.t === 'Appartement'));
+
+    const D = computeTrend(all, dom, Math.max(Rw, 1500));
+
+    let aSet: any[] = [];
+    for (const r of [700, 1500, 3000]) { aSet = all.filter((t) => t._dist <= r); if (aSet.length) break; }
+    const derniere = [...aSet].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist))[0];
+    const activite = near.filter((t) => t.t === dom && t.d >= '2025').length >= 5;
+    const autres = [...aSet].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere?.id).slice(0, 4);
+
+    const surfaceEffect = (() => {
+      const appts = near.filter((t) => t.t === 'Appartement' && t.sb > 0);
+      if (appts.length < 40) return null;
+      const small = appts.filter((t) => t.sb < 50);
+      const large = appts.filter((t) => t.sb >= 80);
+      if (small.length < 20 || large.length < 20) return null;
+      const ppmSmall = small.map((t) => t.v / t.sb).sort((a: number, b: number) => a - b);
+      const ppmLarge = large.map((t) => t.v / t.sb).sort((a: number, b: number) => a - b);
+      const medS = median(ppmSmall) as number;
+      const medL = median(ppmLarge) as number;
+      const deltaPct = Math.round(((medS - medL) / medL) * 100);
+      if (Math.abs(deltaPct) < 10) return null;
+      return { smallLabel: '< 50 m²', smallMed: Math.round(medS), smallN: small.length, largeLabel: '≥ 80 m²', largeMed: Math.round(medL), largeN: large.length, deltaPct };
+    })();
+    const n2024 = near.filter((t) => t.d.startsWith('2024')).length;
+    const n2025 = near.filter((t) => t.d.startsWith('2025')).length;
+    const ppmArr2 = (arr: any[]) => arr.filter((t: any) => t.sb > 0).map((t: any) => Math.round(t.v / t.sb)).sort((a: number, b: number) => a - b);
+    const sampleArr = (arr: number[], n: number) => arr.length <= n ? arr : Array.from({ length: n }, (_: any, i: number) => arr[Math.floor(i * arr.length / n)]);
+    const ppmDotsM = sampleArr(ppmArr2(near.filter((t) => t.t === 'Maison')), 60);
+    const ppmDotsA = sampleArr(ppmArr2(near.filter((t) => t.t === 'Appartement')), 60);
+    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, ppmDotsM, ppmDotsA, D, derniere, activite, autres, surfaceEffect, n2024, n2025 };
+  }
+
+  // ——— « En clair » : phrases par règles fixes ———
+  function enClair(model: any) {
+    const s1 = model.activite
+      ? `Autour de cette adresse, ${typePluriel(model.dom)} continuent de se vendre.`
+      : `Autour de cette adresse, ${typePluriel(model.dom)} se vendent, mais plus rarement.`;
+    let s2 = '';
+    if (model.D) {
+      if (model.D.dir === 'stable') s2 = 'Les prix observés sont globalement stables ces dernières années.';
+      else if (model.D.dir === 'hausse') s2 = 'Les prix observés sont plutôt orientés à la hausse ces dernières années.';
+      else s2 = 'Les prix observés sont plutôt orientés à la baisse ces dernières années.';
+    }
+    return { s1, s2 };
+  }
+
+  // ——— Animations ———
+  function animeCompteur(el: HTMLElement, to: number, dur = 1100) {
+    if (reduced) { el.textContent = eur.format(to); return; }
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      el.textContent = eur.format(Math.round(to * e));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+
+  // Applique l'état final d'une animation de bloc (utilisé au reveal et en reduced-motion)
+  function jouerAnim(el: HTMLElement, instantane: boolean) {
+    const anim = el.dataset.anim;
+    if (anim === 'count') {
+      el.querySelectorAll<HTMLElement>('[data-count]').forEach((n) => {
+        if (instantane) n.textContent = eur.format(Number(n.dataset.count));
+        else animeCompteur(n, Number(n.dataset.count));
+      });
+    } else if (anim === 'slider') {
+      const dot = el.querySelector<HTMLElement>('.vr-range-dot');
+      if (dot && dot.dataset.pos) dot.style.left = dot.dataset.pos;
+    } else if (anim === 'gauge') {
+      const cur = el.querySelector<HTMLElement>('.vr-gauge-cursor');
+      if (cur && cur.dataset.pos) cur.style.left = cur.dataset.pos;
+    }
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const el = e.target as HTMLElement;
+      el.classList.add('is-in');
+      jouerAnim(el, false);
+      observer.unobserve(el);
+    }
+  }, { threshold: 0.3, rootMargin: '0px 0px -8% 0px' });
+
+  function reveler(el: HTMLElement) {
+    if (reduced) { el.classList.add('is-in'); jouerAnim(el, true); return; }
+    observer.observe(el);
+  }
+
+  // ——— Rendu de l'infographie ———
+  const rayonTxt = (r: number) => (r < 1000 ? `${r} m` : `${(r / 1000).toLocaleString('fr-FR')} km`);
+  // Position du curseur sur la jauge baisse/stable/hausse : domaine [-10 %, +10 %].
+  const gaugePos = (delta: number) => Math.max(4, Math.min(96, ((delta + 10) / 20) * 100));
+
+  function iconeTendance(dir: string) {
+    if (dir === 'hausse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#A85638" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17L11 10l4 4 6-6"/><path d="M15 8h6v6"/></svg>';
+    if (dir === 'baisse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#8A7C6A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l7 7 4-4 6 6"/><path d="M15 16h6v-6"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="#8A7C6A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M16 8l4 4-4 4"/></svg>';
+  }
+  function tendanceTitre(dir: string) {
+    if (dir === 'hausse') return 'Prix orientés à la hausse';
+    if (dir === 'baisse') return 'Prix orientés à la baisse';
+    return 'Prix globalement stables';
+  }
+
+  // Repli empilé (reduced-motion / secours) — cartes verticales lisibles.
+  function construireStack(model: any) {
+    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
+    const ppmAlt = model.dom === 'Maison' ? model.ppmA : model.ppmM;
+    const altType = model.dom === 'Maison' ? 'Appartement' : 'Maison';
+    const parts: string[] = [];
+
+    parts.push(`
+      <div class="vr-head">
+        <p class="vr-head-eyebrow">Autour de cette adresse</p>
+        ${selection?.label ? `<p class="vr-head-adr">${esc(selection.label)}</p>` : ''}
+      </div>`);
+
+    // ① Activité
+    parts.push(`
+      <div class="vr-block" data-anim="count">
+        <div class="vr-card">
+          <p class="vr-num vr-b-num"><span data-count="${model.nbVentes}">0</span></p>
+          <p class="vr-b-l">ventes réalisées depuis 2021</p>
+          <p class="vr-sub vr-b-sub">dans un rayon d'environ ${rayonTxt(model.Rw)}</p>
+        </div>
+      </div>`);
+
+    // ② Composition maisons / appartements
+    parts.push(`
+      <div class="vr-block" data-anim="count">
+        <div class="vr-card">
+          <p class="vr-label">Ce qui se vend ici</p>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:0.5rem">
+            <div><p class="vr-num" style="font-size:clamp(2rem,8vw,2.8rem)"><span data-count="${model.nM}">0</span></p><p class="vr-sub">maisons</p></div>
+            <div><p class="vr-num" style="font-size:clamp(2rem,8vw,2.8rem)"><span data-count="${model.nA}">0</span></p><p class="vr-sub">appartements</p></div>
+          </div>
+          <p class="vr-sub" style="margin-top:0.8rem">Deux marchés différents. Mieux vaut ne pas les mélanger.</p>
+        </div>
+      </div>`);
+
+    // ③ Prix €/m² par type
+    if (ppmDom) {
+      const q1 = Math.round(ppmDom.q1), q3 = Math.round(ppmDom.q3), med = Math.round(ppmDom.median);
+      const pos = q3 > q1 ? Math.max(6, Math.min(94, ((med - q1) / (q3 - q1)) * 100)) : 50;
+      let altHtml = '';
+      if (ppmAlt) {
+        altHtml = `<div class="vr-ppm-alt"><p class="vr-ppm-alt-type">${esc(typePlurielNu(altType))}</p><p class="vr-ppm-alt-val">${eur.format(Math.round(ppmAlt.median))} €/m²</p><p class="vr-ppm-alt-range">fourchette ${eur.format(Math.round(ppmAlt.q1))} – ${eur.format(Math.round(ppmAlt.q3))} €/m²</p></div>`;
+      }
+      parts.push(`
+        <div class="vr-block" data-anim="slider">
+          <div class="vr-card">
+            <p class="vr-label">Le prix au m² observé · ${esc(typePlurielNu(model.dom))}</p>
+            <p class="vr-num vr-c-num">${eur.format(med)} €/m²</p>
+            <div class="vr-range">
+              <div class="vr-range-line">
+                <span class="vr-range-cap g">${eur.format(q1)}</span>
+                <span class="vr-range-cap d">${eur.format(q3)}</span>
+                <span class="vr-range-dot" data-pos="${pos.toFixed(0)}%" style="left:50%"></span>
+              </div>
+              <div class="vr-range-arrows" aria-hidden="true"><span>←</span><span>→</span></div>
+              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)}</strong> et <strong>${eur.format(q3)} €/m²</strong>.</p>
+            </div>
+            ${altHtml}
+          </div>
+        </div>`);
+    }
+
+    // ④ Tendance
+    if (model.D) {
+      const pct = `${model.D.delta >= 0 ? '+' : ''}${model.D.delta.toFixed(1).replace('.', ',')} %`;
+      const pos = gaugePos(model.D.delta), dir = model.D.dir;
+      parts.push(`
+        <div class="vr-block" data-anim="gauge">
+          <div class="vr-card">
+            <p class="vr-label">Les prix, dans le temps</p>
+            <div class="vr-d-head">
+              <span class="vr-d-ico" aria-hidden="true">${iconeTendance(dir)}</span>
+              <span class="vr-d-title">${tendanceTitre(dir)}</span>
+            </div>
+            <div class="vr-gauge">
+              <div class="vr-gauge-track"><span class="vr-gauge-cursor" data-pos="${pos.toFixed(0)}%" style="left:50%"></span></div>
+              <div class="vr-gauge-lbls">
+                <span class="${dir === 'baisse' ? 'on' : ''}">Baisse</span>
+                <span class="${dir === 'stable' ? 'on' : ''}">Stable</span>
+                <span class="${dir === 'hausse' ? 'on' : ''}">Hausse</span>
+              </div>
+            </div>
+            <p class="vr-d-pct">${pct} sur le prix au m², estimé sur ${model.D.anneeDebut}–${model.D.anneeFin}</p>
+          </div>
+        </div>`);
+    }
+
+    // ⑤ Limitation
+    parts.push(`
+      <div class="vr-block" data-anim="fade">
+        <div class="vr-card vr-card--warm">
+          <p class="vr-label">À retenir</p>
+          <p class="vr-ec">Un même quartier. Des biens très différents.</p>
+          <p class="vr-sub" style="margin-top:0.8rem;line-height:1.55">Une adresse donne le contexte, elle ne suffit pas à situer votre bien. Surface, état, exposition, travaux : chaque propriété est unique, et ces statistiques de quartier ne peuvent pas le refléter.</p>
+        </div>
+        <p class="vr-maj">${majLigne()}</p>
+      </div>`);
+
+    // Ventes détaillées (secondaire)
+    if (model.autres.length) {
+      const d = model.derniere;
+      parts.push(`
+        <div class="vr-block" data-anim="fade">
+          <details class="vr-details">
+            <summary>Voir les ventes autour de chez moi</summary>
+            <div>
+              <div class="vr-autre">
+                <span>${esc(bienCourt(d))}<span class="vr-autre-sub">${esc(adresse(d))} · ${esc(dateMois(d.d))} · ${esc(distLisible(d._dist))}</span></span>
+                <span class="vr-autre-prix">${eur.format(d.v)} €</span>
+              </div>
+              ${model.autres.map((t: any) => `
+                <div class="vr-autre">
+                  <span>${esc(bienCourt(t))}<span class="vr-autre-sub">${esc(adresse(t))} · ${esc(dateMois(t.d))} · ${esc(distLisible(t._dist))}</span></span>
+                  <span class="vr-autre-prix">${eur.format(t.v)} €</span>
+                </div>`).join('')}
+            </div>
+          </details>
+        </div>`);
+    }
+
+    parts.push(construireConversion());
+
+    scene.innerHTML = `<div class="vr-results">${parts.join('')}</div>`;
+    scene.querySelectorAll<HTMLElement>('.vr-block').forEach((b) => reveler(b));
+    brancherConversion(model);
+  }
+
+  // Ventes détaillées (réutilisé par le repli et la séquence)
+  function blocDetails(model: any) {
+    const d = model.derniere;
+    if (!model.autres.length) return '';
+    return `
+      <details class="vr-details">
+        <summary>Voir les ventes autour de chez moi</summary>
+        <div>
+          <div class="vr-autre"><span>${esc(bienCourt(d))}<span class="vr-autre-sub">${esc(adresse(d))} · ${esc(dateMois(d.d))} · ${esc(distLisible(d._dist))}</span></span><span class="vr-autre-prix">${eur.format(d.v)} €</span></div>
+          ${model.autres.map((t: any) => `<div class="vr-autre"><span>${esc(bienCourt(t))}<span class="vr-autre-sub">${esc(adresse(t))} · ${esc(dateMois(t.d))} · ${esc(distLisible(t._dist))}</span></span><span class="vr-autre-prix">${eur.format(t.v)} €</span></div>`).join('')}
+        </div>
+      </details>`;
+  }
+
+  // ——— Infographique premium — 7 blocs, IntersectionObserver ———
+  let cineCleanup: null | (() => void) = null;
+
+  function construireCine(model: any) {
+    if (cineCleanup) { cineCleanup(); cineCleanup = null; }
+
+    const ios: IntersectionObserver[] = [];
+    const touts: ReturnType<typeof setTimeout>[] = [];
+    const later = (ms: number, fn: () => void) => { touts.push(setTimeout(fn, ms)); };
+    const observe = (id: string, fn: () => void) => {
+      const el = scene.querySelector(id);
+      if (!el) return;
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) { io.disconnect(); fn(); }
+      }, { threshold: 0.08 });
+      io.observe(el);
+      ios.push(io);
+    };
+
+    const domColor = model.dom === 'Maison' ? '#C15A2B' : '#3A6FB0';
+    const D = model.D;
+    const sf = model.surfaceEffect;
+
+    // ——— Nuage de points (positions déterministes) ———
+    const NDOTS = 44;
+    const propM = model.nM / Math.max(model.nM + model.nA, 1);
+    const nDotM = Math.max(4, Math.min(40, Math.round(NDOTS * propM)));
+    const SW = 360, SH = 130, CX = SW / 2, CY = SH / 2;
+    let _s = 0x9e3779b9;
+    const rnd = () => { _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s ^= _s >>> 16; return (_s >>> 0) / 0x100000000; };
+    type Dot = { x0: number; y0: number; dx: number; dy: number; isM: boolean };
+    const dots: Dot[] = Array.from({ length: NDOTS }, (_, i) => {
+      const isM = i < nDotM;
+      const x0 = CX + (rnd() * 2 - 1) * 8, y0 = CY + (rnd() * 2 - 1) * 8;
+      const x1 = isM ? 14 + rnd() * 100 : SW - 114 + rnd() * 100, y1 = 10 + rnd() * 110;
+      return { x0, y0, dx: x1 - x0, dy: y1 - y0, isM };
+    });
+    const dotSvg = dots.map((d, i) =>
+      `<circle class="vr-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 5 : 4}" fill="#C5BAA8" data-di="${i}"/>`
+    ).join('');
+
+    // ——— Distribution jitter (€/m² réels) ———
+    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
+    const ppmDots: number[] = (model.dom === 'Maison' ? model.ppmDotsM : model.ppmDotsA) || [];
+    let distHtml = '';
+    if (ppmDom && ppmDots.length >= 5) {
+      const q1 = ppmDom.q1, med = ppmDom.median, q3 = ppmDom.q3;
+      const iqr = q3 - q1;
+      const xMin = Math.max(Math.min(...ppmDots), q1 - 1.5 * iqr);
+      const xMax = Math.min(Math.max(...ppmDots), q3 + 1.5 * iqr);
+      const DW = 360, DH = 64, YN = 6, YX = 58;
+      const xs = (v: number) => Math.max(2, Math.min(DW - 2, ((v - xMin) / Math.max(xMax - xMin, 1)) * DW));
+      const q1x = xs(q1), medx = xs(med), q3x = xs(q3), zoneW = Math.max(0, q3x - q1x);
+      let _s2 = 0xabcdef01;
+      const rnd2 = () => { _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 ^= _s2 >>> 16; return (_s2 >>> 0) / 0x100000000; };
+      const visible = ppmDots.filter((v: number) => v >= xMin && v <= xMax);
+      const ddots = visible.map((v: number, i: number) =>
+        `<circle class="vr-dist-dot" cx="${xs(v).toFixed(1)}" cy="${(YN + rnd2() * (YX - YN)).toFixed(1)}" r="3.5" fill="${domColor}" data-di="${i}"/>`
+      ).join('');
+      const pillCls = model.dom === 'Maison' ? 'vr-dist-type-pill--M' : 'vr-dist-type-pill--A';
+      const pillTxt = model.dom === 'Maison' ? 'Maisons' : 'Appartements';
+      const lblY = DH + 16;
+      const q1LblX = Math.max(q1x, 28);
+      const q3LblX = Math.min(q3x, DW - 28);
+      distHtml = `
+        <div class="vr-bloc vr-bloc--b2 vr-bloc-anim" id="vr-b-dist">
+          <p class="vr-kicker vr-kicker--ink">CE QUE LES PRIX MONTRENT</p>
+          <p class="vr-titre vr-titre--dark">Les prix dans ce secteur</p>
+          <span class="vr-dist-type-pill ${pillCls}">${esc(pillTxt)}</span>
+          <div class="vr-dist-wrap">
+            <svg class="vr-dist-svg" viewBox="0 0 ${DW} ${DH + 42}" aria-hidden="true">
+              <rect class="vr-dist-zone" id="vr-dz" x="${q1x.toFixed(1)}" y="${YN - 4}" width="${zoneW.toFixed(1)}" height="${YX - YN + 8}" rx="4" fill="${domColor}" fill-opacity="0.15" style="opacity:0"/>
+              ${ddots}
+              <line class="vr-dist-med-line" id="vr-dml" x1="${medx.toFixed(1)}" y1="${YN - 8}" x2="${medx.toFixed(1)}" y2="${YX + 8}" stroke="${domColor}" stroke-width="2.5" stroke-dasharray="4 2" style="opacity:0"/>
+              <text x="2" y="${lblY}" class="vr-dist-axis-lbl">${eur.format(Math.round(xMin))} €/m²</text>
+              <text x="${DW - 2}" y="${lblY}" class="vr-dist-axis-lbl" text-anchor="end">${eur.format(Math.round(xMax))} €/m²</text>
+              <text id="vr-q1-lbl" class="vr-dist-zone-lbl" x="${q1LblX.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(q1))}</text>
+              <text id="vr-q1-sub" class="vr-dist-zone-sub" x="${q1LblX.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">1er quartile</text>
+              <text id="vr-dml-txt" class="vr-dist-med-big" x="${medx.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(med))}</text>
+              <text id="vr-dml-sub" class="vr-dist-zone-sub" x="${medx.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">médiane</text>
+              <text id="vr-q3-lbl" class="vr-dist-zone-lbl" x="${q3LblX.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(q3))}</text>
+              <text id="vr-q3-sub" class="vr-dist-zone-sub" x="${q3LblX.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">3e quartile</text>
+            </svg>
+            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} vendues se situent dans la zone colorée. Les données constatent cet écart — elles n'en expliquent pas encore toutes les causes.</p>
+          </div>
+        </div>`;
+    }
+
+    // ——— Effet surface ———
+    let surfHtml = '';
+    if (sf) {
+      const sign = sf.deltaPct > 0 ? '+' : '';
+      surfHtml = `
+        <div class="vr-bloc vr-bloc--surf vr-bloc-anim" id="vr-b-surf">
+          <p class="vr-kicker vr-kicker--terra">L'EFFET DE LA SURFACE</p>
+          <p class="vr-titre vr-titre--dark">Même le prix au m² n'est pas unique</p>
+          <div class="vr-surf-trio">
+            <div>
+              <div class="vr-surf-col-val">${eur.format(sf.smallMed)} €/m²</div>
+              <div class="vr-surf-col-lbl">${esc(sf.smallLabel)}</div>
+            </div>
+            <div class="vr-surf-delta-wrap">
+              <div class="vr-surf-delta" id="vr-sd">${sign}${sf.deltaPct} %</div>
+              <span class="vr-surf-arrow">→</span>
+            </div>
+            <div>
+              <div class="vr-surf-col-val">${eur.format(sf.largeMed)} €/m²</div>
+              <div class="vr-surf-col-lbl">${esc(sf.largeLabel)}</div>
+            </div>
+          </div>
+          <p class="vr-surf-note">Écart constaté entre petits et grands appartements dans ce secteur. DVF constate cet écart — il ne l'explique pas.</p>
+        </div>`;
+    }
+
+    // ——— Sparkline ———
+    let sparkHtml = '';
+    const hasSpark = !!D && Array.isArray(D.annualMeds) && D.annualMeds.length >= 3;
+    if (hasSpark) {
+      const meds = D.annualMeds as { year: number; med: number }[];
+      const spW = 360, spH = 120, topM = 22, botM = 30, availH = spH - topM - botM;
+      const xPts = meds.map((_: any, i: number) => 24 + (i / (meds.length - 1)) * (spW - 48));
+      const vals = meds.map((m: any) => m.med);
+      const minV = Math.min(...vals), maxV = Math.max(...vals), rng = maxV - minV || 1;
+      const yPts = vals.map((v: number) => topM + ((maxV - v) / rng) * availH);
+      const lineD = xPts.map((x: number, i: number) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${yPts[i].toFixed(1)}`).join(' ');
+      const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} % sur ${D.anneeDebut}–${D.anneeFin}`;
+      const dirTxt = D.dir === 'hausse' ? 'Tendance à la hausse sur 5 ans' : D.dir === 'baisse' ? 'Tendance à la baisse sur 5 ans' : 'Prix globalement stables sur 5 ans';
+      const spDots = meds.map((m: any, i: number) => [
+        `<circle class="vr-spark-dot" cx="${xPts[i].toFixed(1)}" cy="${yPts[i].toFixed(1)}" r="5" fill="${domColor}" data-si="${i}"/>`,
+        `<text class="vr-spark-val" x="${xPts[i].toFixed(1)}" y="${(yPts[i] - 10).toFixed(1)}" data-si="${i}">${eur.format(m.med)}</text>`
+      ].join('')).join('');
+      const spLabels = meds.map((m: any, i: number) => `<text class="vr-spark-yr" x="${xPts[i].toFixed(1)}" y="${spH - 4}">${m.year}</text>`).join('');
+      sparkHtml = `
+        <div class="vr-bloc vr-bloc--spark vr-bloc-anim" id="vr-b-spark">
+          <p class="vr-kicker vr-kicker--ink">5 ANS DE MARCHÉ</p>
+          <p class="vr-titre vr-titre--dark">La trajectoire des prix</p>
+          <div class="vr-spark-wrap">
+            <svg class="vr-spark-svg" viewBox="0 0 ${spW} ${spH}" aria-hidden="true">
+              <path d="${lineD}" class="vr-spark-path" id="vr-sp" stroke="${domColor}"/>
+              ${spDots}${spLabels}
+            </svg>
+            <p class="vr-spark-dir">${esc(dirTxt)}</p>
+            <p class="vr-spark-pct">${esc(pct)}</p>
+          </div>
+        </div>`;
+    }
+
+    // ——— Ventes réelles ———
+    const allTx = [model.derniere, ...(model.autres || [])].filter(Boolean).slice(0, 5);
+    let txHtml = '';
+    if (allTx.length) {
+      const card = (tx: any) => {
+        const isM = tx.t === 'Maison';
+        const ico = isM ? '🏠' : '🏢';
+        const surf = tx.sb > 0 ? `${Math.round(tx.sb)} m²` : '';
+        const pieces = tx.p > 0 ? `${tx.p} pièce${tx.p > 1 ? 's' : ''}` : '';
+        const meta = [surf, pieces, dateMois(tx.d)].filter(Boolean).join(' · ');
+        const ppmVal = tx.sb > 0 ? Math.round(tx.v / tx.sb) : 0;
+        const ppmCls = isM ? 'vr-tx-ppm--M' : 'vr-tx-ppm--A';
+        return `<div class="vr-tx-card">
+          <div class="vr-tx-ico ${isM ? 'vr-tx-ico--M' : 'vr-tx-ico--A'}">${ico}</div>
+          <div class="vr-tx-info">
+            <div class="vr-tx-name">${esc(bienCourt(tx))}</div>
+            <div class="vr-tx-addr">${esc(adresse(tx))}</div>
+            <div class="vr-tx-meta">${esc(meta)}</div>
+          </div>
+          <div class="vr-tx-right">
+            <div class="vr-tx-price">${eur.format(tx.v)} €</div>
+            ${ppmVal > 0 ? `<span class="vr-tx-ppm ${ppmCls}">${eur.format(ppmVal)} €/m²</span>` : ''}
+          </div>
+        </div>`;
+      };
+      const first = allTx.slice(0, 3).map(card).join('');
+      const more = allTx.length > 3
+        ? `<details class="vr-tx-more"><summary>Voir ${allTx.length - 3} vente${allTx.length - 3 > 1 ? 's' : ''} de plus →</summary>${allTx.slice(3).map(card).join('')}</details>`
+        : '';
+      txHtml = `
+        <div class="vr-bloc vr-bloc--tx vr-bloc-anim" id="vr-b-tx">
+          <p class="vr-kicker vr-kicker--ink">VENTES RÉCENTES</p>
+          <p class="vr-titre vr-titre--dark">Quelques ventes autour de chez vous</p>
+          <div class="vr-tx-cards" id="vr-tx-cards">${first}${more}</div>
+        </div>`;
+    }
+
+    // ——— Héro ———
+    const maxBar = Math.max(model.n2024 || 0, model.n2025 || 0, 1);
+    const p24 = Math.round(((model.n2024 || 0) / maxBar) * 100);
+    const p25 = Math.round(((model.n2025 || 0) / maxBar) * 100);
+    let heroBadge = '';
+    if ((model.n2024 || 0) > 0 && (model.n2025 || 0) > 0) {
+      const diff = Math.round(((model.n2025 - model.n2024) / model.n2024) * 100);
+      heroBadge = `<span class="vr-hero-badge">${diff >= 0 ? '+' : ''}${diff} % entre 2024 et 2025</span>`;
+    }
+    const heroBars = (model.n2024 || 0) > 0 || (model.n2025 || 0) > 0 ? `
+      <div class="vr-hero-bars">
+        <div class="vr-hero-bar-row">
+          <span class="vr-hero-bar-yr">2024</span>
+          <div class="vr-hero-bar-track"><div class="vr-hero-bar-fill" data-pct="${p24}"></div></div>
+          <span class="vr-hero-bar-n">${model.n2024 || 0}</span>
+        </div>
+        <div class="vr-hero-bar-row">
+          <span class="vr-hero-bar-yr">2025</span>
+          <div class="vr-hero-bar-track"><div class="vr-hero-bar-fill" data-pct="${p25}"></div></div>
+          <span class="vr-hero-bar-n">${model.n2025 || 0}</span>
+        </div>
+      </div>
+      ${heroBadge}` : '';
+
+    // ——— Conclusion dynamique ———
+    const concP1 = `Nous sommes partis de ${model.nbVentes} ventes. Nous avons déjà écarté celles qui ne correspondent pas au même type de bien. Mais même parmi les ${esc(typePlurielNu(model.dom))}, les écarts restent importants.`;
+    const concP2 = `Une adresse permet de comprendre votre marché. Pas encore de savoir où votre bien se place dedans.`;
+    const concP3 = `Pour aller plus loin, il faut maintenant identifier les ventes qui ressemblent réellement à votre bien.`;
+
+    // ——— Assemblage HTML ———
+    scene.innerHTML = `
+      <div class="vr-cine-wrap">
+        <div class="vr-bloc vr-bloc--hero" id="vr-b-hero">
+          <p class="vr-kicker vr-kicker--light">Analyse locale</p>
+          <div class="vr-hero-counter" id="vr-hc" data-count="${model.nbVentes}">0</div>
+          <p class="vr-hero-count-lbl">ventes analysées autour de cette adresse</p>
+          ${heroBars}
+        </div>
+        <div class="vr-bloc vr-bloc--b1 vr-bloc-anim" id="vr-b-dots">
+          <p class="vr-kicker vr-kicker--terra">CE QUI S'EST VENDU</p>
+          <p class="vr-titre vr-titre--dark">Deux marchés différents autour de chez vous</p>
+          <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
+          <div class="vr-dot-legend" id="vr-dl">
+            <span><span class="vr-dot-legend-ico" style="background:#C15A2B"></span>Maisons</span>
+            <span><span class="vr-dot-legend-ico" style="background:#3A6FB0"></span>Appartements</span>
+          </div>
+          <div class="vr-dot-counts" id="vr-dc">
+            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--M">${model.nM}</span> maisons</div>
+            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--A">${model.nA}</span> appartements</div>
+          </div>
+          <p class="vr-phase-txt vr-pt1" id="vr-pt1">${model.nbVentes} ventes autour de cette adresse. Mais toutes ne sont pas comparables entre elles.</p>
+          <p class="vr-phase-txt vr-pt2" id="vr-pt2" style="opacity:0">Pour comprendre le marché ${model.dom === 'Maison' ? "d'une maison" : "d'un appartement"}, les ventes de l'autre type doivent déjà être écartées.</p>
+        </div>
+        ${distHtml}
+        ${surfHtml}
+        ${sparkHtml}
+        ${txHtml}
+        <div class="vr-bloc vr-bloc--conc vr-bloc-anim" id="vr-b-conc">
+          <p class="vr-conc-eyebrow">CE QUE ÇA CHANGE POUR VOUS</p>
+          <p class="vr-conc-hl">Le bon prix ne vient pas d'une moyenne. Il vient d'une comparaison pertinente.</p>
+          <div class="vr-conc-body">
+            <p>${esc(concP1)}</p>
+            <p>${esc(concP2)}</p>
+            <p>${esc(concP3)}</p>
+          </div>
+          <button class="vr-conc-cta" type="button">SITUER MON BIEN DANS CE MARCHÉ →</button>
+        </div>
+      </div>
+      <div class="vr-after">
+        <p class="vr-maj">${majLigne()}</p>
+        ${construireConversion()}
+      </div>`;
+    brancherConversion(model);
+
+    // ——— Animations ———
+
+    // Héro : déclenché immédiatement (visible au-dessus du fold)
+    const hc = scene.querySelector<HTMLElement>('#vr-hc');
+    if (hc) animeCompteur(hc, model.nbVentes);
+    later(600, () => {
+      scene.querySelectorAll<HTMLElement>('.vr-hero-bar-fill').forEach((b) => {
+        b.style.width = (b.dataset.pct || '0') + '%';
+      });
+    });
+
+    // CE QUI S'EST VENDU
+    observe('#vr-b-dots', () => {
+      const el = scene.querySelector<HTMLElement>('#vr-b-dots');
+      if (el) el.classList.add('is-on');
+      const dotEls = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dot'));
+      // Phase 1 : nuage se colore et se sépare
+      later(300, () => {
+        dotEls.forEach((d, i) => {
+          d.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
+          d.style.fill = dots[i].isM ? '#C15A2B' : '#3A6FB0';
+        });
+        const dl = scene.querySelector<HTMLElement>('#vr-dl');
+        if (dl) dl.style.opacity = '1';
+      });
+      // Phase 2 : compteurs apparaissent
+      later(750, () => {
+        const dc = scene.querySelector<HTMLElement>('#vr-dc');
+        if (dc) dc.style.opacity = '1';
+      });
+      // Phase 3 : non-dominant s'estompe, texte bascule
+      later(1200, () => {
+        const isDomM = model.dom === 'Maison';
+        dotEls.forEach((d, i) => {
+          if (dots[i].isM !== isDomM) d.style.opacity = '0.2';
+        });
+        const pt1 = scene.querySelector<HTMLElement>('#vr-pt1');
+        if (pt1) pt1.style.opacity = '0';
+        later(350, () => {
+          const pt2 = scene.querySelector<HTMLElement>('#vr-pt2');
+          if (pt2) pt2.style.opacity = '1';
+        });
+      });
+    });
+
+    // CE QUE LES PRIX MONTRENT
+    if (distHtml) {
+      observe('#vr-b-dist', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-dist');
+        if (el) el.classList.add('is-on');
+        const ddots = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dist-dot'));
+        const stagger = Math.max(8, Math.floor(500 / Math.max(ddots.length, 1)));
+        ddots.forEach((d, i) => later(i * stagger, () => { d.style.opacity = '0.72'; }));
+        const zoneDelay = ddots.length * stagger + 250;
+        later(zoneDelay, () => {
+          const dz = scene.querySelector<HTMLElement>('#vr-dz');
+          if (dz) dz.style.opacity = '1';
+        });
+        later(zoneDelay + 450, () => {
+          const dml = scene.querySelector<HTMLElement>('#vr-dml');
+          if (dml) dml.style.opacity = '1';
+          ['#vr-q1-lbl','#vr-q1-sub','#vr-dml-txt','#vr-dml-sub','#vr-q3-lbl','#vr-q3-sub'].forEach((sel) => {
+            const el2 = scene.querySelector<HTMLElement>(sel);
+            if (el2) el2.style.opacity = '1';
+          });
+        });
+        later(zoneDelay + 750, () => {
+          const dn = scene.querySelector<HTMLElement>('#vr-dn');
+          if (dn) { dn.style.opacity = '1'; dn.style.transform = 'none'; }
+        });
+      });
+    }
+
+    // L'EFFET DE LA SURFACE
+    if (sf) {
+      observe('#vr-b-surf', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-surf');
+        if (el) el.classList.add('is-on');
+        later(400, () => {
+          const sd = scene.querySelector<HTMLElement>('#vr-sd');
+          if (sd) sd.classList.add('on');
+        });
+      });
+    }
+
+    // 5 ANS DE MARCHÉ
+    if (hasSpark) {
+      observe('#vr-b-spark', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-spark');
+        if (el) el.classList.add('is-on');
+        const sp = scene.querySelector<SVGPathElement>('#vr-sp');
+        if (sp) {
+          const l = sp.getTotalLength();
+          sp.style.strokeDasharray = l + 'px';
+          sp.style.strokeDashoffset = l + 'px';
+          sp.getBoundingClientRect();
+          sp.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.25,0.46,0.45,0.94)';
+          sp.style.strokeDashoffset = '0';
+        }
+        const meds = D.annualMeds as { year: number; med: number }[];
+        meds.forEach((_: any, i: number) => {
+          later(350 + i * 320, () => {
+            const dot = scene.querySelector<SVGCircleElement>(`.vr-spark-dot[data-si="${i}"]`);
+            if (dot) dot.classList.add('on');
+            const val = scene.querySelector<SVGTextElement>(`.vr-spark-val[data-si="${i}"]`);
+            if (val) val.classList.add('on');
+          });
+        });
+      });
+    }
+
+    // VENTES RÉCENTES — stagger
+    if (txHtml) {
+      observe('#vr-b-tx', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-tx');
+        if (el) el.classList.add('is-on');
+        const cards = Array.from(scene.querySelectorAll<HTMLElement>('#vr-tx-cards .vr-tx-card'));
+        cards.forEach((c, i) => later(i * 120, () => c.classList.add('on')));
+      });
+    }
+
+    // CONCLUSION
+    observe('#vr-b-conc', () => {
+      const el = scene.querySelector<HTMLElement>('#vr-b-conc');
+      if (el) el.classList.add('is-on');
+    });
+
+    // Scroll doux vers le haut du résultat
+    const headerH = document.getElementById('site-header')?.offsetHeight ?? 64;
+    const top = scene.getBoundingClientRect().top + window.scrollY - headerH - 8;
+    window.scrollTo({ top, behavior: 'smooth' });
+
+    cineCleanup = () => { ios.forEach((io) => io.disconnect()); touts.forEach(clearTimeout); };
+  }
+
+
+
+  function majLigne() {
+    if (!meta) return '';
+    const parts: string[] = [];
+    if (meta.dateVenteLaPlusRecente) parts.push(`Données DVF disponibles jusqu'au ${dateComplete(meta.dateVenteLaPlusRecente)}`);
+    if (meta.generatedAt) parts.push(`extraites le ${jourMoisAn.format(new Date(meta.generatedAt))}`);
+    return esc(parts.join(' · ')) + ' · Source : DVF (DGFiP).';
+  }
+
+  // ——— Conversion : 3 chemins ———
+  function construireConversion() {
+    return `
+      <div class="vr-block" data-anim="fade">
+        <div class="vr-conv" id="vr-conv">
+          <p class="vr-conv-eyebrow">La suite</p>
+          <p class="vr-conv-titre">Et votre bien dans tout ça&nbsp;?</p>
+          <p class="vr-conv-intro">Ces ventes dessinent le contexte de votre quartier — mais votre bien a ses propres caractéristiques. Surface, état, exposition : autant de facteurs que les statistiques ne captent pas.</p>
+          <div class="vr-paths" id="vr-paths">
+            <button type="button" class="vr-path vr-path--1" data-path="lecture">
+              <span><span class="vr-path-t">Situer mon bien dans ce marché</span><span class="vr-path-d">Quelques questions · gratuit · sans engagement</span></span>
+              <span class="vr-path-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" class="vr-path vr-path--2" data-path="mouaad">
+              <span><span class="vr-path-t">Parler directement avec Mouaad</span><span class="vr-path-d">Pour échanger dès maintenant, sans étape</span></span>
+              <span class="vr-path-arrow" aria-hidden="true">→</span>
+            </button>
+            <button type="button" class="vr-path vr-path--3" data-path="explorer">
+              <span><span class="vr-path-t">Continuer à explorer LEVOIS</span><span class="vr-path-d">Vers les contenus utiles du site</span></span>
+              <span class="vr-path-arrow" aria-hidden="true">→</span>
+            </button>
+          </div>
+          <div id="vr-panneau"></div>
+        </div>
+      </div>`;
+  }
+
+  // Intentions (qualification commerciale) — clés lisibles côté lead
+  const INTENTIONS = [
+    { key: 'curieux', label: 'Je suis simplement curieux', tag: 'Curieux' },
+    { key: 'reflexion', label: 'Je réfléchis à vendre', tag: 'Vendeur potentiel' },
+    { key: 'prochainement', label: 'Je vais vendre prochainement', tag: 'Vendeur prochainement' },
+    { key: 'envente', label: 'Mon bien est déjà en vente', tag: 'Déjà en vente' },
+    { key: 'acheteur', label: 'Je souhaite acheter dans le secteur', tag: 'Acheteur' },
+  ];
+  const OPTS_TYPE = [
+    { value: 'maison', label: 'Une maison' }, { value: 'appartement', label: 'Un appartement' },
+    { value: 'terrain', label: 'Un terrain' }, { value: 'autre', label: 'Autre / je ne sais pas' },
+  ];
+  const QUALIF: Record<string, Array<{ key: string; label: string; options: Array<{ value: string; label: string }> }>> = {
+    curieux: [
+      { key: 'curiosite', label: "Qu'est-ce qui vous amène ?", options: [
+        { value: 'prix-quartier', label: 'Le prix des ventes de mon quartier' },
+        { value: 'valeur-bien', label: "La valeur d'un bien précis" },
+        { value: 'curiosite', label: 'Simple curiosité' } ] },
+    ],
+    reflexion: [
+      { key: 'horizon', label: 'Quand envisagez-vous de vendre ?', options: [
+        { value: 'dans-annee', label: "Dans l'année" }, { value: '1-2-ans', label: 'Dans 1 à 2 ans' }, { value: 'sans-date', label: 'Pas encore de date' } ] },
+      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
+      { key: 'besoin', label: 'Votre besoin principal ?', options: [
+        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
+        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
+    ],
+    prochainement: [
+      { key: 'horizon', label: 'Dans quel délai ?', options: [
+        { value: 'ce-mois', label: 'Ce mois-ci' }, { value: '1-3-mois', label: 'Dans 1 à 3 mois' }, { value: '3-6-mois', label: 'Dans 3 à 6 mois' } ] },
+      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
+      { key: 'besoin', label: 'Votre besoin principal ?', options: [
+        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
+        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
+    ],
+    envente: [
+      { key: 'dureeEnVente', label: 'Depuis combien de temps est-il en vente ?', options: [
+        { value: 'moins-1-mois', label: "Moins d'un mois" }, { value: '1-3-mois', label: '1 à 3 mois' },
+        { value: '3-6-mois', label: '3 à 6 mois' }, { value: 'plus-6-mois', label: 'Plus de 6 mois' } ] },
+      { key: 'problemePrincipal', label: "Qu'est-ce qui bloque le plus ?", options: [
+        { value: 'peu-visites', label: 'Peu de visites' }, { value: 'visites-sans-offre', label: "Des visites mais pas d'offre" },
+        { value: 'offres-basses', label: 'Des offres trop basses' }, { value: 'peu-vue', label: "L'annonce est peu vue" },
+        { value: 'je-ne-sais-pas', label: 'Je ne sais pas' } ] },
+    ],
+    acheteur: [
+      { key: 'typeRecherche', label: 'Que recherchez-vous ?', options: OPTS_TYPE },
+      { key: 'budget', label: 'Votre budget approximatif ?', options: [
+        { value: 'moins-150', label: 'Moins de 150 000 €' }, { value: '150-250', label: '150 à 250 000 €' },
+        { value: '250-400', label: '250 à 400 000 €' }, { value: 'plus-400', label: 'Plus de 400 000 €' },
+        { value: 'nsp', label: 'Je ne sais pas encore' } ] },
+      { key: 'horizon', label: 'Dans quel délai ?', options: [
+        { value: 'rapidement', label: 'Rapidement' }, { value: 'dans-annee', label: "Dans l'année" }, { value: 'sans-date', label: 'Pas pressé' } ] },
+    ],
+  };
+
+  function brancherConversion(model: any) {
+    const paths = document.getElementById('vr-paths')!;
+    const panneau = document.getElementById('vr-panneau')!;
+    paths.querySelectorAll<HTMLButtonElement>('.vr-path').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const p = btn.dataset.path;
+        if (p === 'mouaad') panneauMouaad(panneau);
+        else if (p === 'explorer') panneauExplorer(panneau);
+        else panneauQualif(panneau, model);
+        panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
+      });
+    });
+  }
+
+  function panneauMouaad(panneau: HTMLElement) {
+    panneau.innerHTML = `
+      <div class="vr-panneau">
+        <p class="vr-q-label">Parlons de votre projet.</p>
+        <p class="font-sans text-[15px] text-brun leading-relaxed" style="margin-bottom:1.1rem">
+          Pas d'étape à remplir : contactez Mouaad directement, il vous répond personnellement.
+        </p>
+        <div class="vr-contact-liens">
+          <a href="tel:+33781380121" class="btn-primaire">Appeler Mouaad</a>
+          <a href="mailto:mouaad@levois.fr" class="btn-secondaire">Écrire un e-mail</a>
+          <a href="/contact?src=votre-rue" class="btn-secondaire">Être rappelé</a>
+        </div>
+      </div>`;
+  }
+
+  function panneauExplorer(panneau: HTMLElement) {
+    panneau.innerHTML = `
+      <div class="vr-panneau">
+        <p class="vr-q-label">Continuer à comprendre.</p>
+        <div class="vr-explorer">
+          <a href="/situer-ma-vente?src=votre-rue"><b>Situer ma vente</b> — un diagnostic en 3 minutes, sans coordonnées</a>
+          <a href="/methode"><b>La méthode LEVOIS</b> — lire le marché avant de décider</a>
+          <a href="/ressources/annonce-vue-peu-de-contacts"><b>Pourquoi une vente bloque</b> — annonce vue, peu de contacts</a>
+          <a href="/ressources"><b>Toutes les ressources</b> — comprendre chaque étape</a>
+        </div>
+      </div>`;
+  }
+
+  // Micro-qualification : une question par écran, progression visible
+  function panneauQualif(panneau: HTMLElement, model: any) {
+    const state: any = { intentionKey: null, intention: null, tag: null, answers: {} };
+
+    const rendre = (steps: any[], idx: number) => {
+      const total = 1 + steps.length + 1; // intention + questions + contact
+      const dots = Array.from({ length: total }, (_, i) => `<span class="vr-q-dot ${i <= idx ? 'is-on' : ''}"></span>`).join('');
+      // idx 0 = intention ; 1..steps.length = questions ; total-1 = contact
+      if (idx === 0) {
+        panneau.innerHTML = `
+          <div class="vr-panneau">
+            <div class="vr-q-progress">${dots}</div>
+            <p class="vr-q-label">Où en êtes-vous ?</p>
+            <div class="vr-q-opts">${INTENTIONS.map((it) => `<button type="button" class="vr-q-opt" data-k="${it.key}">${it.label}</button>`).join('')}</div>
+          </div>`;
+        panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
+          const it = INTENTIONS.find((x) => x.key === b.dataset.k)!;
+          state.intentionKey = it.key; state.intention = it.label; state.tag = it.tag;
+          const st = QUALIF[it.key] || [];
+          if (st.length) rendre(st, 1); else rendreContact(st);
+        }));
+        return;
+      }
+      const q = steps[idx - 1];
+      panneau.innerHTML = `
+        <div class="vr-panneau">
+          <div class="vr-q-progress">${dots}</div>
+          <p class="vr-q-label">${esc(q.label)}</p>
+          <div class="vr-q-opts">${q.options.map((o: any) => `<button type="button" class="vr-q-opt" data-v="${o.value}">${esc(o.label)}</button>`).join('')}</div>
+          <button type="button" class="vr-q-back">← Revenir</button>
+        </div>`;
+      panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
+        state.answers[q.key] = { value: b.dataset.v, label: b.textContent };
+        if (idx < steps.length) rendre(steps, idx + 1); else rendreContact(steps);
+      }));
+      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (idx === 1) rendre(steps, 0); else rendre(steps, idx - 1); });
+    };
+
+    const rendreContact = (steps: any[]) => {
+      const total = 1 + steps.length + 1;
+      const dots = Array.from({ length: total }, () => `<span class="vr-q-dot is-on"></span>`).join('');
+      panneau.innerHTML = `
+        <div class="vr-panneau">
+          <div class="vr-q-progress">${dots}</div>
+          <p class="vr-q-label">Où vous envoyer votre analyse personnalisée ?</p>
+          <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
+            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
+          </p>
+          <form id="vr-lead" novalidate>
+            <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
+            <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
+            <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#B8AA97">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
+            <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
+            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+            <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
+            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
+            <button type="button" class="vr-q-back">← Revenir</button>
+          </form>
+        </div>`;
+      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (steps.length) rendre(steps, steps.length); else rendre(steps, 0); });
+      brancherEnvoiLead(panneau, model, state);
+    };
+
+    rendre([], 0);
+  }
+
+  function brancherEnvoiLead(panneau: HTMLElement, model: any, state: any) {
+    const f = panneau.querySelector<HTMLFormElement>('#vr-lead')!;
+    const err = panneau.querySelector<HTMLElement>('#vr-lead-err')!;
+    const btn = panneau.querySelector<HTMLButtonElement>('#vr-lead-envoi')!;
+    let envoiEnCours = false;
+    f.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (envoiEnCours) return;
+      err.classList.add('hidden');
+      if (!f.checkValidity()) { f.reportValidity(); return; }
+      envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
+      const fd = new FormData(f);
+      const d = model.derniere;
+      // Charge utile destinée à /api/lead. Le backend est migré vers Cloudflare
+      // Pages Functions à l'itération suivante : ce format reste stable.
+      const payload = {
+        type: 'votre-rue',
+        source: 'QR /votre-rue',
+        adresseRecherchee: selection?.label || '',
+        commune: d?.co || '',
+        intention: state.intention, intentionKey: state.intentionKey, profil: state.tag,
+        qualification: Object.fromEntries(Object.entries(state.answers).map(([k, v]: any) => [k, v.label])),
+        prenom: fd.get('prenom'), email: fd.get('email'), telephone: fd.get('telephone') || null,
+        site_web: fd.get('site_web') || '',
+        contexteInfographie: {
+          nbVentes: model.nbVentes, rayon: model.Rw,
+          composition: { maisons: model.nM, appartements: model.nA },
+          ppmMaisons: model.ppmM ? { median: Math.round(model.ppmM.median), q1: Math.round(model.ppmM.q1), q3: Math.round(model.ppmM.q3) } : null,
+          ppmAppartements: model.ppmA ? { median: Math.round(model.ppmA.median), q1: Math.round(model.ppmA.q1), q3: Math.round(model.ppmA.q3) } : null,
+          tendance: model.D ? { direction: model.D.dir, pct: Number(model.D.delta.toFixed(1)) } : null,
+        },
+      };
+      try {
+        const rep = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (rep.ok) {
+          panneau.innerHTML = `
+            <div class="vr-panneau">
+              <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
+              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre analyse personnalisée et vous l'envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+            </div>`;
+        } else {
+          const data = await rep.json().catch(() => null);
+          err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
+          err.classList.remove('hidden');
+        }
+      } catch {
+        err.textContent = "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
+        err.classList.remove('hidden');
+      } finally {
+        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir mon analyse personnalisée';
+      }
+    });
+  }
+
+  // ——— États vides / attente ———
+  function afficherDonneesEnAttente() {
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">L'accès aux ventes de votre secteur est en cours de finalisation.</p>
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Les données publiques de ventes (DVF) seront disponibles ici très prochainement. En attendant, Mouaad peut vous transmettre les ventes récentes autour de votre adresse.</p>
+      <div class="flex flex-wrap gap-3 mt-5"><a href="/contact?src=votre-rue" class="btn-primaire">Demander à Mouaad</a><a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a></div></div>`;
+  }
+  function afficherAucun(label: string) {
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de « ${esc(label)} », aucune vente ne figure pour l'instant dans les données publiques disponibles (DVF). Cette base n'est pas exhaustive.</p>
+      <div class="flex flex-wrap gap-3 mt-5"><a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a><a href="/contact?src=votre-rue" class="btn-secondaire">Échanger avec Mouaad</a></div></div>`;
+  }
+
+  // ——— Moment d'analyse (adossé au calcul réel, sans fausse attente) ———
+  async function jouerAnalyseEtRendre(lat: number, lon: number) {
+    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', "Lecture de l'évolution du secteur…"];
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-analyse">${messages.map((m, i) => `<div class="vr-analyse-step" data-i="${i}"><span class="vr-analyse-dot"></span><span>${m}</span></div>`).join('')}</div>`;
+    const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-analyse-step'));
+    const activer = (i: number) => steps.forEach((s, j) => { s.classList.toggle('is-active', j === i); s.classList.toggle('is-done', j < i); });
+
+    activer(0); await wait(450);
+    const model = computeModel(lat, lon); // calcul réel
+    steps[0].classList.add('is-done');
+    activer(1); await wait(450);
+    activer(2); await wait(450);
+    steps.forEach((s) => { s.classList.remove('is-active'); s.classList.add('is-done'); });
+    await wait(200);
+
+    if (!model) { afficherAucun(selection?.label || input.value); return; }
+    lastModel = model;
+    // Motion : séquence cinématographique épinglée. Sinon : repli empilé lisible.
+    if (reduced) {
+      construireStack(model);
+      const head = scene.querySelector<HTMLElement>('.vr-head');
+      if (head) head.scrollIntoView({ block: 'start' });
+    } else {
+      construireCine(model);
+    }
+  }
+
+  // ——— Autocomplétion ———
+  let debounce = 0, activeIdx = -1, currentSugs: any[] = [];
+  const fermerSug = () => { sugList.hidden = true; input.setAttribute('aria-expanded', 'false'); activeIdx = -1; };
+  function rendreSug(feats: any[]) {
+    currentSugs = feats;
+    if (!feats.length) { fermerSug(); return; }
+    sugList.innerHTML = feats.map((f, i) => { const pr = f.properties || {}; const sub = [pr.postcode, pr.city].filter(Boolean).join(' '); return `<li role="option" id="vr-sug-${i}" aria-selected="false" data-idx="${i}">${esc(pr.label || pr.name || '')}<span class="vr-sug-sub">${esc(sub)}</span></li>`; }).join('');
+    sugList.hidden = false; input.setAttribute('aria-expanded', 'true'); activeIdx = -1;
+  }
+  function choisir(i: number) {
+    const f = currentSugs[i]; if (!f) return;
+    const [lon, lat] = f.geometry.coordinates;
+    selection = { lon, lat, label: f.properties?.label || input.value };
+    input.value = selection.label; fermerSug(); lancer();
+  }
+  input.addEventListener('input', () => {
+    selection = null; geoErreur.classList.add('hidden');
+    const q = input.value.trim(); window.clearTimeout(debounce);
+    if (q.length < 3) { fermerSug(); return; }
+    debounce = window.setTimeout(async () => { try { rendreSug(await geocoder(q, true, 6)); } catch { fermerSug(); } }, 260);
+  });
+  input.addEventListener('keydown', (e) => {
+    if (sugList.hidden) return;
+    const items = Array.from(sugList.querySelectorAll('li'));
+    if (e.key === 'ArrowDown') { e.preventDefault(); activeIdx = Math.min(activeIdx + 1, items.length - 1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); activeIdx = Math.max(activeIdx - 1, 0); }
+    else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); choisir(activeIdx); return; }
+    else if (e.key === 'Escape') { fermerSug(); return; } else return;
+    items.forEach((el, i) => el.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false'));
+    if (items[activeIdx]) items[activeIdx].scrollIntoView({ block: 'nearest' });
+  });
+  sugList.addEventListener('click', (e) => { const li = (e.target as HTMLElement).closest('li'); if (li) choisir(Number((li as HTMLElement).dataset.idx)); });
+  document.addEventListener('click', (e) => { if (!form.contains(e.target as Node)) fermerSug(); });
+
+  // ——— Lancement ———
+  async function lancer() {
+    if (cineCleanup) { cineCleanup(); cineCleanup = null; } // détacher un moteur précédent
+    scene.hidden = false;
+    scene.innerHTML = `<div class="vr-analyse"><div class="vr-analyse-step is-active"><span class="vr-analyse-dot"></span><span>Recherche des ventes autour de chez vous…</span></div></div>`;
+    try { await chargerDonnees(); } catch {
+      geoErreur.textContent = 'Impossible de charger les données pour le moment. Réessayez dans un instant.';
+      geoErreur.classList.remove('hidden'); scene.hidden = true; return;
+    }
+    if (!meta || meta.status !== 'ready' || !dataset || !dataset.length) { afficherDonneesEnAttente(); return; }
+
+    let coords = selection;
+    if (!coords) {
+      const q = input.value.trim();
+      if (q.length < 3) { scene.hidden = true; geoErreur.textContent = "Indiquez d'abord votre rue ou votre adresse."; geoErreur.classList.remove('hidden'); return; }
+      try { const feats = await geocoder(q, false, 1); if (!feats.length) { afficherAucun(q); return; } const [lon, lat] = feats[0].geometry.coordinates; coords = { lon, lat, label: feats[0].properties?.label || q }; selection = coords; }
+      catch { geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.'; geoErreur.classList.remove('hidden'); scene.hidden = true; return; }
+    }
+    await jouerAnalyseEtRendre(coords.lat, coords.lon);
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); fermerSug(); lancer(); });
+</script>

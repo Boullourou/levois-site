@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../config/site';
+---
+
+<Layout title="Politique de confidentialité" description="Quelles données LEVOIS collecte, pourquoi, et vos droits.">
+  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+
+    <header class="mb-12">
+      <p class="eyebrow mb-4">Vos données</p>
+      <h1 class="text-display text-encre mb-4">Politique de confidentialité</h1>
+      <p class="font-sans text-body-lg text-brun">
+        La règle LEVOIS est simple : vos données servent à vous répondre — à rien d’autre.
+        Voici le détail, sans jargon.
+      </p>
+    </header>
+
+    <div class="space-y-12 font-sans text-[15px] text-encre/85 leading-relaxed">
+
+      <section aria-labelledby="quoi">
+        <h2 id="quoi" class="text-h3 text-encre mb-4">Ce que nous collectons, et quand</h2>
+        <p>
+          <strong class="text-encre">Le parcours « Situer ma vente »</strong> fonctionne sans aucune coordonnée :
+          vos réponses restent dans votre navigateur (stockage de session) et disparaissent à la fermeture.
+          Rien n’est transmis tant que vous ne le demandez pas.
+        </p>
+        <p class="mt-3">
+          <strong class="text-encre">Si vous transmettez votre situation à Mouaad</strong>, nous collectons :
+          prénom, nom, email, commune du bien, et — si vous les fournissez — téléphone, lien
+          d’annonce et détail complémentaire, accompagnés de la synthèse de votre parcours
+          (situation, réponses, lecture produite).
+        </p>
+        <p class="mt-3">
+          <strong class="text-encre">Le formulaire de contact</strong> collecte : prénom, nom, email,
+          téléphone éventuel, objet et message.
+        </p>
+      </section>
+
+      <section aria-labelledby="pourquoi">
+        <h2 id="pourquoi" class="text-h3 text-encre mb-4">Pourquoi, et sur quelle base</h2>
+        <p>
+          Ces données servent exclusivement à vous répondre et à préparer l’échange que vous
+          avez sollicité. Base légale : votre consentement explicite (case à cocher), et les
+          mesures précontractuelles à votre demande.
+        </p>
+        <p class="mt-3">
+          <strong class="text-encre">Aucune inscription automatique à une newsletter.</strong> Tout
+          consentement marketing serait demandé séparément — il ne l’est pas aujourd’hui.
+        </p>
+      </section>
+
+      <section aria-labelledby="qui">
+        <h2 id="qui" class="text-h3 text-encre mb-4">Qui reçoit vos données</h2>
+        <p>
+          Mouaad Boullourou, destinataire unique. Prestataires techniques intervenant dans
+          l’acheminement : Netlify (hébergement, États-Unis — clauses contractuelles types)
+          et Resend (acheminement des emails). Vos données ne sont ni vendues, ni cédées,
+          ni utilisées à des fins publicitaires.
+        </p>
+      </section>
+
+      <section aria-labelledby="duree">
+        <h2 id="duree" class="text-h3 text-encre mb-4">Durée de conservation</h2>
+        <p>
+          Les messages et situations transmis sont conservés le temps du suivi de votre
+          demande, puis au maximum trois ans sans contact de votre part, avant suppression.
+        </p>
+      </section>
+
+      <section aria-labelledby="droits">
+        <h2 id="droits" class="text-h3 text-encre mb-4">Vos droits</h2>
+        <p>
+          Accès, rectification, opposition, suppression : écrivez à
+          <a href={`mailto:${site.email}`} class="text-argile underline underline-offset-2">{site.email}</a> —
+          la demande est traitée personnellement. Vous disposez également d’un droit de
+          réclamation auprès de la <a href="https://www.cnil.fr" class="text-argile underline underline-offset-2">CNIL</a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="cookies">
+        <h2 id="cookies" class="text-h3 text-encre mb-4">Cookies</h2>
+        <p>
+          Ce site n’utilise <strong class="text-encre">aucun cookie de traçage publicitaire</strong> et
+          aucun traceur nécessitant une bannière de consentement. Le seul stockage utilisé est
+          le stockage de session de votre navigateur, pour ne pas perdre vos réponses en cas de
+          rafraîchissement — il ne contient jamais vos coordonnées et s’efface à la fermeture.
+        </p>
+      </section>
+    </div>
+  </article>
+</Layout>

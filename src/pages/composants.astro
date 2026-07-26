@@ -1,0 +1,139 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const tokens = [
+  ['papier', '#F7F2EA'], ['papier-vif', '#FDFBF6'], ['encre', '#211C16'], ['encre-2', '#2E2820'],
+  ['brun', '#6B5D4F'], ['argile', '#A85638'], ['argile-lum', '#C97B52'], ['argile-pale', '#F0E2D8'], ['beige', '#E8DFD0'],
+];
+const situationColors = [
+  ['01 · Préparation', '#E9ECE1', '#6E7C5A'],
+  ['02 · Annonce récente', '#F2E3C6', '#B27C34'],
+  ['03 · Peu de contacts', '#EFD9C8', '#A85638'],
+  ['04 · Visites sans offre', '#B15E34', '#FBE9D8'],
+  ['05 · Vente ancienne', '#362539', '#C79CB8'],
+];
+const methodColors = [
+  ['Comprendre', '#F7F2EA'], ['Aligner', '#ECDFC8'], ['Positionner', '#E4CDB8'], ['Piloter', '#C67B4A'], ['Apprendre', '#221C15'],
+];
+---
+
+<Layout title="Inventaire des composants" noindex={true} description="Page interne — inventaire des composants et de leurs états.">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md pt-12 pb-section space-y-16">
+
+    <header>
+      <p class="eyebrow mb-3">Page interne · noindex</p>
+      <h1 class="text-display text-encre">Inventaire des composants</h1>
+      <p class="font-sans text-body-lg text-brun mt-3 max-w-prose">
+        Référence de recette : tokens, typographie, boutons, cartes, systèmes de couleurs
+        (situations vs méthode), états de formulaire, traitement des images et mouvement réduit.
+      </p>
+    </header>
+
+    <!-- Couleurs -->
+    <section aria-labelledby="c-tokens">
+      <h2 id="c-tokens" class="text-h3 text-encre mb-5">Tokens de couleur</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        {tokens.map(([n, hex]) => (
+          <div class="carte overflow-hidden">
+            <div style={`background:${hex};height:64px`}></div>
+            <div class="p-3 font-sans text-sm"><span class="text-encre">{n}</span><br/><span class="text-brun">{hex}</span></div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Typographie -->
+    <section aria-labelledby="c-type">
+      <h2 id="c-type" class="text-h3 text-encre mb-5">Typographie</h2>
+      <div class="space-y-3">
+        <p class="text-hero text-encre">Fraunces display</p>
+        <p class="text-display text-encre">Titre display éditorial</p>
+        <p class="text-h2 text-encre">Titre H2</p>
+        <p class="font-sans text-body-lg text-encre max-w-prose">Instrument Sans — corps de lecture. Largeur de ligne maîtrisée, interlignage confortable, 17px desktop.</p>
+        <p class="eyebrow">Eyebrow · argile</p>
+      </div>
+    </section>
+
+    <!-- Boutons + états -->
+    <section aria-labelledby="c-btn">
+      <h2 id="c-btn" class="text-h3 text-encre mb-5">Boutons &amp; états</h2>
+      <div class="flex flex-wrap gap-3 items-center mb-4">
+        <button class="btn-primaire">Primaire</button>
+        <button class="btn-secondaire">Secondaire</button>
+        <span class="p-3 rounded-card bg-encre inline-flex"><a class="btn-sur-encre">Sur encre</a></span>
+        <button class="btn-primaire" disabled style="opacity:.5">Désactivé</button>
+      </div>
+      <p class="font-sans text-sm text-brun">États : par défaut, survol (couleur), focus (contour argile visible au clavier), actif, désactivé.</p>
+    </section>
+
+    <!-- Ligne d'écart -->
+    <section aria-labelledby="c-ligne">
+      <h2 id="c-ligne" class="text-h3 text-encre mb-5">Ligne d’écart (fil conducteur)</h2>
+      <span class="ligne-ecart"></span>
+    </section>
+
+    <!-- Deux systèmes de cartes -->
+    <section aria-labelledby="c-cartes">
+      <h2 id="c-cartes" class="text-h3 text-encre mb-5">Deux systèmes distincts</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div>
+          <p class="font-sans text-sm text-brun mb-3">Sélecteur de situations — progression chromatique</p>
+          <div class="flex gap-2">
+            {situationColors.map(([label, bg, accent]) => (
+              <div class="flex-1 rounded-card p-3 min-h-[92px] flex flex-col justify-between" style={`background:${bg}`}>
+                <span style={`color:${accent};font-weight:600;font-size:12px`}>{label.split(' · ')[0]}</span>
+                <span style={`color:${accent};font-size:11px`}>{label.split(' · ')[1]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <p class="font-sans text-sm text-brun mb-3">Méthode — progression papier → encre (distincte)</p>
+          <div class="flex gap-2">
+            {methodColors.map(([label, bg]) => (
+              <div class="flex-1 rounded-card p-3 min-h-[92px] flex items-end" style={`background:${bg}`}>
+                <span style={`color:${bg === '#221C15' || bg === '#C67B4A' ? '#F5EFE6' : '#211C16'};font-size:12px`}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- États formulaire -->
+    <section aria-labelledby="c-form">
+      <h2 id="c-form" class="text-h3 text-encre mb-5">États de champ &amp; de formulaire</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 font-sans">
+        <div><label class="block text-sm text-brun mb-1.5">Par défaut</label><input class="w-full rounded-lg bg-papier border border-beige px-4 py-3" placeholder="Champ" /></div>
+        <div><label class="block text-sm text-brun mb-1.5">Focus</label><input class="w-full rounded-lg bg-papier border-2 border-argile px-4 py-3" value="Saisie…" /></div>
+        <div><label class="block text-sm text-argile mb-1.5">Erreur</label><input class="w-full rounded-lg bg-papier border-2 border-argile px-4 py-3" value="valeur@" /><p class="text-argile text-sm mt-1">Email à vérifier.</p></div>
+        <div><label class="block text-sm text-brun mb-1.5">Succès</label><div class="rounded-lg bg-argile-pale/60 border border-argile/40 px-4 py-3 text-sm text-encre">Message bien envoyé.</div></div>
+      </div>
+    </section>
+
+    <!-- Traitement images -->
+    <section aria-labelledby="c-img">
+      <h2 id="c-img" class="text-h3 text-encre mb-5">Traitement des images</h2>
+      <ul class="font-sans text-[15px] text-encre/85 space-y-2 list-disc pl-5 max-w-prose">
+        <li>WebP + AVIF, <code>srcset/sizes</code>, dimensions intrinsèques (anti-CLS), lazy-loading hors Hero.</li>
+        <li>Aucune désaturation, aucun voile permanent — couleurs fidèles.</li>
+        <li><code>object-position</code> desktop/mobile documenté par slot dans <code>src/data/images.ts</code>.</li>
+        <li>Méthode 03/04/05 : dérivés recadrés — aucun chiffre fictif lisible, originaux jamais publiés.</li>
+        <li>Slots sans photo (Léa, situations 04/05) : traitement graphique coloré, jamais de rectangle vide.</li>
+      </ul>
+    </section>
+
+    <!-- Mouvement -->
+    <section aria-labelledby="c-motion">
+      <h2 id="c-motion" class="text-h3 text-encre mb-5">Mouvement</h2>
+      <p class="font-sans text-[15px] text-encre/85 max-w-prose">
+        Deux familles : <strong>narration</strong> (700–1200 ms, Hero/territoire, courbe <code>0.22,1,0.36,1</code>) et
+        <strong>interface</strong> (180–350 ms, sélection/boutons/formulaire). Avec
+        <code>prefers-reduced-motion</code> : aucun sticky long, aucun zoom, aucune translation ;
+        les trois temps de la Hero deviennent trois scènes verticales lisibles. Aucun contenu utile
+        ne dépend du survol ni d’une animation.
+      </p>
+    </section>
+
+  </div>
+</Layout>

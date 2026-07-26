@@ -1,0 +1,142 @@
+---
+/**
+ * Territoire — encart éditorial autonome + bande basse documentaire.
+ *
+ * La grande scène avec image en arrière-plan est supprimée au profit d'un
+ * encart à fond sombre (encre), composition gauche/droite, communes traitées
+ * comme repères typographiques et non comme pills UI.
+ *
+ * La bande basse (rue de Lèves, photo + texte côte à côte) reste inchangée.
+ * Le personnage de la rue de Lèves n'est jamais nommé ni présenté comme Mouaad.
+ */
+import ResponsiveImage from './ResponsiveImage.astro';
+import { site } from '../config/site';
+---
+
+<section class="territoire" aria-labelledby="territoire-titre">
+
+  <!-- Encart éditorial autonome : fond encre, deux colonnes -->
+  <div class="territoire-editorial">
+    <div class="max-w-page mx-auto px-edge md:px-edge-md w-full">
+      <div class="territoire-grid">
+
+        <!-- Colonne gauche : texte -->
+        <div class="territoire-texte fade-up">
+          <p class="territoire-eyebrow">Le terrain</p>
+          <h2 id="territoire-titre" class="territoire-titre">
+            Un bien ne se compare pas<br class="hidden md:block"/> à un marché abstrait.
+          </h2>
+          <span class="territoire-filet" aria-hidden="true"></span>
+          <p class="territoire-corps">
+            Il se compare aux alternatives visibles dans le même secteur,
+            au même moment et au même budget. LEVOIS lit le marché
+            là où il existe vraiment.
+          </p>
+        </div>
+
+        <!-- Colonne droite : communes comme repères typographiques -->
+        <div class="territoire-noms fade-up" aria-label="Communes couvertes">
+          {site.communes.map((c, i) => (
+            <p class="territoire-commune" style={`animation-delay:${i * 60}ms`}>{c}</p>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bande basse : rue de Lèves + texte (photo à côté du texte, jamais derrière) -->
+  <div class="max-w-page mx-auto px-edge md:px-edge-md py-section grid md:grid-cols-12 gap-8 md:gap-10 items-center">
+    <div class="md:col-span-7 fade-up">
+      <ResponsiveImage slot="territoire-rue" ratio="16/10" sizes="(min-width:768px) 58vw, 100vw" class="rounded-panel" />
+    </div>
+    <div class="md:col-span-5 fade-up">
+      <h3 class="text-h3 text-encre mb-3">Une matière locale, réelle.</h3>
+      <p class="font-sans text-body-lg text-brun leading-relaxed">
+        De Lèves à Chartres, des rues pavées aux quartiers récents : la connaissance
+        du terrain n'est pas un argument, c'est la condition d'une lecture juste.
+        Chaque commune a ses acheteurs, ses rythmes et ses points de comparaison.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* ——— Encart éditorial ——— */
+  .territoire-editorial {
+    background: #1D1710;
+    padding: 5rem 0 4.5rem;
+  }
+  @media (min-width: 768px) {
+    .territoire-editorial { padding: 6.5rem 0 6rem; }
+  }
+
+  .territoire-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  @media (min-width: 768px) {
+    .territoire-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+  }
+  @media (min-width: 1100px) {
+    .territoire-grid { grid-template-columns: 3fr 2fr; }
+  }
+
+  /* Texte gauche */
+  .territoire-eyebrow {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: #C97B52;
+    margin-bottom: 1.75rem;
+  }
+  .territoire-titre {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    line-height: 1.06; letter-spacing: -0.02em;
+    color: #F7F2EA;
+    margin-bottom: 2rem;
+  }
+  /* Ligne-écart caractéristique LEVOIS, en argile */
+  .territoire-filet {
+    display: block; width: 48px; height: 2px;
+    background: #A85638; margin-bottom: 1.75rem;
+  }
+  .territoire-corps {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+    line-height: 1.65;
+    color: rgba(247, 242, 234, 0.72);
+    max-width: 46ch;
+  }
+
+  /* Communes — repères typographiques, pas des chips */
+  .territoire-noms {
+    padding-top: 0;
+  }
+  @media (min-width: 768px) {
+    .territoire-noms { padding-top: 0.5rem; }
+  }
+  .territoire-commune {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    line-height: 1.25;
+    color: rgba(247, 242, 234, 0.28);
+    letter-spacing: -0.01em;
+    margin: 0;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid rgba(247, 242, 234, 0.07);
+    transition: color 0.3s ease;
+  }
+  .territoire-commune:first-child { border-top: 1px solid rgba(247, 242, 234, 0.07); }
+  .territoire-commune:hover { color: rgba(247, 242, 234, 0.72); }
+</style>

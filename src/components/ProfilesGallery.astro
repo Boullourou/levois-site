@@ -1,0 +1,103 @@
+---
+/**
+ * « Quatre ventes, quatre réalités » — galerie éditoriale asymétrique.
+ *
+ * IMPORTANT : ces quatre profils sont des situations COMPOSITES, présentées
+ * comme des exemples. Ce ne sont pas des clients authentifiés — aucun faux
+ * témoignage, aucun nom fictif, aucune citation inventée. La mention
+ * « exemples » est explicite et permanente.
+ *
+ * Composition volontairement irrégulière (une grande, deux moyennes, une
+ * étroite), différente des grilles régulières du reste de la page.
+ */
+import ResponsiveImage from './ResponsiveImage.astro';
+
+const profils = [
+  {
+    slot: 'profil-couple', taille: 'grande',
+    situation: 'Un couple prépare sa vente sans urgence.',
+    vigilance: 'Ici, l’enjeu n’est pas le prix, mais l’ordre des décisions avant de publier.',
+  },
+  {
+    slot: 'profil-femme', taille: 'moyenne',
+    situation: 'Une annonce en ligne depuis quelques jours seulement.',
+    vigilance: 'Trop tôt pour conclure : la première période s’observe avant d’agir.',
+  },
+  {
+    slot: 'profil-jeune', taille: 'moyenne',
+    situation: 'Un premier bien mis en vente, peu de contacts.',
+    vigilance: 'Être vu n’est pas être contacté : vérifier où l’intérêt disparaît.',
+  },
+  {
+    slot: 'profil-famille', taille: 'etroite',
+    situation: 'Une famille reçoit des visites, mais aucune offre.',
+    vigilance: 'L’écart se joue souvent après la visite, pas pendant.',
+  },
+];
+---
+
+<section class="py-section md:py-section-md bg-papier-vif border-y border-beige/70" aria-labelledby="profils-titre">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md">
+    <div class="max-w-2xl mb-10 fade-up">
+      <p class="eyebrow mb-4">Quatre ventes, quatre réalités</p>
+      <h2 id="profils-titre" class="text-display text-encre">Votre situation ne ressemble<br class="hidden md:block"/> à aucune autre.</h2>
+      <p class="font-sans text-body-lg text-brun mt-4">
+        Quatre exemples pour illustrer la diversité des contextes — le calendrier, l’urgence,
+        l’histoire du bien. <span class="text-brun/80">Ce sont des situations composites, pas des témoignages.</span>
+      </p>
+    </div>
+
+    <div class="profils-grid">
+      {profils.map((p) => (
+        <figure class={`profil profil-${p.taille} fade-up`}>
+          <div class="profil-media">
+            <ResponsiveImage slot={p.slot} ratio="none" sizes="(min-width:1024px) 30vw, (min-width:640px) 45vw, 90vw" class="profil-img" />
+            <span class="profil-tag">Exemple</span>
+          </div>
+          <figcaption class="profil-cap">
+            <p class="profil-situation">{p.situation}</p>
+            <p class="profil-vigilance"><span class="profil-vig-label">Point de vigilance —</span> {p.vigilance}</p>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .profils-grid {
+    display: grid; gap: 1rem; grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) { .profils-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1024px) {
+    .profils-grid {
+      grid-template-columns: repeat(6, 1fr);
+      grid-auto-flow: dense; gap: 1.25rem;
+    }
+    /* Composition asymétrique */
+    .profil-grande  { grid-column: span 3; grid-row: span 2; }
+    .profil-moyenne { grid-column: span 3; }
+    .profil-etroite { grid-column: span 2; }
+    .profil-grande .profil-media { aspect-ratio: 4/5; }
+    .profil-moyenne .profil-media { aspect-ratio: 16/10; }
+    .profil-etroite .profil-media { aspect-ratio: 3/4; }
+  }
+
+  .profil { display: flex; flex-direction: column; }
+  .profil-media {
+    position: relative; border-radius: 22px; overflow: hidden;
+    aspect-ratio: 4/5; background: #E8DFD0;
+  }
+  :global(.profil-img) { width: 100%; height: 100%; }
+  :global(.profil-media .ri) { height: 100%; }
+  .profil-tag {
+    position: absolute; top: 0.85rem; left: 0.85rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; letter-spacing: 0.08em;
+    background: rgba(33,28,22,0.72); color: #F7F2EA; padding: 0.28rem 0.7rem; border-radius: 999px;
+    backdrop-filter: blur(2px);
+  }
+  .profil-cap { padding: 1rem 0.25rem 0; }
+  .profil-situation { font-family: 'Fraunces', serif; font-size: 1.15rem; line-height: 1.3; color: #211C16; margin-bottom: 0.4rem; }
+  .profil-vigilance { font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; line-height: 1.5; color: #6B5D4F; }
+  .profil-vig-label { color: #A85638; font-weight: 600; }
+</style>

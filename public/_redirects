@@ -1,1 +1,33 @@
-/pourquoi-vivre-a-leves  /vivre-a-leves  301
+# API formulaires → fonction Netlify
+/api/lead  /.netlify/functions/lead  200
+
+# Anciennes pages « carnet de terrain » → nouvelle architecture LEVOIS
+/le-projet            /mouaad           301
+/guide                /ressources       301
+/carnets-de-terrain   /ressources       301
+/carnets-de-terrain/* /ressources       301
+/observatoire-immo    /                 301
+/vendre-a-leves       /situer-ma-vente  301
+/merci                /                 301
+
+# ——————————————————————————————————————————————————————————————
+# Routes protégées (QR codes imprimés) — ne jamais supprimer/renommer
+# sans validation explicite.
+# ——————————————————————————————————————————————————————————————
+
+# /carte — carte de visite : page dédiée ACTIVE.
+# (plus de redirection : la vraie page src/pages/carte.astro est servie)
+
+# /votre-rue — encart publicitaire : page servie (avec le vrai dataset DVF).
+#
+# Protection de la PRODUCTION = la branche n'est pas fusionnée. La production
+# levois.fr est déployée depuis `main`, dont le propre _redirects redirige
+# encore /votre-rue → / et qui ne contient pas la page : `levois.fr/votre-rue`
+# reste donc protégée tant qu'il n'y a pas de fusion.
+#
+# Sur la PREVIEW de branche, aucune redirection n'intercepte : la page réelle
+# /votre-rue est accessible pour validation visuelle et fonctionnelle.
+#
+# La fusion vers `main` (déclenchée par vous, après validation) est ce qui
+# activera publiquement /votre-rue en production. Ne pas remettre de
+# redirection ici : elle bloquerait aussi la preview.

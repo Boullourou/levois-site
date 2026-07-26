@@ -1,257 +1,99 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import SituationRail from '../components/SituationRail.astro';
+import MethodPanels from '../components/MethodPanels.astro';
+import ResourcesMosaic from '../components/ResourcesMosaic.astro';
+import ProfilesGallery from '../components/ProfilesGallery.astro';
+import TerritoryScene from '../components/TerritoryScene.astro';
+import TeamScene from '../components/TeamScene.astro';
+import ResponsiveImage from '../components/ResponsiveImage.astro';
 ---
 
-<Layout
-  title="Mouaad Boullourou — Conseiller immobilier à Lèves"
-  description="Conseiller immobilier indépendant SAFTI à Lèves, disponible 7j/7. Les vrais prix du secteur, une relation de confiance, et un seul objectif : votre bien vendu au bon prix."
->
+<Layout title="Accueil" headerTransparent={false}>
 
-  <!-- ============================================================ -->
-  <!-- 1. HERO -->
-  <!-- ============================================================ -->
-  <section class="min-h-[88vh] md:min-h-screen px-edge md:px-edge-md py-section md:py-section-md max-w-page mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter md:gap-12 items-center h-full">
+  <!-- 1 · Hero — narration en trois temps -->
+  <Hero />
 
-      <div class="md:col-span-5 md:col-start-1 order-2 md:order-1 fade-up">
-        <div class="eyebrow mb-6 md:mb-8">Conseiller immobilier · Lèves 28300</div>
-
-        <h1 class="text-hero text-sapin mb-8 leading-[0.95]">
-          Votre bien<br/>
-          <em class="font-normal italic text-sapin-deep">va se vendre.</em>
-        </h1>
-
-        <span class="rule-ocre"></span>
-
-        <p class="text-body-lg text-muted max-w-md mt-6">
-          Il faut juste le bon prix — pas un prix fantasmé, le prix maximum
-          auquel votre bien se vendra vraiment. Je m'appelle
-          <strong class="text-ink font-medium">Mouaad Boullourou</strong>,
-          conseiller indépendant SAFTI à Lèves, disponible 7j/7.
-        </p>
-
-        <div class="mt-8 flex flex-col sm:flex-row gap-4">
-          <a href="/votre-rue" class="inline-flex items-center gap-2 bg-sapin text-cream px-6 py-3 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
-            Les prix de votre rue
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-          </a>
-          <a href="/vendre-a-leves" class="inline-flex items-center gap-2 border border-sapin text-sapin px-6 py-3 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px]">
-            Mon approche
-          </a>
-        </div>
-      </div>
-
-      <div class="md:col-span-7 md:col-start-6 order-1 md:order-2 fade-up">
-        <div class="relative aspect-[3/4] md:aspect-[4/5] md:h-[80vh] overflow-hidden">
-          <img
-            src="/portrait-hero.webp"
-            alt="Mouaad Boullourou, conseiller immobilier à Lèves"
-            width="800"
-            height="1200"
-            class="parallax absolute inset-0 w-full h-full object-cover scale-[1.02]"
-            fetchpriority="high"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- 2. LES VRAIS CHIFFRES (le don) -->
-  <!-- ============================================================ -->
-  <section class="py-section md:py-section-lg px-edge md:px-edge-md bg-sapin text-cream">
-    <div class="max-w-page mx-auto">
-      <div class="grid md:grid-cols-12 gap-gutter items-end mb-12 fade-up">
-        <div class="md:col-span-7">
-          <div class="eyebrow text-ocre-soft mb-4">Données notaires · 2024-2025</div>
-          <h2 class="text-display text-cream leading-[0.98]">
-            Ce qui s'est<br/>
-            <em class="italic font-normal text-ocre-soft">vraiment vendu</em><br/>
-            à Lèves.
-          </h2>
-        </div>
-        <div class="md:col-span-5 text-body-lg text-cream/75 leading-relaxed">
-          Pas des estimations, pas des moyennes nationales. Les actes signés
-          chez les notaires, secteur par secteur. Gratuit, sans inscription.
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 mb-12 fade-up">
-        <div class="border-t border-cream/20 pt-6">
-          <div class="text-[3rem] md:text-[3.5rem] font-medium leading-none text-cream">121</div>
-          <div class="text-[14px] text-cream/70 mt-2 leading-tight">ventes signées<br/>près de chez vous</div>
-        </div>
-        <div class="border-t border-cream/20 pt-6">
-          <div class="text-[3rem] md:text-[3.5rem] font-medium leading-none text-cream">210 000 €</div>
-          <div class="text-[14px] text-cream/70 mt-2 leading-tight">prix médian<br/>d'une maison</div>
-        </div>
-        <div class="border-t border-cream/20 pt-6">
-          <div class="text-[3rem] md:text-[3.5rem] font-medium leading-none text-cream">2 407 €</div>
-          <div class="text-[14px] text-cream/70 mt-2 leading-tight">le m²<br/>d'un appartement</div>
-        </div>
-      </div>
-
-      <div class="fade-up">
-        <a href="/votre-rue" class="inline-flex items-center gap-2 border border-cream/40 text-cream px-6 py-3 rounded-full hover:bg-cream hover:text-sapin transition-colors text-[15px]">
-          Trouver mon quartier dans les chiffres
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-        </a>
-        <p class="text-[12px] text-cream/50 mt-3">Gratuit, sans inscription. Rue par rue.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- 3. MON APPROCHE (la philosophie, courte) -->
-  <!-- ============================================================ -->
-  <section class="py-section md:py-section-lg px-edge md:px-edge-md bg-cream-soft border-y border-beige/40">
-    <div class="max-w-editorial mx-auto">
-
-      <div class="fade-up mb-16">
-        <div class="eyebrow mb-6">Ma démarche</div>
-        <h2 class="text-display text-sapin mb-8">
-          La confiance<br/>
-          <em class="italic font-normal">avant le mandat.</em>
-        </h2>
-        <span class="rule-ocre"></span>
-      </div>
-
-      <div class="space-y-0 fade-up">
-        <div class="border-t border-beige py-8 md:py-10">
-          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
-            <div class="text-h3 italic text-ocre">01.</div>
-            <div>
-              <h3 class="text-h3 text-sapin mb-3">Je donne d'abord.</h3>
-              <p class="text-body-lg text-muted leading-relaxed">
-                Les vrais prix de votre secteur, accessibles avant qu'on se parle.
-                Pas pour vous impressionner — pour que vous arriviez informé, et qu'on parte
-                d'une base réelle, pas d'un espoir.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-t border-beige py-8 md:py-10">
-          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
-            <div class="text-h3 italic text-ocre">02.</div>
-            <div>
-              <h3 class="text-h3 text-sapin mb-3">Vous connaissez votre bien. Je connais le marché.</h3>
-              <p class="text-body-lg text-muted leading-relaxed">
-                On définit le prix ensemble — le prix maximum auquel votre bien se vendra vraiment.
-                Une vente au juste prix, c'est une vente qui tient.
-                Pas de désistement de dernière minute parce que l'acheteur a surpayé.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div class="border-t border-b border-beige py-8 md:py-10">
-          <div class="grid md:grid-cols-[auto_1fr] gap-4 md:gap-10">
-            <div class="text-h3 italic text-ocre">03.</div>
-            <div>
-              <h3 class="text-h3 text-sapin mb-3">Indépendant, disponible 7j/7, sans hiérarchie au-dessus.</h3>
-              <p class="text-body-lg text-muted leading-relaxed">
-                Je suis mon propre patron. Pas de chef à convaincre, pas de réunion d'agence
-                à attendre. Diffusion sur 40+ plateformes, un seul interlocuteur,
-                un message clair pour l'acheteur.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================================ -->
-  <!-- 4. LE CARNET (preuve de terrain, 2 articles) -->
-  <!-- ============================================================ -->
-  <section class="py-section md:py-section-lg px-edge md:px-edge-md max-w-page mx-auto">
-
-    <div class="mb-12 md:mb-16 fade-up">
-      <div class="eyebrow mb-4">Carnet de terrain</div>
-      <h2 class="text-display text-sapin">
-        Je connais Lèves<br/>
-        <em class="italic font-normal">parce que j'y vis.</em>
+  <!-- 2 · Signature — respiration éditoriale (structure unique, papier) -->
+  <section class="py-16 md:py-24" aria-labelledby="signature-titre">
+    <div class="max-w-editorial mx-auto px-edge md:px-edge-md text-center fade-up">
+      <span class="ligne-ecart mx-auto mb-8"></span>
+      <h2 id="signature-titre" class="text-h2 text-encre">
+        Une seule réalité.<br class="md:hidden"/> Deux lectures. <em class="text-argile">Un écart.</em>
       </h2>
-      <span class="rule-ocre"></span>
-      <p class="text-body-lg text-muted mt-6 max-w-prose">
-        Ce carnet n'est pas là pour remplir un site. Il documente ce que j'observe en
-        habitant ici — et ce que seul un voisin peut vraiment savoir sur un secteur.
+      <p class="font-sans text-body-lg text-brun mt-6 max-w-prose mx-auto">
+        Cet écart ne signifie pas que votre bien a un problème. Il indique qu’une information
+        mérite d’être comprise — avant toute demande de coordonnées.
       </p>
-    </div>
-
-    <div class="grid md:grid-cols-2 gap-5 fade-up">
-      <a href="/carnets-de-terrain/pourquoi-la-salle-des-fetes-s-appelle-soutine"
-         class="group block border border-beige rounded-md p-6 md:p-8 bg-cream hover:bg-cream-soft transition-colors">
-        <div class="eyebrow-muted mb-3">Histoire locale · Juin 2026</div>
-        <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors leading-snug">
-          Pourquoi la salle des fêtes s'appelle Soutine
-        </h3>
-        <p class="text-[14px] text-muted leading-relaxed mb-6">
-          En tirant sur le fil d'un nom croisé tous les jours, j'ai découvert que Lèves
-          a hébergé l'avant-garde parisienne — Soutine, Cocteau, Satie, et la maison
-          où le style Castaing est né.
-        </p>
-        <div class="text-eyebrow text-ocre uppercase inline-flex items-center gap-2">
-          Lire
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="group-hover:translate-x-1 transition-transform">
-            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/>
-          </svg>
-        </div>
-      </a>
-
-      <a href="/carnets-de-terrain/pourquoi-je-tiens-ce-carnet"
-         class="group block border border-beige rounded-md p-6 md:p-8 bg-cream hover:bg-cream-soft transition-colors">
-        <div class="eyebrow-muted mb-3">Carnet de terrain · Juin 2026</div>
-        <h3 class="text-h3 text-sapin mb-3 group-hover:text-sapin-deep transition-colors leading-snug">
-          Pourquoi je tiens ce carnet
-        </h3>
-        <p class="text-[14px] text-muted leading-relaxed mb-6">
-          Une maison, ce n'est pas une surface et un diagnostic. Pourquoi je prends le
-          temps d'observer Lèves avant de parler immobilier.
-        </p>
-        <div class="text-eyebrow text-ocre uppercase inline-flex items-center gap-2">
-          Lire
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="group-hover:translate-x-1 transition-transform">
-            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/>
-          </svg>
-        </div>
-      </a>
-    </div>
-
-    <div class="mt-8 fade-up">
-      <a href="/carnets-de-terrain" class="inline-flex items-center gap-2 text-eyebrow uppercase tracking-widest text-ocre hover:text-sapin transition-colors pb-1 border-b border-ocre hover:border-sapin text-[13px]">
-        Tous les carnets
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
-      </a>
     </div>
   </section>
 
-  <!-- ============================================================ -->
-  <!-- 5. SIGNATURE + CTA -->
-  <!-- ============================================================ -->
-  <section class="py-section-md md:py-section-lg px-edge md:px-edge-md">
-    <div class="max-w-2xl mx-auto text-center fade-up">
-      <span class="block w-px h-20 md:h-24 bg-ocre mx-auto mb-10 md:mb-12"></span>
+  <!-- 3 · Bifurcation — rail éditorial des cinq situations -->
+  <SituationRail />
 
-      <p class="text-h3 italic text-sapin leading-relaxed mb-4">
-        Prendre le temps de comprendre<br/>
-        les lieux, les gens et les projets —<br/>
-        avant de parler immobilier.
-      </p>
+  <!-- 4 · Méthode — cinq panneaux distincts, progression chromatique -->
+  <MethodPanels />
 
-      <p class="text-body-lg text-muted mb-10">
-        Mouaad Boullourou · 07 81 38 01 21 · mouaad@levois.fr
-      </p>
+  <!-- 5 · Quatre profils illustratifs (galerie asymétrique honnête) -->
+  <ProfilesGallery />
 
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="tel:+33781380121" class="inline-flex items-center justify-center gap-2 bg-sapin text-cream px-7 py-3.5 rounded-full hover:bg-sapin-deep transition-colors text-[15px]">
-          Appeler
-        </a>
-        <a href="/vendre-a-leves" class="inline-flex items-center justify-center gap-2 border border-sapin text-sapin px-7 py-3.5 rounded-full hover:bg-sapin hover:text-cream transition-colors text-[15px]">
-          Mon approche
-        </a>
+  <!-- 6 · Ressources — mosaïque -->
+  <ResourcesMosaic />
+
+  <!-- 7 · Engagements — liste manifeste sur encre (structure unique) -->
+  <section class="py-section md:py-section-md bg-encre text-papier" aria-labelledby="engagements-titre">
+    <div class="max-w-page mx-auto px-edge md:px-edge-md grid md:grid-cols-12 gap-10">
+      <div class="md:col-span-5 fade-up">
+        <p class="eyebrow !text-argile-lum mb-4">Engagements</p>
+        <h2 id="engagements-titre" class="text-display text-papier">Ce que LEVOIS<br/>ne fera jamais.</h2>
+        <p class="font-sans text-body-lg text-papier/70 mt-4 max-w-md">
+          La crédibilité ne se décrète pas. Elle se construit par la précision —
+          et par ce qu’on refuse de faire.
+        </p>
+      </div>
+      <ul class="md:col-span-7 grid sm:grid-cols-2 gap-x-8 gap-y-6 font-sans text-[15px] text-papier/85 fade-up">
+        {[
+          'Aucune estimation automatique : un prix sérieux se construit, il ne se génère pas.',
+          'Aucune donnée inventée : pas de compteurs, pas de faux pourcentages, pas de faux avis.',
+          'Vos coordonnées ne sont demandées qu’après la première valeur délivrée.',
+          'Le site dit aussi ce qu’il ne peut pas conclure — chaque lecture affiche ses limites.',
+          'Aucune urgence artificielle : vous décidez à votre rythme, ou pas du tout.',
+          'Votre situation n’est transmise à Mouaad que si vous le demandez explicitement.',
+        ].map((t) => (
+          <li class="flex gap-3">
+            <span class="ligne-ecart !bg-argile-lum !w-5 mt-3 shrink-0"></span>
+            <span class="leading-relaxed">{t}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 8 · Territoire — scène panoramique -->
+  <TerritoryScene />
+
+  <!-- 9 · Les visages de LEVOIS -->
+  <TeamScene />
+
+  <!-- 10 · CTA final — scène photographique -->
+  <section class="pb-4" aria-labelledby="final-titre">
+    <div class="max-w-page mx-auto px-edge md:px-edge-md">
+      <div class="rounded-panel overflow-hidden grid md:grid-cols-2 bg-papier-vif border border-beige">
+        <div class="p-8 md:p-14 flex flex-col justify-center fade-up">
+          <span class="ligne-ecart mb-7"></span>
+          <h2 id="final-titre" class="text-display text-encre">
+            Vous n’avez pas besoin de tout changer.
+            <em class="text-argile block mt-2">Vous avez besoin de savoir quoi regarder en premier.</em>
+          </h2>
+          <div class="flex flex-wrap gap-3 mt-8">
+            <a href="/situer-ma-vente" class="btn-primaire">Situer ma vente</a>
+            <a href="/contact" class="btn-secondaire">Échanger avec Mouaad</a>
+          </div>
+        </div>
+        <div class="min-h-[280px] md:min-h-0">
+          <ResponsiveImage slot="hero-dialogue" ratio="none" sizes="(min-width:768px) 50vw, 100vw" class="w-full h-full" />
+        </div>
       </div>
     </div>
   </section>

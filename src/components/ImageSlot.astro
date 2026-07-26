@@ -1,0 +1,64 @@
+---
+/**
+ * Emplacement d'image — pont vers ResponsiveImage.
+ * — slot avec photo : rend ResponsiveImage (AVIF/WebP, sans voile).
+ * — slot sans photo (slug null) : traitement graphique cohérent
+ *   (surface papier/argile + ligne d'écart), jamais un rectangle vide.
+ */
+import { images } from '../data/images';
+import ResponsiveImage from './ResponsiveImage.astro';
+
+export interface Props {
+  slot: string;
+  class?: string;
+  ratio?: string;
+  sizes?: string;
+  loading?: 'eager' | 'lazy';
+  priority?: boolean;
+  rounded?: boolean;
+  dark?: boolean;
+}
+
+const {
+  slot, class: className = '', ratio = '4/3', sizes = '100vw',
+  loading = 'lazy', priority = false, rounded = true, dark = false,
+} = Astro.props;
+
+const asset = images[slot];
+if (!asset) throw new Error(`Slot d'image inconnu : ${slot}`);
+const radius = rounded ? 'rounded-card' : '';
+---
+
+{asset.slug ? (
+  <ResponsiveImage
+    slot={slot}
+    ratio={ratio}
+    sizes={sizes}
+    loading={loading}
+    priority={priority}
+    class={`${radius} ${className}`}
+  />
+) : (
+  <div
+    class={`slot-provisoire grain overflow-hidden ${radius} ${className} ${dark ? 'slot-sombre' : ''}`}
+    style={`aspect-ratio: ${ratio};`}
+    role="img"
+    aria-label={asset.alt || 'Illustration LEVOIS'}
+  >
+    <span class="ligne-ecart"></span>
+  </div>
+)}
+
+<style>
+  .slot-provisoire {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 1.25rem;
+    background: linear-gradient(150deg, #F0E2D8 0%, #E8DFD0 45%, #DCCFBC 100%);
+  }
+  .slot-provisoire.slot-sombre {
+    background: linear-gradient(150deg, #3A3228 0%, #2E2820 55%, #211C16 100%);
+  }
+  .slot-provisoire .ligne-ecart { opacity: 0.7; }
+</style>

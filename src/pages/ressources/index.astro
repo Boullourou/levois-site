@@ -1,0 +1,84 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { resources } from '../../data/resources';
+import { site } from '../../config/site';
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
+---
+
+<Layout
+  title="Ressources"
+  description="Six ressources gratuites pour comprendre les signaux de votre vente avant d'ajuster quoi que ce soit. Sans inscription."
+>
+  <div class="max-w-page mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+
+    <header class="max-w-2xl mb-12 md:mb-16">
+      <p class="eyebrow mb-4">Ressources gratuites</p>
+      <h1 class="text-display text-encre mb-4">Comprendre avant d'ajuster.</h1>
+      <p class="font-sans text-body-lg text-brun">
+        Chaque ressource répond à une seule question — celle que se posent réellement
+        les propriétaires. Sans inscription, sans contrepartie : la valeur d'abord.
+      </p>
+    </header>
+
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-16">
+      {resources.map((r) => (
+        <a
+          href={`/ressources/${r.slug}`}
+          class="group carte overflow-hidden flex flex-col transition-all duration-200 hover:border-argile hover:shadow-[0_16px_40px_-24px_rgba(168,86,56,0.4)]"
+        >
+          {r.imageSlot && (
+            <div class="ressource-thumb">
+              <ResponsiveImage
+                slot={r.imageSlot}
+                ratio="3/2"
+                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 92vw"
+                class="ressource-thumb-img"
+              />
+            </div>
+          )}
+          <div class="p-6 md:p-7 flex flex-col flex-1">
+            <p class="font-sans text-sm text-argile mb-3">{r.question}</p>
+            <h2 class="font-display text-xl text-encre mb-2">{r.titre}</h2>
+            <p class="font-sans text-[15px] text-brun leading-relaxed flex-1">{r.benefice}</p>
+            <p class="font-sans text-sm text-brun/70 mt-5 flex items-center justify-between">
+              <span>{r.duree}</span>
+              <span class="text-argile font-medium group-hover:underline underline-offset-2">{r.cta}</span>
+            </p>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div class="carte bg-argile-pale/40 p-7 md:p-9 md:flex items-center justify-between gap-8">
+      <div class="max-w-xl">
+        <h2 class="font-display text-2xl text-encre mb-2">Vous ne savez pas par laquelle commencer ?</h2>
+        <p class="font-sans text-[15px] text-brun leading-relaxed">
+          Le parcours « Situer ma vente » identifie la ressource la plus utile
+          pour votre situation précise — en trois minutes, sans coordonnées.
+        </p>
+      </div>
+      <a href="/situer-ma-vente" class="btn-primaire mt-5 md:mt-0 shrink-0">Situer ma vente</a>
+    </div>
+
+    <p class="font-sans text-sm text-brun/80 mt-10 max-w-prose">
+      Ces contenus sont portés par {site.lea.nom} — <a href="/lea" class="text-argile underline underline-offset-2 hover:text-encre">la voix des contenus LEVOIS</a> —
+      et nourris par l'expérience de terrain de Mouaad sur le bassin chartrain.
+    </p>
+  </div>
+</Layout>
+
+<style>
+  .ressource-thumb {
+    overflow: hidden;
+  }
+  /* Légère élévation de l'image au survol — même registre que les cartes rail */
+  :global(.ressource-thumb-img img) {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  a:hover :global(.ressource-thumb-img img) {
+    transform: scale(1.05);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.ressource-thumb-img img) { transition: none !important; }
+  }
+</style>

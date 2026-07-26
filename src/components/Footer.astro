@@ -1,61 +1,52 @@
 ---
+import { site } from '../config/site';
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-section-md md:mt-section-lg border-t border-beige/60 bg-cream-soft">
-  <div class="max-w-page mx-auto px-edge md:px-edge-md py-section md:py-section-md">
+<footer class="mt-section-md md:mt-section-lg bg-encre text-papier/85">
+  <div class="max-w-page mx-auto px-edge md:px-edge-md py-section">
 
-    <div class="grid md:grid-cols-2 gap-12 md:gap-16 mb-16">
-
-      <!-- Signature -->
-      <div class="space-y-6 max-w-md">
-        <div class="flex items-center gap-4">
-          <img
-            src="/portrait-avatar.webp"
-            alt="Mouaad Boullourou"
-            width="56"
-            height="56"
-            class="w-14 h-14 rounded-full object-cover border border-beige"
-            loading="lazy"
-          />
-          <div>
-            <div class="font-medium text-ink text-base">Mouaad Boullourou</div>
-            <div class="text-sm text-muted">Habitant de Lèves · Conseiller immobilier SAFTI · 7j/7</div>
-          </div>
-        </div>
-
-        <div class="border-l-2 border-ocre pl-5 py-1">
-          <p class="italic text-muted text-[15px] leading-relaxed">
-            Prendre le temps de comprendre les lieux, les gens
-            et les projets — avant de parler immobilier.
-          </p>
-        </div>
-
-        <div class="space-y-1 text-[14px] text-muted">
-          <div>07 81 38 01 21</div>
-          <div>mouaad@levois.fr</div>
-        </div>
+    <div class="grid md:grid-cols-3 gap-12 md:gap-16 mb-14">
+      <div>
+        <p class="font-display text-2xl tracking-[0.14em] text-papier mb-4">L&thinsp;E&thinsp;V&thinsp;O&thinsp;I&thinsp;S</p>
+        <p class="font-sans text-[15px] leading-relaxed text-papier/70 max-w-xs">
+          Comprendre ce que le marché vous renvoie, avant de décider quoi changer.
+        </p>
+        <span class="ligne-ecart !bg-argile-lum mt-6"></span>
       </div>
 
-      <!-- Sitemap nettoyé -->
-      <div class="md:justify-self-end">
-        <div class="eyebrow-muted mb-5">Sur le site</div>
-        <ul class="space-y-2.5 text-[15px]">
-          <li><a href="/carnets-de-terrain" class="text-ink/80 hover:text-sapin transition-colors">Carnets de terrain</a></li>
-          <li><a href="/vendre-a-leves" class="text-ink/80 hover:text-sapin transition-colors">Immobilier à Lèves</a></li>
-          <li><a href="/votre-rue" class="text-ink/80 hover:text-sapin transition-colors">Prix à Lèves</a></li>
-          <li><a href="/observatoire-immo" class="text-ink/80 hover:text-sapin transition-colors">Observatoire immo</a></li>
-          <li><a href="/le-projet" class="text-ink/80 hover:text-sapin transition-colors">Le projet</a></li>
-          <li><a href="/contact" class="text-ink/80 hover:text-sapin transition-colors">Contact</a></li>
-          <li class="pt-2"><a href="/mentions-legales" class="text-muted text-sm hover:text-sapin transition-colors">Mentions légales</a></li>
-          <li><a href="/carte" class="text-muted text-sm hover:text-sapin transition-colors">Contact direct</a></li>
+      <nav class="font-sans text-[15px]" aria-label="Navigation pied de page">
+        <p class="eyebrow-brun !text-papier/50 mb-4">Naviguer</p>
+        <ul class="space-y-2.5">
+          <li><a href="/situer-ma-vente" class="hover:text-argile-lum transition-colors">Situer ma vente</a></li>
+          <li><a href="/methode" class="hover:text-argile-lum transition-colors">Le Système des Écarts</a></li>
+          <li><a href="/ressources" class="hover:text-argile-lum transition-colors">Ressources</a></li>
+          <li><a href="/accompagnement" class="hover:text-argile-lum transition-colors">Accompagnement</a></li>
+          <li><a href="/mouaad" class="hover:text-argile-lum transition-colors">Mouaad</a></li>
+          <li><a href="/contact" class="hover:text-argile-lum transition-colors">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="font-sans text-[15px]">
+        <p class="eyebrow-brun !text-papier/50 mb-4">Coordonnées</p>
+        <ul class="space-y-2.5 text-papier/80">
+          <li><a href={`mailto:${site.email}`} class="hover:text-argile-lum transition-colors">{site.email}</a></li>
+          <li><a href={`tel:${site.phone}`} class="hover:text-argile-lum transition-colors">{site.phoneDisplay}</a></li>
+          <li class="text-papier/55 leading-relaxed pt-2">{site.secteur}</li>
         </ul>
       </div>
     </div>
 
-    <div class="pt-8 border-t border-beige/40 flex flex-col md:flex-row md:justify-between gap-2 text-xs text-muted">
-      <div>© {year} · Mouaad Boullourou · Carnet de terrain sur Lèves (28300)</div>
-      <div class="italic">Made with care for Lèves</div>
+    <div class="border-t border-papier/15 pt-8 font-sans text-[13px] text-papier/50 space-y-3">
+      <p>
+        Mouaad Boullourou exerce comme conseiller immobilier indépendant au sein du réseau SAFTI.
+        LEVOIS est sa méthode de lecture, de pédagogie et d’accompagnement.
+      </p>
+      <p class="flex flex-wrap gap-x-5 gap-y-1">
+        <a href="/mentions-legales" class="hover:text-papier/80 transition-colors">Mentions légales</a>
+        <a href="/confidentialite" class="hover:text-papier/80 transition-colors">Confidentialité</a>
+        <span>© {year} LEVOIS · Mouaad Boullourou</span>
+      </p>
     </div>
   </div>
 </footer>
