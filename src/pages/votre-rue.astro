@@ -296,128 +296,255 @@ import Layout from '../layouts/Layout.astro';
   .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
 
   /* ——————————————————————————————————————————————————————————————
-     Infographique auto-animé (data-driven, pas de scroll requis)
-     3 révélations s'enchaînent automatiquement (~8 s).
-     L'état final est lisible en 2 s sans avoir vu l'animation.
-     Repli empilé géré par construireStack (prefers-reduced-motion).
+     Infographique premium — 7 blocs, IntersectionObserver
+     Repli empilé : construireStack (prefers-reduced-motion).
      —————————————————————————————————————————————————————————————— */
 
-  .vr-infogr {
-    background: #F7F2EA;
-    border-radius: 22px;
-    padding: 1.75rem clamp(1.25rem, 5vw, 2.5rem) 2rem;
-    overflow: hidden;
+  .vr-cine-wrap { display: grid; gap: 0; border-radius: 22px; overflow: hidden; }
+
+  .vr-bloc { padding: 2rem clamp(1.25rem, 5vw, 2.25rem) 2.25rem; }
+  .vr-bloc--hero  { background: #1B4332; padding-top: 2.75rem; padding-bottom: 2.75rem; }
+  .vr-bloc--b1    { background: #F3EDE4; }
+  .vr-bloc--b2    { background: #EDE7DC; }
+  .vr-bloc--surf  { background: #F3EDE4; }
+  .vr-bloc--spark { background: #EDE7DC; }
+  .vr-bloc--tx    { background: #FDFBF6; border-top: 1px solid #E8DFD0; }
+  .vr-bloc--conc  { background: #1F2937; }
+
+  .vr-kicker {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .vr-kicker--light { color: rgba(255,255,255,0.5); }
+  .vr-kicker--terra { color: #C15A2B; }
+  .vr-kicker--ink   { color: #9C8E7C; }
+
+  .vr-titre {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.2rem, 4.2vw, 1.6rem); line-height: 1.22;
+    margin-bottom: 1.25rem;
+  }
+  .vr-titre--dark { color: #211C16; }
+
+  /* Héro */
+  .vr-hero-counter {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(3.5rem, 14vw, 6rem); line-height: 1;
+    color: #A8D5A2; letter-spacing: -0.02em;
+    margin: 0.2rem 0 0.05rem;
+  }
+  .vr-hero-count-lbl {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55); font-weight: 500;
+  }
+  .vr-hero-bars { margin-top: 1.5rem; display: grid; gap: 0.55rem; }
+  .vr-hero-bar-row {
+    display: grid; grid-template-columns: 2.8rem 1fr 2.5rem;
+    align-items: center; gap: 0.65rem;
+  }
+  .vr-hero-bar-yr {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.5);
+  }
+  .vr-hero-bar-track {
+    height: 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.12); overflow: hidden;
+  }
+  .vr-hero-bar-fill {
+    height: 100%; border-radius: 999px;
+    background: #A8D5A2; width: 0%;
+    transition: width 1s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .vr-hero-bar-n {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.75);
+    text-align: right;
+  }
+  .vr-hero-badge {
+    display: inline-flex; align-items: center;
+    background: rgba(168,213,162,0.15); border: 1px solid rgba(168,213,162,0.3);
+    border-radius: 999px; padding: 0.2rem 0.65rem; margin-top: 0.9rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+    color: #A8D5A2;
   }
 
-  /* Bloc révélation — fade/slide in séquentiel */
-  .vr-ig-rev {
-    margin-bottom: 2.25rem;
-    opacity: 0;
-    transform: translateY(12px);
+  /* Bloc dots */
+  .vr-dots-svg { display: block; width: 100%; max-width: 28rem; height: 90px; margin: 0 auto 0.65rem; }
+  .vr-dot { transition: transform 0.95s cubic-bezier(0.25,0.46,0.45,0.94), fill 0.5s ease; }
+
+  .vr-dot-legend {
+    display: flex; gap: 1.75rem; margin-bottom: 0.75rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem;
+    color: #211C16; align-items: center;
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .vr-dot-legend-ico {
+    display: inline-block; width: 10px; height: 10px;
+    border-radius: 999px; margin-right: 0.35rem;
+    vertical-align: middle; position: relative; top: -1px;
+  }
+  .vr-dot-counts {
+    display: flex; gap: 2rem; margin-bottom: 0.75rem;
+    opacity: 0; transition: opacity 0.55s ease 0.25s;
+  }
+  .vr-dot-count {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.5rem, 6vw, 2.1rem); line-height: 1; display: block;
+  }
+  .vr-dot-count--M { color: #C15A2B; }
+  .vr-dot-count--A { color: #3A6FB0; }
+  .vr-dot-count-item {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem;
+    color: #6B5D4F; font-weight: 500; letter-spacing: 0.04em;
+  }
+  .vr-b1-phrase {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: clamp(0.9rem, 2.8vw, 1rem); line-height: 1.62;
+    color: #6B5D4F; margin-top: 0.5rem;
+    opacity: 0; transform: translateY(8px);
     transition: opacity 0.55s ease, transform 0.55s ease;
   }
-  .vr-ig-rev.is-on { opacity: 1; transform: none; }
 
-  .vr-ig-kicker {
+  /* Distribution */
+  .vr-dist-type-pill {
+    display: inline-block; border-radius: 999px;
+    padding: 0.18rem 0.75rem; margin-bottom: 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.07em; text-transform: uppercase;
+  }
+  .vr-dist-type-pill--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
+  .vr-dist-type-pill--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
+
+  .vr-dist-wrap { max-width: 26rem; }
+  .vr-dist-svg { display: block; width: 100%; overflow: visible; }
+  .vr-dist-zone { transition: opacity 0.8s ease; }
+  .vr-dist-dot { opacity: 0; transition: opacity 0.25s ease; }
+  .vr-dist-med-line { transition: opacity 0.5s ease; }
+  .vr-dist-axis-lbl {
     font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.74rem; font-weight: 600;
-    letter-spacing: 0.16em; text-transform: uppercase;
-    color: #A85638; margin-bottom: 0.35rem;
+    font-size: 0.68rem; fill: #9C8E7C;
   }
-  .vr-ig-titre {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(1.2rem, 4.2vw, 1.65rem); line-height: 1.2;
-    color: #211C16; margin-bottom: 1.1rem;
-  }
-
-  /* ——— Rév. 1 : nuage de points + distribution ——— */
-
-  .vr-ig-dots-svg { display: block; width: 100%; max-width: 26rem; height: 80px; margin: 0 auto 0.55rem; }
-
-  .ig-dot { transition: transform 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94), fill 0.5s ease; }
-
-  .vr-ig-legend {
-    display: flex; gap: 1.5rem; justify-content: center;
-    margin-bottom: 1rem; transition: opacity 0.5s ease;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #211C16;
-  }
-  .vr-ig-leg-dot {
-    display: inline-block; width: 8px; height: 8px; border-radius: 999px;
-    margin-right: 0.32rem; vertical-align: middle; position: relative; top: -1px;
-  }
-
-  /* Axe distribution IQR */
-  .vr-ig-dist-wrap { max-width: 22rem; margin: 0.25rem auto 0; }
-  .vr-ig-dist-track {
-    position: relative; height: 16px;
-    background: #E0D3BF; border-radius: 999px; overflow: hidden;
-  }
-  .vr-ig-dist-iqr {
-    position: absolute; inset: 0 auto 0 0; width: 0%;
-    background: rgba(168,86,56,0.22); border-radius: 999px;
-    transition: width 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  .vr-ig-dist-med {
-    position: absolute; top: -3px; bottom: -3px; width: 4px;
-    background: #A85638; border-radius: 2px;
-    transform: translateX(-50%); opacity: 0;
-    transition: opacity 0.45s ease;
-  }
-  .vr-ig-dist-lbls {
-    display: flex; justify-content: space-between; align-items: flex-end;
-    margin-top: 0.5rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #211C16; font-weight: 600;
-  }
-  .vr-ig-dist-lbls span:nth-child(2) { color: #A85638; font-size: 0.78rem; transition: opacity 0.45s ease; }
-  .vr-ig-dist-sublbls {
-    display: flex; justify-content: space-between;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem;
-    color: #9C8E7C; letter-spacing: 0.06em; text-transform: uppercase;
-    margin-top: 0.15rem; padding: 0 0.05rem;
-  }
-  .vr-ig-iqr-note {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem;
-    color: #6B5D4F; margin-top: 1rem; line-height: 1.55;
+  .vr-dist-med-lbl {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem;
+    font-weight: 600; text-align: center; margin-top: 0.35rem;
     transition: opacity 0.5s ease;
   }
-
-  /* ——— Rév. 2 : effet surface (appartements) ——— */
-
-  .vr-ig-sep { height: 1px; background: #E8DFD0; margin: 0 0 2.25rem; }
-  .vr-ig-bars { display: grid; gap: 0.8rem; max-width: 22rem; }
-  .vr-ig-bar-row { display: grid; grid-template-columns: 5.5rem 1fr 6rem; align-items: center; gap: 0.65rem; }
-  .vr-ig-bar-label { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #6B5D4F; }
-  .vr-ig-bar-track { height: 11px; border-radius: 999px; background: #E0D3BF; overflow: hidden; }
-  .vr-ig-bar-fill { height: 100%; border-radius: 999px; width: 0%; transition: width 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-  .vr-ig-bar-fill--hi { background: #A85638; }
-  .vr-ig-bar-fill--lo { background: #C0B29B; }
-  .vr-ig-bar-val { font-family: 'Fraunces', serif; font-weight: 500; font-size: 0.95rem; color: #211C16; text-align: right; }
-  .vr-ig-surf-note { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; margin-top: 0.85rem; line-height: 1.55; max-width: 22rem; }
-
-  /* ——— Rév. 3 : sparkline temporelle ——— */
-
-  .vr-ig-spark-wrap { max-width: 22rem; }
-  .vr-ig-spark-svg { display: block; width: 100%; overflow: visible; }
-  .vr-ig-spark-path { fill: none; stroke: #A85638; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-  .vr-ig-spark-dot { fill: #A85638; opacity: 0; transition: opacity 0.3s ease; }
-  .vr-ig-spark-dot.on { opacity: 1; }
-  .vr-ig-spark-yr { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; fill: #9C8E7C; text-anchor: middle; }
-  .vr-ig-spark-dir { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.05rem, 3.5vw, 1.35rem); color: #211C16; margin-top: 0.65rem; }
-  .vr-ig-spark-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; margin-top: 0.2rem; }
-
-  /* ——— Conclusion ——— */
-  .vr-conclusion {
-    padding-top: 2rem; margin-top: 1rem;
-    border-top: 1.5px solid #E0D3BF;
-    opacity: 0; transform: translateY(12px);
-    transition: opacity 0.65s ease, transform 0.65s ease;
+  .vr-dist-note {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
+    color: #6B5D4F; line-height: 1.58; margin-top: 0.9rem;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
   }
-  .vr-conclusion.is-on { opacity: 1; transform: none; }
+
+  /* Effet surface */
+  .vr-surf-trio {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 0.5rem; max-width: 24rem; text-align: center;
+  }
+  .vr-surf-col-val {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.3rem, 5vw, 1.85rem); line-height: 1.1; color: #211C16;
+  }
+  .vr-surf-col-lbl {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem;
+    color: #6B5D4F; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem;
+  }
+  .vr-surf-delta-wrap { text-align: center; padding: 0 0.25rem; }
+  .vr-surf-delta {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(1.8rem, 8vw, 2.8rem); line-height: 1; color: #C15A2B;
+    opacity: 0; transform: scale(0.7);
+    transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .vr-surf-delta.on { opacity: 1; transform: none; }
+  .vr-surf-arrow { font-size: 0.85rem; color: #9C8E7C; display: block; margin-top: 0.15rem; }
+  .vr-surf-note {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
+    color: #6B5D4F; line-height: 1.58; margin-top: 1.1rem; max-width: 24rem;
+  }
+
+  /* Sparkline */
+  .vr-spark-wrap { max-width: 26rem; }
+  .vr-spark-svg { display: block; width: 100%; overflow: visible; }
+  .vr-spark-path { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .vr-spark-dot { opacity: 0; transition: opacity 0.3s ease; }
+  .vr-spark-dot.on { opacity: 1; }
+  .vr-spark-yr { font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem; fill: #9C8E7C; text-anchor: middle; }
+  .vr-spark-val { font-family: 'Instrument Sans', sans-serif; font-size: 0.66rem; fill: #6B5D4F; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+  .vr-spark-val.on { opacity: 1; }
+  .vr-spark-dir { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.05rem,3.5vw,1.35rem); color: #211C16; margin-top: 0.65rem; }
+  .vr-spark-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; margin-top: 0.15rem; }
+
+  /* Ventes réelles */
+  .vr-tx-cards { display: grid; gap: 0.7rem; }
+  .vr-tx-card {
+    background: #FFFFFF; border: 1px solid #E8DFD0; border-radius: 14px;
+    padding: 0.85rem 1rem; display: grid;
+    grid-template-columns: 2.2rem 1fr auto; gap: 0.6rem; align-items: start;
+  }
+  .vr-tx-ico {
+    width: 2.1rem; height: 2.1rem; border-radius: 8px; display: flex;
+    align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .vr-tx-ico--M { background: rgba(193,90,43,0.1); }
+  .vr-tx-ico--A { background: rgba(58,111,176,0.1); }
+  .vr-tx-info { min-width: 0; }
+  .vr-tx-name { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: #211C16; }
+  .vr-tx-addr {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem;
+    color: #6B5D4F; margin-top: 0.12rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .vr-tx-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; color: #9C8E7C; margin-top: 0.1rem; }
+  .vr-tx-right { text-align: right; flex-shrink: 0; }
+  .vr-tx-price { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1rem; color: #211C16; white-space: nowrap; }
+  .vr-tx-ppm {
+    display: inline-block; margin-top: 0.25rem;
+    border-radius: 999px; padding: 0.1rem 0.5rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600; white-space: nowrap;
+  }
+  .vr-tx-ppm--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
+  .vr-tx-ppm--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
+  .vr-tx-more summary { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; cursor: pointer; padding: 0.4rem 0; list-style: none; }
+  .vr-tx-more summary::-webkit-details-marker { display: none; }
+  .vr-tx-more[open] summary { margin-bottom: 0.7rem; }
+
+  /* Conclusion */
   .vr-conc-eyebrow {
     font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
-    letter-spacing: 0.18em; text-transform: uppercase; color: #8A7C6A; margin-bottom: 1rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: rgba(243,237,228,0.45);
+    margin-bottom: 0.75rem;
   }
-  .vr-conc-body { font-family: 'Instrument Sans', sans-serif; font-size: clamp(0.98rem, 3vw, 1.1rem); line-height: 1.68; color: #211C16; }
+  .vr-conc-hl {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.3rem,5vw,1.75rem); line-height: 1.25; color: #FFFFFF;
+    margin-bottom: 1.25rem;
+  }
+  .vr-conc-body {
+    font-family: 'Instrument Sans', sans-serif; font-size: clamp(0.9rem,3vw,1rem);
+    line-height: 1.68; color: rgba(243,237,228,0.75); margin-bottom: 1.75rem;
+  }
+  .vr-conc-body p + p { margin-top: 0.75rem; }
+  .vr-conc-cta {
+    display: block; width: 100%; background: #C15A2B; color: #FFFFFF;
+    border-radius: 12px; padding: 0.95rem 1.5rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    letter-spacing: 0.04em; text-align: center; text-decoration: none;
+    border: none; cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .vr-conc-cta:hover { background: #A84D23; transform: translateY(-1px); }
+  .vr-conc-cta:active { transform: none; }
+
+  /* Animation entrée (IntersectionObserver) */
+  .vr-bloc-anim {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .vr-bloc-anim.is-on { opacity: 1; transform: none; }
 
   /* Gardées — utilisées par construireStack */
   .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E8DFD0; }
@@ -431,16 +558,22 @@ import Layout from '../layouts/Layout.astro';
     .vr-block { opacity: 1; transform: none; transition: none; }
     .vr-range-dot, .vr-gauge-cursor { transition: none; }
     .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
-    .vr-ig-rev { opacity: 1; transform: none; transition: none; }
-    .ig-dot { transition: none; }
-    .vr-ig-bar-fill { transition: none; }
-    .vr-ig-dist-iqr { transition: none; width: 100%; }
-    .vr-ig-dist-med { transition: none; opacity: 1; }
-    .vr-ig-iqr-note { transition: none; opacity: 1; }
-    .vr-ig-legend { transition: none; opacity: 1 !important; }
-    .vr-ig-spark-dot { transition: none; opacity: 1; }
-    .vr-conclusion { opacity: 1; transform: none; transition: none; }
+    .vr-bloc-anim { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-dot { transition: none !important; }
+    .vr-dot-legend { opacity: 1 !important; transition: none !important; }
+    .vr-dot-counts { opacity: 1 !important; transition: none !important; }
+    .vr-b1-phrase { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-dist-zone { opacity: 1 !important; transition: none !important; }
+    .vr-dist-dot { opacity: 0.72 !important; transition: none !important; }
+    .vr-dist-med-line { opacity: 1 !important; transition: none !important; }
+    .vr-dist-med-lbl { opacity: 1 !important; transition: none !important; }
+    .vr-dist-note { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-surf-delta { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-spark-dot { opacity: 1 !important; transition: none !important; }
+    .vr-spark-val { opacity: 1 !important; transition: none !important; }
+    .vr-hero-bar-fill { transition: none !important; }
   }
+
 </style>
 
 <script>
@@ -628,7 +761,13 @@ import Layout from '../layouts/Layout.astro';
       if (Math.abs(deltaPct) < 10) return null;
       return { smallLabel: '< 50 m²', smallMed: Math.round(medS), smallN: small.length, largeLabel: '≥ 80 m²', largeMed: Math.round(medL), largeN: large.length, deltaPct };
     })();
-    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, D, derniere, activite, autres, surfaceEffect };
+    const n2024 = near.filter((t) => t.d.startsWith('2024')).length;
+    const n2025 = near.filter((t) => t.d.startsWith('2025')).length;
+    const ppmArr2 = (arr: any[]) => arr.filter((t: any) => t.sb > 0).map((t: any) => Math.round(t.v / t.sb)).sort((a: number, b: number) => a - b);
+    const sampleArr = (arr: number[], n: number) => arr.length <= n ? arr : Array.from({ length: n }, (_: any, i: number) => arr[Math.floor(i * arr.length / n)]);
+    const ppmDotsM = sampleArr(ppmArr2(near.filter((t) => t.t === 'Maison')), 60);
+    const ppmDotsA = sampleArr(ppmArr2(near.filter((t) => t.t === 'Appartement')), 60);
+    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, ppmDotsM, ppmDotsA, D, derniere, activite, autres, surfaceEffect, n2024, n2025 };
   }
 
   // ——— « En clair » : phrases par règles fixes ———
@@ -848,228 +987,371 @@ import Layout from '../layouts/Layout.astro';
       </details>`;
   }
 
-  // ——— Infographique auto-animé (data-driven, pas de scroll requis) ———
+  // ——— Infographique premium — 7 blocs, IntersectionObserver ———
   let cineCleanup: null | (() => void) = null;
 
   function construireCine(model: any) {
     if (cineCleanup) { cineCleanup(); cineCleanup = null; }
 
-    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
-    const D = model.D;
-    const sf = model.surfaceEffect;
+    const ios: IntersectionObserver[] = [];
     const touts: ReturnType<typeof setTimeout>[] = [];
     const later = (ms: number, fn: () => void) => { touts.push(setTimeout(fn, ms)); };
+    const observe = (id: string, fn: () => void) => {
+      const el = scene.querySelector(id);
+      if (!el) return;
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) { io.disconnect(); fn(); }
+      }, { threshold: 0.08 });
+      io.observe(el);
+      ios.push(io);
+    };
 
-    // ——— Dot cloud: positions pseudo-aléatoires déterministes ———
-    const NDOTS = 42;
-    const propM = model.nM / (model.nM + model.nA);
-    const nDotM = Math.max(4, Math.min(38, Math.round(NDOTS * propM)));
-    const SVG_W = 320, SVG_H = 78;
-    const CX = SVG_W / 2, CY = SVG_H / 2;
+    const domColor = model.dom === 'Maison' ? '#C15A2B' : '#3A6FB0';
+    const D = model.D;
+    const sf = model.surfaceEffect;
+
+    // ——— Nuage de points (positions déterministes) ———
+    const NDOTS = 44;
+    const propM = model.nM / Math.max(model.nM + model.nA, 1);
+    const nDotM = Math.max(4, Math.min(40, Math.round(NDOTS * propM)));
+    const SW = 340, SH = 88, CX = SW / 2, CY = SH / 2;
     let _s = 0x9e3779b9;
     const rnd = () => { _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s ^= _s >>> 16; return (_s >>> 0) / 0x100000000; };
     type Dot = { x0: number; y0: number; dx: number; dy: number; isM: boolean };
     const dots: Dot[] = Array.from({ length: NDOTS }, (_, i) => {
       const isM = i < nDotM;
-      const x0 = CX + (rnd() * 2 - 1) * 32;
-      const y0 = CY + (rnd() * 2 - 1) * 20;
-      const x1 = isM ? 18 + rnd() * 80 : 222 + rnd() * 80;
-      const y1 = 10 + rnd() * 58;
+      const x0 = CX + (rnd() * 2 - 1) * 36, y0 = CY + (rnd() * 2 - 1) * 22;
+      const x1 = isM ? 16 + rnd() * 92 : SW - 108 + rnd() * 92, y1 = 8 + rnd() * 72;
       return { x0, y0, dx: x1 - x0, dy: y1 - y0, isM };
     });
+    const dotSvg = dots.map((d, i) =>
+      `<circle class="vr-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 5 : 4}" fill="#C5BAA8" data-di="${i}"/>`
+    ).join('');
 
-    // ——— Distribution IQR ———
-    const hasDist = !!ppmDom;
+    // ——— Distribution jitter (€/m² réels) ———
+    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
+    const ppmDots: number[] = (model.dom === 'Maison' ? model.ppmDotsM : model.ppmDotsA) || [];
     let distHtml = '';
-    if (hasDist) {
-      const pQ1 = Math.round(ppmDom.q1), pMed = Math.round(ppmDom.median), pQ3 = Math.round(ppmDom.q3);
-      const medPct = pQ3 > pQ1 ? Math.max(8, Math.min(92, Math.round(((pMed - pQ1) / (pQ3 - pQ1)) * 100))) : 50;
+    if (ppmDom && ppmDots.length >= 5) {
+      const q1 = ppmDom.q1, med = ppmDom.median, q3 = ppmDom.q3;
+      const iqr = q3 - q1;
+      const xMin = Math.max(Math.min(...ppmDots), q1 - 1.5 * iqr);
+      const xMax = Math.min(Math.max(...ppmDots), q3 + 1.5 * iqr);
+      const DW = 300, DH = 56, YN = 4, YX = 48;
+      const xs = (v: number) => Math.max(2, Math.min(DW - 2, ((v - xMin) / Math.max(xMax - xMin, 1)) * DW));
+      const q1x = xs(q1), medx = xs(med), q3x = xs(q3), zoneW = Math.max(0, q3x - q1x);
+      let _s2 = 0xabcdef01;
+      const rnd2 = () => { _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 ^= _s2 >>> 16; return (_s2 >>> 0) / 0x100000000; };
+      const visible = ppmDots.filter((v: number) => v >= xMin && v <= xMax);
+      const ddots = visible.map((v: number, i: number) =>
+        `<circle class="vr-dist-dot" cx="${xs(v).toFixed(1)}" cy="${(YN + rnd2() * (YX - YN)).toFixed(1)}" r="3.5" fill="${domColor}" data-di="${i}"/>`
+      ).join('');
+      const pillCls = model.dom === 'Maison' ? 'vr-dist-type-pill--M' : 'vr-dist-type-pill--A';
+      const pillTxt = model.dom === 'Maison' ? 'Maisons' : 'Appartements';
+      const medCls = model.dom === 'Maison' ? 'vr-dist-type-pill--M' : 'vr-dist-type-pill--A';
       distHtml = `
-        <div class="vr-ig-dist-wrap">
-          <div class="vr-ig-dist-track">
-            <div class="vr-ig-dist-iqr" id="vr-iqr"></div>
-            <div class="vr-ig-dist-med" id="vr-med" style="left:${medPct}%"></div>
+        <div class="vr-bloc vr-bloc--b2 vr-bloc-anim" id="vr-b-dist">
+          <p class="vr-kicker vr-kicker--ink">CE QUE LES PRIX MONTRENT</p>
+          <p class="vr-titre vr-titre--dark">Les prix dans ce secteur</p>
+          <span class="vr-dist-type-pill ${pillCls}">${esc(pillTxt)}</span>
+          <div class="vr-dist-wrap">
+            <svg class="vr-dist-svg" viewBox="0 0 ${DW} ${DH + 18}" aria-hidden="true">
+              <rect class="vr-dist-zone" id="vr-dz" x="${q1x.toFixed(1)}" y="${YN - 4}" width="${zoneW.toFixed(1)}" height="${YX - YN + 8}" rx="4" fill="${domColor}" fill-opacity="0.15" style="opacity:0"/>
+              ${ddots}
+              <line class="vr-dist-med-line" id="vr-dml" x1="${medx.toFixed(1)}" y1="${YN - 6}" x2="${medx.toFixed(1)}" y2="${YX + 6}" stroke="${domColor}" stroke-width="2.5" stroke-dasharray="4 2" style="opacity:0"/>
+              <text x="2" y="${DH + 14}" class="vr-dist-axis-lbl">${eur.format(Math.round(xMin))} €/m²</text>
+              <text x="${DW - 2}" y="${DH + 14}" class="vr-dist-axis-lbl" text-anchor="end">${eur.format(Math.round(xMax))} €/m²</text>
+            </svg>
+            <p class="vr-dist-med-lbl ${medCls}" id="vr-dml-txt" style="opacity:0">médiane · ${eur.format(Math.round(med))} €/m²</p>
+            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} vendues se situent dans la zone colorée. Les données constatent cet écart — elles n’en expliquent pas encore toutes les causes.</p>
           </div>
-          <div class="vr-ig-dist-lbls">
-            <span>${eur.format(pQ1)}&nbsp;€/m²</span>
-            <span id="vr-med-lbl" style="opacity:0">méd.&nbsp;${eur.format(pMed)}&nbsp;€/m²</span>
-            <span>${eur.format(pQ3)}&nbsp;€/m²</span>
-          </div>
-          <div class="vr-ig-dist-sublbls"><span>1er quartile</span><span></span><span>3e quartile</span></div>
-          <p class="vr-ig-iqr-note" id="vr-iqr-note" style="opacity:0">La moitié des ${esc(typePlurielNu(model.dom))} vendues entre <strong>${eur.format(pQ1)}</strong> et <strong>${eur.format(pQ3)}&nbsp;€/m²</strong>. Les données constatent cet écart&nbsp;— elles n'en expliquent pas encore toutes les causes.</p>
         </div>`;
     }
 
-    // ——— Révélation 2 : effet surface (appartements) ———
-    let rev2Html = '';
+    // ——— Effet surface ———
+    let surfHtml = '';
     if (sf) {
-      const maxV = Math.max(sf.smallMed, sf.largeMed);
-      const sPct = Math.round((sf.smallMed / maxV) * 100);
-      const lPct = Math.round((sf.largeMed / maxV) * 100);
-      rev2Html = `
-        <div class="vr-ig-sep"></div>
-        <div class="vr-ig-rev" id="vr-rev2">
-          <p class="vr-ig-kicker">Révélation 2</p>
-          <p class="vr-ig-titre">Même le prix au&nbsp;m² doit être comparé avec prudence</p>
-          <div class="vr-ig-viz">
-            <div class="vr-ig-bars">
-              <div class="vr-ig-bar-row">
-                <span class="vr-ig-bar-label">${esc(sf.smallLabel)}</span>
-                <div class="vr-ig-bar-track"><div class="vr-ig-bar-fill vr-ig-bar-fill--hi" data-pct="${sPct}"></div></div>
-                <span class="vr-ig-bar-val">${eur.format(sf.smallMed)}&nbsp;€/m²</span>
-              </div>
-              <div class="vr-ig-bar-row">
-                <span class="vr-ig-bar-label">${esc(sf.largeLabel)}</span>
-                <div class="vr-ig-bar-track"><div class="vr-ig-bar-fill vr-ig-bar-fill--lo" data-pct="${lPct}"></div></div>
-                <span class="vr-ig-bar-val">${eur.format(sf.largeMed)}&nbsp;€/m²</span>
-              </div>
+      const sign = sf.deltaPct > 0 ? '+' : '';
+      surfHtml = `
+        <div class="vr-bloc vr-bloc--surf vr-bloc-anim" id="vr-b-surf">
+          <p class="vr-kicker vr-kicker--terra">L’EFFET DE LA SURFACE</p>
+          <p class="vr-titre vr-titre--dark">Même le prix au m² n’est pas unique</p>
+          <div class="vr-surf-trio">
+            <div>
+              <div class="vr-surf-col-val">${eur.format(sf.smallMed)} €/m²</div>
+              <div class="vr-surf-col-lbl">${esc(sf.smallLabel)}</div>
             </div>
-            <p class="vr-ig-surf-note">Écart constaté : les petits appartements (${esc(sf.smallLabel)}) s'échangent en moyenne <strong>${sf.deltaPct > 0 ? '+' : ''}${sf.deltaPct}&nbsp;%</strong> par rapport aux grands (${esc(sf.largeLabel)}). DVF constate cet écart&nbsp;— il ne l'explique pas.</p>
+            <div class="vr-surf-delta-wrap">
+              <div class="vr-surf-delta" id="vr-sd">${sign}${sf.deltaPct} %</div>
+              <span class="vr-surf-arrow">→</span>
+            </div>
+            <div>
+              <div class="vr-surf-col-val">${eur.format(sf.largeMed)} €/m²</div>
+              <div class="vr-surf-col-lbl">${esc(sf.largeLabel)}</div>
+            </div>
           </div>
+          <p class="vr-surf-note">Écart constaté entre petits et grands appartements dans ce secteur. DVF constate cet écart — il ne l’explique pas.</p>
         </div>`;
     }
 
-    // ——— Révélation 3 : sparkline temporelle ———
-    let rev3Html = '';
+    // ——— Sparkline ———
+    let sparkHtml = '';
     const hasSpark = !!D && Array.isArray(D.annualMeds) && D.annualMeds.length >= 3;
     if (hasSpark) {
       const meds = D.annualMeds as { year: number; med: number }[];
-      const spW = 280, spH = 70, topM = 12, botM = 22, availH = spH - topM - botM;
-      const xPts = meds.map((_: any, i: number) => 16 + (i / (meds.length - 1)) * (spW - 32));
+      const spW = 300, spH = 90, topM = 18, botM = 26, availH = spH - topM - botM;
+      const xPts = meds.map((_: any, i: number) => 20 + (i / (meds.length - 1)) * (spW - 40));
       const vals = meds.map((m: any) => m.med);
       const minV = Math.min(...vals), maxV = Math.max(...vals), rng = maxV - minV || 1;
       const yPts = vals.map((v: number) => topM + ((maxV - v) / rng) * availH);
       const lineD = xPts.map((x: number, i: number) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${yPts[i].toFixed(1)}`).join(' ');
       const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} % sur ${D.anneeDebut}–${D.anneeFin}`;
-      const dirTxt = D.dir === 'hausse' ? 'Tendance à la hausse' : D.dir === 'baisse' ? 'Tendance à la baisse' : 'Prix globalement stables';
-      const circles = meds.map((m: any, i: number) => `<circle class="vr-ig-spark-dot" data-si="${i}" cx="${xPts[i].toFixed(1)}" cy="${yPts[i].toFixed(1)}" r="4"/>`).join('');
-      const labels = meds.map((m: any, i: number) => `<text x="${xPts[i].toFixed(1)}" y="${spH - 2}" class="vr-ig-spark-yr">${m.year}</text>`).join('');
-      rev3Html = `
-        <div class="vr-ig-sep"></div>
-        <div class="vr-ig-rev" id="vr-rev3">
-          <p class="vr-ig-kicker">Révélation 3</p>
-          <p class="vr-ig-titre">Le marché a une histoire</p>
-          <div class="vr-ig-viz">
-            <div class="vr-ig-spark-wrap">
-              <svg class="vr-ig-spark-svg" viewBox="0 0 ${spW} ${spH}" aria-hidden="true">
-                <path d="${lineD}" class="vr-ig-spark-path" id="vr-spark-path"/>
-                ${circles}
-                ${labels}
-              </svg>
-              <p class="vr-ig-spark-dir">${esc(dirTxt)}</p>
-              <p class="vr-ig-spark-pct">${esc(pct)}</p>
-            </div>
+      const dirTxt = D.dir === 'hausse' ? 'Tendance à la hausse sur 5 ans' : D.dir === 'baisse' ? 'Tendance à la baisse sur 5 ans' : 'Prix globalement stables sur 5 ans';
+      const spDots = meds.map((m: any, i: number) => [
+        `<circle class="vr-spark-dot" cx="${xPts[i].toFixed(1)}" cy="${yPts[i].toFixed(1)}" r="4.5" fill="${domColor}" data-si="${i}"/>`,
+        `<text class="vr-spark-val" x="${xPts[i].toFixed(1)}" y="${(yPts[i] - 9).toFixed(1)}" data-si="${i}">${eur.format(m.med)}</text>`
+      ].join('')).join('');
+      const spLabels = meds.map((m: any, i: number) => `<text class="vr-spark-yr" x="${xPts[i].toFixed(1)}" y="${spH - 2}">${m.year}</text>`).join('');
+      sparkHtml = `
+        <div class="vr-bloc vr-bloc--spark vr-bloc-anim" id="vr-b-spark">
+          <p class="vr-kicker vr-kicker--ink">5 ANS DE MARCHÉ</p>
+          <p class="vr-titre vr-titre--dark">La trajectoire des prix</p>
+          <div class="vr-spark-wrap">
+            <svg class="vr-spark-svg" viewBox="0 0 ${spW} ${spH}" aria-hidden="true">
+              <path d="${lineD}" class="vr-spark-path" id="vr-sp" stroke="${domColor}"/>
+              ${spDots}${spLabels}
+            </svg>
+            <p class="vr-spark-dir">${esc(dirTxt)}</p>
+            <p class="vr-spark-pct">${esc(pct)}</p>
           </div>
         </div>`;
     }
 
-    // ——— Construction HTML ———
-    const domColor = '#A85638', altColor = '#5B7B9B';
-    const dotCircles = dots.map((d, i) =>
-      `<circle class="ig-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 4.5 : 3.5}" fill="#C0B29B" data-di="${i}"/>`
-    ).join('');
-
-    scene.innerHTML = `
-      <div class="vr-infogr">
-        <div class="vr-ig-rev is-on" id="vr-rev1">
-          <p class="vr-ig-kicker">Révélation 1</p>
-          <p class="vr-ig-titre">Votre quartier n'a pas un prix unique</p>
-          <div class="vr-ig-viz">
-            <svg class="vr-ig-dots-svg" viewBox="0 0 ${SVG_W} ${SVG_H}" aria-hidden="true">${dotCircles}</svg>
-            <div class="vr-ig-legend" id="vr-ig-legend" style="opacity:0">
-              <span><span class="vr-ig-leg-dot" style="background:${domColor}"></span>${model.nM} maisons</span>
-              <span><span class="vr-ig-leg-dot" style="background:${altColor}"></span>${model.nA} appartements</span>
-            </div>
-            ${distHtml}
+    // ——— Ventes réelles ———
+    const allTx = [model.derniere, ...(model.autres || [])].filter(Boolean).slice(0, 5);
+    let txHtml = '';
+    if (allTx.length) {
+      const card = (tx: any) => {
+        const isM = tx.t === 'Maison';
+        const ico = isM ? '🏠' : '🏢';
+        const surf = tx.sb > 0 ? `${Math.round(tx.sb)} m²` : '';
+        const pieces = tx.p > 0 ? `${tx.p} pièce${tx.p > 1 ? 's' : ''}` : '';
+        const meta = [surf, pieces, dateMois(tx.d)].filter(Boolean).join(' · ');
+        const ppmVal = tx.sb > 0 ? Math.round(tx.v / tx.sb) : 0;
+        const ppmCls = isM ? 'vr-tx-ppm--M' : 'vr-tx-ppm--A';
+        return `<div class="vr-tx-card">
+          <div class="vr-tx-ico ${isM ? 'vr-tx-ico--M' : 'vr-tx-ico--A'}">${ico}</div>
+          <div class="vr-tx-info">
+            <div class="vr-tx-name">${esc(bienCourt(tx))}</div>
+            <div class="vr-tx-addr">${esc(adresse(tx))}</div>
+            <div class="vr-tx-meta">${esc(meta)}</div>
           </div>
+          <div class="vr-tx-right">
+            <div class="vr-tx-price">${eur.format(tx.v)} €</div>
+            ${ppmVal > 0 ? `<span class="vr-tx-ppm ${ppmCls}">${eur.format(ppmVal)} €/m²</span>` : ''}
+          </div>
+        </div>`;
+      };
+      const first = allTx.slice(0, 3).map(card).join('');
+      const more = allTx.length > 3
+        ? `<details class="vr-tx-more"><summary>Voir ${allTx.length - 3} vente${allTx.length - 3 > 1 ? 's' : ''} de plus →</summary>${allTx.slice(3).map(card).join('')}</details>`
+        : '';
+      txHtml = `
+        <div class="vr-bloc vr-bloc--tx vr-bloc-anim" id="vr-b-tx">
+          <p class="vr-kicker vr-kicker--ink">VENTES RÉCENTES</p>
+          <p class="vr-titre vr-titre--dark">Quelques ventes autour de chez vous</p>
+          <div class="vr-tx-cards">${first}${more}</div>
+        </div>`;
+    }
+
+    // ——— Héro ———
+    const maxBar = Math.max(model.n2024 || 0, model.n2025 || 0, 1);
+    const p24 = Math.round(((model.n2024 || 0) / maxBar) * 100);
+    const p25 = Math.round(((model.n2025 || 0) / maxBar) * 100);
+    let heroBadge = '';
+    if ((model.n2024 || 0) > 0 && (model.n2025 || 0) > 0) {
+      const diff = Math.round(((model.n2025 - model.n2024) / model.n2024) * 100);
+      heroBadge = `<span class="vr-hero-badge">${diff >= 0 ? '+' : ''}${diff} % entre 2024 et 2025</span>`;
+    }
+    const heroBars = (model.n2024 || 0) > 0 || (model.n2025 || 0) > 0 ? `
+      <div class="vr-hero-bars">
+        <div class="vr-hero-bar-row">
+          <span class="vr-hero-bar-yr">2024</span>
+          <div class="vr-hero-bar-track"><div class="vr-hero-bar-fill" data-pct="${p24}"></div></div>
+          <span class="vr-hero-bar-n">${model.n2024 || 0}</span>
         </div>
-        ${rev2Html}
-        ${rev3Html}
-        <div class="vr-conclusion" id="vr-conclusion">
-          <p class="vr-conc-eyebrow">CE QUE CES VENTES NOUS APPRENNENT</p>
-          <p class="vr-conc-body">Votre quartier n'a pas un prix unique.<br>Les transactions observées montrent une fourchette réelle, et même le prix au&nbsp;m² peut varier selon les biens que l'on compare.<br><br>Une adresse permet de comprendre votre marché. Pas encore de situer votre bien.<br>Pour savoir où il se place dans cette fourchette, il faut maintenant comparer ce qui est comparable.</p>
+        <div class="vr-hero-bar-row">
+          <span class="vr-hero-bar-yr">2025</span>
+          <div class="vr-hero-bar-track"><div class="vr-hero-bar-fill" data-pct="${p25}"></div></div>
+          <span class="vr-hero-bar-n">${model.n2025 || 0}</span>
+        </div>
+      </div>
+      ${heroBadge}` : '';
+
+    // ——— Assemblage HTML ———
+    scene.innerHTML = `
+      <div class="vr-cine-wrap">
+        <div class="vr-bloc vr-bloc--hero" id="vr-b-hero">
+          <p class="vr-kicker vr-kicker--light">Analyse locale</p>
+          <div class="vr-hero-counter" id="vr-hc" data-count="${model.nbVentes}">0</div>
+          <p class="vr-hero-count-lbl">ventes analysées autour de cette adresse</p>
+          ${heroBars}
+        </div>
+        <div class="vr-bloc vr-bloc--b1 vr-bloc-anim" id="vr-b-dots">
+          <p class="vr-kicker vr-kicker--terra">CE QUI S’EST VENDU</p>
+          <p class="vr-titre vr-titre--dark">Deux marchés différents autour de chez vous</p>
+          <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
+          <div class="vr-dot-legend" id="vr-dl">
+            <span><span class="vr-dot-legend-ico" style="background:#C15A2B"></span>Maisons</span>
+            <span><span class="vr-dot-legend-ico" style="background:#3A6FB0"></span>Appartements</span>
+          </div>
+          <div class="vr-dot-counts" id="vr-dc">
+            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--M">${model.nM}</span> maisons</div>
+            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--A">${model.nA}</span> appartements</div>
+          </div>
+          <p class="vr-b1-phrase" id="vr-b1p">Toutes les ventes autour de chez vous ne sont pas de bonnes références pour votre bien. Chaque type de bien suit sa propre logique de prix.</p>
+        </div>
+        ${distHtml}
+        ${surfHtml}
+        ${sparkHtml}
+        ${txHtml}
+        <div class="vr-bloc vr-bloc--conc vr-bloc-anim" id="vr-b-conc">
+          <p class="vr-conc-eyebrow">CE QUE ÇA CHANGE POUR VOUS</p>
+          <p class="vr-conc-hl">Le bon prix ne vient pas d’une moyenne. Il vient d’une comparaison pertinente.</p>
+          <div class="vr-conc-body">
+            <p>Autour de cette adresse, les ventes montrent déjà des différences importantes de type, de surface et de niveau de prix.</p>
+            <p>Une adresse permet de comprendre votre marché. Pas encore de savoir où votre bien se place dedans.</p>
+            <p>Pour aller plus loin, il faut maintenant réduire progressivement les ventes à celles qui ressemblent réellement au vôtre.</p>
+          </div>
+          <button class="vr-conc-cta" type="button">SITUER MON BIEN DANS CE MARCHÉ →</button>
         </div>
       </div>
       <div class="vr-after">
         <p class="vr-maj">${majLigne()}</p>
-        ${blocDetails(model)}
         ${construireConversion()}
       </div>`;
     brancherConversion(model);
 
-    // Initialise sparkline path masquée (dashoffset = longueur totale)
-    if (hasSpark) {
-      const sp = scene.querySelector<SVGPathElement>('#vr-spark-path');
-      if (sp) { const l = sp.getTotalLength(); sp.style.strokeDasharray = l + 'px'; sp.style.strokeDashoffset = l + 'px'; }
-    }
+    // ——— Animations ———
 
-    // ——— Timeline d'animation ———
-    const dotEls = Array.from(scene.querySelectorAll<SVGCircleElement>('.ig-dot'));
-    const legend = scene.querySelector<HTMLElement>('#vr-ig-legend');
-
-    // 800 ms : séparation M/A
-    later(800, () => {
-      dotEls.forEach((el, i) => {
-        el.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
-        el.style.fill = dots[i].isM ? domColor : altColor;
+    // Héro : déclenché immédiatement (visible au-dessus du fold)
+    const hc = scene.querySelector<HTMLElement>('#vr-hc');
+    if (hc) animeCompteur(hc, model.nbVentes);
+    later(600, () => {
+      scene.querySelectorAll<HTMLElement>('.vr-hero-bar-fill').forEach((b) => {
+        b.style.width = (b.dataset.pct || '0') + '%';
       });
-      if (legend) legend.style.opacity = '1';
     });
 
-    // 2 000 ms : zone IQR croît
-    if (hasDist) {
-      later(2000, () => { const iqr = scene.querySelector<HTMLElement>('#vr-iqr'); if (iqr) iqr.style.width = '100%'; });
-      later(2700, () => {
-        const med = scene.querySelector<HTMLElement>('#vr-med');
-        const medLbl = scene.querySelector<HTMLElement>('#vr-med-lbl');
-        const note = scene.querySelector<HTMLElement>('#vr-iqr-note');
-        if (med) med.style.opacity = '1';
-        if (medLbl) medLbl.style.opacity = '1';
-        if (note) note.style.opacity = '1';
+    // CE QUI S'EST VENDU
+    observe('#vr-b-dots', () => {
+      const el = scene.querySelector<HTMLElement>('#vr-b-dots');
+      if (el) el.classList.add('is-on');
+      const dotEls = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dot'));
+      later(300, () => {
+        dotEls.forEach((d, i) => {
+          d.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
+          d.style.fill = dots[i].isM ? '#C15A2B' : '#3A6FB0';
+        });
+        const dl = scene.querySelector<HTMLElement>('#vr-dl');
+        if (dl) dl.style.opacity = '1';
       });
-    }
+      later(750, () => {
+        const dc = scene.querySelector<HTMLElement>('#vr-dc');
+        if (dc) dc.style.opacity = '1';
+      });
+      later(1050, () => {
+        const ph = scene.querySelector<HTMLElement>('#vr-b1p');
+        if (ph) { ph.style.opacity = '1'; ph.style.transform = 'none'; }
+      });
+    });
 
-    // Révélation 2 : effet surface
-    let nextT = hasDist ? 3500 : 1500;
-    if (sf) {
-      later(nextT, () => { const r = scene.querySelector<HTMLElement>('#vr-rev2'); if (r) r.classList.add('is-on'); });
-      later(nextT + 500, () => {
-        scene.querySelectorAll<HTMLElement>('.vr-ig-bar-fill').forEach((b) => { b.style.width = (b.dataset.pct || '0') + '%'; });
-      });
-      nextT += 1600;
-    }
-
-    // Révélation 3 : sparkline
-    if (hasSpark) {
-      later(nextT, () => { const r = scene.querySelector<HTMLElement>('#vr-rev3'); if (r) r.classList.add('is-on'); });
-      later(nextT + 500, () => {
-        const path = scene.querySelector<SVGPathElement>('#vr-spark-path');
-        if (path) {
-          path.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-          path.style.strokeDashoffset = '0px';
-        }
-      });
-      const meds = D.annualMeds as { year: number; med: number }[];
-      meds.forEach((_: any, i: number) => {
-        later(nextT + 900 + i * 280, () => {
-          const dot = scene.querySelector<SVGCircleElement>(`.vr-ig-spark-dot[data-si="${i}"]`);
-          if (dot) dot.classList.add('on');
+    // CE QUE LES PRIX MONTRENT
+    if (distHtml) {
+      observe('#vr-b-dist', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-dist');
+        if (el) el.classList.add('is-on');
+        const ddots = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dist-dot'));
+        const stagger = Math.max(8, Math.floor(500 / Math.max(ddots.length, 1)));
+        ddots.forEach((d, i) => later(i * stagger, () => { d.style.opacity = '0.72'; }));
+        const zoneDelay = ddots.length * stagger + 250;
+        later(zoneDelay, () => {
+          const dz = scene.querySelector<HTMLElement>('#vr-dz');
+          if (dz) dz.style.opacity = '1';
+        });
+        later(zoneDelay + 450, () => {
+          const dml = scene.querySelector<HTMLElement>('#vr-dml');
+          if (dml) dml.style.opacity = '1';
+          const dmlTxt = scene.querySelector<HTMLElement>('#vr-dml-txt');
+          if (dmlTxt) dmlTxt.style.opacity = '1';
+        });
+        later(zoneDelay + 750, () => {
+          const dn = scene.querySelector<HTMLElement>('#vr-dn');
+          if (dn) { dn.style.opacity = '1'; dn.style.transform = 'none'; }
         });
       });
-      later(nextT + 900 + meds.length * 280 + 600, () => {
-        const c = scene.querySelector<HTMLElement>('#vr-conclusion'); if (c) c.classList.add('is-on');
-      });
-    } else {
-      later(nextT + 400, () => { const c = scene.querySelector<HTMLElement>('#vr-conclusion'); if (c) c.classList.add('is-on'); });
     }
+
+    // L'EFFET DE LA SURFACE
+    if (sf) {
+      observe('#vr-b-surf', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-surf');
+        if (el) el.classList.add('is-on');
+        later(400, () => {
+          const sd = scene.querySelector<HTMLElement>('#vr-sd');
+          if (sd) sd.classList.add('on');
+        });
+      });
+    }
+
+    // 5 ANS DE MARCHÉ
+    if (hasSpark) {
+      observe('#vr-b-spark', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-spark');
+        if (el) el.classList.add('is-on');
+        const sp = scene.querySelector<SVGPathElement>('#vr-sp');
+        if (sp) {
+          const l = sp.getTotalLength();
+          sp.style.strokeDasharray = l + 'px';
+          sp.style.strokeDashoffset = l + 'px';
+          sp.getBoundingClientRect();
+          sp.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.25,0.46,0.45,0.94)';
+          sp.style.strokeDashoffset = '0';
+        }
+        const meds = D.annualMeds as { year: number; med: number }[];
+        meds.forEach((_: any, i: number) => {
+          later(350 + i * 300, () => {
+            const dot = scene.querySelector<SVGCircleElement>(`.vr-spark-dot[data-si="${i}"]`);
+            if (dot) dot.classList.add('on');
+            const val = scene.querySelector<SVGTextElement>(`.vr-spark-val[data-si="${i}"]`);
+            if (val) val.classList.add('on');
+          });
+        });
+      });
+    }
+
+    // VENTES RÉCENTES
+    if (txHtml) {
+      observe('#vr-b-tx', () => {
+        const el = scene.querySelector<HTMLElement>('#vr-b-tx');
+        if (el) el.classList.add('is-on');
+      });
+    }
+
+    // CONCLUSION
+    observe('#vr-b-conc', () => {
+      const el = scene.querySelector<HTMLElement>('#vr-b-conc');
+      if (el) el.classList.add('is-on');
+    });
 
     // Scroll doux vers le haut du résultat
     const headerH = document.getElementById('site-header')?.offsetHeight ?? 64;
     const top = scene.getBoundingClientRect().top + window.scrollY - headerH - 8;
     window.scrollTo({ top, behavior: 'smooth' });
 
-    cineCleanup = () => { touts.forEach(clearTimeout); };
+    cineCleanup = () => { ios.forEach((io) => io.disconnect()); touts.forEach(clearTimeout); };
   }
+
 
   function majLigne() {
     if (!meta) return '';
