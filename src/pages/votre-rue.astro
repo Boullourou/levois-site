@@ -33,11 +33,11 @@ import Layout from '../layouts/Layout.astro';
     <header class="mb-8 md:mb-10">
       <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
       <h1 class="vr-titre text-encre mb-4">
-        Combien s’est vendue la dernière maison de votre quartier&nbsp;?
+        Combien s'est vendue la dernière maison de votre quartier&nbsp;?
       </h1>
       <p class="font-sans text-body-lg text-brun max-w-prose">
         Les ventes réellement enregistrées autour de chez vous.
-        Sans inscription, sans qu’on vous rappelle. La réponse en 30&nbsp;secondes.
+        Sans inscription, sans qu'on vous rappelle. La réponse en 30&nbsp;secondes.
       </p>
       <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
     </header>
@@ -79,18 +79,18 @@ import Layout from '../layouts/Layout.astro';
         </p>
         <p>
           Les prix « médians » et les fourchettes sont calculés sur les ventes du même type de
-          bien (maison ou appartement) dans un rayon autour de l’adresse. L’évolution est estimée
+          bien (maison ou appartement) dans un rayon autour de l'adresse. L'évolution est estimée
           par une droite de tendance (régression) sur les médianes annuelles du prix au m²
-          (2021 à 2025), pour éviter qu’une seule année atypique ne fausse la lecture.
+          (2021 à 2025), pour éviter qu'une seule année atypique ne fausse la lecture.
           Le pourcentage affiché compare la valeur de cette droite en 2025 à sa valeur en 2021
           (année de référence fixe, identique pour toutes les adresses) ; en dessous de ±3 %,
           les prix sont considérés comme globalement stables. Le pourcentage justifie la
-          conclusion, il n’en est pas l’essentiel.
+          conclusion, il n'en est pas l'essentiel.
         </p>
         <p>
           Ce que ces données <strong>ne disent pas</strong> : la valeur précise de votre bien, la
           demande, les délais de vente, le nombre de visites. Une vente voisine est un repère de
-          prix, pas une estimation de votre bien. La base DVF n’est pas exhaustive : certaines
+          prix, pas une estimation de votre bien. La base DVF n'est pas exhaustive : certaines
           ventes peuvent en être absentes.
         </p>
       </div>
@@ -296,9 +296,10 @@ import Layout from '../layouts/Layout.astro';
   .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
 
   /* ——————————————————————————————————————————————————————————————
-     Séquence cinématographique (scroll-driven, stage épinglé « à la Jack »)
-     Piloté en continu par le scroll : chaque temps naît du précédent, morphing
-     réversible. Repli empilé en reduced-motion (voir plus bas).
+     Séquence cumulative (scroll-driven, stage épinglé)
+     Chaque « temps » est d'abord la star, puis rétrécit en pastille
+     compacte : A → A+B → A+B+C → A+B+C+D.
+     Repli empilé en reduced-motion.
      —————————————————————————————————————————————————————————————— */
   .vr-cine { position: relative; }
   .vr-stage {
@@ -306,38 +307,63 @@ import Layout from '../layouts/Layout.astro';
     top: var(--vr-header, 64px);
     height: calc(100svh - var(--vr-header, 64px));
     overflow: hidden;
-    display: block;
+    display: flex;
+    flex-direction: column;
     background: #F7F2EA;
     border-radius: 22px;
   }
-  .vr-scene {
+
+  .vr-recap {
+    flex: 0 0 auto;
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    padding: 1.1rem clamp(1rem, 4vw, 1.5rem) 0;
+    z-index: 5;
+  }
+  .vr-chip {
+    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 10px;
+    padding: 0.45rem 0.75rem; will-change: opacity, transform;
+  }
+  .vr-chip-val {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: 1.05rem; color: #211C16; line-height: 1.15;
+  }
+  .vr-chip-lbl {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.65rem;
+    color: #6B5D4F; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.1rem;
+  }
+
+  .vr-feat { flex: 1; position: relative; min-height: 0; }
+  .vr-feat-slide {
     position: absolute; inset: 0;
     display: flex; align-items: center;
-    padding: 1.5rem clamp(1.25rem, 6vw, 3.5rem);
+    padding: 1rem clamp(1.25rem, 6vw, 3.5rem);
     opacity: 0; will-change: opacity, transform;
-    background: #F7F2EA; color: #211C16;
   }
-  .vr-scene[data-bg="vif"] { background: #FDFBF6; }
-  .vr-scene[data-bg="encre"] { background: #211C16; color: #F7F2EA; }
-  .vr-scene[data-bg="argile"] { background: #F0E2D8; }
   .vr-sc-inner { width: 100%; max-width: 34rem; margin: 0 auto; }
 
   .vr-sc-kicker { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #A85638; margin-bottom: 1.1rem; }
-  .vr-scene[data-bg="encre"] .vr-sc-kicker { color: #C97B52; }
   .vr-sc-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 0.98; letter-spacing: -0.02em; font-size: clamp(3.6rem, 20vw, 6.5rem); color: inherit; }
   .vr-sc-lead { font-family: 'Instrument Sans', sans-serif; font-size: clamp(1.05rem, 3.5vw, 1.35rem); margin-top: 0.6rem; }
   .vr-sc-note { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 0.6rem; line-height: 1.5; }
-  .vr-scene[data-bg="encre"] .vr-sc-note { color: rgba(247,242,234,0.66); }
 
-  /* C — prix + curseur de fourchette (plein écran) */
+  .vr-compo { display: flex; align-items: baseline; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.3rem; }
+  .vr-compo-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 0.98; letter-spacing: -0.02em; font-size: clamp(2.8rem, 14vw, 4.8rem); color: inherit; }
+  .vr-compo-type { font-family: 'Instrument Sans', sans-serif; font-size: 1.1rem; color: #6B5D4F; margin-top: 0.15rem; }
+  .vr-compo-sep { font-family: 'Fraunces', serif; font-size: 2.5rem; color: #C0B29B; align-self: center; }
+
+  /* C — prix €/m² + curseur de fourchette (plein écran) */
   .vr-sc-range { margin-top: 2rem; }
   .vr-sc-range .vr-range-line { position: relative; height: 3px; background: #E0D3BF; margin: 0 0.2rem; border-radius: 3px; }
-  .vr-sc-range .vr-range-dot { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border-radius: 999px; background: #A85638; box-shadow: 0 0 0 5px #FDFBF6, 0 2px 8px rgba(168,86,56,0.55); transform: translate(-50%, -50%); }
+  .vr-sc-range .vr-range-dot { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border-radius: 999px; background: #A85638; box-shadow: 0 0 0 5px #F7F2EA, 0 2px 8px rgba(168,86,56,0.55); transform: translate(-50%, -50%); }
   .vr-sc-range .vr-range-cap { position: absolute; top: -1.7rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16; font-weight: 600; }
   .vr-sc-range .vr-range-cap.g { left: 0; } .vr-sc-range .vr-range-cap.d { right: 0; }
   .vr-sc-range .vr-range-arrows { display: flex; justify-content: space-between; color: #C0B29B; font-size: 1.05rem; margin-top: 0.4rem; }
   .vr-c-phrase { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #6B5D4F; margin-top: 1.2rem; line-height: 1.5; }
-  .vr-c-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; opacity: 0.85; margin-top: 0.55rem; }
+
+  .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E8DFD0; }
+  .vr-ppm-alt-type { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7C6A; }
+  .vr-ppm-alt-val { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.3rem; color: #211C16; margin-top: 0.25rem; }
+  .vr-ppm-alt-range { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; margin-top: 0.15rem; }
 
   /* D — tendance plein écran */
   .vr-sc-dhead { display: flex; align-items: center; gap: 0.7rem; }
@@ -351,12 +377,12 @@ import Layout from '../layouts/Layout.astro';
   .vr-d-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 1rem; }
 
   .vr-sc-ec { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.5rem, 5.4vw, 2.2rem); line-height: 1.32; }
+  .vr-sc-limit { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 1.2rem; line-height: 1.55; }
 
   /* Repère de progression de la séquence */
   .vr-cine-dots { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 6; }
   .vr-cine-dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(107,93,79,0.28); transition: background 0.3s, transform 0.3s; }
   .vr-cine-dot.on { background: #A85638; transform: scale(1.35); }
-  .vr-scene[data-bg="encre"] ~ .vr-cine-dots .vr-cine-dot { background: rgba(247,242,234,0.3); }
 
   .vr-after { margin-top: 1.5rem; }
 
@@ -364,9 +390,9 @@ import Layout from '../layouts/Layout.astro';
     .vr-block { opacity: 1; transform: none; transition: none; }
     .vr-range-dot, .vr-gauge-cursor { transition: none; }
     .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
-    /* Séquence cinématographique désactivée : repli empilé lisible */
     .vr-stage { position: static; height: auto; overflow: visible; background: transparent; border-radius: 0; }
-    .vr-scene { position: relative; opacity: 1 !important; transform: none !important; margin-bottom: 0.75rem; border-radius: 20px; }
+    .vr-feat-slide { position: relative; opacity: 1 !important; transform: none !important; margin-bottom: 0.75rem; border-radius: 20px; background: #F7F2EA; }
+    .vr-recap { display: none; }
     .vr-cine-dots { display: none; }
   }
 </style>
@@ -408,7 +434,7 @@ import Layout from '../layouts/Layout.astro';
       const m = (await (await fetch('/data/dvf-meta.json')).json()) as Meta;
       meta = m;
       if (m.status === 'ready' && m.dateVenteLaPlusRecente) {
-        fraicheurEl.textContent = `Données DVF disponibles jusqu’au ${dateComplete(m.dateVenteLaPlusRecente)}`;
+        fraicheurEl.textContent = `Données DVF disponibles jusqu'au ${dateComplete(m.dateVenteLaPlusRecente)}`;
         fraicheurEl.hidden = false;
       }
     } catch {}
@@ -512,13 +538,6 @@ import Layout from '../layouts/Layout.astro';
   function computeModel(lat: number, lon: number) {
     const all = (dataset as Tx[]).map((t) => ({ ...t, _dist: distance(lat, lon, t.lat, t.lon) })).sort((a, b) => a._dist - b._dist);
 
-    // A — dernière vente à proximité (rayon serré)
-    let aSet: any[] = [];
-    for (const r of [700, 1500, 3000]) { aSet = all.filter((t) => t._dist <= r); if (aSet.length) break; }
-    if (!aSet.length) return null;
-    const derniere = [...aSet].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist))[0];
-
-    // Rayon de travail : plus petit rayon totalisant ≥ 150 ventes d'habitation
     const hab = (arr: any[]) => arr.filter((t) => (t.t === 'Maison' || t.t === 'Appartement') && !t.lots);
     let Rw = 3000, near = hab(all.filter((t) => t._dist <= 3000));
     for (const r of [700, 1500, 3000]) {
@@ -526,28 +545,30 @@ import Layout from '../layouts/Layout.astro';
       if (s.length >= 150) { Rw = r; near = s; break; }
       if (r === 3000) { Rw = 3000; near = s; }
     }
-    const nM = near.filter((t) => t.t === 'Maison').length, nA = near.filter((t) => t.t === 'Appartement').length;
-    const dom = nM >= nA ? 'Maison' : 'Appartement';
-    const domArr = near.filter((t) => t.t === dom);
+    if (!near.length) return null;
 
-    // B — nombre de ventes (habitation, dans Rw)
+    const nM = near.filter((t) => t.t === 'Maison').length;
+    const nA = near.filter((t) => t.t === 'Appartement').length;
+    const dom = nM >= nA ? 'Maison' : 'Appartement';
     const nbVentes = near.length;
 
-    // C — prix médian + fourchette Q1–Q3 + €/m² médian (type dominant)
-    const prices = domArr.map((t) => t.v);
-    const ppm = domArr.filter((t) => t.sb).map((t) => t.v / (t.sb as number));
-    const C = domArr.length >= 25 ? { median: median(prices), q1: quantile(prices, 0.25), q3: quantile(prices, 0.75), ppm: median(ppm), n: domArr.length } : null;
+    const ppmStats = (arr: any[]) => {
+      const vals = arr.filter((t: any) => t.sb > 0).map((t: any) => t.v / t.sb);
+      if (vals.length < 20) return null;
+      return { median: median(vals)!, q1: quantile(vals, 0.25)!, q3: quantile(vals, 0.75)!, n: vals.length };
+    };
+    const ppmM = ppmStats(near.filter((t) => t.t === 'Maison'));
+    const ppmA = ppmStats(near.filter((t) => t.t === 'Appartement'));
 
-    // D — tendance €/m² 2022-2023 vs 2024-2025 (type dominant).
-    // Rayon PROPRE, élargi jusqu'à ≥ 40 ventes/période pour éviter le bruit de
-    // petit échantillon (une médiane locale sur ~15 ventes est instable et
-    // pourrait afficher une « baisse » là où le secteur est en réalité stable).
     const D = computeTrend(all, dom, Math.max(Rw, 1500));
 
-    const activite = domArr.filter((t) => t.d >= '2025').length >= 5;
-    const autres = [...aSet].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere.id).slice(0, 4);
+    let aSet: any[] = [];
+    for (const r of [700, 1500, 3000]) { aSet = all.filter((t) => t._dist <= r); if (aSet.length) break; }
+    const derniere = [...aSet].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist))[0];
+    const activite = near.filter((t) => t.t === dom && t.d >= '2025').length >= 5;
+    const autres = [...aSet].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere?.id).slice(0, 4);
 
-    return { derniere, dom, nbVentes, Rw, C, D, activite, autres };
+    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, D, derniere, activite, autres };
   }
 
   // ——— « En clair » : phrases par règles fixes ———
@@ -581,8 +602,10 @@ import Layout from '../layouts/Layout.astro';
   function jouerAnim(el: HTMLElement, instantane: boolean) {
     const anim = el.dataset.anim;
     if (anim === 'count') {
-      const n = el.querySelector<HTMLElement>('[data-count]');
-      if (n) { if (instantane) n.textContent = eur.format(Number(n.dataset.count)); else animeCompteur(n, Number(n.dataset.count)); }
+      el.querySelectorAll<HTMLElement>('[data-count]').forEach((n) => {
+        if (instantane) n.textContent = eur.format(Number(n.dataset.count));
+        else animeCompteur(n, Number(n.dataset.count));
+      });
     } else if (anim === 'slider') {
       const dot = el.querySelector<HTMLElement>('.vr-range-dot');
       if (dot && dot.dataset.pos) dot.style.left = dot.dataset.pos;
@@ -625,51 +648,68 @@ import Layout from '../layouts/Layout.astro';
 
   // Repli empilé (reduced-motion / secours) — cartes verticales lisibles.
   function construireStack(model: any) {
-    const ec = enClair(model);
-    const d = model.derniere;
+    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
+    const ppmAlt = model.dom === 'Maison' ? model.ppmA : model.ppmM;
+    const altType = model.dom === 'Maison' ? 'Appartement' : 'Maison';
     const parts: string[] = [];
 
-    // En-tête
     parts.push(`
       <div class="vr-head">
         <p class="vr-head-eyebrow">Autour de cette adresse</p>
         ${selection?.label ? `<p class="vr-head-adr">${esc(selection.label)}</p>` : ''}
       </div>`);
 
-    // ① B — combien de ventes
+    // ① Activité
     parts.push(`
       <div class="vr-block" data-anim="count">
         <div class="vr-card">
           <p class="vr-num vr-b-num"><span data-count="${model.nbVentes}">0</span></p>
-          <p class="vr-b-l">ventes retrouvées</p>
-          <p class="vr-sub vr-b-sub">dans un rayon d’environ ${rayonTxt(model.Rw)} · depuis 2021</p>
+          <p class="vr-b-l">ventes réalisées depuis 2021</p>
+          <p class="vr-sub vr-b-sub">dans un rayon d'environ ${rayonTxt(model.Rw)}</p>
         </div>
       </div>`);
 
-    // ② C — le prix du milieu
-    if (model.C) {
-      const q1 = Math.round(model.C.q1), q3 = Math.round(model.C.q3), med = Math.round(model.C.median);
+    // ② Composition maisons / appartements
+    parts.push(`
+      <div class="vr-block" data-anim="count">
+        <div class="vr-card">
+          <p class="vr-label">Ce qui se vend ici</p>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:0.5rem">
+            <div><p class="vr-num" style="font-size:clamp(2rem,8vw,2.8rem)"><span data-count="${model.nM}">0</span></p><p class="vr-sub">maisons</p></div>
+            <div><p class="vr-num" style="font-size:clamp(2rem,8vw,2.8rem)"><span data-count="${model.nA}">0</span></p><p class="vr-sub">appartements</p></div>
+          </div>
+          <p class="vr-sub" style="margin-top:0.8rem">Deux marchés différents. Mieux vaut ne pas les mélanger.</p>
+        </div>
+      </div>`);
+
+    // ③ Prix €/m² par type
+    if (ppmDom) {
+      const q1 = Math.round(ppmDom.q1), q3 = Math.round(ppmDom.q3), med = Math.round(ppmDom.median);
       const pos = q3 > q1 ? Math.max(6, Math.min(94, ((med - q1) / (q3 - q1)) * 100)) : 50;
+      let altHtml = '';
+      if (ppmAlt) {
+        altHtml = `<div class="vr-ppm-alt"><p class="vr-ppm-alt-type">${esc(typePlurielNu(altType))}</p><p class="vr-ppm-alt-val">${eur.format(Math.round(ppmAlt.median))} €/m²</p><p class="vr-ppm-alt-range">fourchette ${eur.format(Math.round(ppmAlt.q1))} – ${eur.format(Math.round(ppmAlt.q3))} €/m²</p></div>`;
+      }
       parts.push(`
         <div class="vr-block" data-anim="slider">
           <div class="vr-card">
-            <p class="vr-num vr-c-num">${eur.format(med)} €</p>
-            <p class="vr-label vr-c-lbl">Le prix du milieu</p>
+            <p class="vr-label">Le prix au m² observé · ${esc(typePlurielNu(model.dom))}</p>
+            <p class="vr-num vr-c-num">${eur.format(med)} €/m²</p>
             <div class="vr-range">
               <div class="vr-range-line">
-                <span class="vr-range-cap g">${eur.format(q1)} €</span>
-                <span class="vr-range-cap d">${eur.format(q3)} €</span>
+                <span class="vr-range-cap g">${eur.format(q1)}</span>
+                <span class="vr-range-cap d">${eur.format(q3)}</span>
                 <span class="vr-range-dot" data-pos="${pos.toFixed(0)}%" style="left:50%"></span>
               </div>
               <div class="vr-range-arrows" aria-hidden="true"><span>←</span><span>→</span></div>
-              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)} €</strong> et <strong>${eur.format(q3)} €</strong>.</p>
-              ${model.C.ppm ? `<p class="vr-c-m2">≈ ${eur.format(Math.round(model.C.ppm))} €/m²</p>` : ''}
+              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)}</strong> et <strong>${eur.format(q3)} €/m²</strong>.</p>
             </div>
+            ${altHtml}
           </div>
         </div>`);
     }
 
-    // ③ D — la tendance
+    // ④ Tendance
     if (model.D) {
       const pct = `${model.D.delta >= 0 ? '+' : ''}${model.D.delta.toFixed(1).replace('.', ',')} %`;
       const pos = gaugePos(model.D.delta), dir = model.D.dir;
@@ -694,29 +734,20 @@ import Layout from '../layouts/Layout.astro';
         </div>`);
     }
 
-    // ④ A — la dernière vente (carte sombre)
-    parts.push(`
-      <div class="vr-block" data-anim="fade">
-        <div class="vr-card vr-card--dark">
-          <p class="vr-label">Dernière vente près de chez vous</p>
-          <p class="vr-num vr-a-num">${eur.format(d.v)} €</p>
-          <p class="vr-a-bien">${esc(bienCourt(d))}</p>
-          <p class="vr-sub vr-a-meta">${esc(distLisible(d._dist))} · ${esc(dateMois(d.d))}</p>
-        </div>
-      </div>`);
-
-    // En clair
+    // ⑤ Limitation
     parts.push(`
       <div class="vr-block" data-anim="fade">
         <div class="vr-card vr-card--warm">
-          <p class="vr-label">En clair</p>
-          <p class="vr-ec">${esc(ec.s1)}${ec.s2 ? ' ' + esc(ec.s2) : ''}</p>
+          <p class="vr-label">À retenir</p>
+          <p class="vr-ec">Un même quartier. Des biens très différents.</p>
+          <p class="vr-sub" style="margin-top:0.8rem;line-height:1.55">Une adresse donne le contexte, elle ne suffit pas à situer votre bien. Surface, état, exposition, travaux : chaque propriété est unique, et ces statistiques de quartier ne peuvent pas le refléter.</p>
         </div>
         <p class="vr-maj">${majLigne()}</p>
       </div>`);
 
     // Ventes détaillées (secondaire)
     if (model.autres.length) {
+      const d = model.derniere;
       parts.push(`
         <div class="vr-block" data-anim="fade">
           <details class="vr-details">
@@ -736,7 +767,6 @@ import Layout from '../layouts/Layout.astro';
         </div>`);
     }
 
-    // Conversion
     parts.push(construireConversion());
 
     scene.innerHTML = `<div class="vr-results">${parts.join('')}</div>`;
@@ -763,49 +793,86 @@ import Layout from '../layouts/Layout.astro';
 
   function construireCine(model: any) {
     if (cineCleanup) { cineCleanup(); cineCleanup = null; }
-    const ec = enClair(model);
-    const d = model.derniere;
-    const C = model.C, D = model.D;
-    const posC = C && C.q3 > C.q1 ? Math.max(6, Math.min(94, ((C.median - C.q1) / (C.q3 - C.q1)) * 100)) : 50;
-    const posD = D ? gaugePos(D.delta) : 50;
 
-    const sc: string[] = [];
-    // ① ventes
-    sc.push(`
-      <div class="vr-scene" data-scene="0">
+    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
+    const ppmAlt = model.dom === 'Maison' ? model.ppmA : model.ppmM;
+    const altType = model.dom === 'Maison' ? 'Appartement' : 'Maison';
+    const D = model.D;
+
+    let pIdx = 0;
+    const iActivite = pIdx++;
+    const iCompo = pIdx++;
+    const hasPrix = !!ppmDom;
+    const iPrix = hasPrix ? pIdx++ : -1;
+    const hasTrend = !!D;
+    const iTrend = hasTrend ? pIdx++ : -1;
+    const iLimit = pIdx++;
+    const N = pIdx;
+
+    const ppmMed = hasPrix ? Math.round(ppmDom.median) : 0;
+    const ppmQ1 = hasPrix ? Math.round(ppmDom.q1) : 0;
+    const ppmQ3 = hasPrix ? Math.round(ppmDom.q3) : 0;
+    const posP = hasPrix && ppmQ3 > ppmQ1 ? Math.max(6, Math.min(94, ((ppmMed - ppmQ1) / (ppmQ3 - ppmQ1)) * 100)) : 50;
+    const posD = hasTrend ? gaugePos(D.delta) : 50;
+
+    const chips: string[] = [];
+    chips.push(`<div class="vr-chip" data-chip="${iActivite}" style="opacity:0"><p class="vr-chip-val">${eur.format(model.nbVentes)}</p><p class="vr-chip-lbl">ventes depuis 2021</p></div>`);
+    chips.push(`<div class="vr-chip" data-chip="${iCompo}" style="opacity:0"><p class="vr-chip-val">${model.nM} M · ${model.nA} A</p><p class="vr-chip-lbl">maisons · apparts</p></div>`);
+    if (hasPrix) chips.push(`<div class="vr-chip" data-chip="${iPrix}" style="opacity:0"><p class="vr-chip-val">~${eur.format(ppmMed)} €/m²</p><p class="vr-chip-lbl">${esc(typePlurielNu(model.dom))}</p></div>`);
+    if (hasTrend) {
+      const dirTxt = D.dir === 'hausse' ? 'Hausse' : D.dir === 'baisse' ? 'Baisse' : 'Stable';
+      chips.push(`<div class="vr-chip" data-chip="${iTrend}" style="opacity:0"><p class="vr-chip-val">${dirTxt}</p><p class="vr-chip-lbl">tendance prix</p></div>`);
+    }
+
+    const feats: string[] = [];
+    feats.push(`
+      <div class="vr-feat-slide" data-feat="${iActivite}">
         <div class="vr-sc-inner">
           <p class="vr-sc-kicker">Autour de cette adresse</p>
-          <p class="vr-sc-num" data-count>0</p>
+          <p class="vr-sc-num" data-count="${model.nbVentes}">0</p>
           <p class="vr-sc-lead">ventes retrouvées près de vous</p>
-          <p class="vr-sc-note">dans un rayon d’environ ${rayonTxt(model.Rw)} · depuis 2021</p>
+          <p class="vr-sc-note">dans un rayon d'environ ${rayonTxt(model.Rw)} · depuis 2021</p>
         </div>
       </div>`);
-    // ② prix du milieu
-    if (C) {
-      const q1 = Math.round(C.q1), q3 = Math.round(C.q3);
-      sc.push(`
-        <div class="vr-scene" data-scene="1" data-bg="vif">
+    feats.push(`
+      <div class="vr-feat-slide" data-feat="${iCompo}">
+        <div class="vr-sc-inner">
+          <p class="vr-sc-kicker">Ce qui se vend ici</p>
+          <div class="vr-compo">
+            <div><p class="vr-compo-num" data-countm="${model.nM}">0</p><p class="vr-compo-type">maisons</p></div>
+            <span class="vr-compo-sep" aria-hidden="true">·</span>
+            <div><p class="vr-compo-num" data-counta="${model.nA}">0</p><p class="vr-compo-type">appartements</p></div>
+          </div>
+          <p class="vr-sc-note" style="margin-top:1.2rem">Deux marchés différents. Mieux vaut ne pas les mélanger.</p>
+        </div>
+      </div>`);
+    if (hasPrix) {
+      let altHtml = '';
+      if (ppmAlt) {
+        altHtml = `<div class="vr-ppm-alt"><p class="vr-ppm-alt-type">${esc(typePlurielNu(altType))}</p><p class="vr-ppm-alt-val">${eur.format(Math.round(ppmAlt.median))} €/m²</p><p class="vr-ppm-alt-range">fourchette ${eur.format(Math.round(ppmAlt.q1))} – ${eur.format(Math.round(ppmAlt.q3))} €/m²</p></div>`;
+      }
+      feats.push(`
+        <div class="vr-feat-slide" data-feat="${iPrix}">
           <div class="vr-sc-inner">
-            <p class="vr-sc-kicker">Le prix du milieu</p>
-            <p class="vr-sc-num" data-price>0 €</p>
+            <p class="vr-sc-kicker">Le prix au m² observé · ${esc(typePlurielNu(model.dom))}</p>
+            <p class="vr-sc-num" data-ppm="${ppmMed}">0 €/m²</p>
             <div class="vr-sc-range">
               <div class="vr-range-line">
-                <span class="vr-range-cap g">${eur.format(q1)} €</span>
-                <span class="vr-range-cap d">${eur.format(q3)} €</span>
+                <span class="vr-range-cap g">${eur.format(ppmQ1)}</span>
+                <span class="vr-range-cap d">${eur.format(ppmQ3)}</span>
                 <span class="vr-range-dot"></span>
               </div>
               <div class="vr-range-arrows" aria-hidden="true"><span>←</span><span>→</span></div>
-              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)} €</strong> et <strong>${eur.format(q3)} €</strong>.</p>
-              ${C.ppm ? `<p class="vr-c-m2">≈ ${eur.format(Math.round(C.ppm))} €/m²</p>` : ''}
+              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(ppmQ1)}</strong> et <strong>${eur.format(ppmQ3)} €/m²</strong>.</p>
             </div>
+            ${altHtml}
           </div>
         </div>`);
     }
-    // ③ tendance
-    if (D) {
+    if (hasTrend) {
       const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} %`;
-      sc.push(`
-        <div class="vr-scene" data-scene="2">
+      feats.push(`
+        <div class="vr-feat-slide" data-feat="${iTrend}">
           <div class="vr-sc-inner">
             <p class="vr-sc-kicker">Les prix, dans le temps</p>
             <div class="vr-sc-dhead"><span class="vr-sc-dico" aria-hidden="true">${iconeTendance(D.dir)}</span><span class="vr-sc-title">${tendanceTitre(D.dir)}</span></div>
@@ -817,32 +884,22 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </div>`);
     }
-    // ④ dernière vente (chapitre sombre)
-    sc.push(`
-      <div class="vr-scene" data-scene="3" data-bg="encre">
+    feats.push(`
+      <div class="vr-feat-slide" data-feat="${iLimit}">
         <div class="vr-sc-inner">
-          <p class="vr-sc-kicker">Dernière vente près de chez vous</p>
-          <p class="vr-sc-num" data-aprice>0 €</p>
-          <p class="vr-sc-lead">${esc(bienCourt(d))}</p>
-          <p class="vr-sc-note">${esc(distLisible(d._dist))} · ${esc(dateMois(d.d))}</p>
-        </div>
-      </div>`);
-    // ⑤ en clair
-    sc.push(`
-      <div class="vr-scene" data-scene="4" data-bg="argile">
-        <div class="vr-sc-inner">
-          <p class="vr-sc-kicker">En clair</p>
-          <p class="vr-sc-ec">${esc(ec.s1)}${ec.s2 ? ' ' + esc(ec.s2) : ''}</p>
+          <p class="vr-sc-kicker">À retenir</p>
+          <p class="vr-sc-ec">Un même quartier. Des biens très différents.</p>
+          <p class="vr-sc-limit">Une adresse donne le contexte, elle ne suffit pas à situer votre bien. Surface, état, exposition, travaux : chaque propriété est unique, et ces statistiques de quartier ne peuvent pas le refléter.</p>
         </div>
       </div>`);
 
-    const N = sc.length;
     const dots = Array.from({ length: N }, (_, i) => `<span class="vr-cine-dot${i === 0 ? ' on' : ''}"></span>`).join('');
 
     scene.innerHTML = `
       <div class="vr-cine" style="height:${N * 90 + 40}svh">
         <div class="vr-stage">
-          ${sc.join('')}
+          <div class="vr-recap">${chips.join('')}</div>
+          <div class="vr-feat">${feats.join('')}</div>
           <div class="vr-cine-dots" aria-hidden="true">${dots}</div>
         </div>
       </div>
@@ -853,33 +910,31 @@ import Layout from '../layouts/Layout.astro';
       </div>`;
     brancherConversion(model);
 
-    // Moteur scroll
     const track = scene.querySelector<HTMLElement>('.vr-cine')!;
-    const scEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-scene'));
+    const featEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-feat-slide'));
+    const chipEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-chip'));
     const dotEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-cine-dot'));
     const header = document.getElementById('site-header');
     let headerH = header?.offsetHeight ?? 64;
     document.documentElement.style.setProperty('--vr-header', headerH + 'px');
 
     const countEl = scene.querySelector<HTMLElement>('[data-count]');
-    const priceEl = scene.querySelector<HTMLElement>('[data-price]');
-    const apriceEl = scene.querySelector<HTMLElement>('[data-aprice]');
-    const dotC = scEls[1]?.querySelector<HTMLElement>('.vr-range-dot') || null;
-    const cursorD = scene.querySelector<HTMLElement>('.vr-gauge-cursor');
+    const countmEl = scene.querySelector<HTMLElement>('[data-countm]');
+    const countaEl = scene.querySelector<HTMLElement>('[data-counta]');
+    const ppmEl = scene.querySelector<HTMLElement>('[data-ppm]');
+    const rangeDot = hasPrix ? scene.querySelector<HTMLElement>('.vr-sc-range .vr-range-dot') : null;
+    const gaugeCur = hasTrend ? scene.querySelector<HTMLElement>('.vr-gauge-cursor') : null;
 
     const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
     const lead = 0.12;
     const seg = N > 1 ? (1 - 2 * lead) / (N - 1) : 1;
-    const centers = scEls.map((_, i) => lead + seg * i);
+    const centers = featEls.map((_, i) => lead + seg * i);
     let targetP = 0, curP = 0, running = false;
 
     const render = (p: number) => {
       let best = 0, bestOp = -1;
-      scEls.forEach((el, i) => {
+      featEls.forEach((el, i) => {
         const t = (p - centers[i]) / seg;
-        // Opacité : plateau plein pour la 1re scène avant son centre et la
-        // dernière après le sien ; triangulaire (largeur seg) ailleurs → une
-        // scène dominante à la fois, fondu croisé continu.
         let op: number;
         if (i === 0 && p <= centers[0]) op = 1;
         else if (i === N - 1 && p >= centers[N - 1]) op = 1;
@@ -889,16 +944,31 @@ import Layout from '../layouts/Layout.astro';
         el.style.visibility = op < 0.01 ? 'hidden' : 'visible';
         el.style.zIndex = String(Math.round(op * 100));
         el.style.transform = `translateY(${(t * 16).toFixed(1)}px) scale(${(1 - Math.min(Math.abs(t), 1) * 0.05).toFixed(3)})`;
-        // Construction interne (compteur, curseurs) : 0→1 avec un léger maintien
-        // avant le centre. Réversible (décroît au scroll inverse).
+
         const build = i === 0
           ? clamp01(p / (lead * 0.6))
           : clamp01((p - (centers[i] - seg)) / (seg * 0.7));
-        if (i === 0 && countEl) countEl.textContent = eur.format(Math.round(model.nbVentes * build));
-        if (i === 1) { if (priceEl && C) priceEl.textContent = eur.format(Math.round(C.median * build)) + ' €'; if (dotC) dotC.style.left = (50 + (posC - 50) * build).toFixed(1) + '%'; }
-        if (i === 2 && cursorD) cursorD.style.left = (50 + (posD - 50) * build).toFixed(1) + '%';
-        if (i === 3 && apriceEl) apriceEl.textContent = eur.format(Math.round(d.v * build)) + ' €';
+        if (i === iActivite && countEl) countEl.textContent = eur.format(Math.round(model.nbVentes * build));
+        if (i === iCompo) {
+          if (countmEl) countmEl.textContent = String(Math.round(model.nM * build));
+          if (countaEl) countaEl.textContent = String(Math.round(model.nA * build));
+        }
+        if (i === iPrix) {
+          if (ppmEl) ppmEl.textContent = eur.format(Math.round(ppmDom.median * build)) + ' €/m²';
+          if (rangeDot) rangeDot.style.left = (50 + (posP - 50) * build).toFixed(1) + '%';
+        }
+        if (i === iTrend && gaugeCur) gaugeCur.style.left = (50 + (posD - 50) * build).toFixed(1) + '%';
       });
+
+      chipEls.forEach((chip) => {
+        const ci = Number(chip.dataset.chip);
+        if (ci < 0 || ci >= N - 1) return;
+        const fadeStart = centers[ci] + seg * 0.25;
+        const chipP = clamp01((p - fadeStart) / (seg * 0.45));
+        chip.style.opacity = chipP.toFixed(3);
+        chip.style.transform = chipP < 0.01 ? 'translateY(6px) scale(0.92)' : chipP < 1 ? `translateY(${(6 * (1 - chipP)).toFixed(1)}px) scale(${(0.92 + 0.08 * chipP).toFixed(3)})` : '';
+      });
+
       dotEls.forEach((dt, i) => dt.classList.toggle('on', i === best));
     };
 
@@ -926,7 +996,6 @@ import Layout from '../layouts/Layout.astro';
     cineCleanup = () => { window.removeEventListener('scroll', measure); window.removeEventListener('resize', measure); running = false; };
     render(0);
     measure();
-    // Amener le début de la séquence juste sous l'en-tête (p ≈ 0).
     const y = track.getBoundingClientRect().top + window.scrollY - headerH - 4;
     window.scrollTo({ top: y, behavior: 'smooth' });
   }
@@ -934,7 +1003,7 @@ import Layout from '../layouts/Layout.astro';
   function majLigne() {
     if (!meta) return '';
     const parts: string[] = [];
-    if (meta.dateVenteLaPlusRecente) parts.push(`Données DVF disponibles jusqu’au ${dateComplete(meta.dateVenteLaPlusRecente)}`);
+    if (meta.dateVenteLaPlusRecente) parts.push(`Données DVF disponibles jusqu'au ${dateComplete(meta.dateVenteLaPlusRecente)}`);
     if (meta.generatedAt) parts.push(`extraites le ${jourMoisAn.format(new Date(meta.generatedAt))}`);
     return esc(parts.join(' · ')) + ' · Source : DVF (DGFiP).';
   }
@@ -946,10 +1015,10 @@ import Layout from '../layouts/Layout.astro';
         <div class="vr-conv" id="vr-conv">
           <p class="vr-conv-eyebrow">La suite</p>
           <p class="vr-conv-titre">Et votre bien dans tout ça&nbsp;?</p>
-          <p class="vr-conv-intro">Vous voulez comprendre comment votre bien se situe dans ce marché&nbsp;? Ces ventes parlent de votre quartier — votre bien a, lui, ses propres caractéristiques.</p>
+          <p class="vr-conv-intro">Ces ventes dessinent le contexte de votre quartier — mais votre bien a ses propres caractéristiques. Surface, état, exposition : autant de facteurs que les statistiques ne captent pas.</p>
           <div class="vr-paths" id="vr-paths">
             <button type="button" class="vr-path vr-path--1" data-path="lecture">
-              <span><span class="vr-path-t">Recevoir mon analyse personnalisée</span><span class="vr-path-d">Quelques questions · gratuit · sans engagement</span></span>
+              <span><span class="vr-path-t">Situer mon bien dans ce marché</span><span class="vr-path-d">Quelques questions · gratuit · sans engagement</span></span>
               <span class="vr-path-arrow" aria-hidden="true">→</span>
             </button>
             <button type="button" class="vr-path vr-path--2" data-path="mouaad">
@@ -980,14 +1049,14 @@ import Layout from '../layouts/Layout.astro';
   ];
   const QUALIF: Record<string, Array<{ key: string; label: string; options: Array<{ value: string; label: string }> }>> = {
     curieux: [
-      { key: 'curiosite', label: 'Qu’est-ce qui vous amène ?', options: [
+      { key: 'curiosite', label: "Qu'est-ce qui vous amène ?", options: [
         { value: 'prix-quartier', label: 'Le prix des ventes de mon quartier' },
-        { value: 'valeur-bien', label: 'La valeur d’un bien précis' },
+        { value: 'valeur-bien', label: "La valeur d'un bien précis" },
         { value: 'curiosite', label: 'Simple curiosité' } ] },
     ],
     reflexion: [
       { key: 'horizon', label: 'Quand envisagez-vous de vendre ?', options: [
-        { value: 'dans-annee', label: 'Dans l’année' }, { value: '1-2-ans', label: 'Dans 1 à 2 ans' }, { value: 'sans-date', label: 'Pas encore de date' } ] },
+        { value: 'dans-annee', label: "Dans l'année" }, { value: '1-2-ans', label: 'Dans 1 à 2 ans' }, { value: 'sans-date', label: 'Pas encore de date' } ] },
       { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
       { key: 'besoin', label: 'Votre besoin principal ?', options: [
         { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
@@ -1003,11 +1072,11 @@ import Layout from '../layouts/Layout.astro';
     ],
     envente: [
       { key: 'dureeEnVente', label: 'Depuis combien de temps est-il en vente ?', options: [
-        { value: 'moins-1-mois', label: 'Moins d’un mois' }, { value: '1-3-mois', label: '1 à 3 mois' },
+        { value: 'moins-1-mois', label: "Moins d'un mois" }, { value: '1-3-mois', label: '1 à 3 mois' },
         { value: '3-6-mois', label: '3 à 6 mois' }, { value: 'plus-6-mois', label: 'Plus de 6 mois' } ] },
-      { key: 'problemePrincipal', label: 'Qu’est-ce qui bloque le plus ?', options: [
-        { value: 'peu-visites', label: 'Peu de visites' }, { value: 'visites-sans-offre', label: 'Des visites mais pas d’offre' },
-        { value: 'offres-basses', label: 'Des offres trop basses' }, { value: 'peu-vue', label: 'L’annonce est peu vue' },
+      { key: 'problemePrincipal', label: "Qu'est-ce qui bloque le plus ?", options: [
+        { value: 'peu-visites', label: 'Peu de visites' }, { value: 'visites-sans-offre', label: "Des visites mais pas d'offre" },
+        { value: 'offres-basses', label: 'Des offres trop basses' }, { value: 'peu-vue', label: "L'annonce est peu vue" },
         { value: 'je-ne-sais-pas', label: 'Je ne sais pas' } ] },
     ],
     acheteur: [
@@ -1017,7 +1086,7 @@ import Layout from '../layouts/Layout.astro';
         { value: '250-400', label: '250 à 400 000 €' }, { value: 'plus-400', label: 'Plus de 400 000 €' },
         { value: 'nsp', label: 'Je ne sais pas encore' } ] },
       { key: 'horizon', label: 'Dans quel délai ?', options: [
-        { value: 'rapidement', label: 'Rapidement' }, { value: 'dans-annee', label: 'Dans l’année' }, { value: 'sans-date', label: 'Pas pressé' } ] },
+        { value: 'rapidement', label: 'Rapidement' }, { value: 'dans-annee', label: "Dans l'année" }, { value: 'sans-date', label: 'Pas pressé' } ] },
     ],
   };
 
@@ -1040,7 +1109,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="vr-panneau">
         <p class="vr-q-label">Parlons de votre projet.</p>
         <p class="font-sans text-[15px] text-brun leading-relaxed" style="margin-bottom:1.1rem">
-          Pas d’étape à remplir : contactez Mouaad directement, il vous répond personnellement.
+          Pas d'étape à remplir : contactez Mouaad directement, il vous répond personnellement.
         </p>
         <div class="vr-contact-liens">
           <a href="tel:+33781380121" class="btn-primaire">Appeler Mouaad</a>
@@ -1109,14 +1178,14 @@ import Layout from '../layouts/Layout.astro';
           <div class="vr-q-progress">${dots}</div>
           <p class="vr-q-label">Où vous envoyer votre analyse personnalisée ?</p>
           <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
-            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c’est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
+            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
           </p>
           <form id="vr-lead" novalidate>
             <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
             <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
             <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#B8AA97">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
-            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J’accepte d’être recontacté au sujet de ma demande — et pour rien d’autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
             <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
             <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
             <button type="button" class="vr-q-back">← Revenir</button>
@@ -1154,10 +1223,10 @@ import Layout from '../layouts/Layout.astro';
         prenom: fd.get('prenom'), email: fd.get('email'), telephone: fd.get('telephone') || null,
         site_web: fd.get('site_web') || '',
         contexteInfographie: {
-          derniereVente: d ? `${eur.format(d.v)} € · ${bienCourt(d)} · ${dateMois(d.d)}` : null,
           nbVentes: model.nbVentes, rayon: model.Rw,
-          prixMedian: model.C ? Math.round(model.C.median) : null,
-          fourchette: model.C ? [Math.round(model.C.q1), Math.round(model.C.q3)] : null,
+          composition: { maisons: model.nM, appartements: model.nA },
+          ppmMaisons: model.ppmM ? { median: Math.round(model.ppmM.median), q1: Math.round(model.ppmM.q1), q3: Math.round(model.ppmM.q3) } : null,
+          ppmAppartements: model.ppmA ? { median: Math.round(model.ppmA.median), q1: Math.round(model.ppmA.q1), q3: Math.round(model.ppmA.q3) } : null,
           tendance: model.D ? { direction: model.D.dir, pct: Number(model.D.delta.toFixed(1)) } : null,
         },
       };
@@ -1166,16 +1235,16 @@ import Layout from '../layouts/Layout.astro';
         if (rep.ok) {
           panneau.innerHTML = `
             <div class="vr-panneau">
-              <p class="vr-q-label">C’est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre analyse personnalisée et vous l’envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+              <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
+              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre analyse personnalisée et vous l'envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
             </div>`;
         } else {
           const data = await rep.json().catch(() => null);
-          err.textContent = data?.message || 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.';
+          err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
           err.classList.remove('hidden');
         }
       } catch {
-        err.textContent = 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.';
+        err.textContent = "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
         err.classList.remove('hidden');
       } finally {
         envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir mon analyse personnalisée';
@@ -1186,20 +1255,20 @@ import Layout from '../layouts/Layout.astro';
   // ——— États vides / attente ———
   function afficherDonneesEnAttente() {
     scene.hidden = false;
-    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">L’accès aux ventes de votre secteur est en cours de finalisation.</p>
+    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">L'accès aux ventes de votre secteur est en cours de finalisation.</p>
       <p class="font-sans text-[15px] text-brun leading-relaxed">Les données publiques de ventes (DVF) seront disponibles ici très prochainement. En attendant, Mouaad peut vous transmettre les ventes récentes autour de votre adresse.</p>
       <div class="flex flex-wrap gap-3 mt-5"><a href="/contact?src=votre-rue" class="btn-primaire">Demander à Mouaad</a><a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a></div></div>`;
   }
   function afficherAucun(label: string) {
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
-      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de « ${esc(label)} », aucune vente ne figure pour l’instant dans les données publiques disponibles (DVF). Cette base n’est pas exhaustive.</p>
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de « ${esc(label)} », aucune vente ne figure pour l'instant dans les données publiques disponibles (DVF). Cette base n'est pas exhaustive.</p>
       <div class="flex flex-wrap gap-3 mt-5"><a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a><a href="/contact?src=votre-rue" class="btn-secondaire">Échanger avec Mouaad</a></div></div>`;
   }
 
   // ——— Moment d'analyse (adossé au calcul réel, sans fausse attente) ———
   async function jouerAnalyseEtRendre(lat: number, lon: number) {
-    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', 'Lecture de l’évolution du secteur…'];
+    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', "Lecture de l'évolution du secteur…"];
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-analyse">${messages.map((m, i) => `<div class="vr-analyse-step" data-i="${i}"><span class="vr-analyse-dot"></span><span>${m}</span></div>`).join('')}</div>`;
     const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-analyse-step'));
@@ -1273,7 +1342,7 @@ import Layout from '../layouts/Layout.astro';
     let coords = selection;
     if (!coords) {
       const q = input.value.trim();
-      if (q.length < 3) { scene.hidden = true; geoErreur.textContent = 'Indiquez d’abord votre rue ou votre adresse.'; geoErreur.classList.remove('hidden'); return; }
+      if (q.length < 3) { scene.hidden = true; geoErreur.textContent = "Indiquez d'abord votre rue ou votre adresse."; geoErreur.classList.remove('hidden'); return; }
       try { const feats = await geocoder(q, false, 1); if (!feats.length) { afficherAucun(q); return; } const [lon, lat] = feats[0].geometry.coordinates; coords = { lon, lat, label: feats[0].properties?.label || q }; selection = coords; }
       catch { geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.'; geoErreur.classList.remove('hidden'); scene.hidden = true; return; }
     }
