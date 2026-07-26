@@ -296,93 +296,134 @@ import Layout from '../layouts/Layout.astro';
   .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
 
   /* ——————————————————————————————————————————————————————————————
-     Séquence cumulative (scroll-driven, stage épinglé)
-     Chaque « temps » est d'abord la star, puis rétrécit en pastille
-     compacte : A → A+B → A+B+C → A+B+C+D.
-     Repli empilé en reduced-motion.
+     Infographique auto-animé (data-driven, pas de scroll requis)
+     3 révélations s'enchaînent automatiquement (~8 s).
+     L'état final est lisible en 2 s sans avoir vu l'animation.
+     Repli empilé géré par construireStack (prefers-reduced-motion).
      —————————————————————————————————————————————————————————————— */
-  .vr-cine { position: relative; }
-  .vr-stage {
-    position: sticky;
-    top: var(--vr-header, 64px);
-    height: calc(100svh - var(--vr-header, 64px));
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+
+  .vr-infogr {
     background: #F7F2EA;
     border-radius: 22px;
+    padding: 1.75rem clamp(1.25rem, 5vw, 2.5rem) 2rem;
+    overflow: hidden;
   }
 
-  .vr-recap {
-    flex: 0 0 auto;
-    display: flex; flex-wrap: wrap; gap: 0.5rem;
-    padding: 1.1rem clamp(1rem, 4vw, 1.5rem) 0;
-    z-index: 5;
+  /* Bloc révélation — fade/slide in séquentiel */
+  .vr-ig-rev {
+    margin-bottom: 2.25rem;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
   }
-  .vr-chip {
-    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 10px;
-    padding: 0.45rem 0.75rem; will-change: opacity, transform;
+  .vr-ig-rev.is-on { opacity: 1; transform: none; }
+
+  .vr-ig-kicker {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.74rem; font-weight: 600;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: #A85638; margin-bottom: 0.35rem;
   }
-  .vr-chip-val {
-    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
-    font-size: 1.05rem; color: #211C16; line-height: 1.15;
-  }
-  .vr-chip-lbl {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.65rem;
-    color: #6B5D4F; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.1rem;
+  .vr-ig-titre {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.2rem, 4.2vw, 1.65rem); line-height: 1.2;
+    color: #211C16; margin-bottom: 1.1rem;
   }
 
-  .vr-feat { flex: 1; position: relative; min-height: 0; }
-  .vr-feat-slide {
-    position: absolute; inset: 0;
-    display: flex; align-items: center;
-    padding: 1rem clamp(1.25rem, 6vw, 3.5rem);
-    opacity: 0; will-change: opacity, transform;
+  /* ——— Rév. 1 : nuage de points + distribution ——— */
+
+  .vr-ig-dots-svg { display: block; width: 100%; max-width: 26rem; height: 80px; margin: 0 auto 0.55rem; }
+
+  .ig-dot { transition: transform 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94), fill 0.5s ease; }
+
+  .vr-ig-legend {
+    display: flex; gap: 1.5rem; justify-content: center;
+    margin-bottom: 1rem; transition: opacity 0.5s ease;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #211C16;
   }
-  .vr-sc-inner { width: 100%; max-width: 34rem; margin: 0 auto; }
+  .vr-ig-leg-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 999px;
+    margin-right: 0.32rem; vertical-align: middle; position: relative; top: -1px;
+  }
 
-  .vr-sc-kicker { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #A85638; margin-bottom: 1.1rem; }
-  .vr-sc-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 0.98; letter-spacing: -0.02em; font-size: clamp(3.6rem, 20vw, 6.5rem); color: inherit; }
-  .vr-sc-lead { font-family: 'Instrument Sans', sans-serif; font-size: clamp(1.05rem, 3.5vw, 1.35rem); margin-top: 0.6rem; }
-  .vr-sc-note { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 0.6rem; line-height: 1.5; }
+  /* Axe distribution IQR */
+  .vr-ig-dist-wrap { max-width: 22rem; margin: 0.25rem auto 0; }
+  .vr-ig-dist-track {
+    position: relative; height: 16px;
+    background: #E0D3BF; border-radius: 999px; overflow: hidden;
+  }
+  .vr-ig-dist-iqr {
+    position: absolute; inset: 0 auto 0 0; width: 0%;
+    background: rgba(168,86,56,0.22); border-radius: 999px;
+    transition: width 0.95s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .vr-ig-dist-med {
+    position: absolute; top: -3px; bottom: -3px; width: 4px;
+    background: #A85638; border-radius: 2px;
+    transform: translateX(-50%); opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+  .vr-ig-dist-lbls {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-top: 0.5rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #211C16; font-weight: 600;
+  }
+  .vr-ig-dist-lbls span:nth-child(2) { color: #A85638; font-size: 0.78rem; transition: opacity 0.45s ease; }
+  .vr-ig-dist-sublbls {
+    display: flex; justify-content: space-between;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem;
+    color: #9C8E7C; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-top: 0.15rem; padding: 0 0.05rem;
+  }
+  .vr-ig-iqr-note {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem;
+    color: #6B5D4F; margin-top: 1rem; line-height: 1.55;
+    transition: opacity 0.5s ease;
+  }
 
-  .vr-compo { display: flex; align-items: baseline; gap: 1.5rem; flex-wrap: wrap; margin-top: 0.3rem; }
-  .vr-compo-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 0.98; letter-spacing: -0.02em; font-size: clamp(2.8rem, 14vw, 4.8rem); color: inherit; }
-  .vr-compo-type { font-family: 'Instrument Sans', sans-serif; font-size: 1.1rem; color: #6B5D4F; margin-top: 0.15rem; }
-  .vr-compo-sep { font-family: 'Fraunces', serif; font-size: 2.5rem; color: #C0B29B; align-self: center; }
+  /* ——— Rév. 2 : effet surface (appartements) ——— */
 
-  /* C — prix €/m² + curseur de fourchette (plein écran) */
-  .vr-sc-range { margin-top: 2rem; }
-  .vr-sc-range .vr-range-line { position: relative; height: 3px; background: #E0D3BF; margin: 0 0.2rem; border-radius: 3px; }
-  .vr-sc-range .vr-range-dot { position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; border-radius: 999px; background: #A85638; box-shadow: 0 0 0 5px #F7F2EA, 0 2px 8px rgba(168,86,56,0.55); transform: translate(-50%, -50%); }
-  .vr-sc-range .vr-range-cap { position: absolute; top: -1.7rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16; font-weight: 600; }
-  .vr-sc-range .vr-range-cap.g { left: 0; } .vr-sc-range .vr-range-cap.d { right: 0; }
-  .vr-sc-range .vr-range-arrows { display: flex; justify-content: space-between; color: #C0B29B; font-size: 1.05rem; margin-top: 0.4rem; }
-  .vr-c-phrase { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #6B5D4F; margin-top: 1.2rem; line-height: 1.5; }
+  .vr-ig-sep { height: 1px; background: #E8DFD0; margin: 0 0 2.25rem; }
+  .vr-ig-bars { display: grid; gap: 0.8rem; max-width: 22rem; }
+  .vr-ig-bar-row { display: grid; grid-template-columns: 5.5rem 1fr 6rem; align-items: center; gap: 0.65rem; }
+  .vr-ig-bar-label { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; color: #6B5D4F; }
+  .vr-ig-bar-track { height: 11px; border-radius: 999px; background: #E0D3BF; overflow: hidden; }
+  .vr-ig-bar-fill { height: 100%; border-radius: 999px; width: 0%; transition: width 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+  .vr-ig-bar-fill--hi { background: #A85638; }
+  .vr-ig-bar-fill--lo { background: #C0B29B; }
+  .vr-ig-bar-val { font-family: 'Fraunces', serif; font-weight: 500; font-size: 0.95rem; color: #211C16; text-align: right; }
+  .vr-ig-surf-note { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; margin-top: 0.85rem; line-height: 1.55; max-width: 22rem; }
 
+  /* ——— Rév. 3 : sparkline temporelle ——— */
+
+  .vr-ig-spark-wrap { max-width: 22rem; }
+  .vr-ig-spark-svg { display: block; width: 100%; overflow: visible; }
+  .vr-ig-spark-path { fill: none; stroke: #A85638; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .vr-ig-spark-dot { fill: #A85638; opacity: 0; transition: opacity 0.3s ease; }
+  .vr-ig-spark-dot.on { opacity: 1; }
+  .vr-ig-spark-yr { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; fill: #9C8E7C; text-anchor: middle; }
+  .vr-ig-spark-dir { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.05rem, 3.5vw, 1.35rem); color: #211C16; margin-top: 0.65rem; }
+  .vr-ig-spark-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; margin-top: 0.2rem; }
+
+  /* ——— Conclusion ——— */
+  .vr-conclusion {
+    padding-top: 2rem; margin-top: 1rem;
+    border-top: 1.5px solid #E0D3BF;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+  .vr-conclusion.is-on { opacity: 1; transform: none; }
+  .vr-conc-eyebrow {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: #8A7C6A; margin-bottom: 1rem;
+  }
+  .vr-conc-body { font-family: 'Instrument Sans', sans-serif; font-size: clamp(0.98rem, 3vw, 1.1rem); line-height: 1.68; color: #211C16; }
+
+  /* Gardées — utilisées par construireStack */
   .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E8DFD0; }
   .vr-ppm-alt-type { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7C6A; }
   .vr-ppm-alt-val { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.3rem; color: #211C16; margin-top: 0.25rem; }
   .vr-ppm-alt-range { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; margin-top: 0.15rem; }
-
-  /* D — tendance plein écran */
-  .vr-sc-dhead { display: flex; align-items: center; gap: 0.7rem; }
-  .vr-sc-dico { width: 40px; height: 40px; flex: 0 0 auto; } .vr-sc-dico svg { width: 100%; height: 100%; }
-  .vr-sc-title { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.7rem, 6.5vw, 2.6rem); line-height: 1.08; }
-  .vr-sc-gauge { margin-top: 1.7rem; }
-  .vr-sc-gauge .vr-gauge-track { position: relative; height: 14px; border-radius: 999px; background: linear-gradient(90deg, #DCD2C0 0 33%, #EFE6D6 33% 67%, #E6C3AB 67% 100%); }
-  .vr-sc-gauge .vr-gauge-cursor { position: absolute; top: -5px; left: 50%; width: 5px; height: 24px; border-radius: 2px; background: #211C16; transform: translateX(-50%); }
-  .vr-sc-gauge .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.6rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9C8E7C; }
-  .vr-sc-gauge .vr-gauge-lbls .on { color: #A85638; font-weight: 600; }
-  .vr-d-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 1rem; }
-
-  .vr-sc-ec { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.5rem, 5.4vw, 2.2rem); line-height: 1.32; }
-  .vr-sc-limit { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 1.2rem; line-height: 1.55; }
-
-  /* Repère de progression de la séquence */
-  .vr-cine-dots { position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%); display: flex; gap: 0.5rem; z-index: 6; }
-  .vr-cine-dot { width: 7px; height: 7px; border-radius: 999px; background: rgba(107,93,79,0.28); transition: background 0.3s, transform 0.3s; }
-  .vr-cine-dot.on { background: #A85638; transform: scale(1.35); }
 
   .vr-after { margin-top: 1.5rem; }
 
@@ -390,10 +431,15 @@ import Layout from '../layouts/Layout.astro';
     .vr-block { opacity: 1; transform: none; transition: none; }
     .vr-range-dot, .vr-gauge-cursor { transition: none; }
     .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
-    .vr-stage { position: static; height: auto; overflow: visible; background: transparent; border-radius: 0; }
-    .vr-feat-slide { position: relative; opacity: 1 !important; transform: none !important; margin-bottom: 0.75rem; border-radius: 20px; background: #F7F2EA; }
-    .vr-recap { display: none; }
-    .vr-cine-dots { display: none; }
+    .vr-ig-rev { opacity: 1; transform: none; transition: none; }
+    .ig-dot { transition: none; }
+    .vr-ig-bar-fill { transition: none; }
+    .vr-ig-dist-iqr { transition: none; width: 100%; }
+    .vr-ig-dist-med { transition: none; opacity: 1; }
+    .vr-ig-iqr-note { transition: none; opacity: 1; }
+    .vr-ig-legend { transition: none; opacity: 1 !important; }
+    .vr-ig-spark-dot { transition: none; opacity: 1; }
+    .vr-conclusion { opacity: 1; transform: none; transition: none; }
   }
 </style>
 
@@ -531,7 +577,7 @@ import Layout from '../layouts/Layout.astro';
 
     // Seuil de stabilité : |delta| < 3 % → prix globalement stables.
     const dir = delta >= 3 ? 'hausse' : delta <= -3 ? 'baisse' : 'stable';
-    return { delta, dir, anneeDebut: ANNEE_REF, anneeFin: ANNEE_FIN };
+    return { delta, dir, anneeDebut: ANNEE_REF, anneeFin: ANNEE_FIN, annualMeds: xs.map((y, i) => ({ year: y, med: Math.round(ys[i]) })) };
   }
 
   // ——— Modèle : tous les indicateurs, calculés sur les vraies données ———
@@ -568,7 +614,21 @@ import Layout from '../layouts/Layout.astro';
     const activite = near.filter((t) => t.t === dom && t.d >= '2025').length >= 5;
     const autres = [...aSet].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere?.id).slice(0, 4);
 
-    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, D, derniere, activite, autres };
+    const surfaceEffect = (() => {
+      const appts = near.filter((t) => t.t === 'Appartement' && t.sb > 0);
+      if (appts.length < 40) return null;
+      const small = appts.filter((t) => t.sb < 50);
+      const large = appts.filter((t) => t.sb >= 80);
+      if (small.length < 20 || large.length < 20) return null;
+      const ppmSmall = small.map((t) => t.v / t.sb).sort((a: number, b: number) => a - b);
+      const ppmLarge = large.map((t) => t.v / t.sb).sort((a: number, b: number) => a - b);
+      const medS = median(ppmSmall) as number;
+      const medL = median(ppmLarge) as number;
+      const deltaPct = Math.round(((medS - medL) / medL) * 100);
+      if (Math.abs(deltaPct) < 10) return null;
+      return { smallLabel: '< 50 m²', smallMed: Math.round(medS), smallN: small.length, largeLabel: '≥ 80 m²', largeMed: Math.round(medL), largeN: large.length, deltaPct };
+    })();
+    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, D, derniere, activite, autres, surfaceEffect };
   }
 
   // ——— « En clair » : phrases par règles fixes ———
@@ -788,119 +848,146 @@ import Layout from '../layouts/Layout.astro';
       </details>`;
   }
 
-  // ——— Séquence cinématographique (scroll-driven, stage épinglé) ———
+  // ——— Infographique auto-animé (data-driven, pas de scroll requis) ———
   let cineCleanup: null | (() => void) = null;
 
   function construireCine(model: any) {
     if (cineCleanup) { cineCleanup(); cineCleanup = null; }
 
     const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
-    const ppmAlt = model.dom === 'Maison' ? model.ppmA : model.ppmM;
-    const altType = model.dom === 'Maison' ? 'Appartement' : 'Maison';
     const D = model.D;
+    const sf = model.surfaceEffect;
+    const touts: ReturnType<typeof setTimeout>[] = [];
+    const later = (ms: number, fn: () => void) => { touts.push(setTimeout(fn, ms)); };
 
-    let pIdx = 0;
-    const iActivite = pIdx++;
-    const iCompo = pIdx++;
-    const hasPrix = !!ppmDom;
-    const iPrix = hasPrix ? pIdx++ : -1;
-    const hasTrend = !!D;
-    const iTrend = hasTrend ? pIdx++ : -1;
-    const iLimit = pIdx++;
-    const N = pIdx;
+    // ——— Dot cloud: positions pseudo-aléatoires déterministes ———
+    const NDOTS = 42;
+    const propM = model.nM / (model.nM + model.nA);
+    const nDotM = Math.max(4, Math.min(38, Math.round(NDOTS * propM)));
+    const SVG_W = 320, SVG_H = 78;
+    const CX = SVG_W / 2, CY = SVG_H / 2;
+    let _s = 0x9e3779b9;
+    const rnd = () => { _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s ^= _s >>> 16; return (_s >>> 0) / 0x100000000; };
+    type Dot = { x0: number; y0: number; dx: number; dy: number; isM: boolean };
+    const dots: Dot[] = Array.from({ length: NDOTS }, (_, i) => {
+      const isM = i < nDotM;
+      const x0 = CX + (rnd() * 2 - 1) * 32;
+      const y0 = CY + (rnd() * 2 - 1) * 20;
+      const x1 = isM ? 18 + rnd() * 80 : 222 + rnd() * 80;
+      const y1 = 10 + rnd() * 58;
+      return { x0, y0, dx: x1 - x0, dy: y1 - y0, isM };
+    });
 
-    const ppmMed = hasPrix ? Math.round(ppmDom.median) : 0;
-    const ppmQ1 = hasPrix ? Math.round(ppmDom.q1) : 0;
-    const ppmQ3 = hasPrix ? Math.round(ppmDom.q3) : 0;
-    const posP = hasPrix && ppmQ3 > ppmQ1 ? Math.max(6, Math.min(94, ((ppmMed - ppmQ1) / (ppmQ3 - ppmQ1)) * 100)) : 50;
-    const posD = hasTrend ? gaugePos(D.delta) : 50;
-
-    const chips: string[] = [];
-    chips.push(`<div class="vr-chip" data-chip="${iActivite}" style="opacity:0"><p class="vr-chip-val">${eur.format(model.nbVentes)}</p><p class="vr-chip-lbl">ventes depuis 2021</p></div>`);
-    chips.push(`<div class="vr-chip" data-chip="${iCompo}" style="opacity:0"><p class="vr-chip-val">${model.nM} M · ${model.nA} A</p><p class="vr-chip-lbl">maisons · apparts</p></div>`);
-    if (hasPrix) chips.push(`<div class="vr-chip" data-chip="${iPrix}" style="opacity:0"><p class="vr-chip-val">~${eur.format(ppmMed)} €/m²</p><p class="vr-chip-lbl">${esc(typePlurielNu(model.dom))}</p></div>`);
-    if (hasTrend) {
-      const dirTxt = D.dir === 'hausse' ? 'Hausse' : D.dir === 'baisse' ? 'Baisse' : 'Stable';
-      chips.push(`<div class="vr-chip" data-chip="${iTrend}" style="opacity:0"><p class="vr-chip-val">${dirTxt}</p><p class="vr-chip-lbl">tendance prix</p></div>`);
+    // ——— Distribution IQR ———
+    const hasDist = !!ppmDom;
+    let distHtml = '';
+    if (hasDist) {
+      const pQ1 = Math.round(ppmDom.q1), pMed = Math.round(ppmDom.median), pQ3 = Math.round(ppmDom.q3);
+      const medPct = pQ3 > pQ1 ? Math.max(8, Math.min(92, Math.round(((pMed - pQ1) / (pQ3 - pQ1)) * 100))) : 50;
+      distHtml = `
+        <div class="vr-ig-dist-wrap">
+          <div class="vr-ig-dist-track">
+            <div class="vr-ig-dist-iqr" id="vr-iqr"></div>
+            <div class="vr-ig-dist-med" id="vr-med" style="left:${medPct}%"></div>
+          </div>
+          <div class="vr-ig-dist-lbls">
+            <span>${eur.format(pQ1)}&nbsp;€/m²</span>
+            <span id="vr-med-lbl" style="opacity:0">méd.&nbsp;${eur.format(pMed)}&nbsp;€/m²</span>
+            <span>${eur.format(pQ3)}&nbsp;€/m²</span>
+          </div>
+          <div class="vr-ig-dist-sublbls"><span>1er quartile</span><span></span><span>3e quartile</span></div>
+          <p class="vr-ig-iqr-note" id="vr-iqr-note" style="opacity:0">La moitié des ${esc(typePlurielNu(model.dom))} vendues entre <strong>${eur.format(pQ1)}</strong> et <strong>${eur.format(pQ3)}&nbsp;€/m²</strong>. Les données constatent cet écart&nbsp;— elles n'en expliquent pas encore toutes les causes.</p>
+        </div>`;
     }
 
-    const feats: string[] = [];
-    feats.push(`
-      <div class="vr-feat-slide" data-feat="${iActivite}">
-        <div class="vr-sc-inner">
-          <p class="vr-sc-kicker">Autour de cette adresse</p>
-          <p class="vr-sc-num" data-count="${model.nbVentes}">0</p>
-          <p class="vr-sc-lead">ventes retrouvées près de vous</p>
-          <p class="vr-sc-note">dans un rayon d'environ ${rayonTxt(model.Rw)} · depuis 2021</p>
-        </div>
-      </div>`);
-    feats.push(`
-      <div class="vr-feat-slide" data-feat="${iCompo}">
-        <div class="vr-sc-inner">
-          <p class="vr-sc-kicker">Ce qui se vend ici</p>
-          <div class="vr-compo">
-            <div><p class="vr-compo-num" data-countm="${model.nM}">0</p><p class="vr-compo-type">maisons</p></div>
-            <span class="vr-compo-sep" aria-hidden="true">·</span>
-            <div><p class="vr-compo-num" data-counta="${model.nA}">0</p><p class="vr-compo-type">appartements</p></div>
-          </div>
-          <p class="vr-sc-note" style="margin-top:1.2rem">Deux marchés différents. Mieux vaut ne pas les mélanger.</p>
-        </div>
-      </div>`);
-    if (hasPrix) {
-      let altHtml = '';
-      if (ppmAlt) {
-        altHtml = `<div class="vr-ppm-alt"><p class="vr-ppm-alt-type">${esc(typePlurielNu(altType))}</p><p class="vr-ppm-alt-val">${eur.format(Math.round(ppmAlt.median))} €/m²</p><p class="vr-ppm-alt-range">fourchette ${eur.format(Math.round(ppmAlt.q1))} – ${eur.format(Math.round(ppmAlt.q3))} €/m²</p></div>`;
-      }
-      feats.push(`
-        <div class="vr-feat-slide" data-feat="${iPrix}">
-          <div class="vr-sc-inner">
-            <p class="vr-sc-kicker">Le prix au m² observé · ${esc(typePlurielNu(model.dom))}</p>
-            <p class="vr-sc-num" data-ppm="${ppmMed}">0 €/m²</p>
-            <div class="vr-sc-range">
-              <div class="vr-range-line">
-                <span class="vr-range-cap g">${eur.format(ppmQ1)}</span>
-                <span class="vr-range-cap d">${eur.format(ppmQ3)}</span>
-                <span class="vr-range-dot"></span>
+    // ——— Révélation 2 : effet surface (appartements) ———
+    let rev2Html = '';
+    if (sf) {
+      const maxV = Math.max(sf.smallMed, sf.largeMed);
+      const sPct = Math.round((sf.smallMed / maxV) * 100);
+      const lPct = Math.round((sf.largeMed / maxV) * 100);
+      rev2Html = `
+        <div class="vr-ig-sep"></div>
+        <div class="vr-ig-rev" id="vr-rev2">
+          <p class="vr-ig-kicker">Révélation 2</p>
+          <p class="vr-ig-titre">Même le prix au&nbsp;m² doit être comparé avec prudence</p>
+          <div class="vr-ig-viz">
+            <div class="vr-ig-bars">
+              <div class="vr-ig-bar-row">
+                <span class="vr-ig-bar-label">${esc(sf.smallLabel)}</span>
+                <div class="vr-ig-bar-track"><div class="vr-ig-bar-fill vr-ig-bar-fill--hi" data-pct="${sPct}"></div></div>
+                <span class="vr-ig-bar-val">${eur.format(sf.smallMed)}&nbsp;€/m²</span>
               </div>
-              <div class="vr-range-arrows" aria-hidden="true"><span>←</span><span>→</span></div>
-              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(ppmQ1)}</strong> et <strong>${eur.format(ppmQ3)} €/m²</strong>.</p>
+              <div class="vr-ig-bar-row">
+                <span class="vr-ig-bar-label">${esc(sf.largeLabel)}</span>
+                <div class="vr-ig-bar-track"><div class="vr-ig-bar-fill vr-ig-bar-fill--lo" data-pct="${lPct}"></div></div>
+                <span class="vr-ig-bar-val">${eur.format(sf.largeMed)}&nbsp;€/m²</span>
+              </div>
             </div>
-            ${altHtml}
+            <p class="vr-ig-surf-note">Écart constaté : les petits appartements (${esc(sf.smallLabel)}) s'échangent en moyenne <strong>${sf.deltaPct > 0 ? '+' : ''}${sf.deltaPct}&nbsp;%</strong> par rapport aux grands (${esc(sf.largeLabel)}). DVF constate cet écart&nbsp;— il ne l'explique pas.</p>
           </div>
-        </div>`);
+        </div>`;
     }
-    if (hasTrend) {
-      const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} %`;
-      feats.push(`
-        <div class="vr-feat-slide" data-feat="${iTrend}">
-          <div class="vr-sc-inner">
-            <p class="vr-sc-kicker">Les prix, dans le temps</p>
-            <div class="vr-sc-dhead"><span class="vr-sc-dico" aria-hidden="true">${iconeTendance(D.dir)}</span><span class="vr-sc-title">${tendanceTitre(D.dir)}</span></div>
-            <div class="vr-sc-gauge">
-              <div class="vr-gauge-track"><span class="vr-gauge-cursor"></span></div>
-              <div class="vr-gauge-lbls"><span class="${D.dir === 'baisse' ? 'on' : ''}">Baisse</span><span class="${D.dir === 'stable' ? 'on' : ''}">Stable</span><span class="${D.dir === 'hausse' ? 'on' : ''}">Hausse</span></div>
-            </div>
-            <p class="vr-d-pct">${pct} sur le prix au m², estimé sur ${D.anneeDebut}–${D.anneeFin}</p>
-          </div>
-        </div>`);
-    }
-    feats.push(`
-      <div class="vr-feat-slide" data-feat="${iLimit}">
-        <div class="vr-sc-inner">
-          <p class="vr-sc-kicker">À retenir</p>
-          <p class="vr-sc-ec">Un même quartier. Des biens très différents.</p>
-          <p class="vr-sc-limit">Une adresse donne le contexte, elle ne suffit pas à situer votre bien. Surface, état, exposition, travaux : chaque propriété est unique, et ces statistiques de quartier ne peuvent pas le refléter.</p>
-        </div>
-      </div>`);
 
-    const dots = Array.from({ length: N }, (_, i) => `<span class="vr-cine-dot${i === 0 ? ' on' : ''}"></span>`).join('');
+    // ——— Révélation 3 : sparkline temporelle ———
+    let rev3Html = '';
+    const hasSpark = !!D && Array.isArray(D.annualMeds) && D.annualMeds.length >= 3;
+    if (hasSpark) {
+      const meds = D.annualMeds as { year: number; med: number }[];
+      const spW = 280, spH = 70, topM = 12, botM = 22, availH = spH - topM - botM;
+      const xPts = meds.map((_: any, i: number) => 16 + (i / (meds.length - 1)) * (spW - 32));
+      const vals = meds.map((m: any) => m.med);
+      const minV = Math.min(...vals), maxV = Math.max(...vals), rng = maxV - minV || 1;
+      const yPts = vals.map((v: number) => topM + ((maxV - v) / rng) * availH);
+      const lineD = xPts.map((x: number, i: number) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${yPts[i].toFixed(1)}`).join(' ');
+      const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} % sur ${D.anneeDebut}–${D.anneeFin}`;
+      const dirTxt = D.dir === 'hausse' ? 'Tendance à la hausse' : D.dir === 'baisse' ? 'Tendance à la baisse' : 'Prix globalement stables';
+      const circles = meds.map((m: any, i: number) => `<circle class="vr-ig-spark-dot" data-si="${i}" cx="${xPts[i].toFixed(1)}" cy="${yPts[i].toFixed(1)}" r="4"/>`).join('');
+      const labels = meds.map((m: any, i: number) => `<text x="${xPts[i].toFixed(1)}" y="${spH - 2}" class="vr-ig-spark-yr">${m.year}</text>`).join('');
+      rev3Html = `
+        <div class="vr-ig-sep"></div>
+        <div class="vr-ig-rev" id="vr-rev3">
+          <p class="vr-ig-kicker">Révélation 3</p>
+          <p class="vr-ig-titre">Le marché a une histoire</p>
+          <div class="vr-ig-viz">
+            <div class="vr-ig-spark-wrap">
+              <svg class="vr-ig-spark-svg" viewBox="0 0 ${spW} ${spH}" aria-hidden="true">
+                <path d="${lineD}" class="vr-ig-spark-path" id="vr-spark-path"/>
+                ${circles}
+                ${labels}
+              </svg>
+              <p class="vr-ig-spark-dir">${esc(dirTxt)}</p>
+              <p class="vr-ig-spark-pct">${esc(pct)}</p>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    // ——— Construction HTML ———
+    const domColor = '#A85638', altColor = '#5B7B9B';
+    const dotCircles = dots.map((d, i) =>
+      `<circle class="ig-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 4.5 : 3.5}" fill="#C0B29B" data-di="${i}"/>`
+    ).join('');
 
     scene.innerHTML = `
-      <div class="vr-cine" style="height:${N * 90 + 40}svh">
-        <div class="vr-stage">
-          <div class="vr-recap">${chips.join('')}</div>
-          <div class="vr-feat">${feats.join('')}</div>
-          <div class="vr-cine-dots" aria-hidden="true">${dots}</div>
+      <div class="vr-infogr">
+        <div class="vr-ig-rev is-on" id="vr-rev1">
+          <p class="vr-ig-kicker">Révélation 1</p>
+          <p class="vr-ig-titre">Votre quartier n'a pas un prix unique</p>
+          <div class="vr-ig-viz">
+            <svg class="vr-ig-dots-svg" viewBox="0 0 ${SVG_W} ${SVG_H}" aria-hidden="true">${dotCircles}</svg>
+            <div class="vr-ig-legend" id="vr-ig-legend" style="opacity:0">
+              <span><span class="vr-ig-leg-dot" style="background:${domColor}"></span>${model.nM} maisons</span>
+              <span><span class="vr-ig-leg-dot" style="background:${altColor}"></span>${model.nA} appartements</span>
+            </div>
+            ${distHtml}
+          </div>
+        </div>
+        ${rev2Html}
+        ${rev3Html}
+        <div class="vr-conclusion" id="vr-conclusion">
+          <p class="vr-conc-eyebrow">CE QUE CES VENTES NOUS APPRENNENT</p>
+          <p class="vr-conc-body">Votre quartier n'a pas un prix unique.<br>Les transactions observées montrent une fourchette réelle, et même le prix au&nbsp;m² peut varier selon les biens que l'on compare.<br><br>Une adresse permet de comprendre votre marché. Pas encore de situer votre bien.<br>Pour savoir où il se place dans cette fourchette, il faut maintenant comparer ce qui est comparable.</p>
         </div>
       </div>
       <div class="vr-after">
@@ -910,94 +997,78 @@ import Layout from '../layouts/Layout.astro';
       </div>`;
     brancherConversion(model);
 
-    const track = scene.querySelector<HTMLElement>('.vr-cine')!;
-    const featEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-feat-slide'));
-    const chipEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-chip'));
-    const dotEls = Array.from(scene.querySelectorAll<HTMLElement>('.vr-cine-dot'));
-    const header = document.getElementById('site-header');
-    let headerH = header?.offsetHeight ?? 64;
-    document.documentElement.style.setProperty('--vr-header', headerH + 'px');
+    // Initialise sparkline path masquée (dashoffset = longueur totale)
+    if (hasSpark) {
+      const sp = scene.querySelector<SVGPathElement>('#vr-spark-path');
+      if (sp) { const l = sp.getTotalLength(); sp.style.strokeDasharray = l + 'px'; sp.style.strokeDashoffset = l + 'px'; }
+    }
 
-    const countEl = scene.querySelector<HTMLElement>('[data-count]');
-    const countmEl = scene.querySelector<HTMLElement>('[data-countm]');
-    const countaEl = scene.querySelector<HTMLElement>('[data-counta]');
-    const ppmEl = scene.querySelector<HTMLElement>('[data-ppm]');
-    const rangeDot = hasPrix ? scene.querySelector<HTMLElement>('.vr-sc-range .vr-range-dot') : null;
-    const gaugeCur = hasTrend ? scene.querySelector<HTMLElement>('.vr-gauge-cursor') : null;
+    // ——— Timeline d'animation ———
+    const dotEls = Array.from(scene.querySelectorAll<SVGCircleElement>('.ig-dot'));
+    const legend = scene.querySelector<HTMLElement>('#vr-ig-legend');
 
-    const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
-    const lead = 0.12;
-    const seg = N > 1 ? (1 - 2 * lead) / (N - 1) : 1;
-    const centers = featEls.map((_, i) => lead + seg * i);
-    let targetP = 0, curP = 0, running = false;
-
-    const render = (p: number) => {
-      let best = 0, bestOp = -1;
-      featEls.forEach((el, i) => {
-        const t = (p - centers[i]) / seg;
-        let op: number;
-        if (i === 0 && p <= centers[0]) op = 1;
-        else if (i === N - 1 && p >= centers[N - 1]) op = 1;
-        else op = clamp01(1 - Math.abs(t));
-        if (op > bestOp) { bestOp = op; best = i; }
-        el.style.opacity = op.toFixed(3);
-        el.style.visibility = op < 0.01 ? 'hidden' : 'visible';
-        el.style.zIndex = String(Math.round(op * 100));
-        el.style.transform = `translateY(${(t * 16).toFixed(1)}px) scale(${(1 - Math.min(Math.abs(t), 1) * 0.05).toFixed(3)})`;
-
-        const build = i === 0
-          ? clamp01(p / (lead * 0.6))
-          : clamp01((p - (centers[i] - seg)) / (seg * 0.7));
-        if (i === iActivite && countEl) countEl.textContent = eur.format(Math.round(model.nbVentes * build));
-        if (i === iCompo) {
-          if (countmEl) countmEl.textContent = String(Math.round(model.nM * build));
-          if (countaEl) countaEl.textContent = String(Math.round(model.nA * build));
-        }
-        if (i === iPrix) {
-          if (ppmEl) ppmEl.textContent = eur.format(Math.round(ppmDom.median * build)) + ' €/m²';
-          if (rangeDot) rangeDot.style.left = (50 + (posP - 50) * build).toFixed(1) + '%';
-        }
-        if (i === iTrend && gaugeCur) gaugeCur.style.left = (50 + (posD - 50) * build).toFixed(1) + '%';
+    // 800 ms : séparation M/A
+    later(800, () => {
+      dotEls.forEach((el, i) => {
+        el.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
+        el.style.fill = dots[i].isM ? domColor : altColor;
       });
+      if (legend) legend.style.opacity = '1';
+    });
 
-      chipEls.forEach((chip) => {
-        const ci = Number(chip.dataset.chip);
-        if (ci < 0 || ci >= N - 1) return;
-        const fadeStart = centers[ci] + seg * 0.25;
-        const chipP = clamp01((p - fadeStart) / (seg * 0.45));
-        chip.style.opacity = chipP.toFixed(3);
-        chip.style.transform = chipP < 0.01 ? 'translateY(6px) scale(0.92)' : chipP < 1 ? `translateY(${(6 * (1 - chipP)).toFixed(1)}px) scale(${(0.92 + 0.08 * chipP).toFixed(3)})` : '';
+    // 2 000 ms : zone IQR croît
+    if (hasDist) {
+      later(2000, () => { const iqr = scene.querySelector<HTMLElement>('#vr-iqr'); if (iqr) iqr.style.width = '100%'; });
+      later(2700, () => {
+        const med = scene.querySelector<HTMLElement>('#vr-med');
+        const medLbl = scene.querySelector<HTMLElement>('#vr-med-lbl');
+        const note = scene.querySelector<HTMLElement>('#vr-iqr-note');
+        if (med) med.style.opacity = '1';
+        if (medLbl) medLbl.style.opacity = '1';
+        if (note) note.style.opacity = '1';
       });
+    }
 
-      dotEls.forEach((dt, i) => dt.classList.toggle('on', i === best));
-    };
+    // Révélation 2 : effet surface
+    let nextT = hasDist ? 3500 : 1500;
+    if (sf) {
+      later(nextT, () => { const r = scene.querySelector<HTMLElement>('#vr-rev2'); if (r) r.classList.add('is-on'); });
+      later(nextT + 500, () => {
+        scene.querySelectorAll<HTMLElement>('.vr-ig-bar-fill').forEach((b) => { b.style.width = (b.dataset.pct || '0') + '%'; });
+      });
+      nextT += 1600;
+    }
 
-    const inView = () => { const r = track.getBoundingClientRect(); return r.bottom > -40 && r.top < window.innerHeight + 40; };
-    const loop = () => {
-      curP += (targetP - curP) * 0.16;
-      const settled = Math.abs(targetP - curP) < 0.0004;
-      if (settled) curP = targetP;
-      render(curP);
-      if (settled && !inView()) { running = false; return; }
-      requestAnimationFrame(loop);
-    };
-    const wake = () => { if (!running) { running = true; requestAnimationFrame(loop); } };
-    const measure = () => {
-      const h = header?.offsetHeight ?? headerH;
-      if (h !== headerH) { headerH = h; document.documentElement.style.setProperty('--vr-header', h + 'px'); }
-      const stageH = window.innerHeight - headerH;
-      const total = track.offsetHeight - stageH;
-      const scrolled = -track.getBoundingClientRect().top + headerH;
-      targetP = total > 0 ? clamp01(scrolled / total) : 0;
-      wake();
-    };
-    window.addEventListener('scroll', measure, { passive: true });
-    window.addEventListener('resize', measure, { passive: true });
-    cineCleanup = () => { window.removeEventListener('scroll', measure); window.removeEventListener('resize', measure); running = false; };
-    render(0);
-    measure();
-    const y = track.getBoundingClientRect().top + window.scrollY - headerH - 4;
-    window.scrollTo({ top: y, behavior: 'smooth' });
+    // Révélation 3 : sparkline
+    if (hasSpark) {
+      later(nextT, () => { const r = scene.querySelector<HTMLElement>('#vr-rev3'); if (r) r.classList.add('is-on'); });
+      later(nextT + 500, () => {
+        const path = scene.querySelector<SVGPathElement>('#vr-spark-path');
+        if (path) {
+          path.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+          path.style.strokeDashoffset = '0px';
+        }
+      });
+      const meds = D.annualMeds as { year: number; med: number }[];
+      meds.forEach((_: any, i: number) => {
+        later(nextT + 900 + i * 280, () => {
+          const dot = scene.querySelector<SVGCircleElement>(`.vr-ig-spark-dot[data-si="${i}"]`);
+          if (dot) dot.classList.add('on');
+        });
+      });
+      later(nextT + 900 + meds.length * 280 + 600, () => {
+        const c = scene.querySelector<HTMLElement>('#vr-conclusion'); if (c) c.classList.add('is-on');
+      });
+    } else {
+      later(nextT + 400, () => { const c = scene.querySelector<HTMLElement>('#vr-conclusion'); if (c) c.classList.add('is-on'); });
+    }
+
+    // Scroll doux vers le haut du résultat
+    const headerH = document.getElementById('site-header')?.offsetHeight ?? 64;
+    const top = scene.getBoundingClientRect().top + window.scrollY - headerH - 8;
+    window.scrollTo({ top, behavior: 'smooth' });
+
+    cineCleanup = () => { touts.forEach(clearTimeout); };
   }
 
   function majLigne() {
