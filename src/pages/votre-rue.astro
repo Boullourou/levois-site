@@ -163,6 +163,69 @@ import Layout from '../layouts/Layout.astro';
   }
   @keyframes vr-pulse { 0%,100% { transform: scale(0.7); opacity: 0.6; } 50% { transform: scale(1); opacity: 1; } }
 
+  /* ——— Console d'analyse : le chargement fait partie de l'expérience ———
+     Même fond que le bloc héro (#1B4332) : la console ne disparaît pas,
+     elle devient le héro. Le calcul est réel, seule la révélation est cadencée. */
+  .vr-scan {
+    position: relative; overflow: hidden;
+    background: #1B4332; border-radius: 22px;
+    padding: 2rem clamp(1.25rem, 5vw, 2.25rem) 1.75rem;
+    opacity: 0; transform: translateY(12px) scale(0.985);
+    animation: vr-scan-in 0.55s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+  }
+  @keyframes vr-scan-in { to { opacity: 1; transform: none; } }
+  .vr-scan::before {
+    content: ''; position: absolute; top: -55%; left: 50%;
+    width: 130%; height: 150%; transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(168,213,162,0.17), transparent 62%);
+    pointer-events: none;
+  }
+  .vr-scan-inner { position: relative; }
+  .vr-scan-kicker {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: rgba(168,213,162,0.8);
+    display: flex; align-items: center; gap: 0.55rem;
+  }
+  .vr-scan-pulse {
+    width: 7px; height: 7px; border-radius: 999px; background: #A8D5A2; flex: 0 0 auto;
+    animation: vr-scan-blip 1.1s ease-in-out infinite;
+  }
+  @keyframes vr-scan-blip { 0%,100% { opacity: 0.3; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1); } }
+  .vr-scan-grid { display: block; width: 100%; height: 62px; margin: 1.15rem 0 1.35rem; }
+  .vr-scan-cell { opacity: 0.09; transition: opacity 0.4s ease; }
+  .vr-scan-steps { display: grid; }
+  .vr-scan-step {
+    display: grid; grid-template-columns: 16px 1fr auto;
+    align-items: center; gap: 0.7rem; padding: 0.6rem 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem;
+    color: rgba(255,255,255,0.3); transition: color 0.4s ease;
+  }
+  .vr-scan-step:first-child { border-top: 0; }
+  .vr-scan-step.is-active { color: rgba(255,255,255,0.92); }
+  .vr-scan-step.is-done { color: rgba(255,255,255,0.55); }
+  .vr-scan-mark {
+    width: 16px; height: 16px; border-radius: 999px; position: relative;
+    border: 1.5px solid currentColor;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .vr-scan-step.is-active .vr-scan-mark::after {
+    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: #A8D5A2;
+    animation: vr-scan-blip 0.85s ease-in-out infinite;
+  }
+  .vr-scan-step.is-done .vr-scan-mark { background: #A8D5A2; border-color: #A8D5A2; }
+  .vr-scan-val {
+    font-family: 'Fraunces', serif; font-weight: 500; font-size: 0.98rem;
+    color: #A8D5A2; white-space: nowrap;
+    opacity: 0; transform: translateX(-8px);
+    transition: opacity 0.45s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .vr-scan-val.on { opacity: 1; transform: none; }
+  .vr-scan.is-out {
+    opacity: 0; transform: translateY(-8px) scale(0.99);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
   /* ——— Résultats : séquence compacte de cartes ——— */
   .vr-results { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
   .vr-head { margin: 0.25rem 0 0.1rem; }
@@ -300,22 +363,91 @@ import Layout from '../layouts/Layout.astro';
      Repli empilé : construireStack (prefers-reduced-motion).
      —————————————————————————————————————————————————————————————— */
 
-  .vr-cine-wrap { display: grid; gap: 0; border-radius: 22px; overflow: hidden; }
+  .vr-cine-wrap {
+    display: grid; gap: 0; border-radius: 22px; overflow: hidden;
+    box-shadow: 0 2px 6px rgba(33,28,22,0.05), 0 30px 70px -30px rgba(33,28,22,0.3);
+  }
 
-  .vr-bloc { padding: 2rem clamp(1.25rem, 5vw, 2.25rem) 2.25rem; }
+  .vr-bloc { position: relative; padding: 2.25rem clamp(1.25rem, 5vw, 2.25rem) 2.5rem; }
+  /* Contrastes assumés entre les moments (les beiges précédents étaient à 2 % d'écart). */
   .vr-bloc--hero  { background: #1B4332; padding-top: 2.75rem; padding-bottom: 2.75rem; }
-  .vr-bloc--b1    { background: #F3EDE4; }
-  .vr-bloc--b2    { background: #EDE7DC; }
-  .vr-bloc--surf  { background: #F3EDE4; }
-  .vr-bloc--spark { background: #EDE7DC; }
-  .vr-bloc--tx    { background: #FDFBF6; border-top: 1px solid #E8DFD0; }
+  .vr-bloc--b1    { background: #F8F3EA; }
+  .vr-bloc--b2    { background: #E9DFCE; }
+  .vr-bloc--surf  { background: #F8F3EA; }
+  .vr-bloc--spark { background: #E9DFCE; }
+  .vr-bloc--tx    { background: #F8F3EA; border-top: 1px solid rgba(33,28,22,0.07); }
   .vr-bloc--conc  { background: #1F2937; }
+
+  /* Profondeur ambiante — halo chaud très diffus sur les blocs sombres */
+  .vr-bloc--hero::before, .vr-bloc--conc::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+  }
+  .vr-bloc--hero::before {
+    background: radial-gradient(ellipse 85% 60% at 25% 0%, rgba(168,213,162,0.15), transparent 70%);
+  }
+  .vr-bloc--conc::before {
+    background: radial-gradient(ellipse 85% 70% at 80% 100%, rgba(193,90,43,0.2), transparent 70%);
+  }
+  .vr-bloc--hero > *, .vr-bloc--conc > * { position: relative; }
 
   .vr-kicker {
     font-family: 'Instrument Sans', sans-serif;
     font-size: 0.72rem; font-weight: 600;
     letter-spacing: 0.18em; text-transform: uppercase;
     margin-bottom: 0.4rem;
+    display: flex; align-items: baseline; gap: 0.6rem;
+  }
+  /* Numérotation éditoriale 01 / 02 / 03 — repère de système */
+  .vr-kicker-num {
+    font-family: 'Fraunces', serif; font-weight: 500; font-size: 0.82rem;
+    letter-spacing: 0; opacity: 0.55;
+  }
+  .vr-kicker-num::after {
+    content: ''; display: inline-block; width: 14px; height: 1px;
+    background: currentColor; vertical-align: middle;
+    margin-left: 0.55rem; opacity: 0.5;
+  }
+
+  /* Carte-objet : chaque visualisation est un objet posé, pas un SVG nu sur le fond */
+  .vr-viz {
+    background: #FFFFFF; border-radius: 18px;
+    border: 1px solid rgba(33,28,22,0.05);
+    padding: 1.25rem 1rem 1.1rem;
+    box-shadow: 0 1px 2px rgba(33,28,22,0.05), 0 16px 36px -14px rgba(33,28,22,0.22);
+  }
+  .vr-grid-line { stroke: rgba(33,28,22,0.07); stroke-width: 1; }
+
+  /* Tuiles-stat : les comptages deviennent de vrais objets chiffrés */
+  .vr-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.9rem; }
+  .vr-tile {
+    background: #FFFFFF; border: 1px solid rgba(33,28,22,0.06); border-radius: 14px;
+    padding: 0.85rem 0.9rem 0.8rem;
+    box-shadow: 0 1px 2px rgba(33,28,22,0.04), 0 10px 24px -14px rgba(33,28,22,0.2);
+    opacity: 0; transform: translateY(10px) scale(0.97);
+    transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .vr-tile.on { opacity: 1; transform: none; }
+  .vr-tile.is-muted { opacity: 0.42; }
+  .vr-tile-lbl {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: #9C8E7C;
+    display: flex; align-items: center; gap: 0.35rem;
+  }
+  .vr-tile-ico { width: 8px; height: 8px; border-radius: 999px; flex: 0 0 auto; }
+  .vr-tile-val {
+    font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.02em;
+    font-size: clamp(1.9rem, 8vw, 2.6rem); line-height: 1.05; margin-top: 0.3rem;
+  }
+  .vr-tile-val--M { color: #C15A2B; }
+  .vr-tile-val--A { color: #3A6FB0; }
+  .vr-tile-bar { height: 4px; border-radius: 999px; background: rgba(33,28,22,0.07); margin-top: 0.5rem; overflow: hidden; }
+  .vr-tile-bar span {
+    display: block; height: 100%; border-radius: 999px; width: 0%;
+    transition: width 0.9s cubic-bezier(0.25,0.46,0.45,0.94) 0.15s;
+  }
+  .vr-tile-pct {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem;
+    color: #6B5D4F; margin-top: 0.35rem;
   }
   .vr-kicker--light { color: rgba(255,255,255,0.5); }
   .vr-kicker--terra { color: #C15A2B; }
@@ -414,7 +546,11 @@ import Layout from '../layouts/Layout.astro';
     font-size: clamp(1rem, 3.5vw, 1.2rem); color: #211C16;
     margin-top: 0.25rem; margin-bottom: 0.25rem;
   }
-  .vr-pt2 { margin-top: 0.85rem; }
+  .vr-pt2 { margin-top: 0; }
+  /* Les deux textes de phase occupent la même cellule : le premier s'efface
+     sans laisser de trou, la hauteur reste celle du plus long. */
+  .vr-phase-stack { display: grid; margin-top: 1.1rem; }
+  .vr-phase-stack > * { grid-area: 1 / 1; align-self: start; }
 
   /* Distribution */
   .vr-dist-type-pill {
@@ -435,21 +571,22 @@ import Layout from '../layouts/Layout.astro';
     font-family: 'Instrument Sans', sans-serif;
     font-size: 0.62rem; fill: #BBAA96; letter-spacing: 0.04em;
   }
-  .vr-dist-zone-lbl {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 0.85rem; fill: #211C16;
-    transition: opacity 0.5s ease;
+  /* Lecture du prix médian : un seul grand chiffre, en HTML — jamais de
+     collision possible, contrairement aux labels positionnés dans le SVG. */
+  .vr-dist-readout {
+    text-align: center; margin-top: 0.85rem;
+    opacity: 0; transform: translateY(10px) scale(0.97);
+    transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
   }
-  .vr-dist-zone-sub {
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.6rem; fill: #9C8E7C;
-    text-transform: uppercase; letter-spacing: 0.07em;
-    transition: opacity 0.5s ease;
+  .vr-dist-readout.on { opacity: 1; transform: none; }
+  .vr-dist-med-num {
+    font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.02em;
+    font-size: clamp(2.1rem, 9vw, 3rem); line-height: 1;
   }
-  .vr-dist-med-big {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 0.88rem; fill: #C15A2B;
-    transition: opacity 0.5s ease;
+  .vr-dist-med-num span { font-size: 0.42em; font-weight: 500; letter-spacing: 0; }
+  .vr-dist-med-cap {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #9C8E7C; margin-top: 0.35rem;
   }
   .vr-dist-note {
     font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
@@ -461,7 +598,7 @@ import Layout from '../layouts/Layout.astro';
   /* Effet surface */
   .vr-surf-trio {
     display: grid; grid-template-columns: 1fr auto 1fr;
-    align-items: center; gap: 0.5rem; max-width: 24rem; text-align: center;
+    align-items: center; gap: 0.5rem; max-width: 42rem; text-align: center;
   }
   .vr-surf-col-val {
     font-family: 'Fraunces', serif; font-weight: 500;
@@ -561,10 +698,10 @@ import Layout from '../layouts/Layout.astro';
   .vr-conc-cta:hover { background: #A84D23; transform: translateY(-1px); }
   .vr-conc-cta:active { transform: none; }
 
-  /* Animation entrée (IntersectionObserver) */
+  /* Animation entrée (IntersectionObserver) — l'objet arrive, il ne glisse pas */
   .vr-bloc-anim {
-    opacity: 0; transform: translateY(16px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+    opacity: 0; transform: translateY(22px) scale(0.982);
+    transition: opacity 0.65s ease, transform 0.75s cubic-bezier(0.25,0.46,0.45,0.94);
   }
   .vr-bloc-anim.is-on { opacity: 1; transform: none; }
 
@@ -589,13 +726,19 @@ import Layout from '../layouts/Layout.astro';
     .vr-dist-zone { opacity: 1 !important; transition: none !important; }
     .vr-dist-dot { opacity: 0.72 !important; transition: none !important; }
     .vr-dist-med-line { opacity: 1 !important; transition: none !important; }
-    .vr-dist-zone-lbl, .vr-dist-zone-sub, .vr-dist-med-big { opacity: 1 !important; transition: none !important; }
+    .vr-dist-readout { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-dist-note { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-surf-delta { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-spark-dot { opacity: 1 !important; transition: none !important; }
     .vr-spark-val { opacity: 1 !important; transition: none !important; }
     .vr-hero-bar-fill { transition: none !important; }
     .vr-tx-card { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-scan { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .vr-scan-pulse, .vr-scan-step.is-active .vr-scan-mark::after { animation: none !important; }
+    .vr-scan-cell { transition: none !important; }
+    .vr-scan-val { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-tile { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-tile-bar span { transition: none !important; }
   }
 
 </style>
@@ -1038,6 +1181,7 @@ import Layout from '../layouts/Layout.astro';
     const NDOTS = 44;
     const propM = model.nM / Math.max(model.nM + model.nA, 1);
     const nDotM = Math.max(4, Math.min(40, Math.round(NDOTS * propM)));
+    const pctM = Math.round(propM * 100), pctA = 100 - pctM;
     const SW = 360, SH = 130, CX = SW / 2, CY = SH / 2;
     let _s = 0x9e3779b9;
     const rnd = () => { _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s ^= _s >>> 16; return (_s >>> 0) / 0x100000000; };
@@ -1073,28 +1217,28 @@ import Layout from '../layouts/Layout.astro';
       const pillCls = model.dom === 'Maison' ? 'vr-dist-type-pill--M' : 'vr-dist-type-pill--A';
       const pillTxt = model.dom === 'Maison' ? 'Maisons' : 'Appartements';
       const lblY = DH + 16;
-      const q1LblX = Math.max(q1x, 28);
-      const q3LblX = Math.min(q3x, DW - 28);
+      const vendus = model.dom === 'Maison' ? 'vendues' : 'vendus';
       distHtml = `
         <div class="vr-bloc vr-bloc--b2 vr-bloc-anim" id="vr-b-dist">
-          <p class="vr-kicker vr-kicker--ink">CE QUE LES PRIX MONTRENT</p>
+          <p class="vr-kicker vr-kicker--ink"><span class="vr-kicker-num">{{N}}</span>CE QUE LES PRIX MONTRENT</p>
           <p class="vr-titre vr-titre--dark">Les prix dans ce secteur</p>
           <span class="vr-dist-type-pill ${pillCls}">${esc(pillTxt)}</span>
-          <div class="vr-dist-wrap">
-            <svg class="vr-dist-svg" viewBox="0 0 ${DW} ${DH + 42}" aria-hidden="true">
+          <div class="vr-dist-wrap vr-viz">
+            <svg class="vr-dist-svg" viewBox="0 0 ${DW} ${DH + 22}" aria-hidden="true">
+              <line class="vr-grid-line" x1="0" y1="${YN - 4}" x2="${DW}" y2="${YN - 4}"/>
+              <line class="vr-grid-line" x1="0" y1="${(YN + YX) / 2}" x2="${DW}" y2="${(YN + YX) / 2}"/>
+              <line class="vr-grid-line" x1="0" y1="${YX + 4}" x2="${DW}" y2="${YX + 4}"/>
               <rect class="vr-dist-zone" id="vr-dz" x="${q1x.toFixed(1)}" y="${YN - 4}" width="${zoneW.toFixed(1)}" height="${YX - YN + 8}" rx="4" fill="${domColor}" fill-opacity="0.15" style="opacity:0"/>
               ${ddots}
               <line class="vr-dist-med-line" id="vr-dml" x1="${medx.toFixed(1)}" y1="${YN - 8}" x2="${medx.toFixed(1)}" y2="${YX + 8}" stroke="${domColor}" stroke-width="2.5" stroke-dasharray="4 2" style="opacity:0"/>
               <text x="2" y="${lblY}" class="vr-dist-axis-lbl">${eur.format(Math.round(xMin))} €/m²</text>
               <text x="${DW - 2}" y="${lblY}" class="vr-dist-axis-lbl" text-anchor="end">${eur.format(Math.round(xMax))} €/m²</text>
-              <text id="vr-q1-lbl" class="vr-dist-zone-lbl" x="${q1LblX.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(q1))}</text>
-              <text id="vr-q1-sub" class="vr-dist-zone-sub" x="${q1LblX.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">1er quartile</text>
-              <text id="vr-dml-txt" class="vr-dist-med-big" x="${medx.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(med))}</text>
-              <text id="vr-dml-sub" class="vr-dist-zone-sub" x="${medx.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">médiane</text>
-              <text id="vr-q3-lbl" class="vr-dist-zone-lbl" x="${q3LblX.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(q3))}</text>
-              <text id="vr-q3-sub" class="vr-dist-zone-sub" x="${q3LblX.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">3e quartile</text>
             </svg>
-            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} vendues se situent dans la zone colorée. Les données constatent cet écart — elles n'en expliquent pas encore toutes les causes.</p>
+            <div class="vr-dist-readout" id="vr-dro">
+              <p class="vr-dist-med-num" style="color:${domColor}">${eur.format(Math.round(med))} <span>€/m²</span></p>
+              <p class="vr-dist-med-cap">prix médian</p>
+            </div>
+            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} ${vendus} se situent entre ${eur.format(Math.round(q1))} et ${eur.format(Math.round(q3))} €/m² — la zone colorée. Les données constatent cet écart, elles n'en expliquent pas encore toutes les causes.</p>
           </div>
         </div>`;
     }
@@ -1105,9 +1249,9 @@ import Layout from '../layouts/Layout.astro';
       const sign = sf.deltaPct > 0 ? '+' : '';
       surfHtml = `
         <div class="vr-bloc vr-bloc--surf vr-bloc-anim" id="vr-b-surf">
-          <p class="vr-kicker vr-kicker--terra">L'EFFET DE LA SURFACE</p>
+          <p class="vr-kicker vr-kicker--terra"><span class="vr-kicker-num">{{N}}</span>L'EFFET DE LA SURFACE</p>
           <p class="vr-titre vr-titre--dark">Même le prix au m² n'est pas unique</p>
-          <div class="vr-surf-trio">
+          <div class="vr-surf-trio vr-viz">
             <div>
               <div class="vr-surf-col-val">${eur.format(sf.smallMed)} €/m²</div>
               <div class="vr-surf-col-lbl">${esc(sf.smallLabel)}</div>
@@ -1145,10 +1289,13 @@ import Layout from '../layouts/Layout.astro';
       const spLabels = meds.map((m: any, i: number) => `<text class="vr-spark-yr" x="${xPts[i].toFixed(1)}" y="${spH - 4}">${m.year}</text>`).join('');
       sparkHtml = `
         <div class="vr-bloc vr-bloc--spark vr-bloc-anim" id="vr-b-spark">
-          <p class="vr-kicker vr-kicker--ink">5 ANS DE MARCHÉ</p>
+          <p class="vr-kicker vr-kicker--ink"><span class="vr-kicker-num">{{N}}</span>5 ANS DE MARCHÉ</p>
           <p class="vr-titre vr-titre--dark">La trajectoire des prix</p>
-          <div class="vr-spark-wrap">
+          <div class="vr-spark-wrap vr-viz">
             <svg class="vr-spark-svg" viewBox="0 0 ${spW} ${spH}" aria-hidden="true">
+              <line class="vr-grid-line" x1="0" y1="${topM}" x2="${spW}" y2="${topM}"/>
+              <line class="vr-grid-line" x1="0" y1="${topM + availH / 2}" x2="${spW}" y2="${topM + availH / 2}"/>
+              <line class="vr-grid-line" x1="0" y1="${topM + availH}" x2="${spW}" y2="${topM + availH}"/>
               <path d="${lineD}" class="vr-spark-path" id="vr-sp" stroke="${domColor}"/>
               ${spDots}${spLabels}
             </svg>
@@ -1189,7 +1336,7 @@ import Layout from '../layouts/Layout.astro';
         : '';
       txHtml = `
         <div class="vr-bloc vr-bloc--tx vr-bloc-anim" id="vr-b-tx">
-          <p class="vr-kicker vr-kicker--ink">VENTES RÉCENTES</p>
+          <p class="vr-kicker vr-kicker--ink"><span class="vr-kicker-num">{{N}}</span>VENTES RÉCENTES</p>
           <p class="vr-titre vr-titre--dark">Quelques ventes autour de chez vous</p>
           <div class="vr-tx-cards" id="vr-tx-cards">${first}${more}</div>
         </div>`;
@@ -1225,7 +1372,11 @@ import Layout from '../layouts/Layout.astro';
     const concP3 = `Pour aller plus loin, il faut maintenant identifier les ventes qui ressemblent réellement à votre bien.`;
 
     // ——— Assemblage HTML ———
-    scene.innerHTML = `
+    // Les blocs sont conditionnels : la numérotation éditoriale est attribuée
+    // dans l'ordre du DOM final, pour ne jamais sauter un numéro.
+    let _num = 0;
+    const numeroter = (html: string) => html.replace(/\{\{N\}\}/g, () => String(++_num).padStart(2, '0'));
+    scene.innerHTML = numeroter(`
       <div class="vr-cine-wrap">
         <div class="vr-bloc vr-bloc--hero" id="vr-b-hero">
           <p class="vr-kicker vr-kicker--light">Analyse locale</p>
@@ -1234,19 +1385,33 @@ import Layout from '../layouts/Layout.astro';
           ${heroBars}
         </div>
         <div class="vr-bloc vr-bloc--b1 vr-bloc-anim" id="vr-b-dots">
-          <p class="vr-kicker vr-kicker--terra">CE QUI S'EST VENDU</p>
+          <p class="vr-kicker vr-kicker--terra"><span class="vr-kicker-num">{{N}}</span>CE QUI S'EST VENDU</p>
           <p class="vr-titre vr-titre--dark">Deux marchés différents autour de chez vous</p>
-          <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
-          <div class="vr-dot-legend" id="vr-dl">
-            <span><span class="vr-dot-legend-ico" style="background:#C15A2B"></span>Maisons</span>
-            <span><span class="vr-dot-legend-ico" style="background:#3A6FB0"></span>Appartements</span>
+          <div class="vr-viz">
+            <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
+            <div class="vr-dot-legend" id="vr-dl">
+              <span><span class="vr-dot-legend-ico" style="background:#C15A2B"></span>Maisons</span>
+              <span><span class="vr-dot-legend-ico" style="background:#3A6FB0"></span>Appartements</span>
+            </div>
           </div>
-          <div class="vr-dot-counts" id="vr-dc">
-            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--M">${model.nM}</span> maisons</div>
-            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--A">${model.nA}</span> appartements</div>
+          <div class="vr-tiles" id="vr-dc">
+            <div class="vr-tile" data-t="M">
+              <p class="vr-tile-lbl"><span class="vr-tile-ico" style="background:#C15A2B"></span>Maisons</p>
+              <p class="vr-tile-val vr-tile-val--M">${model.nM}</p>
+              <div class="vr-tile-bar"><span data-pct="${pctM}" style="background:#C15A2B"></span></div>
+              <p class="vr-tile-pct">${pctM} % des ventes</p>
+            </div>
+            <div class="vr-tile" data-t="A">
+              <p class="vr-tile-lbl"><span class="vr-tile-ico" style="background:#3A6FB0"></span>Appartements</p>
+              <p class="vr-tile-val vr-tile-val--A">${model.nA}</p>
+              <div class="vr-tile-bar"><span data-pct="${pctA}" style="background:#3A6FB0"></span></div>
+              <p class="vr-tile-pct">${pctA} % des ventes</p>
+            </div>
           </div>
-          <p class="vr-phase-txt vr-pt1" id="vr-pt1">${model.nbVentes} ventes autour de cette adresse. Mais toutes ne sont pas comparables entre elles.</p>
-          <p class="vr-phase-txt vr-pt2" id="vr-pt2" style="opacity:0">Pour comprendre le marché ${model.dom === 'Maison' ? "d'une maison" : "d'un appartement"}, les ventes de l'autre type doivent déjà être écartées.</p>
+          <div class="vr-phase-stack">
+            <p class="vr-phase-txt vr-pt1" id="vr-pt1">${model.nbVentes} ventes autour de cette adresse. Mais toutes ne sont pas comparables entre elles.</p>
+            <p class="vr-phase-txt vr-pt2" id="vr-pt2" style="opacity:0">Pour comprendre le marché ${model.dom === 'Maison' ? "d'une maison" : "d'un appartement"}, les ventes de l'autre type doivent déjà être écartées.</p>
+          </div>
         </div>
         ${distHtml}
         ${surfHtml}
@@ -1266,7 +1431,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="vr-after">
         <p class="vr-maj">${majLigne()}</p>
         ${construireConversion()}
-      </div>`;
+      </div>`);
     brancherConversion(model);
 
     // ——— Animations ———
@@ -1294,17 +1459,22 @@ import Layout from '../layouts/Layout.astro';
         const dl = scene.querySelector<HTMLElement>('#vr-dl');
         if (dl) dl.style.opacity = '1';
       });
-      // Phase 2 : compteurs apparaissent
-      later(750, () => {
-        const dc = scene.querySelector<HTMLElement>('#vr-dc');
-        if (dc) dc.style.opacity = '1';
-      });
+      // Phase 2 : les tuiles-stat arrivent, les jauges se remplissent
+      const tiles = Array.from(scene.querySelectorAll<HTMLElement>('#vr-dc .vr-tile'));
+      tiles.forEach((t, i) => later(750 + i * 130, () => {
+        t.classList.add('on');
+        const bar = t.querySelector<HTMLElement>('.vr-tile-bar span');
+        if (bar) bar.style.width = (bar.dataset.pct || '0') + '%';
+      }));
       // Phase 3 : non-dominant s'estompe, texte bascule
-      later(1200, () => {
+      later(1400, () => {
         const isDomM = model.dom === 'Maison';
         dotEls.forEach((d, i) => {
           if (dots[i].isM !== isDomM) d.style.opacity = '0.2';
         });
+        const mutedT = isDomM ? 'A' : 'M';
+        const mt = scene.querySelector<HTMLElement>(`#vr-dc .vr-tile[data-t="${mutedT}"]`);
+        if (mt) mt.classList.add('is-muted');
         const pt1 = scene.querySelector<HTMLElement>('#vr-pt1');
         if (pt1) pt1.style.opacity = '0';
         later(350, () => {
@@ -1330,10 +1500,8 @@ import Layout from '../layouts/Layout.astro';
         later(zoneDelay + 450, () => {
           const dml = scene.querySelector<HTMLElement>('#vr-dml');
           if (dml) dml.style.opacity = '1';
-          ['#vr-q1-lbl','#vr-q1-sub','#vr-dml-txt','#vr-dml-sub','#vr-q3-lbl','#vr-q3-sub'].forEach((sel) => {
-            const el2 = scene.querySelector<HTMLElement>(sel);
-            if (el2) el2.style.opacity = '1';
-          });
+          const dro = scene.querySelector<HTMLElement>('#vr-dro');
+          if (dro) dro.classList.add('on');
         });
         later(zoneDelay + 750, () => {
           const dn = scene.querySelector<HTMLElement>('#vr-dn');
@@ -1508,6 +1676,16 @@ import Layout from '../layouts/Layout.astro';
         panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
       });
     });
+    // CTA de conclusion → même destination que le chemin « lecture » (qualification).
+    const cta = document.querySelector<HTMLButtonElement>('.vr-conc-cta');
+    if (cta) {
+      cta.addEventListener('click', () => {
+        const p1 = paths.querySelector<HTMLButtonElement>('.vr-path[data-path="lecture"]');
+        if (p1) p1.classList.add('is-chosen');
+        panneauQualif(panneau, model);
+        panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      });
+    }
   }
 
   function panneauMouaad(panneau: HTMLElement) {
@@ -1672,32 +1850,85 @@ import Layout from '../layouts/Layout.astro';
       <div class="flex flex-wrap gap-3 mt-5"><a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a><a href="/contact?src=votre-rue" class="btn-secondaire">Échanger avec Mouaad</a></div></div>`;
   }
 
-  // ——— Moment d'analyse (adossé au calcul réel, sans fausse attente) ———
+  // ——— Console d'analyse (adossée au calcul réel, sans fausse attente) ———
+  // Le calcul est instantané : seule la RÉVÉLATION est cadencée, et chaque
+  // étape se résout avec sa vraie valeur issue du modèle.
   async function jouerAnalyseEtRendre(lat: number, lon: number) {
-    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', "Lecture de l'évolution du secteur…"];
     scene.hidden = false;
-    scene.innerHTML = `<div class="vr-analyse">${messages.map((m, i) => `<div class="vr-analyse-step" data-i="${i}"><span class="vr-analyse-dot"></span><span>${m}</span></div>`).join('')}</div>`;
-    const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-analyse-step'));
+
+    const GW = 360, COLS = 26, ROWS = 4, CW = GW / COLS, CH = 13;
+    let cells = '';
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        cells += `<rect class="vr-scan-cell" x="${(c * CW + 1.5).toFixed(1)}" y="${r * CH + 2}" width="${(CW - 3).toFixed(1)}" height="9" rx="2.5" fill="#A8D5A2" data-ci="${r * COLS + c}"/>`;
+      }
+    }
+    const etapes = [
+      "Ventes détectées autour de l'adresse",
+      'Tri par type de bien',
+      'Lecture des niveaux de prix',
+    ];
+    scene.innerHTML = `
+      <div class="vr-scan" id="vr-scan">
+        <div class="vr-scan-inner">
+          <p class="vr-scan-kicker"><span class="vr-scan-pulse"></span>Analyse en cours</p>
+          <svg class="vr-scan-grid" viewBox="0 0 ${GW} ${ROWS * CH}" preserveAspectRatio="none" aria-hidden="true">${cells}</svg>
+          <div class="vr-scan-steps">
+            ${etapes.map((t, i) => `<div class="vr-scan-step" data-i="${i}"><span class="vr-scan-mark"></span><span>${t}</span><span class="vr-scan-val" data-v="${i}"></span></div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+
+    const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-scan-step'));
     const activer = (i: number) => steps.forEach((s, j) => { s.classList.toggle('is-active', j === i); s.classList.toggle('is-done', j < i); });
+    const resoudre = (i: number, txt: string) => {
+      const v = scene.querySelector<HTMLElement>(`.vr-scan-val[data-v="${i}"]`);
+      if (v) { v.textContent = txt; v.classList.add('on'); }
+    };
+    // Les cellules s'allument progressivement pendant toute la séquence.
+    const cellEls = Array.from(scene.querySelectorAll<SVGRectElement>('.vr-scan-cell'));
+    const scanTouts: ReturnType<typeof setTimeout>[] = [];
+    cellEls.forEach((el, i) => {
+      scanTouts.push(setTimeout(() => { el.style.opacity = String(0.25 + (i % 5) * 0.14); }, 60 + i * 11));
+    });
 
-    activer(0); await wait(450);
-    const model = computeModel(lat, lon); // calcul réel
-    steps[0].classList.add('is-done');
-    activer(1); await wait(450);
-    activer(2); await wait(450);
+    activer(0);
+    const model = computeModel(lat, lon); // calcul réel, immédiat
+    await wait(520);
+    if (!model) {
+      scanTouts.forEach(clearTimeout);
+      afficherAucun(selection?.label || input.value);
+      return;
+    }
+    resoudre(0, `${model.nbVentes} ventes`);
+    await wait(560);
+
+    activer(1);
+    await wait(420);
+    resoudre(1, `${model.nM} · ${model.nA}`);
+    await wait(560);
+
+    activer(2);
+    await wait(420);
+    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
+    resoudre(2, ppmDom ? `${eur.format(Math.round(ppmDom.median))} €/m²` : '—');
+    await wait(620);
+
     steps.forEach((s) => { s.classList.remove('is-active'); s.classList.add('is-done'); });
-    await wait(200);
+    scanTouts.forEach(clearTimeout);
 
-    if (!model) { afficherAucun(selection?.label || input.value); return; }
     lastModel = model;
-    // Motion : séquence cinématographique épinglée. Sinon : repli empilé lisible.
+    // Motion : repli empilé lisible si l'utilisateur limite les animations.
     if (reduced) {
       construireStack(model);
       const head = scene.querySelector<HTMLElement>('.vr-head');
       if (head) head.scrollIntoView({ block: 'start' });
-    } else {
-      construireCine(model);
+      return;
     }
+    // La console ne disparaît pas : elle devient le héro (même fond #1B4332).
+    const scanEl = scene.querySelector<HTMLElement>('#vr-scan');
+    if (scanEl) { scanEl.classList.add('is-out'); await wait(340); }
+    construireCine(model);
   }
 
   // ——— Autocomplétion ———
