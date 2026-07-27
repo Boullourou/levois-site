@@ -40,17 +40,15 @@ const choix = [
   },
   {
     n: '03',
-    titre: 'Je cherche un bien',
-    desc: 'Clarifions ce que vous recherchez et ajoutez une source supplémentaire à votre recherche, sans engagement.',
-    desc2: 'Vous pourrez aussi être informé de certaines opportunités avant leur diffusion lorsqu\'elles correspondent à votre projet.',
+    titre: 'Je cherche à acheter',
+    desc: 'Décrivez-moi ce que vous recherchez. Je pourrai vous proposer des biens correspondant à votre projet et vous signaler certaines opportunités avant leur diffusion lorsqu\'elles correspondent à votre recherche.',
     cta: 'Me parler de ma recherche',
-    // Pont temporaire vers Mouaad : le parcours acheteur sera construit ensuite
-    // et remplacera ce mailto par une URL de parcours.
+    // Le service acheteur existe. Seul son parcours numérique automatisé
+    // sera construit ensuite — le mailto est la destination provisoire.
     href: `mailto:${site.email}?subject=${encodeURIComponent('Ma recherche immobilière')}&body=${encodeURIComponent(
       'Bonjour Mouaad,\n\nJe recherche actuellement un bien dans le secteur.\n\nSecteur recherché :\n\nType de bien :\n\nBudget approximatif :\n\nMon projet :\n\n',
     )}`,
     external: true,
-    bientot: true,
   },
 ];
 ---
@@ -82,11 +80,9 @@ const choix = [
           >
             <div class="carte-choix-head">
               <span class="carte-choix-n" aria-hidden="true">{c.n}</span>
-              {c.bientot && <span class="carte-choix-badge">Bientôt</span>}
             </div>
             <h2 class="carte-choix-titre">{c.titre}</h2>
             <p class="carte-choix-desc">{c.desc}</p>
-            {c.desc2 && <p class="carte-choix-desc carte-choix-desc--2">{c.desc2}</p>}
             <span class="carte-choix-cta">
               <span>{c.cta}</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -230,15 +226,6 @@ const choix = [
     font-size: clamp(1.5rem, 3.5vw, 1.85rem); line-height: 1;
     color: #C15A2B; letter-spacing: -0.02em;
   }
-  .carte-choix-badge {
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em;
-    text-transform: uppercase; color: #C15A2B;
-    background: rgba(193,90,43,0.09);
-    border: 1px solid rgba(193,90,43,0.22);
-    padding: 0.28rem 0.6rem; border-radius: 999px;
-  }
-
   .carte-choix-titre {
     font-family: 'Fraunces', Georgia, serif; font-weight: 500;
     font-size: clamp(1.25rem, 3vw, 1.5rem); line-height: 1.22;
@@ -250,7 +237,6 @@ const choix = [
     font-size: 0.95rem; line-height: 1.55; color: #6B5D4F;
     margin: 0;
   }
-  .carte-choix-desc--2 { margin-top: 0.6rem; color: #8A7C6A; font-size: 0.88rem; }
 
   .carte-choix-cta {
     margin-top: auto; padding-top: 1.5rem;
