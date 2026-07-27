@@ -705,6 +705,207 @@ import Layout from '../layouts/Layout.astro';
   }
   .vr-bloc-anim.is-on { opacity: 1; transform: none; }
 
+  /* ——————————————————————————————————————————————————————————————
+     TUNNEL PERSONNALISÉ — « SITUER MON BIEN DANS CE MARCHÉ »
+     Deux moments visuellement distincts :
+     — DVF (fond crème, chaque question réduit le compteur) ;
+     — DÉCLARATIF (fond différent, compteur figé, message pédagogique).
+     —————————————————————————————————————————————————————————————— */
+  .vr-tun {
+    background: #F8F3EA; border-radius: 22px;
+    padding: 1.75rem clamp(1.25rem, 4vw, 2.25rem) 2rem;
+    box-shadow: 0 1px 3px rgba(33,28,22,0.04), 0 22px 48px -22px rgba(33,28,22,0.25);
+    margin-top: 1.25rem;
+    animation: vr-tun-in 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both;
+  }
+  @keyframes vr-tun-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .vr-tun--declaratif { background: #F0EAE0; }
+  .vr-tun--email      { background: #FDFBF6; }
+
+  .vr-tun-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
+  .vr-tun-titre {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #9C8E7C;
+  }
+  .vr-tun--declaratif .vr-tun-titre { color: #C15A2B; }
+  .vr-tun-dots { display: flex; gap: 0.3rem; flex-shrink: 0; }
+  .vr-tun-dot {
+    width: 6px; height: 6px; border-radius: 999px; background: rgba(33,28,22,0.15);
+    transition: background 0.3s ease;
+  }
+  .vr-tun-dot.is-on { background: #C15A2B; }
+
+  /* Progression — la chaîne réductrice */
+  .vr-tun-prog {
+    display: grid; gap: 0.25rem; margin: 0 0 1.25rem;
+    padding: 0.9rem 1rem; background: rgba(255,255,255,0.6); border-radius: 12px;
+    border: 1px solid rgba(33,28,22,0.05);
+  }
+  .vr-tun-prog--gele { background: rgba(255,255,255,0.4); }
+  .vr-tun-step { display: grid; grid-template-columns: 3.2rem 1fr; align-items: baseline; gap: 0.6rem; }
+  .vr-tun-n {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.4rem; line-height: 1;
+    color: #211C16; text-align: right; letter-spacing: -0.02em;
+  }
+  .vr-tun-prog--gele .vr-tun-n { color: #9C8E7C; }
+  .vr-tun-lbl { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; line-height: 1.4; }
+  .vr-tun-el { font-style: italic; color: #C15A2B; font-size: 0.78rem; }
+  .vr-tun-fleche { color: #C5BAA8; font-size: 0.85rem; line-height: 1; text-align: right; padding-right: 1rem; }
+
+  /* Corps */
+  .vr-tun-corps { display: block; }
+  .vr-tun-q {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.1rem, 3.6vw, 1.4rem); line-height: 1.28;
+    color: #211C16; margin: 0.5rem 0 0.4rem;
+  }
+  .vr-tun-q--rupture {
+    color: #C15A2B; font-size: clamp(1.15rem, 4vw, 1.5rem);
+    padding-bottom: 0.6rem; border-bottom: 1px solid rgba(193,90,43,0.18);
+    margin-bottom: 0.8rem;
+  }
+  .vr-tun-sub {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem;
+    color: #6B5D4F; margin: 0 0 1.1rem; line-height: 1.5;
+  }
+  .vr-tun-body {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem;
+    color: #3E362E; line-height: 1.6; margin: 0 0 1rem;
+  }
+
+  /* Options — boutons cliquables */
+  .vr-tun-opts { display: grid; gap: 0.55rem; margin: 0.9rem 0 0.6rem; }
+  .vr-tun-opts--pair { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .vr-tun-opts--grille { grid-template-columns: repeat(7, 1fr); gap: 0.4rem; }
+  @media (max-width: 480px) { .vr-tun-opts--grille { grid-template-columns: repeat(4, 1fr); } }
+
+  .vr-tun-opt {
+    background: #FFFFFF; border: 1px solid rgba(33,28,22,0.08);
+    border-radius: 12px; padding: 0.85rem 1rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16;
+    text-align: left; cursor: pointer; min-height: 52px;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  }
+  .vr-tun-opt:hover { border-color: #C15A2B; background: #FFF8F0; }
+  .vr-tun-opt:active { transform: scale(0.98); }
+  .vr-tun-opt.is-chosen { border-color: #C15A2B; background: #FFF3E8; box-shadow: 0 0 0 1px #C15A2B inset; }
+
+  .vr-tun-opt--big {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 1.4rem 0.8rem;
+  }
+  .vr-tun-opt-ico { font-size: 2rem; line-height: 1; margin-bottom: 0.4rem; }
+  .vr-tun-opt-lbl { font-weight: 600; }
+
+  .vr-tun-opt--num {
+    text-align: center; padding: 0.85rem 0.4rem; font-family: 'Fraunces', serif;
+    font-size: 1.2rem; font-weight: 500;
+  }
+
+  /* Champs numériques */
+  .vr-tun-champ {
+    display: flex; align-items: center; gap: 0.75rem;
+    background: #FFFFFF; border: 1px solid rgba(33,28,22,0.1);
+    border-radius: 12px; padding: 0 1rem; margin: 0.75rem 0 0.3rem;
+    transition: border-color 0.15s ease;
+  }
+  .vr-tun-champ:focus-within { border-color: #C15A2B; box-shadow: 0 0 0 3px rgba(193,90,43,0.1); }
+  .vr-tun-input {
+    flex: 1; border: 0; outline: 0; background: transparent;
+    padding: 0.95rem 0; font-family: 'Fraunces', serif; font-size: 1.35rem;
+    color: #211C16; min-width: 0;
+  }
+  .vr-tun-unite { font-family: 'Instrument Sans', sans-serif; color: #9C8E7C; font-size: 0.9rem; font-weight: 500; flex-shrink: 0; }
+  .vr-tun-err {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem;
+    color: #B94E24; margin: 0.3rem 0 0.75rem;
+  }
+
+  /* Boutons de progression */
+  .vr-tun-next {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #211C16; color: #FFFFFF; border: 0; border-radius: 12px;
+    padding: 0.9rem 1.5rem; font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 1rem;
+    transition: background 0.15s ease;
+  }
+  .vr-tun-next:hover { background: #3E362E; }
+  .vr-tun-next--primaire { background: #C15A2B; }
+  .vr-tun-next--primaire:hover { background: #A84D23; }
+  .vr-tun-skip {
+    display: inline-block; background: transparent; border: 0;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
+    color: #6B5D4F; text-decoration: underline; cursor: pointer;
+    padding: 0.5rem 0; margin-left: 0.3rem;
+  }
+  .vr-tun-skip:hover { color: #211C16; }
+  .vr-tun-back {
+    display: inline-block; background: transparent; border: 0;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
+    color: #6B5D4F; text-decoration: underline; cursor: pointer;
+    padding: 0.6rem 0; margin-top: 0.9rem;
+  }
+  .vr-tun-back:hover { color: #211C16; }
+  .vr-tun-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  .vr-tun-actions--pair { flex-direction: column; align-items: stretch; margin-top: 1rem; }
+
+  /* Écran de lecture — la lecture finale */
+  .vr-tun-lec {
+    background: #FFFFFF; border-radius: 16px;
+    padding: 1.4rem 1.3rem 1.5rem;
+    border: 1px solid rgba(33,28,22,0.05);
+    box-shadow: 0 12px 28px -14px rgba(33,28,22,0.2);
+    margin: 0.5rem 0 1rem;
+  }
+  .vr-tun-lec-eyebrow {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #C15A2B;
+    margin-bottom: 0.9rem;
+  }
+  .vr-tun-lec-phrase {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: clamp(1.15rem, 4vw, 1.45rem); line-height: 1.45; color: #211C16;
+    margin: 0 0 0.6rem;
+  }
+  .vr-tun-lec-b { font-weight: 600; color: #C15A2B; letter-spacing: -0.01em; }
+  .vr-tun-lec-repere {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F;
+    margin: 0 0 1rem;
+  }
+  .vr-tun-lec-conf {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F;
+    padding: 0.75rem 0 1rem; border-top: 1px dashed rgba(33,28,22,0.1); margin-top: 0.75rem;
+  }
+  .vr-tun-lec-limite {
+    background: #F8F3EA; border-radius: 10px;
+    padding: 0.9rem 1rem; margin-top: 0.75rem;
+  }
+  .vr-tun-lec-limite-titre {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: #C15A2B;
+    margin: 0 0 0.5rem;
+  }
+  .vr-tun-lec-limite p:not(.vr-tun-lec-limite-titre) {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.87rem;
+    color: #3E362E; line-height: 1.55; margin: 0;
+  }
+
+  /* Écran ACTION — deux gros boutons */
+  .vr-tun-action {
+    background: #FFFFFF; border: 1px solid rgba(33,28,22,0.1);
+    border-radius: 14px; padding: 1.1rem 1.2rem;
+    text-align: left; cursor: pointer;
+    display: grid; gap: 0.3rem;
+    transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+  }
+  .vr-tun-action:hover { border-color: #C15A2B; background: #FFF8F0; transform: translateY(-1px); }
+  .vr-tun-action-titre { font-family: 'Instrument Sans', sans-serif; font-size: 1rem; font-weight: 600; color: #211C16; }
+  .vr-tun-action-sub { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; }
+  .vr-tun-action--mouaad .vr-tun-action-titre { color: #C15A2B; }
+
   /* Gardées — utilisées par construireStack */
   .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E8DFD0; }
   .vr-ppm-alt-type { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7C6A; }
@@ -739,11 +940,14 @@ import Layout from '../layouts/Layout.astro';
     .vr-scan-val { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-tile { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-tile-bar span { transition: none !important; }
+    .vr-tun { animation: none !important; }
   }
 
 </style>
 
 <script>
+
+  import * as CMP from '../lib/comparables';
   type Tx = {
     id: string; d: string; v: number; t: string; lat: number; lon: number;
     no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
@@ -1582,107 +1786,24 @@ import Layout from '../layouts/Layout.astro';
     return esc(parts.join(' · ')) + ' · Source : DVF (DGFiP).';
   }
 
-  // ——— Conversion : 3 chemins ———
+  // ——— Conversion : point d'ancrage du tunnel personnalisé ———
+  // Le bloc à 3 chemins (lecture / Mouaad / explorer) a été supprimé :
+  // le nouveau tunnel personnalisé EST la suite naturelle de l'analyse.
+  // panneauMouaad reste utilisé, mais uniquement depuis l'écran de lecture finale.
   function construireConversion() {
-    return `
-      <div class="vr-block" data-anim="fade">
-        <div class="vr-conv" id="vr-conv">
-          <p class="vr-conv-eyebrow">La suite</p>
-          <p class="vr-conv-titre">Et votre bien dans tout ça&nbsp;?</p>
-          <p class="vr-conv-intro">Ces ventes dessinent le contexte de votre quartier — mais votre bien a ses propres caractéristiques. Surface, état, exposition : autant de facteurs que les statistiques ne captent pas.</p>
-          <div class="vr-paths" id="vr-paths">
-            <button type="button" class="vr-path vr-path--1" data-path="lecture">
-              <span><span class="vr-path-t">Situer mon bien dans ce marché</span><span class="vr-path-d">Quelques questions · gratuit · sans engagement</span></span>
-              <span class="vr-path-arrow" aria-hidden="true">→</span>
-            </button>
-            <button type="button" class="vr-path vr-path--2" data-path="mouaad">
-              <span><span class="vr-path-t">Parler directement avec Mouaad</span><span class="vr-path-d">Pour échanger dès maintenant, sans étape</span></span>
-              <span class="vr-path-arrow" aria-hidden="true">→</span>
-            </button>
-            <button type="button" class="vr-path vr-path--3" data-path="explorer">
-              <span><span class="vr-path-t">Continuer à explorer LEVOIS</span><span class="vr-path-d">Vers les contenus utiles du site</span></span>
-              <span class="vr-path-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-          <div id="vr-panneau"></div>
-        </div>
-      </div>`;
+    // Pas de classe .vr-block — celle-ci est initialement invisible (opacity: 0)
+    // et attend une classe .is-in posée par l'IntersectionObserver du reveal.
+    // Le tunnel gère sa propre animation d'entrée.
+    return `<div id="vr-panneau"></div>`;
   }
 
-  // Intentions (qualification commerciale) — clés lisibles côté lead
-  const INTENTIONS = [
-    { key: 'curieux', label: 'Je suis simplement curieux', tag: 'Curieux' },
-    { key: 'reflexion', label: 'Je réfléchis à vendre', tag: 'Vendeur potentiel' },
-    { key: 'prochainement', label: 'Je vais vendre prochainement', tag: 'Vendeur prochainement' },
-    { key: 'envente', label: 'Mon bien est déjà en vente', tag: 'Déjà en vente' },
-    { key: 'acheteur', label: 'Je souhaite acheter dans le secteur', tag: 'Acheteur' },
-  ];
-  const OPTS_TYPE = [
-    { value: 'maison', label: 'Une maison' }, { value: 'appartement', label: 'Un appartement' },
-    { value: 'terrain', label: 'Un terrain' }, { value: 'autre', label: 'Autre / je ne sais pas' },
-  ];
-  const QUALIF: Record<string, Array<{ key: string; label: string; options: Array<{ value: string; label: string }> }>> = {
-    curieux: [
-      { key: 'curiosite', label: "Qu'est-ce qui vous amène ?", options: [
-        { value: 'prix-quartier', label: 'Le prix des ventes de mon quartier' },
-        { value: 'valeur-bien', label: "La valeur d'un bien précis" },
-        { value: 'curiosite', label: 'Simple curiosité' } ] },
-    ],
-    reflexion: [
-      { key: 'horizon', label: 'Quand envisagez-vous de vendre ?', options: [
-        { value: 'dans-annee', label: "Dans l'année" }, { value: '1-2-ans', label: 'Dans 1 à 2 ans' }, { value: 'sans-date', label: 'Pas encore de date' } ] },
-      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
-      { key: 'besoin', label: 'Votre besoin principal ?', options: [
-        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
-        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
-    ],
-    prochainement: [
-      { key: 'horizon', label: 'Dans quel délai ?', options: [
-        { value: 'ce-mois', label: 'Ce mois-ci' }, { value: '1-3-mois', label: 'Dans 1 à 3 mois' }, { value: '3-6-mois', label: 'Dans 3 à 6 mois' } ] },
-      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
-      { key: 'besoin', label: 'Votre besoin principal ?', options: [
-        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
-        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
-    ],
-    envente: [
-      { key: 'dureeEnVente', label: 'Depuis combien de temps est-il en vente ?', options: [
-        { value: 'moins-1-mois', label: "Moins d'un mois" }, { value: '1-3-mois', label: '1 à 3 mois' },
-        { value: '3-6-mois', label: '3 à 6 mois' }, { value: 'plus-6-mois', label: 'Plus de 6 mois' } ] },
-      { key: 'problemePrincipal', label: "Qu'est-ce qui bloque le plus ?", options: [
-        { value: 'peu-visites', label: 'Peu de visites' }, { value: 'visites-sans-offre', label: "Des visites mais pas d'offre" },
-        { value: 'offres-basses', label: 'Des offres trop basses' }, { value: 'peu-vue', label: "L'annonce est peu vue" },
-        { value: 'je-ne-sais-pas', label: 'Je ne sais pas' } ] },
-    ],
-    acheteur: [
-      { key: 'typeRecherche', label: 'Que recherchez-vous ?', options: OPTS_TYPE },
-      { key: 'budget', label: 'Votre budget approximatif ?', options: [
-        { value: 'moins-150', label: 'Moins de 150 000 €' }, { value: '150-250', label: '150 à 250 000 €' },
-        { value: '250-400', label: '250 à 400 000 €' }, { value: 'plus-400', label: 'Plus de 400 000 €' },
-        { value: 'nsp', label: 'Je ne sais pas encore' } ] },
-      { key: 'horizon', label: 'Dans quel délai ?', options: [
-        { value: 'rapidement', label: 'Rapidement' }, { value: 'dans-annee', label: "Dans l'année" }, { value: 'sans-date', label: 'Pas pressé' } ] },
-    ],
-  };
-
   function brancherConversion(model: any) {
-    const paths = document.getElementById('vr-paths')!;
     const panneau = document.getElementById('vr-panneau')!;
-    paths.querySelectorAll<HTMLButtonElement>('.vr-path').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const p = btn.dataset.path;
-        if (p === 'mouaad') panneauMouaad(panneau);
-        else if (p === 'explorer') panneauExplorer(panneau);
-        else panneauQualif(panneau, model);
-        panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
-      });
-    });
-    // CTA de conclusion → même destination que le chemin « lecture » (qualification).
+    // Le CTA de la conclusion lance directement le tunnel personnalisé.
     const cta = document.querySelector<HTMLButtonElement>('.vr-conc-cta');
     if (cta) {
       cta.addEventListener('click', () => {
-        const p1 = paths.querySelector<HTMLButtonElement>('.vr-path[data-path="lecture"]');
-        if (p1) p1.classList.add('is-chosen');
-        panneauQualif(panneau, model);
+        ouvrirTunnel(panneau, model);
         panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
       });
     }
@@ -1703,135 +1824,498 @@ import Layout from '../layouts/Layout.astro';
       </div>`;
   }
 
-  function panneauExplorer(panneau: HTMLElement) {
-    panneau.innerHTML = `
-      <div class="vr-panneau">
-        <p class="vr-q-label">Continuer à comprendre.</p>
-        <div class="vr-explorer">
-          <a href="/situer-ma-vente?src=votre-rue"><b>Situer ma vente</b> — un diagnostic en 3 minutes, sans coordonnées</a>
-          <a href="/methode"><b>La méthode LEVOIS</b> — lire le marché avant de décider</a>
-          <a href="/ressources/annonce-vue-peu-de-contacts"><b>Pourquoi une vente bloque</b> — annonce vue, peu de contacts</a>
-          <a href="/ressources"><b>Toutes les ressources</b> — comprendre chaque étape</a>
+  // ————————————————————————————————————————————————————————————————
+  //  TUNNEL PERSONNALISÉ — le vrai parcours « SITUER MON BIEN »
+  //  Enchaîne 4 étapes filtrantes DVF (compteur qui diminue réellement),
+  //  une rupture visuelle, 2 questions déclaratives (compteur figé), et
+  //  une lecture finale honnête (fourchette centrale + repère + limite).
+  //  Aucun prix estimé du bien n'est jamais produit.
+  // ————————————————————————————————————————————————————————————————
+  type Etat = {
+    type: 'Maison' | 'Appartement' | null;
+    sb: number | null;
+    p: number | null;
+    st: number | null;
+    stConnu: boolean; // false si l'utilisateur a répondu « je ne sais pas »
+    exterieur: string | null;
+    etatDeclare: string | null;
+    step: number; // index de l'étape courante
+    poolInitial: number; // compteur de départ (transactions non composites)
+    progression: Array<{ cle: string; libelle: string; n: number; elargi?: boolean }>;
+    lecture: any | null;
+    retenues: any[];
+  };
+
+  function ouvrirTunnel(panneau: HTMLElement, model: any) {
+    if (!dataset) return;
+    if (!selection?.lat || !selection?.lon) return; // sécurité — devrait être toujours vrai
+    const propre = CMP.retirerComposites(dataset);
+    const etat: Etat = {
+      type: null, sb: null, p: null, st: null, stConnu: true,
+      exterieur: null, etatDeclare: null,
+      step: 0, poolInitial: propre.length,
+      progression: [], lecture: null, retenues: [],
+    };
+    rendreTunnel(panneau, etat, model);
+  }
+
+  // Recalcule complètement la progression à partir des réponses.
+  // Cela garantit que revenir en arrière et modifier une réponse produit
+  // toujours le bon compteur (pas de cache invalide).
+  function recalculerProgression(etat: Etat) {
+if (!etat.type) { etat.progression = []; etat.retenues = []; etat.lecture = null; return; }
+    const cible: any = {
+      type: etat.type, sb: etat.sb || 0, p: etat.p || 0,
+      lat: selection?.lat, lon: selection?.lon,
+      st: (etat.type === 'Maison' && etat.stConnu && etat.st ? etat.st : undefined),
+    };
+    const prog: Etat['progression'] = [];
+    const propre = CMP.retirerComposites(dataset);
+    prog.push({ cle: 'depart', libelle: 'transactions autour de cette adresse', n: propre.length });
+
+    const parType = CMP.filtrerType(propre, etat.type);
+    prog.push({ cle: 'type', libelle: etat.type === 'Maison' ? 'maisons' : 'appartements', n: parType.length });
+
+    if (etat.sb == null) { etat.progression = prog; etat.retenues = parType; etat.lecture = null; return; }
+    const parSurf = CMP.filtrerSurface(parType, cible);
+    prog.push({
+      cle: 'surface',
+      libelle: `entre ${parSurf.plage[0]} et ${parSurf.plage[1]} m²`,
+      n: parSurf.pool.length,
+      elargi: parSurf.elargi,
+    });
+
+    if (etat.p == null) { etat.progression = prog; etat.retenues = parSurf.pool; etat.lecture = null; return; }
+    const parP = CMP.filtrerPieces(parSurf.pool, cible);
+    prog.push({
+      cle: 'pieces',
+      libelle: parP.plage[0] === parP.plage[1] ? `${parP.plage[0]} pièces` : `${parP.plage[0]} à ${parP.plage[1]} pièces`,
+      n: parP.pool.length,
+      elargi: parP.elargi,
+    });
+
+    let poolT = parP.pool;
+    if (etat.type === 'Maison' && etat.stConnu && etat.st && etat.st > 0) {
+      const pt = CMP.filtrerTerrain(parP.pool, cible);
+      if (pt.applique) {
+        prog.push({
+          cle: 'terrain',
+          libelle: `terrain de ${pt.plage[0]} à ${pt.plage[1]} m²`,
+          n: pt.pool.length,
+          elargi: pt.elargi,
+        });
+        poolT = pt.pool;
+      }
+    }
+
+    // Sélection finale par score — seulement après que TOUS les critères DVF
+    // ont été renseignés.
+    const dvfComplet = etat.type != null && etat.sb != null && etat.p != null &&
+      (etat.type === 'Appartement' || (etat.type === 'Maison' && etat.stConnu !== undefined));
+    if (dvfComplet) {
+      const sel = CMP.selectionParScore(poolT, cible);
+      prog.push({
+        cle: 'score',
+        libelle: 'suffisamment ressemblantes',
+        n: sel.retenues.length,
+        elargi: sel.elargi,
+      });
+      etat.retenues = sel.retenues;
+      etat.lecture = CMP.calculerLecture(sel.retenues);
+    } else {
+      etat.retenues = poolT;
+      etat.lecture = null;
+    }
+    etat.progression = prog;
+  }
+
+  function rendreProgression(etat: Etat, rupture: boolean): string {
+    if (!etat.progression.length) return '';
+    return `<div class="vr-tun-prog${rupture ? ' vr-tun-prog--gele' : ''}">
+      ${etat.progression.map((e, i) => `
+        <div class="vr-tun-step" data-cle="${e.cle}">
+          <span class="vr-tun-n">${e.n}</span>
+          <span class="vr-tun-lbl">${esc(e.libelle)}${e.elargi ? ' <em class="vr-tun-el">· élargi</em>' : ''}</span>
         </div>
+      `).join('<div class="vr-tun-fleche" aria-hidden="true">↓</div>')}
+    </div>`;
+  }
+
+  // Étapes du tunnel — l'ordre définit le parcours. Terrain est conditionnel (maison).
+  function etapesActives(etat: Etat): string[] {
+    const base = ['type', 'surface', 'pieces'];
+    if (etat.type === 'Maison') base.push('terrain');
+    base.push('rupture', 'exterieur', 'etat', 'lecture', 'action');
+    return base;
+  }
+
+  function rendreTunnel(panneau: HTMLElement, etat: Etat, model: any) {
+    recalculerProgression(etat);
+    const etapes = etapesActives(etat);
+    const cle = etapes[etat.step];
+    const totalDvf = etapes.indexOf('rupture'); // nb d'étapes DVF avant rupture
+    const rupture = etat.step >= totalDvf; // après la rupture, plus de filtres DVF
+
+    // Barre de dots — sur toutes les étapes sauf action (redondant avec le résumé)
+    const totalDots = etapes.length - (etapes.includes('action') ? 1 : 0);
+    const dots = Array.from({ length: totalDots }, (_, i) =>
+      `<span class="vr-tun-dot ${i <= etat.step ? 'is-on' : ''}"></span>`,
+    ).join('');
+
+    // Corps de l'étape
+    let corps = '';
+    if (cle === 'type') corps = ecranType(etat);
+    else if (cle === 'surface') corps = ecranSurface(etat);
+    else if (cle === 'pieces') corps = ecranPieces(etat);
+    else if (cle === 'terrain') corps = ecranTerrain(etat);
+    else if (cle === 'rupture') corps = ecranRupture(etat);
+    else if (cle === 'exterieur') corps = ecranExterieur(etat);
+    else if (cle === 'etat') corps = ecranEtat(etat);
+    else if (cle === 'lecture') corps = ecranLecture(etat);
+    else if (cle === 'action') corps = ecranAction(etat);
+
+    // Bouton retour, sauf sur la première étape et sur les 2 dernières
+    const canBack = etat.step > 0 && cle !== 'lecture' && cle !== 'action';
+
+    panneau.innerHTML = `
+      <div class="vr-tun ${rupture ? 'vr-tun--declaratif' : 'vr-tun--dvf'}" id="vr-tun">
+        <div class="vr-tun-head">
+          <p class="vr-tun-titre">${rupture ? 'CE QUE LES DONNÉES PUBLIQUES NE SAVENT PAS' : 'CE QUE LES VENTES PUBLIQUES PERMETTENT DE COMPARER'}</p>
+          <div class="vr-tun-dots">${dots}</div>
+        </div>
+        ${rendreProgression(etat, rupture)}
+        <div class="vr-tun-corps">${corps}</div>
+        ${canBack ? '<button type="button" class="vr-tun-back">← Revenir</button>' : ''}
+      </div>`;
+
+    // Brancher les interactions selon l'étape
+    if (cle === 'type') brancherType(panneau, etat, model);
+    else if (cle === 'surface') brancherSurface(panneau, etat, model);
+    else if (cle === 'pieces') brancherPieces(panneau, etat, model);
+    else if (cle === 'terrain') brancherTerrain(panneau, etat, model);
+    else if (cle === 'rupture') brancherRupture(panneau, etat, model);
+    else if (cle === 'exterieur') brancherOpts(panneau, etat, model, 'exterieur');
+    else if (cle === 'etat') brancherOpts(panneau, etat, model, 'etatDeclare');
+    else if (cle === 'lecture') brancherLecture(panneau, etat, model);
+    else if (cle === 'action') brancherAction(panneau, etat, model);
+
+    if (canBack) {
+      panneau.querySelector<HTMLButtonElement>('.vr-tun-back')!.addEventListener('click', () => {
+        etat.step -= 1;
+        rendreTunnel(panneau, etat, model);
+      });
+    }
+  }
+
+  // — Étape TYPE ——————————————————————————————————————————————
+  function ecranType(etat: Etat): string {
+    const isM = etat.type === 'Maison', isA = etat.type === 'Appartement';
+    return `
+      <p class="vr-tun-q">Quel type de bien décrivez-vous ?</p>
+      <div class="vr-tun-opts vr-tun-opts--pair">
+        <button type="button" class="vr-tun-opt vr-tun-opt--big${isM ? ' is-chosen' : ''}" data-v="Maison">
+          <span class="vr-tun-opt-ico">🏠</span>
+          <span class="vr-tun-opt-lbl">Maison</span>
+        </button>
+        <button type="button" class="vr-tun-opt vr-tun-opt--big${isA ? ' is-chosen' : ''}" data-v="Appartement">
+          <span class="vr-tun-opt-ico">🏢</span>
+          <span class="vr-tun-opt-lbl">Appartement</span>
+        </button>
+      </div>`;
+  }
+  function brancherType(panneau: HTMLElement, etat: Etat, model: any) {
+    panneau.querySelectorAll<HTMLButtonElement>('.vr-tun-opt').forEach((b) => b.addEventListener('click', () => {
+      const v = b.dataset.v as 'Maison' | 'Appartement';
+      if (etat.type !== v) {
+        // Changement de type → invalide les réponses en aval qui n'ont plus de sens
+        etat.type = v;
+        // On garde surface/pièces (portables) mais on retire le terrain si on part sur appt
+        if (v === 'Appartement') { etat.st = null; etat.stConnu = true; }
+      }
+      etat.step += 1;
+      rendreTunnel(panneau, etat, model);
+    }));
+  }
+
+  // — Étape SURFACE ——————————————————————————————————————————————
+  function ecranSurface(etat: Etat): string {
+    return `
+      <p class="vr-tun-q">Quelle surface habitable ?</p>
+      <p class="vr-tun-sub">La surface loi Carrez pour un appartement, la surface habitable pour une maison.</p>
+      <div class="vr-tun-champ vr-tun-champ--num">
+        <input type="number" inputmode="numeric" min="8" max="600" step="1" id="vr-tun-sb" class="vr-tun-input" placeholder="ex. 92" value="${etat.sb ?? ''}" />
+        <span class="vr-tun-unite">m²</span>
+      </div>
+      <p class="vr-tun-err" id="vr-tun-err" hidden></p>
+      <button type="button" class="vr-tun-next" id="vr-tun-next">Continuer →</button>`;
+  }
+  function brancherSurface(panneau: HTMLElement, etat: Etat, model: any) {
+    const input = panneau.querySelector<HTMLInputElement>('#vr-tun-sb')!;
+    const err = panneau.querySelector<HTMLElement>('#vr-tun-err')!;
+    const next = panneau.querySelector<HTMLButtonElement>('#vr-tun-next')!;
+    const valider = () => {
+      const v = Number(input.value);
+      if (!Number.isFinite(v) || v < 8 || v > 600) {
+        err.textContent = 'Une surface entre 8 et 600 m².'; err.hidden = false; return;
+      }
+      err.hidden = true;
+      etat.sb = Math.round(v);
+      etat.step += 1;
+      rendreTunnel(panneau, etat, model);
+    };
+    next.addEventListener('click', valider);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); valider(); } });
+    input.focus();
+  }
+
+  // — Étape PIÈCES ——————————————————————————————————————————————
+  function ecranPieces(etat: Etat): string {
+    const opts = [1, 2, 3, 4, 5, 6, 7];
+    const isChosen = (n: number) => (etat.p === n || (n === 7 && etat.p && etat.p >= 7)) ? ' is-chosen' : '';
+    return `
+      <p class="vr-tun-q">Combien de pièces principales ?</p>
+      <p class="vr-tun-sub">Chambres et pièces à vivre — cuisine, salle de bain et WC ne comptent pas.</p>
+      <div class="vr-tun-opts vr-tun-opts--grille">
+        ${opts.map((n) => `<button type="button" class="vr-tun-opt vr-tun-opt--num${isChosen(n)}" data-v="${n}">${n === 7 ? '7+' : n}</button>`).join('')}
+      </div>`;
+  }
+  function brancherPieces(panneau: HTMLElement, etat: Etat, model: any) {
+    panneau.querySelectorAll<HTMLButtonElement>('.vr-tun-opt').forEach((b) => b.addEventListener('click', () => {
+      etat.p = Number(b.dataset.v);
+      etat.step += 1;
+      rendreTunnel(panneau, etat, model);
+    }));
+  }
+
+  // — Étape TERRAIN (maison seulement) ——————————————————————————
+  function ecranTerrain(etat: Etat): string {
+    return `
+      <p class="vr-tun-q">Surface de terrain ?</p>
+      <p class="vr-tun-sub">Si vous ne connaissez pas cette valeur, dites-le simplement — nous n'inventerons rien à sa place.</p>
+      <div class="vr-tun-champ vr-tun-champ--num">
+        <input type="number" inputmode="numeric" min="10" max="20000" step="10" id="vr-tun-st" class="vr-tun-input" placeholder="ex. 400" value="${etat.stConnu && etat.st ? etat.st : ''}" />
+        <span class="vr-tun-unite">m²</span>
+      </div>
+      <p class="vr-tun-err" id="vr-tun-err" hidden></p>
+      <div class="vr-tun-actions">
+        <button type="button" class="vr-tun-next" id="vr-tun-next">Continuer →</button>
+        <button type="button" class="vr-tun-skip" id="vr-tun-skip">Je ne sais pas — passer</button>
+      </div>`;
+  }
+  function brancherTerrain(panneau: HTMLElement, etat: Etat, model: any) {
+    const input = panneau.querySelector<HTMLInputElement>('#vr-tun-st')!;
+    const err = panneau.querySelector<HTMLElement>('#vr-tun-err')!;
+    const next = panneau.querySelector<HTMLButtonElement>('#vr-tun-next')!;
+    const skip = panneau.querySelector<HTMLButtonElement>('#vr-tun-skip')!;
+    next.addEventListener('click', () => {
+      const v = Number(input.value);
+      if (!Number.isFinite(v) || v < 10 || v > 20000) {
+        err.textContent = 'Une surface de terrain entre 10 et 20 000 m² — ou choisissez « je ne sais pas ».';
+        err.hidden = false; return;
+      }
+      err.hidden = true;
+      etat.st = Math.round(v); etat.stConnu = true;
+      etat.step += 1; rendreTunnel(panneau, etat, model);
+    });
+    skip.addEventListener('click', () => {
+      etat.st = null; etat.stConnu = false;
+      etat.step += 1; rendreTunnel(panneau, etat, model);
+    });
+    input.focus();
+  }
+
+  // — Rupture (écran de transition explicative) —————————————————
+  function ecranRupture(etat: Etat): string {
+    const n = etat.lecture?.n ?? etat.retenues.length;
+    return `
+      <p class="vr-tun-q vr-tun-q--rupture">Ce que les données publiques ne savent pas de votre bien.</p>
+      <p class="vr-tun-body">
+        À partir d'ici, nous ne filtrons plus les ventes : ces informations n'existent pas dans DVF.
+        Elles servent à comprendre ce que les chiffres seuls ne peuvent pas voir.
+        <br /><br />
+        Le compteur reste sur <strong>${n} vente${n > 1 ? 's' : ''} retenue${n > 1 ? 's' : ''}</strong>.
+      </p>
+      <button type="button" class="vr-tun-next" id="vr-tun-next">Continuer →</button>`;
+  }
+  function brancherRupture(panneau: HTMLElement, etat: Etat, model: any) {
+    panneau.querySelector<HTMLButtonElement>('#vr-tun-next')!.addEventListener('click', () => {
+      etat.step += 1; rendreTunnel(panneau, etat, model);
+    });
+  }
+
+  // — Étape EXTÉRIEUR (déclaratif, ne filtre pas DVF) ————————————
+  function ecranExterieur(etat: Etat): string {
+    const opts = [
+      ['jardin', 'Jardin'], ['terrasse', 'Terrasse'], ['balcon', 'Balcon'],
+      ['aucun', 'Aucun extérieur'], ['nsp', 'Je ne sais pas'],
+    ];
+    return `
+      <p class="vr-tun-q">Un extérieur ?</p>
+      <p class="vr-tun-sub">DVF ne contient pas cette information. Votre réponse aide Mouaad à préparer une lecture plus fine.</p>
+      <div class="vr-tun-opts">
+        ${opts.map(([v, l]) => `<button type="button" class="vr-tun-opt${etat.exterieur === v ? ' is-chosen' : ''}" data-v="${v}">${esc(l)}</button>`).join('')}
       </div>`;
   }
 
-  // Micro-qualification : une question par écran, progression visible
-  function panneauQualif(panneau: HTMLElement, model: any) {
-    const state: any = { intentionKey: null, intention: null, tag: null, answers: {} };
-
-    const rendre = (steps: any[], idx: number) => {
-      const total = 1 + steps.length + 1; // intention + questions + contact
-      const dots = Array.from({ length: total }, (_, i) => `<span class="vr-q-dot ${i <= idx ? 'is-on' : ''}"></span>`).join('');
-      // idx 0 = intention ; 1..steps.length = questions ; total-1 = contact
-      if (idx === 0) {
-        panneau.innerHTML = `
-          <div class="vr-panneau">
-            <div class="vr-q-progress">${dots}</div>
-            <p class="vr-q-label">Où en êtes-vous ?</p>
-            <div class="vr-q-opts">${INTENTIONS.map((it) => `<button type="button" class="vr-q-opt" data-k="${it.key}">${it.label}</button>`).join('')}</div>
-          </div>`;
-        panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
-          const it = INTENTIONS.find((x) => x.key === b.dataset.k)!;
-          state.intentionKey = it.key; state.intention = it.label; state.tag = it.tag;
-          const st = QUALIF[it.key] || [];
-          if (st.length) rendre(st, 1); else rendreContact(st);
-        }));
-        return;
-      }
-      const q = steps[idx - 1];
-      panneau.innerHTML = `
-        <div class="vr-panneau">
-          <div class="vr-q-progress">${dots}</div>
-          <p class="vr-q-label">${esc(q.label)}</p>
-          <div class="vr-q-opts">${q.options.map((o: any) => `<button type="button" class="vr-q-opt" data-v="${o.value}">${esc(o.label)}</button>`).join('')}</div>
-          <button type="button" class="vr-q-back">← Revenir</button>
-        </div>`;
-      panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
-        state.answers[q.key] = { value: b.dataset.v, label: b.textContent };
-        if (idx < steps.length) rendre(steps, idx + 1); else rendreContact(steps);
-      }));
-      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (idx === 1) rendre(steps, 0); else rendre(steps, idx - 1); });
-    };
-
-    const rendreContact = (steps: any[]) => {
-      const total = 1 + steps.length + 1;
-      const dots = Array.from({ length: total }, () => `<span class="vr-q-dot is-on"></span>`).join('');
-      panneau.innerHTML = `
-        <div class="vr-panneau">
-          <div class="vr-q-progress">${dots}</div>
-          <p class="vr-q-label">Où vous envoyer votre analyse personnalisée ?</p>
-          <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
-            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
-          </p>
-          <form id="vr-lead" novalidate>
-            <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
-            <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
-            <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#B8AA97">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
-            <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
-            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
-            <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
-            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
-            <button type="button" class="vr-q-back">← Revenir</button>
-          </form>
-        </div>`;
-      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (steps.length) rendre(steps, steps.length); else rendre(steps, 0); });
-      brancherEnvoiLead(panneau, model, state);
-    };
-
-    rendre([], 0);
+  // — Étape ÉTAT (déclaratif) ——————————————————————————————————
+  function ecranEtat(etat: Etat): string {
+    const opts = [
+      ['renove', 'Rénové récemment'], ['bon', 'Bon état'],
+      ['rafraichir', 'À rafraîchir'], ['renover', 'À rénover'], ['nsp', 'Je ne sais pas'],
+    ];
+    return `
+      <p class="vr-tun-q">Comment jugeriez-vous son état ?</p>
+      <p class="vr-tun-sub">Ce sont vos éléments — DVF n'en connaît aucun. Ils ne modifient pas la sélection.</p>
+      <div class="vr-tun-opts">
+        ${opts.map(([v, l]) => `<button type="button" class="vr-tun-opt${etat.etatDeclare === v ? ' is-chosen' : ''}" data-v="${v}">${esc(l)}</button>`).join('')}
+      </div>`;
+  }
+  function brancherOpts(panneau: HTMLElement, etat: Etat, model: any, champ: 'exterieur' | 'etatDeclare') {
+    panneau.querySelectorAll<HTMLButtonElement>('.vr-tun-opt').forEach((b) => b.addEventListener('click', () => {
+      (etat as any)[champ] = b.dataset.v || null;
+      etat.step += 1; rendreTunnel(panneau, etat, model);
+    }));
   }
 
-  function brancherEnvoiLead(panneau: HTMLElement, model: any, state: any) {
-    const f = panneau.querySelector<HTMLFormElement>('#vr-lead')!;
-    const err = panneau.querySelector<HTMLElement>('#vr-lead-err')!;
-    const btn = panneau.querySelector<HTMLButtonElement>('#vr-lead-envoi')!;
+  // — Étape LECTURE —————————————————————————————————————————————
+  function ecranLecture(etat: Etat): string {
+    const l = etat.lecture;
+    const n = l?.n ?? 0;
+
+    if (n < 15) {
+      return `
+        <p class="vr-tun-q">Trop peu de ventes ressemblent réellement à votre bien.</p>
+        <p class="vr-tun-body">
+          Nous préférons vous le dire plutôt que d'inventer une précision.
+          À ce niveau de ressemblance, il ne reste pas assez de références pour produire une lecture chiffrée suffisamment solide.
+        </p>
+        <p class="vr-tun-body">
+          C'est le moment où une lecture humaine devient bien plus utile qu'une statistique.
+        </p>
+        <button type="button" class="vr-tun-next" id="vr-tun-next">Parler à Mouaad →</button>`;
+    }
+
+    const [q1, q3] = l.fourchette;
+    const rep = l.repereCentral;
+    const messageN =
+      l.niveau === 'solide'
+        ? `Cette lecture repose sur <strong>${n} ventes</strong> proches de votre profil.`
+        : `Cette lecture repose sur <strong>${n} ventes</strong> proches de votre profil. La fourchette doit donc être interprétée avec davantage de prudence.`;
+
+    return `
+      <div class="vr-tun-lec">
+        <p class="vr-tun-lec-eyebrow">LECTURE PERSONNALISÉE</p>
+        <p class="vr-tun-lec-phrase">
+          La moitié des ventes les plus proches de votre profil se situe entre
+          <span class="vr-tun-lec-b">${eur.format(q1)}</span>
+          et
+          <span class="vr-tun-lec-b">${eur.format(q3)}</span>
+          €/m².
+        </p>
+        <p class="vr-tun-lec-repere">Milieu des ventes retenues : <strong>${eur.format(rep)} €/m²</strong></p>
+        <p class="vr-tun-lec-conf">${messageN}</p>
+        <div class="vr-tun-lec-limite">
+          <p class="vr-tun-lec-limite-titre">Ce que les données publiques ne peuvent pas mesurer</p>
+          <p>Les données publiques ne connaissent pas l'état réel du bien, son exposition, ses prestations, ses nuisances ou la qualité de sa rénovation. Ces éléments peuvent modifier fortement la façon dont un acheteur le compare aux autres, mais DVF ne permet pas d'en mesurer ici l'impact.</p>
+        </div>
+      </div>
+      <button type="button" class="vr-tun-next vr-tun-next--primaire" id="vr-tun-next">Voir mes options →</button>`;
+  }
+  function brancherLecture(panneau: HTMLElement, etat: Etat, model: any) {
+    panneau.querySelector<HTMLButtonElement>('#vr-tun-next')!.addEventListener('click', () => {
+      // Si N insuffisant, le bouton devient direct vers Mouaad
+      if ((etat.lecture?.n ?? 0) < 15) { panneauMouaad(panneau); return; }
+      etat.step += 1; rendreTunnel(panneau, etat, model);
+    });
+  }
+
+  // — Étape ACTION (2 boutons) ——————————————————————————————————
+  function ecranAction(_etat: Etat): string {
+    return `
+      <p class="vr-tun-q">Deux façons d'aller plus loin.</p>
+      <div class="vr-tun-actions vr-tun-actions--pair">
+        <button type="button" class="vr-tun-action vr-tun-action--mouaad" data-act="mouaad">
+          <span class="vr-tun-action-titre">Parler à Mouaad pour aller plus loin</span>
+          <span class="vr-tun-action-sub">Un échange humain, sans étape supplémentaire</span>
+        </button>
+        <button type="button" class="vr-tun-action vr-tun-action--email" data-act="email">
+          <span class="vr-tun-action-titre">Recevoir cette lecture par e-mail</span>
+          <span class="vr-tun-action-sub">Nous vous l'envoyons, avec le récapitulatif</span>
+        </button>
+      </div>`;
+  }
+  function brancherAction(panneau: HTMLElement, etat: Etat, model: any) {
+    panneau.querySelectorAll<HTMLButtonElement>('.vr-tun-action').forEach((b) => b.addEventListener('click', () => {
+      if (b.dataset.act === 'mouaad') { panneauMouaad(panneau); return; }
+      rendreFormulaireEmail(panneau, etat, model);
+    }));
+  }
+
+  // — Formulaire minimal, appelé UNIQUEMENT si la personne veut la lecture par e-mail
+  function rendreFormulaireEmail(panneau: HTMLElement, etat: Etat, model: any) {
+    panneau.innerHTML = `
+      <div class="vr-tun vr-tun--email">
+        <p class="vr-tun-q">Où vous envoyons-nous cette lecture ?</p>
+        <form id="vr-tun-mail" novalidate>
+          <div class="vr-champ"><label for="vr-tun-prenom">Prénom</label><input id="vr-tun-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
+          <div class="vr-champ"><label for="vr-tun-email">E-mail</label><input id="vr-tun-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
+          <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
+          <label class="vr-consent"><input type="checkbox" id="vr-tun-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+          <p id="vr-tun-mail-err" class="vr-tun-err" hidden role="alert"></p>
+          <button type="submit" class="btn-primaire" id="vr-tun-mail-envoi">Envoyer</button>
+          <button type="button" class="vr-q-back" id="vr-tun-mail-back">← Revenir</button>
+        </form>
+      </div>`;
+    panneau.querySelector<HTMLButtonElement>('#vr-tun-mail-back')!.addEventListener('click', () => {
+      rendreTunnel(panneau, etat, model);
+    });
+    brancherEnvoiLead(panneau, etat, model);
+  }
+
+  function brancherEnvoiLead(panneau: HTMLElement, etat: Etat, model: any) {
+    const f = panneau.querySelector<HTMLFormElement>('#vr-tun-mail')!;
+    const err = panneau.querySelector<HTMLElement>('#vr-tun-mail-err')!;
+    const btn = panneau.querySelector<HTMLButtonElement>('#vr-tun-mail-envoi')!;
     let envoiEnCours = false;
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (envoiEnCours) return;
-      err.classList.add('hidden');
-      if (!f.checkValidity()) { f.reportValidity(); return; }
-      envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
+      err.hidden = true;
       const fd = new FormData(f);
-      const d = model.derniere;
-      // Charge utile destinée à /api/lead. Le backend est migré vers Cloudflare
-      // Pages Functions à l'itération suivante : ce format reste stable.
+      const consent = (panneau.querySelector<HTMLInputElement>('#vr-tun-consent'))?.checked;
+      if (!f.checkValidity() || !consent) { f.reportValidity(); return; }
+      envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
       const payload = {
-        type: 'votre-rue',
-        source: 'QR /votre-rue',
-        adresseRecherchee: selection?.label || '',
-        commune: d?.co || '',
-        intention: state.intention, intentionKey: state.intentionKey, profil: state.tag,
-        qualification: Object.fromEntries(Object.entries(state.answers).map(([k, v]: any) => [k, v.label])),
-        prenom: fd.get('prenom'), email: fd.get('email'), telephone: fd.get('telephone') || null,
+        prenom: fd.get('prenom'),
+        email: fd.get('email'),
         site_web: fd.get('site_web') || '',
-        contexteInfographie: {
-          nbVentes: model.nbVentes, rayon: model.Rw,
-          composition: { maisons: model.nM, appartements: model.nA },
-          ppmMaisons: model.ppmM ? { median: Math.round(model.ppmM.median), q1: Math.round(model.ppmM.q1), q3: Math.round(model.ppmM.q3) } : null,
-          ppmAppartements: model.ppmA ? { median: Math.round(model.ppmA.median), q1: Math.round(model.ppmA.q1), q3: Math.round(model.ppmA.q3) } : null,
-          tendance: model.D ? { direction: model.D.dir, pct: Number(model.D.delta.toFixed(1)) } : null,
+        consent: !!consent,
+        adresseRecherchee: selection?.label || '',
+        cible: {
+          type: etat.type, sb: etat.sb, p: etat.p, st: etat.st,
+          exterieur: etat.exterieur, etat: etat.etatDeclare,
         },
+        lecture: etat.lecture,
+        progression: etat.progression,
       };
       try {
         const rep = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         if (rep.ok) {
           panneau.innerHTML = `
-            <div class="vr-panneau">
-              <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre analyse personnalisée et vous l'envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+            <div class="vr-tun vr-tun--email">
+              <p class="vr-tun-q">C'est envoyé, ${esc(String(fd.get('prenom') || ''))}.</p>
+              <p class="vr-tun-body">Vous recevez votre lecture par e-mail dans les prochaines minutes. Mouaad reste joignable directement au <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
             </div>`;
         } else {
           const data = await rep.json().catch(() => null);
           err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
-          err.classList.remove('hidden');
+          err.hidden = false;
         }
       } catch {
         err.textContent = "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
-        err.classList.remove('hidden');
+        err.hidden = false;
       } finally {
-        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir mon analyse personnalisée';
+        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Envoyer';
       }
     });
   }
