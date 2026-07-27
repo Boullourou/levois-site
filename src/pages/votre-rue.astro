@@ -415,39 +415,138 @@ import Layout from '../layouts/Layout.astro';
     padding: 1.25rem 1rem 1.1rem;
     box-shadow: 0 1px 2px rgba(33,28,22,0.05), 0 16px 36px -14px rgba(33,28,22,0.22);
   }
-  .vr-grid-line { stroke: rgba(33,28,22,0.07); stroke-width: 1; }
-
-  /* Tuiles-stat : les comptages deviennent de vrais objets chiffrés */
-  .vr-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.9rem; }
-  .vr-tile {
-    background: #FFFFFF; border: 1px solid rgba(33,28,22,0.06); border-radius: 14px;
-    padding: 0.85rem 0.9rem 0.8rem;
-    box-shadow: 0 1px 2px rgba(33,28,22,0.04), 0 10px 24px -14px rgba(33,28,22,0.2);
-    opacity: 0; transform: translateY(10px) scale(0.97);
-    transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.25,0.46,0.45,0.94);
+  /* ——— Split : barre proportionnelle Maisons / Appartements ———
+     Une seule question graphique : « quelle est la répartition ? » */
+  .vr-split { margin-top: 0.4rem; }
+  .vr-split-heads { display: flex; align-items: flex-end; gap: 0.5rem; margin-bottom: 0.55rem; }
+  .vr-split-head {
+    min-width: 0; padding: 0 0.35rem;
+    transition: opacity 0.55s ease;
   }
-  .vr-tile.on { opacity: 1; transform: none; }
-  .vr-tile.is-muted { opacity: 0.42; }
-  .vr-tile-lbl {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase; color: #9C8E7C;
-    display: flex; align-items: center; gap: 0.35rem;
+  .vr-split-head--M { text-align: left; }
+  .vr-split-head--A { text-align: right; }
+  .vr-split-head.is-muted { opacity: 0.32; }
+  .vr-split-lgd {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: #6B5D4F;
   }
-  .vr-tile-ico { width: 8px; height: 8px; border-radius: 999px; flex: 0 0 auto; }
-  .vr-tile-val {
+  .vr-split-head--A .vr-split-lgd { flex-direction: row-reverse; }
+  .vr-split-dot { width: 8px; height: 8px; border-radius: 999px; }
+  .vr-split-n {
+    display: block; margin-top: 0.3rem;
     font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.02em;
-    font-size: clamp(1.9rem, 8vw, 2.6rem); line-height: 1.05; margin-top: 0.3rem;
+    font-size: clamp(1.9rem, 8vw, 2.6rem); line-height: 1;
+    color: #211C16;
   }
-  .vr-tile-val--M { color: #C15A2B; }
-  .vr-tile-val--A { color: #3A6FB0; }
-  .vr-tile-bar { height: 4px; border-radius: 999px; background: rgba(33,28,22,0.07); margin-top: 0.5rem; overflow: hidden; }
-  .vr-tile-bar span {
-    display: block; height: 100%; border-radius: 999px; width: 0%;
-    transition: width 0.9s cubic-bezier(0.25,0.46,0.45,0.94) 0.15s;
+  .vr-split-pct {
+    display: block; margin-top: 0.15rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem;
+    color: #6B5D4F; font-weight: 500;
   }
-  .vr-tile-pct {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem;
-    color: #6B5D4F; margin-top: 0.35rem;
+  .vr-split-bar {
+    display: flex; height: 14px; border-radius: 999px; overflow: hidden;
+    background: rgba(33,28,22,0.06);
+  }
+  .vr-split-seg {
+    height: 100%; width: 0%;
+    transition: width 0.95s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.55s ease;
+  }
+  .vr-split-seg.is-muted { opacity: 0.28; }
+  .vr-split-seg--M { background: #C15A2B; }
+  .vr-split-seg--A { background: #3A6FB0; }
+
+  /* ——— Règle de prix : plage centrale + repère ———
+     Une seule question graphique : « où est le cœur du marché ? » */
+  .vr-ruler-wrap {
+    padding: 0.5rem clamp(0.5rem, 3vw, 1rem) 0.75rem;
+    position: relative;
+    --dom: #C15A2B;
+  }
+  .vr-ruler-lead {
+    position: absolute; transform: translateX(-50%);
+    top: 0; text-align: center; z-index: 2;
+    opacity: 0; transition: opacity 0.55s ease 0.15s;
+  }
+  .vr-ruler-wrap.is-led .vr-ruler-lead { opacity: 1; }
+  .vr-ruler-lead-cap {
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #9C8E7C;
+    margin-bottom: 0.35rem;
+  }
+  .vr-ruler-lead-val {
+    font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.02em;
+    font-size: clamp(2.1rem, 8vw, 3rem); line-height: 1; color: var(--dom);
+    white-space: nowrap;
+  }
+  .vr-ruler-lead-val span {
+    display: inline-block; margin-left: 0.3em;
+    font-family: 'Instrument Sans', sans-serif; font-weight: 500; font-size: 0.35em;
+    letter-spacing: 0.02em; color: #9C8E7C; vertical-align: 0.5em;
+  }
+  .vr-ruler-lead-caret {
+    width: 0; height: 0; margin: 0.35rem auto 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid var(--dom);
+  }
+  .vr-ruler {
+    position: relative; height: 34px;
+    margin-top: clamp(4.5rem, 14vw, 5.75rem);
+  }
+  .vr-ruler-track {
+    position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+    height: 2px; background: rgba(33,28,22,0.14); border-radius: 999px;
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .vr-ruler-wrap.is-tracked .vr-ruler-track { opacity: 1; }
+  .vr-ruler-zone {
+    position: absolute; top: 50%; transform: translateY(-50%) scaleX(0);
+    transform-origin: center;
+    height: 22px; background: var(--dom); opacity: 0;
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1.5px var(--dom);
+    transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.55s ease;
+  }
+  .vr-ruler-zone.on {
+    opacity: 0.22;
+    transform: translateY(-50%) scaleX(1);
+  }
+  .vr-ruler-pivot {
+    position: absolute; top: 50%; transform: translate(-50%, -50%) scaleY(0);
+    width: 3px; height: 36px; border-radius: 999px;
+    background: var(--dom);
+    box-shadow: 0 0 0 3px rgba(255,255,255,0.85), 0 0 12px rgba(0,0,0,0.15);
+    transition: transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .vr-ruler-pivot.on { transform: translate(-50%, -50%) scaleY(1); }
+  .vr-ruler-mark {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 2px; height: 10px; background: rgba(33,28,22,0.35);
+    border-radius: 999px;
+  }
+  .vr-ruler-mark--q { background: var(--dom); opacity: 0.55; }
+  .vr-ruler-labels {
+    position: relative; height: 3rem; margin-top: 0.5rem;
+  }
+  .vr-ruler-lbl {
+    position: absolute; transform: translateX(-50%);
+    font-family: 'Instrument Sans', sans-serif;
+    white-space: nowrap; line-height: 1.2;
+  }
+  .vr-ruler-lbl em {
+    display: block; font-style: normal;
+    font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: #9C8E7C; margin-top: 0.15rem;
+  }
+  .vr-ruler-lbl--min, .vr-ruler-lbl--max {
+    color: #6B5D4F; font-size: 0.78rem; font-weight: 500;
+  }
+  .vr-ruler-lbl--min { transform: translateX(0); text-align: left; }
+  .vr-ruler-lbl--max { transform: translateX(-100%); text-align: right; }
+  .vr-ruler-lbl--q {
+    color: var(--dom); font-weight: 600; font-size: 0.92rem;
+    font-variant-numeric: tabular-nums;
   }
   .vr-kicker--light { color: rgba(255,255,255,0.5); }
   .vr-kicker--terra { color: #C15A2B; }
@@ -503,38 +602,6 @@ import Layout from '../layouts/Layout.astro';
     color: #A8D5A2;
   }
 
-  /* Bloc dots — nuage de points */
-  .vr-dots-svg { display: block; width: 100%; height: 130px; margin: 0 auto 0.5rem; }
-  .vr-dot { transition: transform 0.95s cubic-bezier(0.25,0.46,0.45,0.94), fill 0.5s ease, opacity 0.6s ease; }
-
-  .vr-dot-legend {
-    display: flex; gap: 1.75rem; justify-content: center; margin-bottom: 0.75rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem;
-    color: #211C16; align-items: center;
-    opacity: 0; transition: opacity 0.5s ease;
-  }
-  .vr-dot-legend-ico {
-    display: inline-block; width: 10px; height: 10px;
-    border-radius: 999px; margin-right: 0.35rem;
-    vertical-align: middle; position: relative; top: -1px;
-  }
-  .vr-dot-counts {
-    display: flex; gap: 2.5rem; justify-content: center;
-    margin-bottom: 1rem;
-    opacity: 0; transition: opacity 0.55s ease;
-  }
-  .vr-dot-count {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: 1; display: block;
-    letter-spacing: -0.02em;
-  }
-  .vr-dot-count--M { color: #C15A2B; }
-  .vr-dot-count--A { color: #3A6FB0; }
-  .vr-dot-count-item {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem;
-    color: #6B5D4F; font-weight: 500; letter-spacing: 0.04em; text-align: center;
-  }
-
   /* Textes narratifs des phases */
   .vr-phase-txt {
     font-family: 'Instrument Sans', sans-serif;
@@ -562,32 +629,6 @@ import Layout from '../layouts/Layout.astro';
   .vr-dist-type-pill--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
   .vr-dist-type-pill--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
 
-  .vr-dist-wrap { max-width: 42rem; }
-  .vr-dist-svg { display: block; width: 100%; overflow: visible; }
-  .vr-dist-zone { transition: opacity 0.8s ease; }
-  .vr-dist-dot { opacity: 0; transition: opacity 0.25s ease; }
-  .vr-dist-med-line { transition: opacity 0.5s ease; }
-  .vr-dist-axis-lbl {
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.62rem; fill: #BBAA96; letter-spacing: 0.04em;
-  }
-  /* Lecture du prix médian : un seul grand chiffre, en HTML — jamais de
-     collision possible, contrairement aux labels positionnés dans le SVG. */
-  .vr-dist-readout {
-    text-align: center; margin-top: 0.85rem;
-    opacity: 0; transform: translateY(10px) scale(0.97);
-    transition: opacity 0.55s ease, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
-  }
-  .vr-dist-readout.on { opacity: 1; transform: none; }
-  .vr-dist-med-num {
-    font-family: 'Fraunces', serif; font-weight: 600; letter-spacing: -0.02em;
-    font-size: clamp(2.1rem, 9vw, 3rem); line-height: 1;
-  }
-  .vr-dist-med-num span { font-size: 0.42em; font-weight: 500; letter-spacing: 0; }
-  .vr-dist-med-cap {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #9C8E7C; margin-top: 0.35rem;
-  }
   .vr-dist-note {
     font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
     color: #6B5D4F; line-height: 1.58; margin-top: 0.9rem;
@@ -919,15 +960,12 @@ import Layout from '../layouts/Layout.astro';
     .vr-range-dot, .vr-gauge-cursor { transition: none; }
     .vr-analyse-step.is-active .vr-analyse-dot::after { animation: none; }
     .vr-bloc-anim { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .vr-dot { transition: none !important; }
-    .vr-dot-legend { opacity: 1 !important; transition: none !important; }
-    .vr-dot-counts { opacity: 1 !important; transition: none !important; }
     .vr-phase-txt { transition: none !important; }
-    .vr-b1-phrase { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .vr-dist-zone { opacity: 1 !important; transition: none !important; }
-    .vr-dist-dot { opacity: 0.72 !important; transition: none !important; }
-    .vr-dist-med-line { opacity: 1 !important; transition: none !important; }
-    .vr-dist-readout { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-split-seg { transition: none !important; width: attr(data-pct percentage) !important; }
+    .vr-split-head { transition: none !important; }
+    .vr-ruler-track, .vr-ruler-zone, .vr-ruler-pivot, .vr-ruler-lead { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .vr-ruler-zone { transform: translateY(-50%) !important; }
+    .vr-ruler-pivot { transform: translate(-50%, -50%) !important; }
     .vr-dist-note { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-surf-delta { opacity: 1 !important; transform: none !important; transition: none !important; }
     .vr-spark-dot { opacity: 1 !important; transition: none !important; }
@@ -938,8 +976,6 @@ import Layout from '../layouts/Layout.astro';
     .vr-scan-pulse, .vr-scan-step.is-active .vr-scan-mark::after { animation: none !important; }
     .vr-scan-cell { transition: none !important; }
     .vr-scan-val { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .vr-tile { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .vr-tile-bar span { transition: none !important; }
     .vr-tun { animation: none !important; }
   }
 
@@ -1381,68 +1417,55 @@ import Layout from '../layouts/Layout.astro';
     const D = model.D;
     const sf = model.surfaceEffect;
 
-    // ——— Nuage de points (positions déterministes) ———
-    const NDOTS = 44;
+    // Répartition Maisons / Appartements — les seuls chiffres nécessaires
+    // à la barre proportionnelle du premier bloc.
     const propM = model.nM / Math.max(model.nM + model.nA, 1);
-    const nDotM = Math.max(4, Math.min(40, Math.round(NDOTS * propM)));
     const pctM = Math.round(propM * 100), pctA = 100 - pctM;
-    const SW = 360, SH = 130, CX = SW / 2, CY = SH / 2;
-    let _s = 0x9e3779b9;
-    const rnd = () => { _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s ^= _s >>> 16; return (_s >>> 0) / 0x100000000; };
-    type Dot = { x0: number; y0: number; dx: number; dy: number; isM: boolean };
-    const dots: Dot[] = Array.from({ length: NDOTS }, (_, i) => {
-      const isM = i < nDotM;
-      const x0 = CX + (rnd() * 2 - 1) * 8, y0 = CY + (rnd() * 2 - 1) * 8;
-      const x1 = isM ? 14 + rnd() * 100 : SW - 114 + rnd() * 100, y1 = 10 + rnd() * 110;
-      return { x0, y0, dx: x1 - x0, dy: y1 - y0, isM };
-    });
-    const dotSvg = dots.map((d, i) =>
-      `<circle class="vr-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 5 : 4}" fill="#C5BAA8" data-di="${i}"/>`
-    ).join('');
 
-    // ——— Distribution jitter (€/m² réels) ———
+    // ——— Règle de prix (€/m² réels) ———
+    // Une seule question graphique : où se concentre la moitié centrale des ventes,
+    // et où est le milieu du marché ? Pas de scatter — le sens est direct.
     const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
     const ppmDots: number[] = (model.dom === 'Maison' ? model.ppmDotsM : model.ppmDotsA) || [];
     let distHtml = '';
     if (ppmDom && ppmDots.length >= 5) {
-      const q1 = ppmDom.q1, med = ppmDom.median, q3 = ppmDom.q3;
+      const q1 = Math.round(ppmDom.q1), med = Math.round(ppmDom.median), q3 = Math.round(ppmDom.q3);
       const iqr = q3 - q1;
-      const xMin = Math.max(Math.min(...ppmDots), q1 - 1.5 * iqr);
-      const xMax = Math.min(Math.max(...ppmDots), q3 + 1.5 * iqr);
-      const DW = 360, DH = 64, YN = 6, YX = 58;
-      const xs = (v: number) => Math.max(2, Math.min(DW - 2, ((v - xMin) / Math.max(xMax - xMin, 1)) * DW));
-      const q1x = xs(q1), medx = xs(med), q3x = xs(q3), zoneW = Math.max(0, q3x - q1x);
-      let _s2 = 0xabcdef01;
-      const rnd2 = () => { _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 ^= _s2 >>> 16; return (_s2 >>> 0) / 0x100000000; };
-      const visible = ppmDots.filter((v: number) => v >= xMin && v <= xMax);
-      const ddots = visible.map((v: number, i: number) =>
-        `<circle class="vr-dist-dot" cx="${xs(v).toFixed(1)}" cy="${(YN + rnd2() * (YX - YN)).toFixed(1)}" r="3.5" fill="${domColor}" data-di="${i}"/>`
-      ).join('');
+      const xMin = Math.round(Math.max(Math.min(...ppmDots), q1 - 1.5 * iqr));
+      const xMax = Math.round(Math.min(Math.max(...ppmDots), q3 + 1.5 * iqr));
+      const range = Math.max(1, xMax - xMin);
+      const pos = (v: number) => ((v - xMin) / range) * 100;
+      const q1P = pos(q1), q3P = pos(q3), medP = pos(med);
       const pillCls = model.dom === 'Maison' ? 'vr-dist-type-pill--M' : 'vr-dist-type-pill--A';
       const pillTxt = model.dom === 'Maison' ? 'Maisons' : 'Appartements';
-      const lblY = DH + 16;
       const vendus = model.dom === 'Maison' ? 'vendues' : 'vendus';
       distHtml = `
         <div class="vr-bloc vr-bloc--b2 vr-bloc-anim" id="vr-b-dist">
           <p class="vr-kicker vr-kicker--ink"><span class="vr-kicker-num">{{N}}</span>CE QUE LES PRIX MONTRENT</p>
           <p class="vr-titre vr-titre--dark">Les prix dans ce secteur</p>
           <span class="vr-dist-type-pill ${pillCls}">${esc(pillTxt)}</span>
-          <div class="vr-dist-wrap vr-viz">
-            <svg class="vr-dist-svg" viewBox="0 0 ${DW} ${DH + 22}" aria-hidden="true">
-              <line class="vr-grid-line" x1="0" y1="${YN - 4}" x2="${DW}" y2="${YN - 4}"/>
-              <line class="vr-grid-line" x1="0" y1="${(YN + YX) / 2}" x2="${DW}" y2="${(YN + YX) / 2}"/>
-              <line class="vr-grid-line" x1="0" y1="${YX + 4}" x2="${DW}" y2="${YX + 4}"/>
-              <rect class="vr-dist-zone" id="vr-dz" x="${q1x.toFixed(1)}" y="${YN - 4}" width="${zoneW.toFixed(1)}" height="${YX - YN + 8}" rx="4" fill="${domColor}" fill-opacity="0.15" style="opacity:0"/>
-              ${ddots}
-              <line class="vr-dist-med-line" id="vr-dml" x1="${medx.toFixed(1)}" y1="${YN - 8}" x2="${medx.toFixed(1)}" y2="${YX + 8}" stroke="${domColor}" stroke-width="2.5" stroke-dasharray="4 2" style="opacity:0"/>
-              <text x="2" y="${lblY}" class="vr-dist-axis-lbl">${eur.format(Math.round(xMin))} €/m²</text>
-              <text x="${DW - 2}" y="${lblY}" class="vr-dist-axis-lbl" text-anchor="end">${eur.format(Math.round(xMax))} €/m²</text>
-            </svg>
-            <div class="vr-dist-readout" id="vr-dro">
-              <p class="vr-dist-med-num" style="color:${domColor}">${eur.format(Math.round(med))} <span>€/m²</span></p>
-              <p class="vr-dist-med-cap">prix médian</p>
+          <div class="vr-ruler-wrap vr-viz" id="vr-ruler" style="--dom:${domColor}">
+            <div class="vr-ruler-lead" style="left:${medP.toFixed(2)}%">
+              <div class="vr-ruler-lead-cap">Milieu du marché</div>
+              <div class="vr-ruler-lead-val">${eur.format(med)}<span>€/m²</span></div>
+              <div class="vr-ruler-lead-caret" aria-hidden="true"></div>
             </div>
-            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} ${vendus} se situent entre ${eur.format(Math.round(q1))} et ${eur.format(Math.round(q3))} €/m² — la zone colorée. Les données constatent cet écart, elles n'en expliquent pas encore toutes les causes.</p>
+            <div class="vr-ruler">
+              <div class="vr-ruler-track"></div>
+              <div class="vr-ruler-zone" id="vr-rz" style="left:${q1P.toFixed(2)}%; width:${(q3P - q1P).toFixed(2)}%;"></div>
+              <div class="vr-ruler-pivot" id="vr-rp" style="left:${medP.toFixed(2)}%"></div>
+              <div class="vr-ruler-mark vr-ruler-mark--min" style="left:0%"></div>
+              <div class="vr-ruler-mark vr-ruler-mark--max" style="left:100%"></div>
+              <div class="vr-ruler-mark vr-ruler-mark--q" style="left:${q1P.toFixed(2)}%"></div>
+              <div class="vr-ruler-mark vr-ruler-mark--q" style="left:${q3P.toFixed(2)}%"></div>
+            </div>
+            <div class="vr-ruler-labels">
+              <span class="vr-ruler-lbl vr-ruler-lbl--min" style="left:0%">${eur.format(xMin)} <em>€/m²</em></span>
+              <span class="vr-ruler-lbl vr-ruler-lbl--q" style="left:${q1P.toFixed(2)}%">${eur.format(q1)}</span>
+              <span class="vr-ruler-lbl vr-ruler-lbl--q" style="left:${q3P.toFixed(2)}%">${eur.format(q3)}</span>
+              <span class="vr-ruler-lbl vr-ruler-lbl--max" style="left:100%">${eur.format(xMax)} <em>€/m²</em></span>
+            </div>
+            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} ${vendus} se situent entre <strong>${eur.format(q1)}</strong> et <strong>${eur.format(q3)}</strong> €/m² — la zone colorée. Les données constatent cet écart, elles n'en expliquent pas encore toutes les causes.</p>
           </div>
         </div>`;
     }
@@ -1591,25 +1614,22 @@ import Layout from '../layouts/Layout.astro';
         <div class="vr-bloc vr-bloc--b1 vr-bloc-anim" id="vr-b-dots">
           <p class="vr-kicker vr-kicker--terra"><span class="vr-kicker-num">{{N}}</span>CE QUI S'EST VENDU</p>
           <p class="vr-titre vr-titre--dark">Deux marchés différents autour de chez vous</p>
-          <div class="vr-viz">
-            <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
-            <div class="vr-dot-legend" id="vr-dl">
-              <span><span class="vr-dot-legend-ico" style="background:#C15A2B"></span>Maisons</span>
-              <span><span class="vr-dot-legend-ico" style="background:#3A6FB0"></span>Appartements</span>
+          <div class="vr-split" id="vr-split" data-dom="${model.dom === 'Maison' ? 'M' : 'A'}">
+            <div class="vr-split-heads">
+              <div class="vr-split-head vr-split-head--M" data-t="M" style="flex: ${pctM};">
+                <span class="vr-split-lgd"><span class="vr-split-dot" style="background:#C15A2B"></span>Maisons</span>
+                <span class="vr-split-n">${model.nM}</span>
+                <span class="vr-split-pct">${pctM} %</span>
+              </div>
+              <div class="vr-split-head vr-split-head--A" data-t="A" style="flex: ${pctA};">
+                <span class="vr-split-lgd"><span class="vr-split-dot" style="background:#3A6FB0"></span>Appartements</span>
+                <span class="vr-split-n">${model.nA}</span>
+                <span class="vr-split-pct">${pctA} %</span>
+              </div>
             </div>
-          </div>
-          <div class="vr-tiles" id="vr-dc">
-            <div class="vr-tile" data-t="M">
-              <p class="vr-tile-lbl"><span class="vr-tile-ico" style="background:#C15A2B"></span>Maisons</p>
-              <p class="vr-tile-val vr-tile-val--M">${model.nM}</p>
-              <div class="vr-tile-bar"><span data-pct="${pctM}" style="background:#C15A2B"></span></div>
-              <p class="vr-tile-pct">${pctM} % des ventes</p>
-            </div>
-            <div class="vr-tile" data-t="A">
-              <p class="vr-tile-lbl"><span class="vr-tile-ico" style="background:#3A6FB0"></span>Appartements</p>
-              <p class="vr-tile-val vr-tile-val--A">${model.nA}</p>
-              <div class="vr-tile-bar"><span data-pct="${pctA}" style="background:#3A6FB0"></span></div>
-              <p class="vr-tile-pct">${pctA} % des ventes</p>
+            <div class="vr-split-bar">
+              <div class="vr-split-seg vr-split-seg--M" data-t="M" data-pct="${pctM}"></div>
+              <div class="vr-split-seg vr-split-seg--A" data-t="A" data-pct="${pctA}"></div>
             </div>
           </div>
           <div class="vr-phase-stack">
@@ -1653,32 +1673,20 @@ import Layout from '../layouts/Layout.astro';
     observe('#vr-b-dots', () => {
       const el = scene.querySelector<HTMLElement>('#vr-b-dots');
       if (el) el.classList.add('is-on');
-      const dotEls = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dot'));
-      // Phase 1 : nuage se colore et se sépare
+      // Phase 1 : la barre grandit, les segments prennent leur largeur proportionnelle.
       later(300, () => {
-        dotEls.forEach((d, i) => {
-          d.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
-          d.style.fill = dots[i].isM ? '#C15A2B' : '#3A6FB0';
+        scene.querySelectorAll<HTMLElement>('.vr-split-bar .vr-split-seg').forEach((s) => {
+          s.style.width = (s.dataset.pct || '0') + '%';
         });
-        const dl = scene.querySelector<HTMLElement>('#vr-dl');
-        if (dl) dl.style.opacity = '1';
+        scene.querySelectorAll<HTMLElement>('.vr-split-heads .vr-split-head').forEach((h) => {
+          h.classList.add('on');
+        });
       });
-      // Phase 2 : les tuiles-stat arrivent, les jauges se remplissent
-      const tiles = Array.from(scene.querySelectorAll<HTMLElement>('#vr-dc .vr-tile'));
-      tiles.forEach((t, i) => later(750 + i * 130, () => {
-        t.classList.add('on');
-        const bar = t.querySelector<HTMLElement>('.vr-tile-bar span');
-        if (bar) bar.style.width = (bar.dataset.pct || '0') + '%';
-      }));
-      // Phase 3 : non-dominant s'estompe, texte bascule
-      later(1400, () => {
+      // Phase 2 : le segment non-dominant s'estompe, texte narratif bascule.
+      later(1250, () => {
         const isDomM = model.dom === 'Maison';
-        dotEls.forEach((d, i) => {
-          if (dots[i].isM !== isDomM) d.style.opacity = '0.2';
-        });
         const mutedT = isDomM ? 'A' : 'M';
-        const mt = scene.querySelector<HTMLElement>(`#vr-dc .vr-tile[data-t="${mutedT}"]`);
-        if (mt) mt.classList.add('is-muted');
+        scene.querySelectorAll<HTMLElement>(`[data-t="${mutedT}"]`).forEach((n) => n.classList.add('is-muted'));
         const pt1 = scene.querySelector<HTMLElement>('#vr-pt1');
         if (pt1) pt1.style.opacity = '0';
         later(350, () => {
@@ -1688,26 +1696,27 @@ import Layout from '../layouts/Layout.astro';
       });
     });
 
-    // CE QUE LES PRIX MONTRENT
+    // CE QUE LES PRIX MONTRENT — règle de prix
     if (distHtml) {
       observe('#vr-b-dist', () => {
         const el = scene.querySelector<HTMLElement>('#vr-b-dist');
         if (el) el.classList.add('is-on');
-        const ddots = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dist-dot'));
-        const stagger = Math.max(8, Math.floor(500 / Math.max(ddots.length, 1)));
-        ddots.forEach((d, i) => later(i * stagger, () => { d.style.opacity = '0.72'; }));
-        const zoneDelay = ddots.length * stagger + 250;
-        later(zoneDelay, () => {
-          const dz = scene.querySelector<HTMLElement>('#vr-dz');
-          if (dz) dz.style.opacity = '1';
+        // Séquence de révélation : d'abord la piste, puis la zone centrale, puis le pivot et le milieu.
+        later(250, () => {
+          const r = scene.querySelector<HTMLElement>('#vr-ruler');
+          if (r) r.classList.add('is-tracked');
         });
-        later(zoneDelay + 450, () => {
-          const dml = scene.querySelector<HTMLElement>('#vr-dml');
-          if (dml) dml.style.opacity = '1';
-          const dro = scene.querySelector<HTMLElement>('#vr-dro');
-          if (dro) dro.classList.add('on');
+        later(700, () => {
+          const rz = scene.querySelector<HTMLElement>('#vr-rz');
+          if (rz) rz.classList.add('on');
         });
-        later(zoneDelay + 750, () => {
+        later(1150, () => {
+          const rp = scene.querySelector<HTMLElement>('#vr-rp');
+          if (rp) rp.classList.add('on');
+          const r = scene.querySelector<HTMLElement>('#vr-ruler');
+          if (r) r.classList.add('is-led');
+        });
+        later(1500, () => {
           const dn = scene.querySelector<HTMLElement>('#vr-dn');
           if (dn) { dn.style.opacity = '1'; dn.style.transform = 'none'; }
         });
