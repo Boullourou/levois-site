@@ -1,174 +1,317 @@
 ---
 /**
- * /carte — landing dédiée au QR code de la carte de visite de Mouaad.
+ * /carte — hub d'entrée par situation, ouvert après scan du QR de la carte
+ * de visite de Mouaad.
  *
  * URL protégée (imprimée sur support physique) : ne jamais supprimer, renommer
  * ni rediriger sans validation explicite.
  *
- * Rôle : prolonger la rencontre amorcée par la carte de visite. Page courte,
- * personnelle, pensée mobile d'abord (trafic quasi exclusivement QR). Elle ne
- * reproduit pas la homepage : retrouver Mouaad → comprendre sa manière de
- * travailler → aller plus loin (diagnostic ou contact).
+ * Rôle : la personne sait déjà qui est Mouaad. Elle doit immédiatement
+ * comprendre ce qu'elle peut faire avec LEVOIS. La page distribue vers
+ * l'expérience qui correspond à sa situation — /votre-rue, /situer-ma-vente,
+ * ou un pont e-mail temporaire vers Mouaad pour la recherche d'achat
+ * (le parcours acheteur sera conçu ensuite).
  *
- * Les paramètres d'URL (?src=carte…) passent naturellement : page statique,
- * ils n'altèrent pas le rendu.
+ * Les paramètres d'URL (?src=carte…) passent naturellement : page statique.
  */
 import Layout from '../layouts/Layout.astro';
 import ResponsiveImage from '../components/ResponsiveImage.astro';
 import { site } from '../config/site';
 
-const points = [
+// Choix éditoriaux verrouillés avec l'utilisateur — voir la conversation.
+const choix = [
   {
-    titre: 'Lire votre marché local',
-    texte: 'Les ventes réelles autour de chez vous, pas une moyenne abstraite.',
+    n: '01',
+    titre: 'Je veux comprendre mon marché',
+    desc: 'Découvrez les ventes réellement enregistrées autour de votre adresse et ce qu\'elles disent de votre marché local.',
+    cta: 'Explorer mon marché',
+    href: '/votre-rue?src=carte',
+    external: false,
+    bientot: false,
   },
   {
-    titre: 'Comprendre avant de décider',
-    texte: 'On distingue les signaux observés des suppositions. Toujours dans cet ordre.',
+    n: '02',
+    titre: 'Mon bien est déjà en vente',
+    desc: 'Peu de contacts, des visites sans offre ou une vente qui s\'éternise ? Faites le point sur les signaux que le marché vous renvoie.',
+    cta: 'Faire le point',
+    href: '/situer-ma-vente?src=carte',
+    external: false,
+    bientot: false,
   },
   {
-    titre: 'Un regard humain sur votre situation',
-    texte: 'Votre bien n’est pas un cas générique. Il mérite une lecture, pas une recette.',
+    n: '03',
+    titre: 'Je cherche un bien',
+    desc: 'Clarifions ce que vous recherchez et ajoutez une source supplémentaire à votre recherche, sans engagement.',
+    desc2: 'Vous pourrez aussi être informé de certaines opportunités avant leur diffusion lorsqu\'elles correspondent à votre projet.',
+    cta: 'Me parler de ma recherche',
+    // Pont temporaire vers Mouaad : le parcours acheteur sera construit ensuite
+    // et remplacera ce mailto par une URL de parcours.
+    href: `mailto:${site.email}?subject=${encodeURIComponent('Ma recherche immobilière')}&body=${encodeURIComponent(
+      'Bonjour Mouaad,\n\nJe recherche actuellement un bien dans le secteur.\n\nSecteur recherché :\n\nType de bien :\n\nBudget approximatif :\n\nMon projet :\n\n',
+    )}`,
+    external: true,
+    bientot: true,
   },
 ];
 ---
 
 <Layout
-  title="À Lèves, je commence par écouter"
-  description="Mouaad Boullourou, conseiller immobilier indépendant à Lèves. Une lecture du marché local avant toute proposition — sans engagement."
+  title="Commencez par votre situation — LEVOIS"
+  description="Répartiteur d'accueil pour LEVOIS : explorer son marché, faire le point sur une vente en cours, ou entrer en contact pour une recherche."
   headerTransparent={false}
 >
-  <!-- Accueil : reconnaissance immédiate -->
-  <section class="carte-hero">
-    <div class="max-w-page mx-auto px-edge md:px-edge-md grid md:grid-cols-12 gap-8 md:gap-12 items-center">
-      <div class="md:col-span-6 order-2 md:order-1 fade-up">
-        <p class="eyebrow mb-4">À Lèves</p>
-        <h1 class="carte-titre text-encre">À&nbsp;Lèves, je commence par écouter.</h1>
-        <p class="font-sans text-body-lg text-brun mt-5 max-w-md">
-          Habitant du quartier, j’accompagne vos projets immobiliers
-          avec une connaissance fine du terrain.
-        </p>
-        <div class="flex flex-wrap gap-3 mt-8">
-          <a href="/situer-ma-vente?src=carte" class="btn-primaire">Situer ma vente</a>
-          <a href="/contact" class="btn-secondaire">Me contacter</a>
-        </div>
-      </div>
-      <div class="md:col-span-6 order-1 md:order-2 fade-up">
-        <div class="carte-portrait">
-          <ResponsiveImage
-            slot="mouaad-terrain"
-            ratio="4/5"
-            priority={true}
-            loading="eager"
-            sizes="(min-width:768px) 46vw, 92vw"
-            class="w-full h-full"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Qui est Mouaad -->
-  <section class="max-w-editorial mx-auto px-edge md:px-edge-md py-section md:py-section-md">
-    <div class="fade-up">
-      <p class="eyebrow mb-4">La continuité humaine</p>
-      <h2 class="text-h2 text-encre mb-5">{site.mouaad.nom}</h2>
-      <div class="space-y-4 font-sans text-body-lg text-encre/85 leading-relaxed">
-        <p>
-          Je suis conseiller immobilier indépendant sur le bassin chartrain, au sein
-          du réseau SAFTI. Ma manière de travailler tient en quatre verbes :
-          écouter, reformuler, comprendre — puis seulement décider.
-        </p>
-        <p>
-          La lecture précède toujours la proposition. C’est le principe de LEVOIS,
-          ma méthode de lecture du marché et d’accompagnement.
-        </p>
-      </div>
-      <p class="font-sans text-sm text-brun border-l-2 border-argile/60 pl-4 mt-6">
-        {site.mouaad.signature}
-      </p>
-      <a href="/mouaad" class="inline-flex items-center gap-1.5 font-sans text-argile font-medium mt-6 hover:text-encre transition-colors">
-        Faire connaissance
-        <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </a>
-    </div>
-  </section>
-
-  <!-- Ce qu'apporte LEVOIS -->
-  <section class="carte-apports">
+  <!-- ————— 01 · Sélecteur de situation ————— -->
+  <section class="carte-hub">
     <div class="max-w-page mx-auto px-edge md:px-edge-md">
-      <div class="grid md:grid-cols-3 gap-5 md:gap-6">
-        {points.map((p, i) => (
-          <div class="carte-apport fade-up" style={`transition-delay:${i * 80}ms`}>
-            <span class="carte-apport-n" aria-hidden="true">0{i + 1}</span>
-            <h3 class="font-display text-xl text-papier mb-2">{p.titre}</h3>
-            <p class="font-sans text-[15px] leading-relaxed text-papier/70">{p.texte}</p>
-          </div>
+      <div class="carte-hub-head fade-up">
+        <p class="carte-kicker">Commencez ici</p>
+        <h1 class="carte-titre">Commencez par votre situation.</h1>
+        <p class="carte-lede">
+          Choisissez simplement ce qui vous concerne. Vous pouvez commencer sans laisser vos coordonnées.
+        </p>
+      </div>
+
+      <div class="carte-grille">
+        {choix.map((c, i) => (
+          <a
+            class="carte-choix fade-up"
+            href={c.href}
+            style={`transition-delay:${i * 70}ms`}
+            aria-label={`${c.titre} — ${c.cta}`}
+            {...(c.external ? {} : { 'data-astro-prefetch': true })}
+          >
+            <div class="carte-choix-head">
+              <span class="carte-choix-n" aria-hidden="true">{c.n}</span>
+              {c.bientot && <span class="carte-choix-badge">Bientôt</span>}
+            </div>
+            <h2 class="carte-choix-titre">{c.titre}</h2>
+            <p class="carte-choix-desc">{c.desc}</p>
+            {c.desc2 && <p class="carte-choix-desc carte-choix-desc--2">{c.desc2}</p>}
+            <span class="carte-choix-cta">
+              <span>{c.cta}</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- La méthode en une phrase -->
-  <section class="max-w-editorial mx-auto px-edge md:px-edge-md py-section md:py-section-md text-center">
-    <blockquote class="fade-up">
-      <p class="font-display text-2xl md:text-3xl text-encre leading-snug" style="font-variation-settings:'opsz' 40;">
-        « Un bien ne se compare pas à un marché abstrait.
-        Il se compare aux alternatives visibles, ici, maintenant. »
-      </p>
-    </blockquote>
-    <a href="/methode" class="inline-flex items-center gap-1.5 font-sans text-argile font-medium mt-6 hover:text-encre transition-colors fade-up">
-      Le Système des Écarts
-      <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-  </section>
-
-  <!-- Double CTA final -->
-  <section class="max-w-page mx-auto px-edge md:px-edge-md pb-section md:pb-section-md">
-    <div class="carte bg-argile-pale/40 p-7 md:p-10 text-center fade-up">
-      <h2 class="font-display text-2xl md:text-3xl text-encre mb-3">Par où commencer ?</h2>
-      <p class="font-sans text-body-lg text-brun max-w-lg mx-auto mb-7">
-        Le diagnostic « Situer ma vente » me transmet tout votre contexte en trois minutes,
-        sans coordonnées. Ou écrivez-moi directement.
-      </p>
-      <div class="flex flex-wrap gap-3 justify-center">
-        <a href="/situer-ma-vente?src=carte" class="btn-primaire">Situer ma vente</a>
-        <a href={`tel:${site.phone}`} class="btn-secondaire">{site.phoneDisplay}</a>
+  <!-- ————— 02 · Continuité humaine ————— -->
+  <section class="carte-humain">
+    <div class="max-w-page mx-auto px-edge md:px-edge-md">
+      <div class="carte-humain-grid">
+        <div class="carte-humain-visu fade-up">
+          <div class="carte-humain-portrait">
+            <ResponsiveImage
+              slot="mouaad-terrain"
+              ratio="4/5"
+              loading="lazy"
+              sizes="(min-width:768px) 40vw, 88vw"
+              class="w-full h-full"
+            />
+          </div>
+        </div>
+        <div class="carte-humain-txt fade-up">
+          <p class="carte-kicker">La continuité humaine</p>
+          <p class="carte-humain-pivot">
+            Les données donnent des repères. Votre situation demande parfois davantage.
+          </p>
+          <p class="carte-humain-bio">
+            Je suis Mouaad Boullourou, conseiller immobilier sur le bassin chartrain.
+            Mon rôle est d'abord de comprendre votre projet et ce que le marché vous renvoie,
+            avant de vous proposer quoi que ce soit.
+          </p>
+          <div class="carte-humain-liens">
+            <a class="carte-lien" href={`tel:${site.phone}`}>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                <path d="M3.5 2.5h2l1 3-1.5 1a8 8 0 0 0 3.5 3.5l1-1.5 3 1v2A1.5 1.5 0 0 1 11 13 8 8 0 0 1 2 4a1.5 1.5 0 0 1 1.5-1.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Appeler Mouaad · <b>{site.phoneDisplay}</b></span>
+            </a>
+            <a class="carte-lien" href={`mailto:${site.email}`}>
+              <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+                <path d="M2 4l5.5 4L13 4M2 4h11v7H2z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Écrire à Mouaad · <b>{site.email}</b></span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 </Layout>
 
 <style>
-  .carte-hero { padding-top: 2.5rem; }
-  @media (min-width: 768px) { .carte-hero { padding-top: 4rem; } }
+  /* Palette et typographies alignées sur /votre-rue — cohérence LEVOIS. */
 
-  .carte-titre {
-    font-family: 'Fraunces', Georgia, serif;
-    font-weight: 500;
-    font-size: clamp(2.3rem, 6.5vw, 4rem);
-    line-height: 1.05; letter-spacing: -0.02em;
-  }
-  .carte-portrait {
-    border-radius: 24px; overflow: hidden;
-    box-shadow: 0 30px 60px -34px rgba(33, 28, 22, 0.5);
-    max-width: 420px; margin-inline: auto;
-  }
-  @media (min-width: 768px) { .carte-portrait { margin-inline: 0 0 0 auto; } }
-
-  .carte-apports {
-    background: #211C16;
-    padding: 3.5rem 0;
-  }
-  @media (min-width: 768px) { .carte-apports { padding: 5rem 0; } }
-  .carte-apport {
-    border-top: 1px solid rgba(247, 242, 234, 0.14);
-    padding-top: 1.25rem;
-  }
-  .carte-apport-n {
-    display: block;
+  .carte-kicker {
     font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.14em;
-    color: #C97B52; margin-bottom: 1rem;
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: #C15A2B;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+  }
+  .carte-kicker::before {
+    content: '';
+    display: inline-block; width: 20px; height: 1px;
+    background: currentColor; opacity: 0.6;
+  }
+
+  /* ——— Sélecteur ——— */
+  .carte-hub {
+    padding: clamp(2.75rem, 8vw, 5rem) 0 clamp(2.5rem, 6vw, 4rem);
+  }
+  .carte-hub-head { max-width: 42rem; margin-bottom: clamp(2.25rem, 5vw, 3rem); }
+  .carte-titre {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: clamp(2rem, 5.5vw, 3.2rem); line-height: 1.08;
+    letter-spacing: -0.02em; color: #211C16;
+    margin: 0.8rem 0 0.9rem;
+  }
+  .carte-lede {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.1rem); line-height: 1.6;
+    color: #6B5D4F; max-width: 34rem;
+  }
+
+  .carte-grille {
+    display: grid; gap: clamp(1rem, 2.5vw, 1.4rem);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .carte-grille { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .carte-choix {
+    position: relative;
+    display: flex; flex-direction: column;
+    background: #FFFFFF;
+    border: 1px solid rgba(33,28,22,0.07);
+    border-radius: 20px;
+    padding: clamp(1.5rem, 3.5vw, 2rem) clamp(1.4rem, 3.2vw, 1.85rem) clamp(1.4rem, 3.2vw, 1.85rem);
+    text-decoration: none; color: inherit;
+    box-shadow: 0 1px 2px rgba(33,28,22,0.04), 0 12px 28px -18px rgba(33,28,22,0.22);
+    transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94),
+                border-color 0.2s ease,
+                box-shadow 0.25s ease;
+    min-height: 260px;
+    cursor: pointer;
+  }
+  @media (min-width: 900px) { .carte-choix { min-height: 320px; } }
+
+  .carte-choix::after {
+    content: '';
+    position: absolute; left: 0; top: 22%; bottom: 22%;
+    width: 3px; background: #C15A2B;
+    border-radius: 0 3px 3px 0;
+    opacity: 0; transform: scaleY(0.5);
+    transform-origin: center;
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+  .carte-choix:hover, .carte-choix:focus-visible {
+    transform: translateY(-3px);
+    border-color: rgba(193,90,43,0.35);
+    box-shadow: 0 2px 4px rgba(33,28,22,0.05), 0 22px 44px -22px rgba(193,90,43,0.35);
+  }
+  .carte-choix:hover::after, .carte-choix:focus-visible::after {
+    opacity: 1; transform: scaleY(1);
+  }
+  .carte-choix:focus-visible { outline: 2px solid #C15A2B; outline-offset: 4px; }
+
+  .carte-choix-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 1.25rem;
+  }
+  .carte-choix-n {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(1.5rem, 3.5vw, 1.85rem); line-height: 1;
+    color: #C15A2B; letter-spacing: -0.02em;
+  }
+  .carte-choix-badge {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: #C15A2B;
+    background: rgba(193,90,43,0.09);
+    border: 1px solid rgba(193,90,43,0.22);
+    padding: 0.28rem 0.6rem; border-radius: 999px;
+  }
+
+  .carte-choix-titre {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: clamp(1.25rem, 3vw, 1.5rem); line-height: 1.22;
+    color: #211C16; letter-spacing: -0.015em;
+    margin: 0 0 0.75rem;
+  }
+  .carte-choix-desc {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.95rem; line-height: 1.55; color: #6B5D4F;
+    margin: 0;
+  }
+  .carte-choix-desc--2 { margin-top: 0.6rem; color: #8A7C6A; font-size: 0.88rem; }
+
+  .carte-choix-cta {
+    margin-top: auto; padding-top: 1.5rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 0.92rem; font-weight: 600;
+    color: #C15A2B;
+  }
+  .carte-choix-cta svg { transition: transform 0.25s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .carte-choix:hover .carte-choix-cta svg,
+  .carte-choix:focus-visible .carte-choix-cta svg { transform: translateX(4px); }
+
+  /* ——— Continuité humaine ——— */
+  .carte-humain {
+    padding: clamp(2.75rem, 6vw, 4.5rem) 0 clamp(3.5rem, 7vw, 5.5rem);
+    background: linear-gradient(180deg, transparent 0%, rgba(193,90,43,0.03) 50%, transparent 100%);
+  }
+  .carte-humain-grid {
+    display: grid; gap: clamp(1.75rem, 4vw, 3rem);
+    grid-template-columns: 1fr;
+    align-items: center;
+  }
+  @media (min-width: 800px) {
+    .carte-humain-grid { grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); }
+  }
+  .carte-humain-portrait {
+    border-radius: 22px; overflow: hidden;
+    max-width: 360px; margin-inline: auto;
+    box-shadow: 0 30px 60px -30px rgba(33,28,22,0.45);
+  }
+  @media (min-width: 800px) { .carte-humain-portrait { margin-inline: 0; } }
+
+  .carte-humain-pivot {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+    font-size: clamp(1.3rem, 3.6vw, 1.75rem); line-height: 1.32;
+    color: #211C16; letter-spacing: -0.015em;
+    margin: 0.9rem 0 1.1rem; max-width: 32ch;
+  }
+  .carte-humain-bio {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 1rem; line-height: 1.62; color: #3E362E;
+    margin: 0 0 1.5rem; max-width: 42ch;
+  }
+  .carte-humain-liens { display: flex; flex-direction: column; gap: 0.55rem; }
+  .carte-lien {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem;
+    color: #3E362E; text-decoration: none;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(33,28,22,0.08);
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .carte-lien:hover, .carte-lien:focus-visible { color: #C15A2B; border-color: rgba(193,90,43,0.35); }
+  .carte-lien svg { color: #9C8E7C; flex: 0 0 auto; }
+  .carte-lien:hover svg, .carte-lien:focus-visible svg { color: #C15A2B; }
+  .carte-lien b { font-weight: 600; color: #211C16; }
+  .carte-lien:hover b, .carte-lien:focus-visible b { color: #C15A2B; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carte-choix { transition: none; }
+    .carte-choix::after { transition: none; }
+    .carte-choix-cta svg { transition: none; }
   }
 </style>
