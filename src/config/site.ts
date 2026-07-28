@@ -14,8 +14,4 @@ export const site = {
     titre: 'Conseiller immobilier indépendant SAFTI sur le bassin chartrain',
     signature: 'Une lecture avant toute proposition. Aucun engagement. Aucune pression.',
   },
-  lea: {
-    nom: 'Léa',
-    role: 'Léa rend les signaux du marché plus simples à comprendre. Vous la retrouverez dans les contenus LEVOIS et dans les ressources qui accompagnent chaque situation.',
-  },
 } as const;

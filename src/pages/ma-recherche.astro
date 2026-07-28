@@ -472,6 +472,7 @@ import { site } from '../config/site';
     const ret=document.getElementById('mr-retour');
     if(ret) ret.hidden=n<=0||n>=TOTAL;
     render(n);
+    window.scrollTo(0,0);
   }
   function reculer() {
     if(E.step<=0) return;
