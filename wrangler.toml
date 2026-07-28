@@ -1,7 +1,9 @@
 name = "levois-site"
 pages_build_output_dir = "dist"
 
-[[d1_databases]]
-binding = "RECHERCHE_DB"
-database_name = "levois-recherche"
-database_id = "REPLACE_AFTER_WRANGLER_D1_CREATE"
+# Le binding D1 RECHERCHE_DB est déclaré dans le Dashboard Cloudflare Pages :
+#   Pages → levois-site → Settings → Functions → D1 database bindings
+#   Binding name : RECHERCHE_DB  |  Database : levois-recherche
+#
+# Développement local (après création de la base) :
+#   wrangler pages dev dist --d1 RECHERCHE_DB=<uuid-retourné-par-wrangler-d1-create>
