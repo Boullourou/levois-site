@@ -41,14 +41,11 @@ const choix = [
   {
     n: '03',
     titre: 'Je cherche à acheter',
-    desc: 'Décrivez-moi ce que vous recherchez. Je pourrai vous proposer des biens correspondant à votre projet et vous signaler certaines opportunités avant leur diffusion lorsqu\'elles correspondent à votre recherche.',
-    cta: 'Me parler de ma recherche',
-    // Le service acheteur existe. Seul son parcours numérique automatisé
-    // sera construit ensuite — le mailto est la destination provisoire.
-    href: `mailto:${site.email}?subject=${encodeURIComponent('Ma recherche immobilière')}&body=${encodeURIComponent(
-      'Bonjour Mouaad,\n\nJe recherche actuellement un bien dans le secteur.\n\nSecteur recherché :\n\nType de bien :\n\nBudget approximatif :\n\nMon projet :\n\n',
-    )}`,
-    external: true,
+    desc: 'Décrivez votre recherche en quelques minutes. Cette lecture deviendra le point de départ des recherches et des échanges avec Mouaad.',
+    cta: 'Décrire ma recherche',
+    href: '/ma-recherche?src=carte',
+    external: false,
+    bientot: false,
   },
 ];
 ---

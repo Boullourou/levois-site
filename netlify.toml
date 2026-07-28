@@ -9,3 +9,8 @@
   from = "/api/lead"
   to = "/.netlify/functions/lead"
   status = 200
+
+[[redirects]]
+  from = "/api/recherche"
+  to = "/.netlify/functions/recherche"
+  status = 200
