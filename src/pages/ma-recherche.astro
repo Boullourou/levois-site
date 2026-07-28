@@ -397,6 +397,7 @@ import { site } from '../config/site';
     budget:number|null; surface:number|null; preserves:string[];
     decisionTension:string|null; lecture:LM|null;
     prenom:string; contact:string; commentaire:string;
+    src:string;
   }
 
   // ——— Constantes ———
@@ -425,6 +426,7 @@ import { site } from '../config/site';
     step:0, situation:null, type:null, secteurContraint:null, secteur:null,
     budget:null, surface:null, preserves:[], decisionTension:null, lecture:null,
     prenom:'', contact:'', commentaire:'',
+    src: new URLSearchParams(window.location.search).get('src')??'',
   };
 
   // ——— DVF ———
@@ -452,7 +454,7 @@ import { site } from '../config/site';
     const budgetPPM2 = surface>0 ? Math.round(budget/surface) : 0;
     const surfaceAuMedian = median>0 ? Math.round(budget/median) : 0;
     const position: LM['position'] = budgetPPM2<q1 ? 'sous_q1' : budgetPPM2>q3 ? 'au_dessus_q3' : 'q1_q3';
-    return { n, nParAn:Math.round(n/3), q1, median, q3, budgetPPM2, surfaceAuMedian, position };
+    return { n, nParAn:Math.round(n/5), q1, median, q3, budgetPPM2, surfaceAuMedian, position };
   }
 
   // ——— Utilitaires ———
@@ -611,7 +613,7 @@ import { site } from '../config/site';
     let signal='';
     if(l.position==='sous_q1') signal=`<div class="mr-signal warn"><span class="mr-signal-ico">⚠</span><span>Votre budget rapporté à ${num.format(E.surface!)} m² correspond à ${num.format(l.budgetPPM2)} €/m² — en dessous du premier quartile des prix constatés. Le marché offre typiquement ${num.format(l.surfaceAuMedian)} m² pour ${eur.format(E.budget!)} dans cette zone. La prochaine étape explore ce que cela implique.</span></div>`;
     else if(l.position==='q1_q3') signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget est cohérent avec les prix constatés. À ${num.format(l.budgetPPM2)} €/m², vous êtes dans la fourchette centrale du marché.</span></div>`;
-    else signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget vous positionne dans le quartile supérieur. À ${num.format(l.budgetPPM2)} €/m², vous accédez à la majorité des biens correspondant à ce profil.</span></div>`;
+    else signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget vous positionne dans le quartile supérieur. À ${num.format(l.budgetPPM2)} €/m², vous dépassez 75 % des prix constatés dans cette zone sur les cinq dernières années.</span></div>`;
     return `
       <p class="mr-kicker">Étape 6 sur 10</p>
       <h2 class="mr-question">Ce que le marché dit de votre projet</h2>
@@ -619,7 +621,7 @@ import { site } from '../config/site';
       <div class="mr-carte">
         <p class="mr-carte-titre">Marché des ${tlbl} · ${zlbl}</p>
         <div class="mr-stats">
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.n)}</span><span class="mr-stat-l">transactions sur 3 ans</span></div>
+          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.n)}</span><span class="mr-stat-l">transactions sur 5 ans</span></div>
           <div class="mr-stat"><span class="mr-stat-v">~${num.format(l.nParAn)}</span><span class="mr-stat-l">ventes par an</span></div>
           <div class="mr-stat"><span class="mr-stat-v">${num.format(l.q1)} – ${num.format(l.q3)}</span><span class="mr-stat-l">fourchette centrale (€/m²)</span></div>
           <div class="mr-stat"><span class="mr-stat-v">${num.format(l.median)}</span><span class="mr-stat-l">repère central (€/m²)</span></div>
@@ -907,8 +909,10 @@ import { site } from '../config/site';
       if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Transmission…`; }
       const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
       const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
+      const hp=(el.querySelector('[name=site_web]') as HTMLInputElement)?.value??'';
       const payload={
-        source:'ma-recherche', prenom:E.prenom, contact:E.contact, commentaire:E.commentaire, consent:true,
+        source:'ma-recherche', src:E.src, site_web:hp,
+        prenom:E.prenom, contact:E.contact, commentaire:E.commentaire, consent:true,
         situation:E.situation, type:E.type, secteur:E.secteur, secteurContraint:E.secteurContraint,
         budget:E.budget, surface:E.surface,
         preserves:E.preserves, preservesLabels:pL, flexibles:flexibles(), flexiblesLabels:fL,
