@@ -30,13 +30,15 @@ import { site } from '../config/site';
       <div class="mr-barre" id="mr-barre" style="width:0%" role="progressbar"
         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progression"></div>
     </div>
-    <button id="mr-retour" class="mr-retour" hidden aria-label="Revenir à l'étape précédente">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-        <path d="M10 13l-5-5 5-5" stroke="currentColor" stroke-width="1.6"
-          stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Retour
-    </button>
+    <div class="mr-retour-banda">
+      <button id="mr-retour" class="mr-retour" hidden aria-label="Revenir à l'étape précédente">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 13l-5-5 5-5" stroke="currentColor" stroke-width="1.6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Retour
+      </button>
+    </div>
     <div id="mr-ecran" class="mr-ecran" role="main" aria-live="polite"></div>
   </div>
 </Layout>
@@ -55,12 +57,40 @@ import { site } from '../config/site';
     height: 100%; background: #C15A2B;
     transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
   }
+  /*
+   * Conteneur sticky à hauteur zéro — ne perturbe pas le flux flex.
+   * Le bouton est positionné en absolu à l'intérieur.
+   * Sticky par rapport à la fenêtre (aucun ancêtre n'a overflow:hidden/auto/clip).
+   * top = hauteur réelle du header mobile (h-16 = 64px).
+   */
+  .mr-retour-banda {
+    position: sticky;
+    top: 64px;
+    height: 0;
+    overflow: visible;
+    z-index: 49;
+    pointer-events: none;
+  }
+  @media (min-width: 768px) {
+    /* header passe à h-[72px] sur md+ */
+    .mr-retour-banda { top: 72px; }
+  }
+
   .mr-retour {
-    position: fixed; top: clamp(68px,10vw,88px); left: clamp(1rem,4vw,2.5rem);
+    position: absolute;
+    top: 8px;
+    left: clamp(1rem, 4vw, 2.5rem);
     display: inline-flex; align-items: center; gap: 0.4rem;
     font-family: 'Instrument Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
-    color: #6B5D4F; background: transparent; border: none; cursor: pointer; padding: 0.5rem 0;
-    transition: color 0.15s ease; z-index: 50;
+    color: #6B5D4F;
+    background: rgba(247,244,240,0.90);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    border: none; border-radius: 8px; cursor: pointer;
+    padding: 0.45rem 0.7rem;
+    min-height: 44px; /* zone tactile iOS */
+    transition: color 0.15s ease;
+    pointer-events: auto;
   }
   .mr-retour:hover { color: #211C16; }
   .mr-ecran {
