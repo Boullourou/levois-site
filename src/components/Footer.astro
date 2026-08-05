@@ -1,52 +1,114 @@
 ---
 import { site } from '../config/site';
+
+export interface Props {
+  homeV2?: boolean;
+}
+
+const { homeV2 = false } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="mt-section-md md:mt-section-lg bg-encre text-papier/85">
-  <div class="max-w-page mx-auto px-edge md:px-edge-md py-section">
-
-    <div class="grid md:grid-cols-3 gap-12 md:gap-16 mb-14">
-      <div>
-        <p class="font-display text-2xl tracking-[0.14em] text-papier mb-4">L&thinsp;E&thinsp;V&thinsp;O&thinsp;I&thinsp;S</p>
-        <p class="font-sans text-[15px] leading-relaxed text-papier/70 max-w-xs">
-          Comprendre ce que le marché vous renvoie, avant de décider quoi changer.
-        </p>
-        <span class="ligne-ecart !bg-argile-lum mt-6"></span>
-      </div>
-
-      <nav class="font-sans text-[15px]" aria-label="Navigation pied de page">
-        <p class="eyebrow-brun !text-papier/50 mb-4">Naviguer</p>
-        <ul class="space-y-2.5">
-          <li><a href="/situer-ma-vente" class="hover:text-argile-lum transition-colors">Situer ma vente</a></li>
-          <li><a href="/methode" class="hover:text-argile-lum transition-colors">Le Système des Écarts</a></li>
-          <li><a href="/ressources" class="hover:text-argile-lum transition-colors">Ressources</a></li>
-          <li><a href="/accompagnement" class="hover:text-argile-lum transition-colors">Accompagnement</a></li>
-          <li><a href="/mouaad" class="hover:text-argile-lum transition-colors">Mouaad</a></li>
-          <li><a href="/contact" class="hover:text-argile-lum transition-colors">Contact</a></li>
-        </ul>
+{homeV2 ? (
+  <footer class="home-footer">
+    <div class="home-footer-brand">
+      <b>LEVOIS</b>
+      <span>Rendre la valeur lisible.</span>
+    </div>
+    <div class="home-footer-contact">
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
+    </div>
+    <div class="home-footer-legal">
+      <span>Mouaad Boullourou · Conseiller immobilier indépendant · Réseau SAFTI</span>
+      <nav aria-label="Liens légaux">
+        <a href="/mentions-legales">Mentions légales</a>
+        <a href="/confidentialite">Confidentialité</a>
+        <span>© {year}</span>
       </nav>
+    </div>
+  </footer>
+) : (
+  <footer class="mt-section-md md:mt-section-lg bg-encre text-papier/85">
+    <div class="max-w-page mx-auto px-edge md:px-edge-md py-section">
+      <div class="grid md:grid-cols-3 gap-12 md:gap-16 mb-14">
+        <div>
+          <p class="font-display text-2xl tracking-[0.14em] text-papier mb-4">L&thinsp;E&thinsp;V&thinsp;O&thinsp;I&thinsp;S</p>
+          <p class="font-sans text-[15px] leading-relaxed text-papier/70 max-w-xs">
+            Comprendre ce que le marché vous renvoie, avant de décider quoi changer.
+          </p>
+          <span class="ligne-ecart !bg-argile-lum mt-6"></span>
+        </div>
 
-      <div class="font-sans text-[15px]">
-        <p class="eyebrow-brun !text-papier/50 mb-4">Coordonnées</p>
-        <ul class="space-y-2.5 text-papier/80">
-          <li><a href={`mailto:${site.email}`} class="hover:text-argile-lum transition-colors">{site.email}</a></li>
-          <li><a href={`tel:${site.phone}`} class="hover:text-argile-lum transition-colors">{site.phoneDisplay}</a></li>
-          <li class="text-papier/55 leading-relaxed pt-2">{site.secteur}</li>
-        </ul>
+        <nav class="font-sans text-[15px]" aria-label="Navigation pied de page">
+          <p class="eyebrow-brun !text-papier/50 mb-4">Naviguer</p>
+          <ul class="space-y-2.5">
+            <li><a href="/situer-ma-vente" class="hover:text-argile-lum transition-colors">Situer ma vente</a></li>
+            <li><a href="/methode" class="hover:text-argile-lum transition-colors">Le Système des Écarts</a></li>
+            <li><a href="/ressources" class="hover:text-argile-lum transition-colors">Ressources</a></li>
+            <li><a href="/accompagnement" class="hover:text-argile-lum transition-colors">Accompagnement</a></li>
+            <li><a href="/mouaad" class="hover:text-argile-lum transition-colors">Mouaad</a></li>
+            <li><a href="/contact" class="hover:text-argile-lum transition-colors">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="font-sans text-[15px]">
+          <p class="eyebrow-brun !text-papier/50 mb-4">Coordonnées</p>
+          <ul class="space-y-2.5 text-papier/80">
+            <li><a href={`mailto:${site.email}`} class="hover:text-argile-lum transition-colors">{site.email}</a></li>
+            <li><a href={`tel:${site.phone}`} class="hover:text-argile-lum transition-colors">{site.phoneDisplay}</a></li>
+            <li class="text-papier/55 leading-relaxed pt-2">{site.secteur}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="border-t border-papier/15 pt-8 font-sans text-[13px] text-papier/50 space-y-3">
+        <p>
+          Mouaad Boullourou exerce comme conseiller immobilier indépendant au sein du réseau SAFTI.
+          LEVOIS est sa méthode de lecture, de pédagogie et d’accompagnement.
+        </p>
+        <p class="flex flex-wrap gap-x-5 gap-y-1">
+          <a href="/mentions-legales" class="hover:text-papier/80 transition-colors">Mentions légales</a>
+          <a href="/confidentialite" class="hover:text-papier/80 transition-colors">Confidentialité</a>
+          <span>© {year} LEVOIS · Mouaad Boullourou</span>
+        </p>
       </div>
     </div>
+  </footer>
+)}
 
-    <div class="border-t border-papier/15 pt-8 font-sans text-[13px] text-papier/50 space-y-3">
-      <p>
-        Mouaad Boullourou exerce comme conseiller immobilier indépendant au sein du réseau SAFTI.
-        LEVOIS est sa méthode de lecture, de pédagogie et d’accompagnement.
-      </p>
-      <p class="flex flex-wrap gap-x-5 gap-y-1">
-        <a href="/mentions-legales" class="hover:text-papier/80 transition-colors">Mentions légales</a>
-        <a href="/confidentialite" class="hover:text-papier/80 transition-colors">Confidentialité</a>
-        <span>© {year} LEVOIS · Mouaad Boullourou</span>
-      </p>
-    </div>
-  </div>
-</footer>
+{homeV2 && (
+  <style>
+    .home-footer {
+      min-height: 132px;
+      display: grid;
+      grid-template-columns: .8fr .7fr 1.5fr;
+      align-items: center;
+      gap: clamp(26px, 4vw, 70px);
+      padding: 28px clamp(22px, 5vw, 76px);
+      background: #d7ff42;
+      color: #111522;
+      font-family: 'Public Sans', system-ui, sans-serif;
+    }
+    .home-footer-brand { display: grid; gap: 5px; }
+    .home-footer-brand b { font-family: 'Archivo Black', sans-serif; font-size: 25px; letter-spacing: -.03em; }
+    .home-footer-brand span,
+    .home-footer-contact,
+    .home-footer-legal { font-size: 12px; line-height: 1.55; }
+    .home-footer-contact { display: grid; gap: 4px; }
+    .home-footer a { text-underline-offset: 4px; }
+    .home-footer a:hover { text-decoration-thickness: 2px; }
+    .home-footer-legal { display: grid; justify-items: end; gap: 7px; text-align: right; }
+    .home-footer-legal nav { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 18px; }
+
+    @media (max-width: 820px) {
+      .home-footer { grid-template-columns: 1fr 1fr; align-items: start; }
+      .home-footer-legal { grid-column: 1 / -1; justify-items: start; text-align: left; }
+      .home-footer-legal nav { justify-content: flex-start; }
+    }
+    @media (max-width: 520px) {
+      .home-footer { grid-template-columns: 1fr; gap: 22px; }
+      .home-footer-legal { grid-column: auto; }
+    }
+  </style>
+)}
