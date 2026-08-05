@@ -41,6 +41,7 @@ Mouaad ne se présente pas comme un agent qui « prospecte autrement ». Il acco
 - Secteur initial : Lèves, Chartres et le bassin chartrain.
 - Réseau professionnel : conseiller immobilier indépendant SAFTI.
 - Acquisition : contenus éducatifs organiques, amplification publicitaire des contenus déjà performants, outils gratuits sur le site et suivi humain lorsque la personne le souhaite.
+- Cible éditoriale vidéo prioritaire : propriétaires qui envisagent une vente dans quelques mois, sans avoir encore engagé de démarche, et propriétaires dont le projet pourra être déclenché plus tard par un changement de vie. Les contenus doivent installer LEVOIS dans leur mémoire avant l’urgence, sans exploiter l’événement déclencheur ni provoquer artificiellement une prise de contact.
 - Production de contenu : voix professionnelle ElevenLabs, avatar HeyGen et montage/motion design HyperFrames.
 - Données locales : DVF public, outils SAFTI/Oméga et exports manuels Yanport Agent 360. L'API Yanport n'est pas retenue à ce stade pour des raisons de coût.
 - Les exports Yanport successifs doivent permettre de reconstruire l'évolution des annonces ; un export isolé ne donne pas le prix de vente final ni l'historique complet.

@@ -1,14 +1,37 @@
-/* Deux voix typographiques :
-   Fraunces (serif, la voix du propriétaire) · Instrument Sans (la voix factuelle, interface et lecture) */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
+/* Typographie LEVOIS V2 : chargée une seule fois depuis Layout. */
+@font-face {
+  font-family: 'Archivo Black';
+  src: url('/fonts/archivo-black-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Public Sans';
+  src: url('/fonts/public-sans-latin.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --site-header-h: 78px;
+  }
+
+  @media (max-width: 980px) {
+    :root {
+      --site-header-h: 68px;
+    }
+  }
+
   html {
-    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-family: 'Public Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     scroll-behavior: smooth;
   }
@@ -25,25 +48,17 @@
   }
 
   h1, h2, h3, .font-display {
-    font-family: 'Fraunces', Georgia, serif;
-  }
-
-  h1, h2 {
-    font-variation-settings: 'opsz' 144, 'SOFT' 30;
-  }
-
-  h3, h4 {
-    font-variation-settings: 'opsz' 100, 'SOFT' 40;
+    font-family: 'Public Sans', system-ui, sans-serif;
   }
 
   ::selection {
-    background-color: #A85638;
-    color: #F7F2EA;
+    background-color: #D7FF42;
+    color: #111522;
   }
 
   /* Focus visible cohérent, jamais supprimé */
   :focus-visible {
-    outline: 2px solid #A85638;
+    outline: 3px solid #243CFF;
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -68,21 +83,21 @@
 
   /* Boutons */
   .btn-primaire {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-argile text-papier-vif
-      font-sans font-medium px-7 py-3.5 min-h-[48px] transition-colors duration-200
-      hover:bg-argile-lum active:bg-encre;
+    @apply inline-flex items-center justify-center gap-2 bg-argile text-papier-vif
+      font-sans font-semibold px-7 py-3.5 min-h-[48px] transition-colors duration-200
+      hover:bg-encre hover:text-argile-lum active:bg-encre;
   }
 
   .btn-secondaire {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-encre/25 text-encre
-      font-sans font-medium px-7 py-3.5 min-h-[48px] transition-colors duration-200
-      hover:border-argile hover:text-argile;
+    @apply inline-flex items-center justify-center gap-2 border border-encre text-encre
+      font-sans font-semibold px-7 py-3.5 min-h-[48px] transition-colors duration-200
+      hover:bg-argile hover:border-argile hover:text-papier-vif;
   }
 
   .btn-sur-encre {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-argile-lum text-encre
+    @apply inline-flex items-center justify-center gap-2 bg-argile-lum text-encre
       font-sans font-medium px-7 py-3.5 min-h-[48px] transition-colors duration-200
-      hover:bg-papier;
+      hover:bg-papier-vif;
   }
 
   /* Carte générique */

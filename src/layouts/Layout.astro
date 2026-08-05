@@ -12,7 +12,7 @@ export interface Props {
   headerTransparent?: boolean;
   /** Exclut la page de l'indexation (pages internes). */
   noindex?: boolean;
-  /** Active le monde visuel LEVOIS V2 uniquement sur la surface concernée. */
+  /** Active le monde visuel LEVOIS V2, désormais commun à toutes les pages publiques. */
   homeV2?: boolean;
   /** Contrat de direction rendu dans le HTML pour rester auditable après build. */
   designContract?: string;
@@ -21,10 +21,10 @@ export interface Props {
 const {
   title,
   description = site.description,
-  image = '/images/hero-proprietaires-1152.webp',
+  image = '/images/hero-chartres-evidence-1536.webp',
   headerTransparent = false,
   noindex = false,
-  homeV2 = false,
+  homeV2 = true,
   designContract,
 } = Astro.props;
 
@@ -42,17 +42,10 @@ const ogImage = image.startsWith('http') ? image : site.url + image;
     <meta name="generator" content={Astro.generator} />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    {homeV2 && (
-      <link
-        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Public+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-      />
-    )}
+    <script is:inline>document.documentElement.classList.add('js');</script>
 
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
@@ -69,17 +62,43 @@ const ogImage = image.startsWith('http') ? image : site.url + image;
 
     <script type="application/ld+json" set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      '@type': 'ProfessionalService',
-      name: 'LEVOIS',
-      description: site.description,
-      url: site.url,
-      areaServed: site.communes.map((c) => ({ '@type': 'City', name: c })),
-      founder: {
-        '@type': 'Person',
-        name: site.mouaad.nom,
-        jobTitle: 'Conseiller immobilier indépendant',
-        worksFor: { '@type': 'Organization', name: 'SAFTI' },
-      },
+      '@graph': [
+        {
+          '@type': 'WebSite',
+          '@id': `${site.url}/#website`,
+          url: site.url,
+          name: site.name,
+          description: site.description,
+          inLanguage: 'fr-FR',
+          publisher: { '@id': `${site.url}/#organization` },
+        },
+        {
+          '@type': 'Organization',
+          '@id': `${site.url}/#organization`,
+          name: site.name,
+          url: site.url,
+          founder: { '@id': `${site.url}/#mouaad-boullourou` },
+        },
+        {
+          '@type': 'Person',
+          '@id': `${site.url}/#mouaad-boullourou`,
+          name: site.mouaad.nom,
+          url: `${site.url}/mouaad`,
+          jobTitle: 'Conseiller immobilier indépendant',
+          worksFor: { '@type': 'Organization', name: 'SAFTI' },
+        },
+        {
+          '@type': 'RealEstateAgent',
+          '@id': `${site.url}/#service`,
+          name: site.name,
+          description: site.description,
+          url: site.url,
+          email: site.email,
+          telephone: site.phone,
+          founder: { '@id': `${site.url}/#mouaad-boullourou` },
+          areaServed: site.communes.map((c) => ({ '@type': 'City', name: c })),
+        },
+      ],
     })} />
   </head>
 
@@ -93,12 +112,8 @@ const ogImage = image.startsWith('http') ? image : site.url + image;
     <main id="contenu" class="flex-1">
       <slot />
     </main>
-    <Footer homeV2={homeV2} />
+    <Footer homeV2={homeV2} flush={title === 'Accueil'} />
 
-    <script is:inline>
-      // Marqueur JS actif — sans lui, le CSS n'applique aucun état masqué.
-      document.documentElement.classList.add('js');
-    </script>
     <script>
       // Révélation à l'entrée dans le viewport — famille A (narration).
       // Avec prefers-reduced-motion, le CSS affiche tout directement.

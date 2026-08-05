@@ -4,20 +4,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Palette LEVOIS — papier chaud, encre, argile
-        papier: '#F7F2EA',        // fond dominant, sensation papier chaud
-        'papier-vif': '#FDFBF6',  // surfaces relevées, cartes
-        encre: '#211C16',         // texte principal, scènes sombres
-        'encre-2': '#2E2820',     // surfaces sombres secondaires
-        brun: '#6B5D4F',          // texte secondaire, légendes
-        argile: '#A85638',        // écart, sélection, décision, action
-        'argile-lum': '#C97B52',  // hover, états actifs, accents sur encre
-        'argile-pale': '#F0E2D8', // fonds très légers teintés argile
-        beige: '#E8DFD0',         // filets, bordures douces
+        // Palette LEVOIS V2 — minéral, encre, cobalt et citron
+        papier: '#F2F5EF',
+        'papier-vif': '#FFFFFF',
+        encre: '#111522',
+        'encre-2': '#202635',
+        brun: '#58615B',
+        argile: '#243CFF',
+        'argile-lum': '#D7FF42',
+        'argile-pale': '#EEF0FF',
+        beige: '#C9CEC8',
       },
       fontFamily: {
-        display: ['"Fraunces"', 'Georgia', 'serif'],
-        sans: ['"Instrument Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        // Les titres courants restent factuels ; Archivo Black est réservé au hero/wordmark.
+        display: ['"Public Sans"', 'system-ui', 'sans-serif'],
+        sans: ['"Public Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
         'hero': ['clamp(2.5rem, 8.5vw, 6.5rem)', { lineHeight: '1.02', letterSpacing: '-0.03em', fontWeight: '500' }],
@@ -44,8 +45,8 @@ export default {
         'out-soft': 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
       borderRadius: {
-        'card': '14px',
-        'panel': '22px',
+        'card': '0px',
+        'panel': '0px',
       },
     },
   },

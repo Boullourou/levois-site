@@ -11,6 +11,8 @@
     "astro": "astro",
     "test": "vitest run",
     "data:dvf": "node scripts/build-dvf.mjs",
+    "data:market": "node scripts/build-market-summary.mjs",
+    "test:market": "node --test tests/market-summary.node.mjs",
     "data:verify": "node scripts/verify-dvf.mjs"
   },
   "dependencies": {

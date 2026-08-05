@@ -75,8 +75,8 @@ components:
     padding: "0 clamp(22px, 5vw, 76px)"
     height: "78px"
   route-light:
-    backgroundColor: "{colors.paper-mineral}"
-    textColor: "{colors.ink-deep}"
+    backgroundColor: "{colors.cobalt}"
+    textColor: "{colors.paper-mineral}"
     typography: "{typography.body}"
     rounded: "{rounded.sharp}"
     padding: "15px 20px"
@@ -86,14 +86,14 @@ components:
     textColor: "{colors.ink-deep}"
   route-dark:
     backgroundColor: "{colors.ink-deep}"
-    textColor: "{colors.paper-mineral}"
+    textColor: "{colors.lime}"
     typography: "{typography.body}"
     rounded: "{rounded.sharp}"
     padding: "15px 20px"
     height: "82px"
   route-dark-hover:
-    backgroundColor: "{colors.cobalt}"
-    textColor: "{colors.paper-mineral}"
+    backgroundColor: "{colors.lime}"
+    textColor: "{colors.ink-deep}"
   story-facts:
     backgroundColor: "{colors.cobalt}"
     textColor: "{colors.paper-mineral}"
@@ -218,9 +218,9 @@ La palette oppose un fond minéral calme à des couleurs de calibration très fr
 
 ## Layout
 
-La grille est éditoriale et bord à bord. La marge horizontale suit `clamp(22px, 5vw, 76px)` et les grandes sections respirent sur un rythme vertical proche de `clamp(80px, 9vw, 138px)`. Le héros partage l’écran entre une promesse et un mécanisme de lecture ; les sections suivantes alternent deux colonnes, rangées structurées et médias pleine hauteur. Les divisions sont matérialisées par des lignes de 1px, tandis que les deux parcours sont réunis dans un cadre d’encre de 2px avec un interstice de 2px.
+La grille est éditoriale et bord à bord. La marge horizontale suit `clamp(22px, 5vw, 76px)` et les grandes sections respirent sur un rythme vertical proche de `clamp(80px, 9vw, 138px)`. Le héros associe une promesse compacte, une photographie réelle du territoire et un rail de preuves DVF ; les sections suivantes alternent deux colonnes, rangées structurées et médias pleine hauteur. Les divisions sont matérialisées par des lignes de 1px, tandis que les deux parcours sont réunis dans un cadre d’encre de 2px avec un interstice de 2px.
 
-Sur grand écran, le récit est sticky sous un en-tête de 78px et sa progression accompagne le défilement. À 980px et moins, les grilles majeures s’empilent, l’en-tête passe à 104px et le récit devient entièrement statique. À 620px et moins, la marge devient 20px, les deux parcours s’empilent sans changer de hiérarchie et les rangées complexes passent à une colonne. Le pied de page se réorganise à 820px et la preuve chiffrée à 1100px.
+Sur grand écran, la photographie du héros passe progressivement de la couleur au monochrome pendant que la courbe et les repères deviennent dominants. L’en-tête sticky mesure 78px. À 980px et moins, les grilles majeures s’empilent, l’en-tête passe à 68px et toutes les preuves sont immédiatement visibles sans dépendre du défilement. À 720px et moins, les deux parcours apparaissent immédiatement après le manifeste — avant la photographie et les chiffres — puis s’empilent sans changer de hiérarchie. La marge devient 20px et les rangées complexes passent à une colonne. Le pied de page se réorganise à 820px et la preuve chiffrée à 1100px.
 
 **The Equal Weight Rule.** Toute double entrée acheteur/vendeur conserve des dimensions, une présence et une proximité identiques ; la couleur distingue les chemins sans établir de priorité.
 
@@ -247,20 +247,20 @@ Les composants ont une présence tactile et précise : grandes zones d’action,
 ### Buttons
 
 - **Shape:** sélecteurs de parcours rectangulaires (rayon 0px), réunis dans un cadre de 2px et hauts d’au moins 82px sur grand écran.
-- **Primary / Acheteur:** papier minéral sur encre, avec 15px × 20px de padding ; le survol passe au lime.
-- **Primary / Vendeur:** encre sur papier minéral, avec les mêmes dimensions ; le survol passe au cobalt.
+- **Primary / Acheteur:** lime sur encre profonde, avec 15px × 20px de padding ; le survol inverse en lime et encre.
+- **Primary / Vendeur:** papier minéral sur aplat cobalt, avec les mêmes dimensions et une flèche lime ; le survol inverse en lime et encre. Le cobalt empêche cette sortie de se confondre avec les surfaces claires qui la suivent.
 - **Focus:** contour cobalt de 3px décalé de 4px ; la variante sombre utilise le lime pour rester visible.
 - **Internal structure:** rôle en 12px, action en 15px semi-gras et flèche linéaire de 29px.
 
-**The Bilateral Control Rule.** Les contrôles acheteur et vendeur sont toujours conçus, placés et testés comme une paire indissociable.
+**The Bilateral Control Rule.** Les contrôles acheteur et vendeur sont toujours conçus, placés et testés comme une paire indissociable. Ils gardent exactement le même poids géométrique ; leur contraste propre garantit que ni l’un ni l’autre ne disparaisse dans la surface adjacente.
 
 ### Navigation
 
-L’en-tête sticky garde le mot-symbole à gauche, trois ancres centrées et le territoire à droite. Les liens ont une cible minimale de 44px et se soulignent au survol ; à 980px, les trois ancres occupent une rangée complète de largeur égale. Le mot-symbole reste en Archivo Black, tout le reste en Public Sans.
+L’en-tête sticky garde le mot-symbole à gauche, six accès centrés — Marché local, Acheter, Vendre, Méthode, Ressources, Mouaad — et le territoire à droite. Les liens ont une cible minimale de 44px et se soulignent au survol ; à 980px, ils basculent dans un menu explicite et accessible. Le mot-symbole reste en Archivo Black, tout le reste en Public Sans.
 
-### Story Stages
+### Hero de preuve
 
-Les trois étapes sont de grandes rangées structurelles : cobalt pour les faits, encre assouplie pour la perception du marché, lime pour la décision. Sur ordinateur, un aplat se révèle de gauche à droite et la courte ligne d’état s’allonge ; en mode statique, les trois aplats et leurs textes sont immédiatement visibles.
+Le héros utilise une photographie réelle de Chartres, jamais une image immobilière générique. Les sélecteurs commune/type mettent à jour la médiane observée, l’évolution annuelle, les quartiles, l’échantillon et la courbe, avec source et limites dans le même cadre. Le passage couleur → noir et blanc améliore la lisibilité des données ; mobile et `prefers-reduced-motion` reçoivent directement l’état complet. Le rail ne formule jamais une estimation individuelle.
 
 ### Principle, Method & Proof Rows
 

@@ -14,31 +14,31 @@ import ResponsiveImage from './ResponsiveImage.astro';
 const etapes = [
   {
     n: '01', nom: 'Comprendre', slot: 'methode-comprendre', layout: 'image-droite',
-    bg: '#F7F2EA', ink: '#211C16', sub: '#6B5D4F', accent: '#A85638', dot: '#D9C9A8',
+    bg: '#F2F5EF', ink: '#111522', sub: '#58615B', accent: '#243CFF', dot: '#C9CEC8',
     resume: 'Distinguer ce qui est observé de ce qui est supposé.',
     texte: 'Un fait : « l’annonce reçoit des vues mais pas de contacts ». Une supposition : « le prix est trop élevé ». La méthode commence par séparer les deux — parce que toutes les mauvaises décisions naissent de leur confusion.',
   },
   {
     n: '02', nom: 'Aligner', slot: 'methode-aligner', layout: 'image-gauche',
-    bg: '#ECDFC8', ink: '#2C2413', sub: '#6B5A3B', accent: '#A8752F', dot: '#C9A85E',
+    bg: '#FFFFFF', ink: '#111522', sub: '#58615B', accent: '#243CFF', dot: '#C9CEC8',
     resume: 'Faire coïncider le projet, le calendrier et les contraintes réelles.',
     texte: 'Une vente sert un projet de vie. Quand le projet est flou ou que le calendrier a changé, aucun réglage d’annonce ne compense. L’alignement précède le positionnement.',
   },
   {
     n: '03', nom: 'Positionner', slot: 'methode-positionner', layout: 'image-bande',
-    bg: '#E4CDB8', ink: '#38251A', sub: '#7A5540', accent: '#A85638', dot: '#C98A5E',
+    bg: '#C9CEC8', ink: '#111522', sub: '#202635', accent: '#243CFF', dot: '#58615B',
     resume: 'Présenter le bien face aux alternatives que l’acheteur compare.',
     texte: 'Les acheteurs voient votre annonce entre cinq et huit autres, au même budget, au même moment. C’est cette comparaison réelle qui définit la position — jamais une moyenne abstraite.',
   },
   {
     n: '04', nom: 'Piloter', slot: 'methode-piloter', layout: 'image-gauche-portrait',
-    bg: '#C67B4A', ink: '#FBF3EC', sub: 'rgba(251,243,236,0.82)', accent: '#FBE3D0', dot: '#8A4E29',
+    bg: '#243CFF', ink: '#F2F5EF', sub: 'rgba(242,245,239,0.82)', accent: '#D7FF42', dot: '#202635',
     resume: 'Modifier un levier à la fois et lire les réactions.',
     texte: 'Changer le prix, les photos et le texte en même temps, c’est renoncer à comprendre. Le pilotage, c’est la discipline du levier unique : un changement, une période d’observation, une lecture.',
   },
   {
     n: '05', nom: 'Apprendre', slot: 'methode-apprendre', layout: 'image-droite-portrait',
-    bg: '#221C15', ink: '#F5EFE6', sub: 'rgba(245,239,230,0.75)', accent: '#C97B52', dot: '#6B5D4F',
+    bg: '#111522', ink: '#F2F5EF', sub: 'rgba(242,245,239,0.75)', accent: '#D7FF42', dot: '#58615B',
     resume: 'Utiliser les signaux pour décider sans précipitation.',
     texte: 'Chaque période d’observation produit un enseignement — même le silence. La décision suivante se construit sur ces acquis, pas sur l’inquiétude du moment ni sur l’avis le plus fort de l’entourage.',
   },
@@ -87,17 +87,17 @@ const etapes = [
   /* Panneaux */
   .method-panel {
     background: var(--bg); color: var(--ink);
-    border-radius: 28px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
     display: grid; grid-template-columns: 1fr;
   }
   .method-media { position: relative; min-height: 240px; }
   :global(.method-img) { width: 100%; height: 100%; min-height: 240px; }
   :global(.method-media .ri) { height: 100%; }
   .method-copy { padding: 2rem 1.5rem 2.25rem; display: flex; flex-direction: column; justify-content: center; }
-  .method-n { font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; letter-spacing: 0.14em; color: var(--accent); font-weight: 600; margin-bottom: 0.9rem; text-transform: uppercase; }
-  .method-nom { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.05; color: var(--ink); margin-bottom: 0.9rem; }
-  .method-resume { font-family: 'Fraunces', serif; font-style: italic; font-size: 1.15rem; line-height: 1.4; color: var(--ink); opacity: 0.92; margin-bottom: 1rem; }
-  .method-texte { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; line-height: 1.6; color: var(--sub); max-width: 42ch; }
+  .method-n { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; letter-spacing: 0.14em; color: var(--accent); font-weight: 600; margin-bottom: 0.9rem; text-transform: uppercase; }
+  .method-nom { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.05; color: var(--ink); margin-bottom: 0.9rem; }
+  .method-resume { font-family: 'Public Sans', system-ui, sans-serif; font-style: normal; font-weight: 600; font-size: 1.15rem; line-height: 1.4; color: var(--ink); opacity: 0.92; margin-bottom: 1rem; }
+  .method-texte { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; line-height: 1.6; color: var(--sub); max-width: 42ch; }
 
   @media (min-width: 768px) {
     .method-panel { grid-template-columns: 44% 56%; align-items: stretch; min-height: 400px; }

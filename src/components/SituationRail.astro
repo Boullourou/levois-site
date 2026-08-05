@@ -19,11 +19,11 @@ import { images } from '../data/images';
 const hasPhoto = (slot: string) => Boolean(images[slot]?.slug);
 
 const styleMap: Record<string, { bg: string; accent: string; ink: string; sub: string; dark: boolean }> = {
-  preparer:       { bg: '#E9ECE1', accent: '#6E7C5A', ink: '#262A1F', sub: '#5C6350', dark: false },
-  publiee:        { bg: '#F2E3C6', accent: '#B27C34', ink: '#3A2E1A', sub: '#6E5A34', dark: false },
-  'peu-contacts': { bg: '#EFD9C8', accent: '#A85638', ink: '#38221A', sub: '#7A5442', dark: false },
-  visites:        { bg: '#B15E34', accent: '#FBE9D8', ink: '#FDF3EA', sub: 'rgba(253,243,234,0.82)', dark: true },
-  longtemps:      { bg: '#362539', accent: '#C79CB8', ink: '#F2E7EE', sub: 'rgba(242,231,238,0.8)', dark: true },
+  preparer:       { bg: '#F2F5EF', accent: '#243CFF', ink: '#111522', sub: '#58615B', dark: false },
+  publiee:        { bg: '#FFFFFF', accent: '#243CFF', ink: '#111522', sub: '#58615B', dark: false },
+  'peu-contacts': { bg: '#C9CEC8', accent: '#243CFF', ink: '#111522', sub: '#202635', dark: false },
+  visites:        { bg: '#243CFF', accent: '#D7FF42', ink: '#F2F5EF', sub: 'rgba(242,245,239,0.82)', dark: true },
+  longtemps:      { bg: '#111522', accent: '#D7FF42', ink: '#F2F5EF', sub: 'rgba(242,245,239,0.8)', dark: true },
 };
 const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`;
 ---
@@ -111,11 +111,11 @@ const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`
 
   .rail-arrow {
     width: 44px; height: 44px; border-radius: 999px;
-    border: 1px solid rgba(33,28,22,0.2); color: #211C16;
+    border: 1px solid #C9CEC8; color: #111522;
     display: inline-flex; align-items: center; justify-content: center;
     transition: border-color 0.2s, color 0.2s, background 0.2s;
   }
-  .rail-arrow:hover { border-color: #A85638; color: #A85638; }
+  .rail-arrow:hover { border-color: #243CFF; color: #243CFF; }
   .rail-arrow:disabled { opacity: 0.3; cursor: default; }
 
   /* Défilement horizontal natif — ne capture jamais le scroll vertical */
@@ -158,18 +158,18 @@ const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`
   /* Élévation & réactions internes (transitions propres, non écrasées par le JS) */
   .rail-panel-inner {
     background: var(--bg); color: var(--ink);
-    border-radius: 26px; overflow: hidden;
+    border-radius: 0; overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
     display: flex; flex-direction: column;
     min-height: 452px;
-    box-shadow: 0 10px 30px -24px rgba(33,28,22,0.4);
-    transition: box-shadow 0.35s cubic-bezier(0.2,0.8,0.2,1), transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
+    transition: border-color 0.35s cubic-bezier(0.2,0.8,0.2,1), transform 0.35s cubic-bezier(0.2,0.8,0.2,1);
   }
   @media (min-width: 768px) { .rail-panel-inner { min-height: 496px; } }
   .rail-panel.is-active .rail-panel-inner,
   .rail-panel:hover .rail-panel-inner,
   .rail-panel:focus-visible .rail-panel-inner {
-    box-shadow: 0 40px 70px -34px rgba(33,28,22,0.55);
-    transform: translateY(-4px);
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
 
   .rail-media { position: relative; overflow: hidden; }
@@ -180,13 +180,12 @@ const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`
   .rail-graphic {
     aspect-ratio: 4/3; position: relative;
     display: flex; align-items: center; justify-content: center;
-    background: radial-gradient(120% 100% at 20% 0%, rgba(255,255,255,0.14), transparent 60%),
-      color-mix(in srgb, var(--bg) 78%, #000 12%);
+    background: color-mix(in srgb, var(--bg) 86%, #111522 14%);
     color: var(--accent);
     transition: transform 0.5s cubic-bezier(0.22,1,0.36,1);
   }
   .rail-panel.is-active .rail-graphic, .rail-panel:hover .rail-graphic { transform: scale(1.04); }
-  .rail-graphic-num { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(3.5rem, 12vw, 5.5rem); line-height: 1; color: color-mix(in srgb, var(--accent) 85%, transparent); }
+  .rail-graphic-num { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 800; font-size: clamp(3.5rem, 12vw, 5.5rem); line-height: 1; color: color-mix(in srgb, var(--accent) 85%, transparent); }
   .rail-graphic-motif { position: absolute; bottom: 1.4rem; left: 1.4rem; width: 96px; height: 48px; color: var(--accent); }
 
   /* Ligne d'accent qui suit l'activation */
@@ -198,9 +197,9 @@ const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`
   .rail-panel.is-active .rail-accent, .rail-panel:hover .rail-accent { width: 100%; }
 
   .rail-body { padding: 1.5rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
-  .rail-ordinal { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; letter-spacing: 0.16em; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
-  .rail-panel-titre { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.4rem; line-height: 1.15; color: var(--ink); margin-bottom: 0.5rem; }
-  .rail-reco { font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem; line-height: 1.5; color: var(--ink); opacity: 0.92; }
+  .rail-ordinal { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem; letter-spacing: 0.16em; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+  .rail-panel-titre { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.4rem; line-height: 1.15; color: var(--ink); margin-bottom: 0.5rem; }
+  .rail-reco { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.98rem; line-height: 1.5; color: var(--ink); opacity: 0.92; }
 
   /* Révélation progressive d'une info utile (jamais la seule source : l'essentiel
      — titre + phrase de reconnaissance — reste toujours visible) */
@@ -208,11 +207,11 @@ const duree = (n: number) => `≈ ${Math.max(2, Math.round((n * 35) / 60))} min`
   .rail-reveal > .rail-aide { overflow: hidden; opacity: 0; transition: opacity 0.35s ease 0.05s; }
   .rail-panel.is-active .rail-reveal, .rail-panel:hover .rail-reveal, .rail-panel:focus-visible .rail-reveal { grid-template-rows: 1fr; margin-top: 0.7rem; }
   .rail-panel.is-active .rail-reveal > .rail-aide, .rail-panel:hover .rail-reveal > .rail-aide, .rail-panel:focus-visible .rail-reveal > .rail-aide { opacity: 1; }
-  .rail-aide { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; line-height: 1.55; color: var(--sub); }
+  .rail-aide { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; line-height: 1.55; color: var(--sub); }
 
   .rail-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 1.25rem; }
-  .rail-duree { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: var(--sub); }
-  .rail-cta { font-family: 'Instrument Sans', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.4rem; }
+  .rail-duree { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: var(--sub); }
+  .rail-cta { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--accent); display: inline-flex; align-items: center; gap: 0.4rem; }
 
   @media (prefers-reduced-motion: reduce) {
     .rail-scroller { scroll-behavior: auto; }

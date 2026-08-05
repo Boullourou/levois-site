@@ -55,26 +55,26 @@ const wide = new Set([3]);
 
   .res-card {
     display: flex; flex-direction: column; justify-content: space-between;
-    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px;
+    background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0;
     padding: 1.5rem; min-height: 220px;
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
   }
-  .res-card:hover { border-color: #A85638; box-shadow: 0 18px 44px -26px rgba(168,86,56,0.45); transform: translateY(-3px); }
+  .res-card:hover { border-color: #243CFF; background: #F2F5EF; transform: translateY(-2px); }
 
   /* Vedette : occupe 2 colonnes et 2 rangées sur desktop, fond teinté */
   @media (min-width: 1024px) {
-    .res-featured { grid-column: span 2; grid-row: span 2; background: #F0E2D8; border-color: #E1CDBB; }
+    .res-featured { grid-column: span 2; grid-row: span 2; background: #F2F5EF; border-color: #C9CEC8; }
     .res-wide { grid-column: span 2; }
   }
   .res-featured .res-titre { font-size: clamp(1.6rem, 3vw, 2.2rem); }
 
-  .res-question { font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; color: #A85638; margin-bottom: 0.6rem; }
-  .res-titre { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.35rem; line-height: 1.15; color: #211C16; margin-bottom: 0.6rem; }
-  .res-short { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; line-height: 1.6; color: #4A4036; max-width: 46ch; }
-  .res-benefice { font-family: 'Instrument Sans', sans-serif; font-size: 0.96rem; line-height: 1.55; color: #6B5D4F; }
+  .res-question { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.92rem; color: #243CFF; margin-bottom: 0.6rem; }
+  .res-titre { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.15; color: #111522; margin-bottom: 0.6rem; }
+  .res-short { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; line-height: 1.6; color: #202635; max-width: 46ch; }
+  .res-benefice { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.96rem; line-height: 1.55; color: #58615B; }
   .res-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; }
-  .res-duree { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #8A7C6C; }
-  .res-cta { font-family: 'Instrument Sans', sans-serif; font-weight: 600; font-size: 0.95rem; color: #A85638; display: inline-flex; align-items: center; gap: 0.4rem; }
+  .res-duree { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; }
+  .res-cta { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 600; font-size: 0.95rem; color: #243CFF; display: inline-flex; align-items: center; gap: 0.4rem; }
 
   @media (prefers-reduced-motion: reduce) { .res-card { transition: none; } .res-card:hover { transform: none; } }
 </style>

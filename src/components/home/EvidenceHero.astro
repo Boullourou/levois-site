@@ -1,0 +1,695 @@
+---
+import ResponsiveImage from '../ResponsiveImage.astro';
+
+interface Props {
+  summary: any;
+}
+
+const { summary } = Astro.props;
+const number = new Intl.NumberFormat('fr-FR');
+const signed = new Intl.NumberFormat('fr-FR', {
+  signDisplay: 'always',
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 1,
+});
+
+const selectorSpecs = [
+  { key: 'leves-maison', communeKey: 'leves', commune: 'Lèves', typeKey: 'maison', type: 'Maisons' },
+  { key: 'leves-appartement', communeKey: 'leves', commune: 'Lèves', typeKey: 'appartement', type: 'Appartements' },
+  { key: 'chartres-maison', communeKey: 'chartres', commune: 'Chartres', typeKey: 'maison', type: 'Maisons' },
+  { key: 'chartres-appartement', communeKey: 'chartres', commune: 'Chartres', typeKey: 'appartement', type: 'Appartements' },
+];
+
+const qualityRank: Record<string, number> = { strong: 0, usable: 1, limited: 2, insufficient: 3 };
+const weakestQuality = (a: string, b: string) => qualityRank[a] >= qualityRank[b] ? a : b;
+
+const states = selectorSpecs.map((spec) => {
+  const propertyType = spec.typeKey === 'maison' ? 'Maison' : 'Appartement';
+  const data = summary.series.find((series: any) => series.commune === spec.commune && series.propertyType === propertyType);
+  if (!data) throw new Error(`Série DVF absente : ${spec.commune} · ${propertyType}`);
+  const annual = data.annual
+    .filter((point: any) => point.pricePerSqm.median != null && point.quality !== 'insufficient')
+    .map((point: any) => ({
+      year: point.year,
+      medianEurM2: point.pricePerSqm.median,
+      eligibleCount: point.count,
+      quality: point.quality,
+    }));
+  const latest = annual.find((point: any) => point.year === summary.period.latestCompleteYear) ?? annual.at(-1);
+  const range = {
+    eligibleCount: data.recentWindow.count,
+    p25EurM2: data.recentWindow.pricePerSqm.q1,
+    medianEurM2: data.recentWindow.pricePerSqm.median,
+    p75EurM2: data.recentWindow.pricePerSqm.q3,
+    quality: data.recentWindow.quality,
+  };
+  const yoy = {
+    fromYear: data.previous.year,
+    toYear: data.latest.year,
+    percent: data.changeFromPreviousYearPct,
+    quality: weakestQuality(data.previous.quality, data.latest.quality),
+  };
+  const rangeWidth = Math.max(1, range.p75EurM2 - range.p25EurM2);
+  const medianPosition = Math.max(0, Math.min(100, ((range.medianEurM2 - range.p25EurM2) / rangeWidth) * 100));
+
+  return {
+    ...spec,
+    annual,
+    latest,
+    yoy,
+    range,
+    medianPosition,
+  };
+});
+
+const initial = states[0];
+
+function chartGeometry(annual: any[]) {
+  const width = 680;
+  const height = 222;
+  const padX = 36;
+  const top = 34;
+  const bottom = 42;
+  const values = annual.map((point) => point.medianEurM2);
+  const rawMin = Math.min(...values);
+  const rawMax = Math.max(...values);
+  const spread = Math.max(120, rawMax - rawMin);
+  const min = rawMin - spread * .18;
+  const max = rawMax + spread * .18;
+  const usableW = width - padX * 2;
+  const usableH = height - top - bottom;
+  const points = annual.map((point, index) => ({
+    ...point,
+    x: padX + (index * usableW) / Math.max(1, annual.length - 1),
+    y: top + ((max - point.medianEurM2) / Math.max(1, max - min)) * usableH,
+  }));
+  return {
+    width,
+    height,
+    points,
+    path: points.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' '),
+  };
+}
+
+const chart = chartGeometry(initial.annual);
+const clientStates = states.map((state) => ({
+  key: state.key,
+  commune: state.commune,
+  type: state.type,
+  annual: state.annual,
+  latest: state.latest,
+  yoy: state.yoy,
+  range: state.range,
+  medianPosition: state.medianPosition,
+}));
+---
+
+<section class="evidence-hero" id="top" data-evidence-hero aria-labelledby="evidence-title">
+  <div class="evidence-pin">
+    <div class="evidence-grid">
+      <header class="evidence-manifesto">
+        <p class="evidence-place">Lèves · Chartres</p>
+        <span class="manifesto-rule" aria-hidden="true"></span>
+        <h1 id="evidence-title">
+          <span>Rendre</span>
+          <span>la valeur</span>
+          <span>lisible.</span>
+        </h1>
+        <p class="manifesto-context">
+          Des faits locaux avant les promesses. Pour acheter comme pour vendre.
+        </p>
+      </header>
+
+      <figure class="evidence-media" aria-labelledby="chart-caption">
+        <ResponsiveImage
+          slot="hero-chartres-evidence"
+          ratio="none"
+          sizes="(min-width: 1081px) 52vw, 100vw"
+          class="evidence-photo"
+          priority={true}
+        />
+        <div class="photo-shade" aria-hidden="true"></div>
+        <svg
+          class="market-chart"
+          viewBox={`0 0 ${chart.width} ${chart.height}`}
+          role="img"
+          aria-labelledby="chart-title chart-caption"
+          data-market-chart
+        >
+          <title id="chart-title">Évolution annuelle de la médiane du prix observé au mètre carré</title>
+          <path class="chart-baseline" d={`M36,180 H644`} />
+          <path class="chart-line" d={chart.path} data-chart-path pathLength="1" />
+          {chart.points.map((point, index) => (
+            <g class:list={['chart-point', { 'is-limited': point.quality === 'limited' }]} data-chart-point data-index={index}>
+              <circle cx={point.x} cy={point.y} r="6" data-chart-dot />
+              <text class="chart-value" x={point.x} y={point.y - 16} text-anchor="middle" data-chart-value>{number.format(point.medianEurM2)}</text>
+              <text class="chart-year" x={point.x} y="210" text-anchor="middle" data-chart-year>{point.year}</text>
+            </g>
+          ))}
+        </svg>
+        <figcaption id="chart-caption" class="chart-caption">
+          <span data-chart-caption>{initial.commune} · {initial.type.toLowerCase()} · ventes simples</span>
+          <small>
+            Photo : <a href="https://commons.wikimedia.org/wiki/File:Chartres_Notre-Dame_DJI_0377.jpg" rel="license noopener noreferrer">Ludvig14 / Wikimedia Commons</a>
+            · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license noopener noreferrer">CC BY-SA 4.0</a>
+          </small>
+        </figcaption>
+      </figure>
+
+      <aside class="evidence-rail" aria-label="Repères immobiliers locaux">
+        <div class="selector-set" aria-label="Choisir la commune">
+          {['Lèves', 'Chartres'].map((commune) => (
+            <button
+              type="button"
+              aria-pressed={commune === initial.commune ? 'true' : 'false'}
+              data-market-commune={commune}
+            >{commune}</button>
+          ))}
+        </div>
+        <div class="selector-set" aria-label="Choisir le type de bien">
+          {['Maisons', 'Appartements'].map((type) => (
+            <button
+              type="button"
+              aria-pressed={type === initial.type ? 'true' : 'false'}
+              data-market-type={type}
+            >{type}</button>
+          ))}
+        </div>
+
+        <div class="rail-live" aria-live="polite" aria-atomic="true">
+          <div class="rail-metric" data-evidence-group="1">
+            <strong data-market-median>{number.format(initial.latest.medianEurM2)}</strong>
+            <span>€/m² · médiane observée en <b data-market-year>{initial.latest.year}</b></span>
+          </div>
+
+          <div class="rail-change" data-evidence-group="2">
+            <strong data-market-yoy>{signed.format(initial.yoy.percent)} %</strong>
+            <span data-market-yoy-note>
+              {initial.yoy.quality === 'limited' ? `Échantillon limité · ${initial.yoy.fromYear}–${initial.yoy.toYear}` : `par rapport à ${initial.yoy.fromYear}`}
+            </span>
+          </div>
+
+          <div class="rail-range" data-evidence-group="3" style={`--median-position:${initial.medianPosition.toFixed(2)}%`}>
+            <div class="range-labels">
+              <span data-market-q1>{number.format(initial.range.p25EurM2)}</span>
+              <span data-market-range-median>{number.format(initial.range.medianEurM2)}</span>
+              <span data-market-q3>{number.format(initial.range.p75EurM2)} €/m²</span>
+            </div>
+            <div class="range-track" aria-hidden="true"><i></i></div>
+            <p>50 % central des ventes · {initial.range.eligibleCount} mutations simples</p>
+          </div>
+
+          <p class="rail-sample" data-evidence-group="4">
+            <strong data-market-count>{initial.latest.eligibleCount}</strong> ventes analysées en <span data-market-count-year>{initial.latest.year}</span>
+          </p>
+        </div>
+
+        <p class="rail-source">
+          Source DVF · DGFiP. Ventes passées, hors mutations multi-lots. Ni estimation ni prévision.
+        </p>
+      </aside>
+    </div>
+
+    <nav class="hero-routes" aria-label="Choisir votre parcours">
+      <a class="hero-route hero-route-buyer" href="/ma-recherche">
+        <span><b>Acheteur</b><small>Situer ma recherche</small></span>
+        <i aria-hidden="true"></i>
+      </a>
+      <a class="hero-route hero-route-seller" href="/situer-ma-vente">
+        <span><b>Vendeur</b><small>Situer ma vente</small></span>
+        <i aria-hidden="true"></i>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sr-only" aria-label="Toutes les séries statistiques disponibles">
+    {states.map((state) => (
+      <section>
+        <h2>{state.commune} · {state.type}</h2>
+        <p>
+          Médiane du prix observé au mètre carré en {state.latest.year} : {number.format(state.latest.medianEurM2)} euros,
+          sur {state.latest.eligibleCount} ventes simples. Évolution annuelle : {signed.format(state.yoy.percent)} %.
+          Fourchette centrale : {number.format(state.range.p25EurM2)} à {number.format(state.range.p75EurM2)} euros par mètre carré.
+        </p>
+      </section>
+    ))}
+  </div>
+
+  <script type="application/json" data-market-states set:html={JSON.stringify(clientStates)} />
+</section>
+
+<style>
+  .evidence-hero {
+    --paper: #f2f5ef;
+    --white: #fff;
+    --ink: #09131f;
+    --blue: #243cff;
+    --lime: #d7ff42;
+    --line: #c9cec8;
+    --evidence-progress: 0;
+    min-height: 158svh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Public Sans', system-ui, sans-serif;
+  }
+
+  .evidence-pin {
+    position: sticky;
+    top: 78px;
+    height: calc(100svh - 78px);
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) clamp(112px, 14svh, 132px);
+    overflow: hidden;
+  }
+
+  .evidence-grid {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(300px, 29fr) minmax(500px, 51fr) minmax(280px, 20fr);
+  }
+
+  .evidence-manifesto {
+    position: relative;
+    z-index: 3;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: clamp(34px, 5vh, 60px) 0 clamp(30px, 5vh, 52px) clamp(24px, 3.2vw, 48px);
+    background: var(--paper);
+  }
+
+  .evidence-place {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 650;
+    letter-spacing: .025em;
+    text-transform: uppercase;
+  }
+
+  .manifesto-rule {
+    position: absolute;
+    top: clamp(68px, 11vh, 98px);
+    left: clamp(24px, 3.2vw, 48px);
+    width: 62px;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .evidence-manifesto h1 {
+    position: relative;
+    z-index: 4;
+    width: calc(100% + clamp(45px, 6vw, 92px));
+    margin: auto 0;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(58px, 6.2vw, 102px);
+    line-height: .86;
+    letter-spacing: -.055em;
+    text-transform: uppercase;
+  }
+
+  .evidence-manifesto h1 span {
+    width: max-content;
+    max-width: 100%;
+    display: block;
+    padding: .02em .11em .025em 0;
+    background: var(--paper);
+  }
+
+  .manifesto-context {
+    max-width: 320px;
+    margin: 0 30px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .evidence-media {
+    position: relative;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    background: var(--ink);
+  }
+
+  :global(.evidence-photo) { width: 100%; height: 100%; }
+  :global(.evidence-photo img) {
+    filter: grayscale(var(--evidence-progress)) contrast(1.06);
+    transform: scale(1.035);
+    transition: filter .12s linear;
+  }
+
+  .photo-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 42%, rgba(4, 10, 17, .64) 100%);
+    opacity: var(--evidence-progress);
+    pointer-events: none;
+  }
+
+  .market-chart {
+    position: absolute;
+    z-index: 2;
+    right: clamp(12px, 2vw, 34px);
+    bottom: 30px;
+    width: min(92%, 680px);
+    overflow: visible;
+    color: var(--lime);
+    filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .5));
+  }
+  .chart-baseline { stroke: rgba(255, 255, 255, .35); stroke-width: 1; }
+  .chart-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: calc(1 - var(--evidence-progress));
+  }
+  .chart-point { opacity: calc(.45 + var(--evidence-progress)); }
+  .chart-point circle { fill: currentColor; stroke: var(--ink); stroke-width: 2; }
+  .chart-point.is-limited circle { fill: var(--ink); stroke: currentColor; }
+  .chart-point text { fill: #fff; font-family: 'Public Sans', system-ui, sans-serif; font-size: 15px; }
+  .chart-year { opacity: .92; font-size: 14px !important; }
+
+  .chart-caption {
+    position: absolute;
+    z-index: 3;
+    right: 20px;
+    bottom: 10px;
+    left: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    color: rgba(255,255,255,.86);
+    font-size: 10px;
+  }
+  .chart-caption small { font-size: 9px; opacity: .78; }
+  .chart-caption a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+  .evidence-rail {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(17px, 2.1vh, 24px);
+    padding: clamp(24px, 3.1vh, 38px) clamp(20px, 2.3vw, 34px) 18px;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .selector-set {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(242,245,239,.85);
+  }
+  .selector-set button {
+    min-height: 44px;
+    padding: 0 12px;
+    border: 0;
+    border-bottom: 4px solid transparent;
+    background: transparent;
+    color: inherit;
+    font: 500 clamp(12px, 1vw, 16px)/1 'Public Sans', system-ui, sans-serif;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .selector-set button:first-child { padding-left: 0; }
+  .selector-set button[aria-pressed='true'] {
+    border-color: var(--lime);
+    color: var(--lime);
+    font-weight: 750;
+  }
+
+  .rail-live { display: contents; }
+  .rail-metric, .rail-change, .rail-range, .rail-sample {
+    opacity: calc(.58 + var(--evidence-progress));
+    transition: opacity .18s ease-out, transform .18s ease-out;
+  }
+  .rail-metric { display: grid; gap: 3px; }
+  .rail-metric strong,
+  .rail-change strong {
+    color: var(--lime);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(42px, 4.1vw, 69px);
+    line-height: .9;
+    letter-spacing: -.045em;
+    white-space: nowrap;
+  }
+  .rail-metric span, .rail-change span { font-size: clamp(11px, .95vw, 15px); line-height: 1.35; }
+  .rail-metric b { font-weight: inherit; }
+  .rail-change { display: grid; gap: 5px; }
+  .rail-change strong { font-size: clamp(32px, 3.2vw, 52px); }
+
+  .rail-range { --median-position: 50%; }
+  .range-labels { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; }
+  .range-track { position: relative; height: 17px; margin-top: 2px; }
+  .range-track::before {
+    position: absolute;
+    top: 8px;
+    right: 0;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    content: '';
+  }
+  .range-track::after {
+    position: absolute;
+    top: 4px;
+    left: var(--median-position);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--lime);
+    transform: translateX(-50%);
+    content: '';
+  }
+  .range-track i::before,
+  .range-track i::after {
+    position: absolute;
+    top: 4px;
+    width: 1px;
+    height: 9px;
+    background: currentColor;
+    content: '';
+  }
+  .range-track i::before { left: 0; }
+  .range-track i::after { right: 0; }
+  .rail-range p, .rail-sample { margin: 5px 0 0; font-size: 11px; line-height: 1.4; }
+  .rail-sample strong { color: var(--lime); font-size: 16px; }
+  .rail-source { margin: auto 0 0; color: rgba(242,245,239,.68); font-size: 9px; line-height: 1.35; }
+
+  .hero-routes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .hero-route {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px clamp(28px, 3.2vw, 52px);
+    text-decoration: none;
+  }
+  .hero-route-buyer { background: var(--ink); color: var(--lime); }
+  .hero-route-seller { background: var(--blue); color: var(--paper); }
+  .hero-route span { display: grid; gap: 2px; }
+  .hero-route b {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(26px, 2.7vw, 42px);
+    line-height: .95;
+    letter-spacing: -.035em;
+    text-transform: uppercase;
+  }
+  .hero-route small { color: currentColor; font-size: clamp(17px, 1.75vw, 28px); line-height: 1.1; }
+  .hero-route i { position: relative; width: clamp(54px, 6vw, 92px); height: 3px; flex: 0 0 auto; background: var(--lime); }
+  .hero-route i::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    border-top: 3px solid var(--lime);
+    border-right: 3px solid var(--lime);
+    transform: translateY(-50%) rotate(45deg);
+    content: '';
+  }
+  .hero-route:hover span { transform: translateX(5px); }
+  .hero-route:hover i { transform: translateX(7px); }
+  .hero-route span, .hero-route i { transition: transform .22s cubic-bezier(.16,1,.3,1); }
+
+  .evidence-hero :focus-visible { outline: 3px solid var(--lime); outline-offset: 4px; }
+
+  @media (max-width: 1080px) {
+    .evidence-hero { min-height: auto; --evidence-progress: .85; }
+    .evidence-pin { position: static; height: auto; overflow: visible; }
+    .evidence-grid { grid-template-columns: minmax(250px, .72fr) 1.28fr; }
+    .evidence-manifesto { min-height: 530px; }
+    .evidence-media { min-height: 530px; }
+    .evidence-rail { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; overflow: visible; }
+    .selector-set { align-self: start; }
+    .rail-live { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .rail-source { grid-column: 1 / -1; }
+    .hero-routes { min-height: 126px; }
+  }
+
+  @media (max-width: 720px) {
+    .evidence-pin { grid-template-rows: none; grid-auto-rows: auto; }
+    .evidence-grid { display: contents; }
+    .evidence-manifesto { order: 1; }
+    .hero-routes { order: 2; }
+    .evidence-media { order: 3; }
+    .evidence-rail { order: 4; }
+    .evidence-manifesto { min-height: 420px; padding: 38px 20px 34px; }
+    .manifesto-rule { top: 76px; left: 20px; }
+    .evidence-manifesto h1 { width: 100%; font-size: clamp(55px, 17vw, 84px); }
+    .manifesto-context { max-width: 280px; }
+    .evidence-media { min-height: 470px; }
+    .market-chart { right: 8px; bottom: 36px; width: 96%; }
+    .chart-caption { align-items: flex-start; flex-direction: column; gap: 3px; }
+    .evidence-rail { grid-column: auto; grid-template-columns: 1fr; padding: 26px 20px; }
+    .rail-live { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rail-metric strong { font-size: 54px; }
+    .rail-change strong { font-size: 42px; }
+    .hero-routes { grid-template-columns: 1fr; }
+    .hero-route { min-height: 106px; padding: 18px 20px; }
+    .hero-route b { font-size: 30px; }
+    .hero-route small { font-size: 18px; }
+  }
+
+  @media (max-width: 440px) {
+    .rail-live { grid-template-columns: 1fr; }
+    .evidence-media { min-height: 420px; }
+    .chart-value { font-size: 12px !important; }
+    .chart-year { font-size: 11px !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .evidence-hero { --evidence-progress: 1; }
+    :global(.evidence-photo img), .chart-line, .hero-route span, .hero-route i { transition: none; transform: none; }
+  }
+</style>
+
+<script>
+  type AnnualPoint = { year: number; medianEurM2: number; eligibleCount: number; quality: string };
+  type MarketState = {
+    key: string;
+    commune: string;
+    type: string;
+    annual: AnnualPoint[];
+    latest: AnnualPoint;
+    yoy: { fromYear: number; toYear: number; percent: number; quality: string };
+    range: { p25EurM2: number; medianEurM2: number; p75EurM2: number; eligibleCount: number };
+    medianPosition: number;
+  };
+
+  const integer = new Intl.NumberFormat('fr-FR');
+  const signedPercent = new Intl.NumberFormat('fr-FR', {
+    signDisplay: 'always', minimumFractionDigits: 1, maximumFractionDigits: 1,
+  });
+
+  document.querySelectorAll<HTMLElement>('[data-evidence-hero]').forEach((root) => {
+    const dataNode = root.querySelector<HTMLScriptElement>('[data-market-states]');
+    const states: MarketState[] = JSON.parse(dataNode?.textContent || '[]');
+    let commune = 'Lèves';
+    let type = 'Maisons';
+    let pending = false;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const setText = (selector: string, value: string) => {
+      const node = root.querySelector<HTMLElement>(selector);
+      if (node) node.textContent = value;
+    };
+
+    const geometry = (annual: AnnualPoint[]) => {
+      const width = 680, height = 222, padX = 36, top = 34, bottom = 42;
+      const values = annual.map((point) => point.medianEurM2);
+      const rawMin = Math.min(...values), rawMax = Math.max(...values);
+      const spread = Math.max(120, rawMax - rawMin);
+      const min = rawMin - spread * .18, max = rawMax + spread * .18;
+      const points = annual.map((point, index) => ({
+        ...point,
+        x: padX + (index * (width - padX * 2)) / Math.max(1, annual.length - 1),
+        y: top + ((max - point.medianEurM2) / Math.max(1, max - min)) * (height - top - bottom),
+      }));
+      return { points, path: points.map((point, index) => `${index ? 'L' : 'M'}${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ') };
+    };
+
+    const render = () => {
+      const state = states.find((candidate) => candidate.commune === commune && candidate.type === type);
+      if (!state) return;
+
+      root.querySelectorAll<HTMLButtonElement>('[data-market-commune]').forEach((button) =>
+        button.setAttribute('aria-pressed', String(button.dataset.marketCommune === commune))
+      );
+      root.querySelectorAll<HTMLButtonElement>('[data-market-type]').forEach((button) =>
+        button.setAttribute('aria-pressed', String(button.dataset.marketType === type))
+      );
+
+      setText('[data-market-median]', integer.format(state.latest.medianEurM2));
+      setText('[data-market-year]', String(state.latest.year));
+      setText('[data-market-yoy]', `${signedPercent.format(state.yoy.percent)} %`);
+      setText('[data-market-yoy-note]', state.yoy.quality === 'limited'
+        ? `Échantillon limité · ${state.yoy.fromYear}–${state.yoy.toYear}`
+        : `par rapport à ${state.yoy.fromYear}`);
+      setText('[data-market-q1]', integer.format(state.range.p25EurM2));
+      setText('[data-market-range-median]', integer.format(state.range.medianEurM2));
+      setText('[data-market-q3]', `${integer.format(state.range.p75EurM2)} €/m²`);
+      setText('[data-market-count]', String(state.latest.eligibleCount));
+      setText('[data-market-count-year]', String(state.latest.year));
+      setText('[data-chart-caption]', `${state.commune} · ${state.type.toLowerCase()} · ventes simples`);
+
+      const range = root.querySelector<HTMLElement>('.rail-range');
+      range?.style.setProperty('--median-position', `${state.medianPosition}%`);
+      const chart = geometry(state.annual);
+      root.querySelector<SVGPathElement>('[data-chart-path]')?.setAttribute('d', chart.path);
+      root.querySelectorAll<SVGGElement>('[data-chart-point]').forEach((group, index) => {
+        const point = chart.points[index];
+        if (!point) return;
+        group.classList.toggle('is-limited', point.quality === 'limited');
+        const dot = group.querySelector<SVGCircleElement>('[data-chart-dot]');
+        const value = group.querySelector<SVGTextElement>('[data-chart-value]');
+        const year = group.querySelector<SVGTextElement>('[data-chart-year]');
+        dot?.setAttribute('cx', String(point.x)); dot?.setAttribute('cy', String(point.y));
+        value?.setAttribute('x', String(point.x)); value?.setAttribute('y', String(point.y - 16));
+        year?.setAttribute('x', String(point.x));
+        if (value) value.textContent = integer.format(point.medianEurM2);
+        if (year) year.textContent = String(point.year);
+      });
+      if (!reduced.matches) root.animate([{ opacity: .94 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' });
+    };
+
+    root.querySelectorAll<HTMLButtonElement>('[data-market-commune]').forEach((button) => {
+      button.addEventListener('click', () => { commune = button.dataset.marketCommune || commune; render(); });
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-market-type]').forEach((button) => {
+      button.addEventListener('click', () => { type = button.dataset.marketType || type; render(); });
+    });
+
+    const updateProgress = () => {
+      pending = false;
+      if (reduced.matches || window.innerWidth <= 1080) {
+        root.style.setProperty('--evidence-progress', '1');
+        return;
+      }
+      const header = document.querySelector<HTMLElement>('[data-home-header]');
+      const headerHeight = header?.offsetHeight ?? 78;
+      const rect = root.getBoundingClientRect();
+      const travel = Math.max(1, root.offsetHeight - (window.innerHeight - headerHeight));
+      const progress = Math.min(1, Math.max(0, (headerHeight - rect.top) / travel));
+      root.style.setProperty('--evidence-progress', progress.toFixed(4));
+    };
+    const requestUpdate = () => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(updateProgress);
+    };
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate);
+    reduced.addEventListener?.('change', requestUpdate);
+    render();
+    updateProgress();
+  });
+</script>

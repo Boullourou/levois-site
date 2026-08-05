@@ -1,0 +1,1572 @@
+{
+  "schemaVersion": 1,
+  "status": "ready",
+  "source": {
+    "name": "Demandes de valeurs foncières (DVF) — DGFiP, géolocalisées par Etalab (geo-dvf)",
+    "url": "https://files.data.gouv.fr/geo-dvf/latest/csv/",
+    "licence": "Licence ouverte / Etalab 2.0",
+    "datasetPath": "public/data/dvf-secteur.json",
+    "datasetSha256": "a0dcbb2d117f9910f137a30d3cefd3329fb1d10af38e3a4eb2184441a954d48f",
+    "datasetMutationCount": 6318,
+    "sourceGeneratedAt": "2026-07-24T19:57:24.717Z",
+    "firstMutationDate": "2021-01-04",
+    "latestMutationDate": "2025-12-31"
+  },
+  "period": {
+    "years": [
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "fromYear": 2021,
+    "toYear": 2025,
+    "latestCompleteYear": 2025,
+    "selection": "Cinq dernières années civiles complètes disponibles dans le dataset."
+  },
+  "selectors": {
+    "communes": [
+      "Lèves",
+      "Chartres",
+      "Mainvilliers",
+      "Lucé",
+      "Champhol",
+      "Le Coudray",
+      "Luisant"
+    ],
+    "propertyTypes": [
+      "Maison",
+      "Appartement"
+    ]
+  },
+  "methodology": {
+    "metric": "Médiane du prix observé au m²",
+    "unit": "EUR/m²",
+    "quantileMethod": "R-7",
+    "recentWindowYears": 2,
+    "eligibleMutationCount": 5904,
+    "filters": [
+      "Commune et type de bien comparés à l’identique.",
+      "Une seule observation par identifiant de mutation.",
+      "Surface bâtie strictement positive.",
+      "Mutation d’un seul local d’habitation : lots absent ou inférieur ou égal à 1.",
+      "Années civiles complètes retenues dans la période publiée.",
+      "Aucun écrêtage arbitraire du prix au m²."
+    ],
+    "qualityThresholds": {
+      "strong": {
+        "min": 30,
+        "max": null,
+        "label": "fort"
+      },
+      "usable": {
+        "min": 20,
+        "max": 29,
+        "label": "exploitable"
+      },
+      "limited": {
+        "min": 10,
+        "max": 19,
+        "label": "limité"
+      },
+      "insufficient": {
+        "min": 0,
+        "max": 9,
+        "label": "insuffisant"
+      }
+    }
+  },
+  "limitations": [
+    "Le prix de mutation peut inclure le terrain et des dépendances ; le prix au m² n’est pas une estimation du bien.",
+    "La composition des biens vendus varie d’une année à l’autre et peut déplacer la médiane.",
+    "DVF est publié avec délai et certaines mutations peuvent être absentes ou corrigées ultérieurement.",
+    "Ces indicateurs décrivent des ventes observées ; ils ne constituent ni une prévision ni une valeur de marché individuelle."
+  ],
+  "series": [
+    {
+      "commune": "Lèves",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 49,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2000,
+            "median": 2225,
+            "q3": 2575
+          }
+        },
+        {
+          "year": 2022,
+          "count": 53,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2069,
+            "median": 2500,
+            "q3": 2882
+          }
+        },
+        {
+          "year": 2023,
+          "count": 34,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2130,
+            "median": 2453,
+            "q3": 2759
+          }
+        },
+        {
+          "year": 2024,
+          "count": 27,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2036,
+            "median": 2329,
+            "q3": 2817
+          }
+        },
+        {
+          "year": 2025,
+          "count": 38,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1894,
+            "median": 2353,
+            "q3": 2731
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 38,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1894,
+          "median": 2353,
+          "q3": 2731
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 27,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 2036,
+          "median": 2329,
+          "q3": 2817
+        }
+      },
+      "changeFromPreviousYearPct": 1,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 65,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1947,
+          "median": 2337,
+          "q3": 2778
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 201,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2000,
+          "median": 2344,
+          "q3": 2741
+        }
+      }
+    },
+    {
+      "commune": "Lèves",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 25,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2033,
+            "median": 2318,
+            "q3": 2536
+          }
+        },
+        {
+          "year": 2022,
+          "count": 20,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 1940,
+            "median": 2165,
+            "q3": 2428
+          }
+        },
+        {
+          "year": 2023,
+          "count": 18,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 1985,
+            "median": 2342,
+            "q3": 2560
+          }
+        },
+        {
+          "year": 2024,
+          "count": 17,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 2190,
+            "median": 2371,
+            "q3": 2583
+          }
+        },
+        {
+          "year": 2025,
+          "count": 29,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2190,
+            "median": 2453,
+            "q3": 2690
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 29,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 2190,
+          "median": 2453,
+          "q3": 2690
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 17,
+        "quality": "limited",
+        "pricePerSqm": {
+          "q1": 2190,
+          "median": 2371,
+          "q3": 2583
+        }
+      },
+      "changeFromPreviousYearPct": 3.4,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 46,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2190,
+          "median": 2407,
+          "q3": 2678
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 109,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2047,
+          "median": 2371,
+          "q3": 2591
+        }
+      }
+    },
+    {
+      "commune": "Chartres",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 223,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1982,
+            "median": 2433,
+            "q3": 2956
+          }
+        },
+        {
+          "year": 2022,
+          "count": 236,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2258,
+            "median": 2601,
+            "q3": 3366
+          }
+        },
+        {
+          "year": 2023,
+          "count": 184,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2073,
+            "median": 2543,
+            "q3": 3123
+          }
+        },
+        {
+          "year": 2024,
+          "count": 152,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2021,
+            "median": 2469,
+            "q3": 3062
+          }
+        },
+        {
+          "year": 2025,
+          "count": 188,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2084,
+            "median": 2507,
+            "q3": 3240
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 188,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2084,
+          "median": 2507,
+          "q3": 3240
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 152,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2021,
+          "median": 2469,
+          "q3": 3062
+        }
+      },
+      "changeFromPreviousYearPct": 1.5,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 340,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2052,
+          "median": 2486,
+          "q3": 3140
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 983,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2070,
+          "median": 2500,
+          "q3": 3125
+        }
+      }
+    },
+    {
+      "commune": "Chartres",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 573,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1948,
+            "median": 2383,
+            "q3": 2770
+          }
+        },
+        {
+          "year": 2022,
+          "count": 567,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2075,
+            "median": 2577,
+            "q3": 3056
+          }
+        },
+        {
+          "year": 2023,
+          "count": 439,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2000,
+            "median": 2465,
+            "q3": 2914
+          }
+        },
+        {
+          "year": 2024,
+          "count": 389,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1923,
+            "median": 2423,
+            "q3": 2826
+          }
+        },
+        {
+          "year": 2025,
+          "count": 430,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1995,
+            "median": 2448,
+            "q3": 2856
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 430,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1995,
+          "median": 2448,
+          "q3": 2856
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 389,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1923,
+          "median": 2423,
+          "q3": 2826
+        }
+      },
+      "changeFromPreviousYearPct": 1,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 819,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1955,
+          "median": 2436,
+          "q3": 2850
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 2398,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1989,
+          "median": 2452,
+          "q3": 2894
+        }
+      }
+    },
+    {
+      "commune": "Mainvilliers",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 77,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1963,
+            "median": 2270,
+            "q3": 2527
+          }
+        },
+        {
+          "year": 2022,
+          "count": 77,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2156,
+            "median": 2387,
+            "q3": 2933
+          }
+        },
+        {
+          "year": 2023,
+          "count": 55,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2125,
+            "median": 2398,
+            "q3": 2834
+          }
+        },
+        {
+          "year": 2024,
+          "count": 66,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1983,
+            "median": 2366,
+            "q3": 2547
+          }
+        },
+        {
+          "year": 2025,
+          "count": 71,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1955,
+            "median": 2309,
+            "q3": 2580
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 71,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1955,
+          "median": 2309,
+          "q3": 2580
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 66,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1983,
+          "median": 2366,
+          "q3": 2547
+        }
+      },
+      "changeFromPreviousYearPct": -2.4,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 137,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1957,
+          "median": 2326,
+          "q3": 2578
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 346,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2051,
+          "median": 2344,
+          "q3": 2718
+        }
+      }
+    },
+    {
+      "commune": "Mainvilliers",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 92,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1623,
+            "median": 2066,
+            "q3": 2527
+          }
+        },
+        {
+          "year": 2022,
+          "count": 64,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1858,
+            "median": 2131,
+            "q3": 2505
+          }
+        },
+        {
+          "year": 2023,
+          "count": 42,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1587,
+            "median": 2023,
+            "q3": 2356
+          }
+        },
+        {
+          "year": 2024,
+          "count": 67,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1518,
+            "median": 2057,
+            "q3": 2556
+          }
+        },
+        {
+          "year": 2025,
+          "count": 47,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1752,
+            "median": 2267,
+            "q3": 2768
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 47,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1752,
+          "median": 2267,
+          "q3": 2768
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 67,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1518,
+          "median": 2057,
+          "q3": 2556
+        }
+      },
+      "changeFromPreviousYearPct": 10.2,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 114,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1654,
+          "median": 2128,
+          "q3": 2692
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 312,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1667,
+          "median": 2102,
+          "q3": 2564
+        }
+      }
+    },
+    {
+      "commune": "Lucé",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 79,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1965,
+            "median": 2289,
+            "q3": 2634
+          }
+        },
+        {
+          "year": 2022,
+          "count": 66,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1855,
+            "median": 2150,
+            "q3": 2472
+          }
+        },
+        {
+          "year": 2023,
+          "count": 54,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1845,
+            "median": 2206,
+            "q3": 2399
+          }
+        },
+        {
+          "year": 2024,
+          "count": 56,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1865,
+            "median": 2175,
+            "q3": 2519
+          }
+        },
+        {
+          "year": 2025,
+          "count": 85,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1792,
+            "median": 2072,
+            "q3": 2380
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 85,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1792,
+          "median": 2072,
+          "q3": 2380
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 56,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1865,
+          "median": 2175,
+          "q3": 2519
+        }
+      },
+      "changeFromPreviousYearPct": -4.7,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 141,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1856,
+          "median": 2136,
+          "q3": 2466
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 340,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1867,
+          "median": 2165,
+          "q3": 2515
+        }
+      }
+    },
+    {
+      "commune": "Lucé",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 101,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1710,
+            "median": 2121,
+            "q3": 2438
+          }
+        },
+        {
+          "year": 2022,
+          "count": 104,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1845,
+            "median": 2264,
+            "q3": 2572
+          }
+        },
+        {
+          "year": 2023,
+          "count": 67,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1827,
+            "median": 2292,
+            "q3": 2724
+          }
+        },
+        {
+          "year": 2024,
+          "count": 60,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1832,
+            "median": 2256,
+            "q3": 2566
+          }
+        },
+        {
+          "year": 2025,
+          "count": 84,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1731,
+            "median": 2181,
+            "q3": 2601
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 84,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1731,
+          "median": 2181,
+          "q3": 2601
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 60,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1832,
+          "median": 2256,
+          "q3": 2566
+        }
+      },
+      "changeFromPreviousYearPct": -3.3,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 144,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1801,
+          "median": 2189,
+          "q3": 2580
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 416,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1799,
+          "median": 2200,
+          "q3": 2568
+        }
+      }
+    },
+    {
+      "commune": "Champhol",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 44,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2072,
+            "median": 2333,
+            "q3": 2663
+          }
+        },
+        {
+          "year": 2022,
+          "count": 31,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2161,
+            "median": 2570,
+            "q3": 2927
+          }
+        },
+        {
+          "year": 2023,
+          "count": 31,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 1824,
+            "median": 2339,
+            "q3": 2897
+          }
+        },
+        {
+          "year": 2024,
+          "count": 22,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2038,
+            "median": 2403,
+            "q3": 2641
+          }
+        },
+        {
+          "year": 2025,
+          "count": 28,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2145,
+            "median": 2426,
+            "q3": 2688
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 28,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 2145,
+          "median": 2426,
+          "q3": 2688
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 22,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 2038,
+          "median": 2403,
+          "q3": 2641
+        }
+      },
+      "changeFromPreviousYearPct": 0.9,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 50,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2069,
+          "median": 2426,
+          "q3": 2655
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 156,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2055,
+          "median": 2421,
+          "q3": 2807
+        }
+      }
+    },
+    {
+      "commune": "Champhol",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 0,
+          "quality": "insufficient",
+          "pricePerSqm": {
+            "q1": null,
+            "median": null,
+            "q3": null
+          }
+        },
+        {
+          "year": 2022,
+          "count": 0,
+          "quality": "insufficient",
+          "pricePerSqm": {
+            "q1": null,
+            "median": null,
+            "q3": null
+          }
+        },
+        {
+          "year": 2023,
+          "count": 0,
+          "quality": "insufficient",
+          "pricePerSqm": {
+            "q1": null,
+            "median": null,
+            "q3": null
+          }
+        },
+        {
+          "year": 2024,
+          "count": 1,
+          "quality": "insufficient",
+          "pricePerSqm": {
+            "q1": 2571,
+            "median": 2571,
+            "q3": 2571
+          }
+        },
+        {
+          "year": 2025,
+          "count": 0,
+          "quality": "insufficient",
+          "pricePerSqm": {
+            "q1": null,
+            "median": null,
+            "q3": null
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 0,
+        "quality": "insufficient",
+        "pricePerSqm": {
+          "q1": null,
+          "median": null,
+          "q3": null
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 1,
+        "quality": "insufficient",
+        "pricePerSqm": {
+          "q1": 2571,
+          "median": 2571,
+          "q3": 2571
+        }
+      },
+      "changeFromPreviousYearPct": null,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 1,
+        "quality": "insufficient",
+        "pricePerSqm": {
+          "q1": 2571,
+          "median": 2571,
+          "q3": 2571
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 1,
+        "quality": "insufficient",
+        "pricePerSqm": {
+          "q1": 2571,
+          "median": 2571,
+          "q3": 2571
+        }
+      }
+    },
+    {
+      "commune": "Le Coudray",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 32,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2323,
+            "median": 2497,
+            "q3": 2746
+          }
+        },
+        {
+          "year": 2022,
+          "count": 21,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2307,
+            "median": 2569,
+            "q3": 2857
+          }
+        },
+        {
+          "year": 2023,
+          "count": 25,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2376,
+            "median": 2780,
+            "q3": 2941
+          }
+        },
+        {
+          "year": 2024,
+          "count": 18,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 1947,
+            "median": 2385,
+            "q3": 3029
+          }
+        },
+        {
+          "year": 2025,
+          "count": 11,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 2289,
+            "median": 2713,
+            "q3": 2909
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 11,
+        "quality": "limited",
+        "pricePerSqm": {
+          "q1": 2289,
+          "median": 2713,
+          "q3": 2909
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 18,
+        "quality": "limited",
+        "pricePerSqm": {
+          "q1": 1947,
+          "median": 2385,
+          "q3": 3029
+        }
+      },
+      "changeFromPreviousYearPct": 13.7,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 29,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 1993,
+          "median": 2620,
+          "q3": 3015
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 107,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2284,
+          "median": 2548,
+          "q3": 2894
+        }
+      }
+    },
+    {
+      "commune": "Le Coudray",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 31,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2423,
+            "median": 2591,
+            "q3": 2852
+          }
+        },
+        {
+          "year": 2022,
+          "count": 22,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2536,
+            "median": 2874,
+            "q3": 3044
+          }
+        },
+        {
+          "year": 2023,
+          "count": 18,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 2250,
+            "median": 2714,
+            "q3": 2876
+          }
+        },
+        {
+          "year": 2024,
+          "count": 24,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2396,
+            "median": 2592,
+            "q3": 3000
+          }
+        },
+        {
+          "year": 2025,
+          "count": 23,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 2343,
+            "median": 2552,
+            "q3": 2853
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 23,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 2343,
+          "median": 2552,
+          "q3": 2853
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 24,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 2396,
+          "median": 2592,
+          "q3": 3000
+        }
+      },
+      "changeFromPreviousYearPct": -1.5,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 47,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2353,
+          "median": 2552,
+          "q3": 2978
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 118,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2383,
+          "median": 2628,
+          "q3": 2964
+        }
+      }
+    },
+    {
+      "commune": "Luisant",
+      "propertyType": "Maison",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 72,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2020,
+            "median": 2443,
+            "q3": 2797
+          }
+        },
+        {
+          "year": 2022,
+          "count": 64,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2166,
+            "median": 2425,
+            "q3": 2979
+          }
+        },
+        {
+          "year": 2023,
+          "count": 64,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2132,
+            "median": 2561,
+            "q3": 3019
+          }
+        },
+        {
+          "year": 2024,
+          "count": 56,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2252,
+            "median": 2570,
+            "q3": 3006
+          }
+        },
+        {
+          "year": 2025,
+          "count": 65,
+          "quality": "strong",
+          "pricePerSqm": {
+            "q1": 2000,
+            "median": 2500,
+            "q3": 2742
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 65,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2000,
+          "median": 2500,
+          "q3": 2742
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 56,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2252,
+          "median": 2570,
+          "q3": 3006
+        }
+      },
+      "changeFromPreviousYearPct": -2.7,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 121,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2150,
+          "median": 2524,
+          "q3": 2909
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 321,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 2136,
+          "median": 2473,
+          "q3": 2919
+        }
+      }
+    },
+    {
+      "commune": "Luisant",
+      "propertyType": "Appartement",
+      "annual": [
+        {
+          "year": 2021,
+          "count": 16,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 1468,
+            "median": 1944,
+            "q3": 2497
+          }
+        },
+        {
+          "year": 2022,
+          "count": 15,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 1670,
+            "median": 2000,
+            "q3": 2386
+          }
+        },
+        {
+          "year": 2023,
+          "count": 25,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 1624,
+            "median": 2021,
+            "q3": 2563
+          }
+        },
+        {
+          "year": 2024,
+          "count": 21,
+          "quality": "usable",
+          "pricePerSqm": {
+            "q1": 1438,
+            "median": 2164,
+            "q3": 2791
+          }
+        },
+        {
+          "year": 2025,
+          "count": 19,
+          "quality": "limited",
+          "pricePerSqm": {
+            "q1": 1756,
+            "median": 1989,
+            "q3": 2352
+          }
+        }
+      ],
+      "latest": {
+        "year": 2025,
+        "count": 19,
+        "quality": "limited",
+        "pricePerSqm": {
+          "q1": 1756,
+          "median": 1989,
+          "q3": 2352
+        }
+      },
+      "previous": {
+        "year": 2024,
+        "count": 21,
+        "quality": "usable",
+        "pricePerSqm": {
+          "q1": 1438,
+          "median": 2164,
+          "q3": 2791
+        }
+      },
+      "changeFromPreviousYearPct": -8.1,
+      "recentWindow": {
+        "years": [
+          2024,
+          2025
+        ],
+        "count": 40,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1618,
+          "median": 2109,
+          "q3": 2708
+        }
+      },
+      "fullPeriod": {
+        "years": [
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "count": 96,
+        "quality": "strong",
+        "pricePerSqm": {
+          "q1": 1549,
+          "median": 1994,
+          "q3": 2572
+        }
+      }
+    }
+  ]
+}

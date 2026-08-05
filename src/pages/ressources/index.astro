@@ -1,14 +1,25 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { resources } from '../../data/resources';
-import { site } from '../../config/site';
-import ResponsiveImage from '../../components/ResponsiveImage.astro';
+
+const listSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Ressources immobilières LEVOIS',
+  itemListElement: resources.map((resource, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: resource.titre,
+    url: `https://levois.fr/ressources/${resource.slug}`,
+  })),
+};
 ---
 
 <Layout
   title="Ressources"
   description="Six ressources gratuites pour comprendre les signaux de votre vente avant d'ajuster quoi que ce soit. Sans inscription."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
   <div class="max-w-page mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
     <header class="max-w-2xl mb-12 md:mb-16">
@@ -20,36 +31,22 @@ import ResponsiveImage from '../../components/ResponsiveImage.astro';
       </p>
     </header>
 
-    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-16">
-      {resources.map((r) => (
+    <div class="resource-grid mb-16">
+      {resources.map((r, index) => (
         <a
           href={`/ressources/${r.slug}`}
-          class="group carte overflow-hidden flex flex-col transition-all duration-200 hover:border-argile hover:shadow-[0_16px_40px_-24px_rgba(168,86,56,0.4)]"
+          class="resource-entry group"
         >
-          {r.imageSlot && (
-            <div class="ressource-thumb">
-              <ResponsiveImage
-                slot={r.imageSlot}
-                ratio="3/2"
-                sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 92vw"
-                class="ressource-thumb-img"
-              />
-            </div>
-          )}
-          <div class="p-6 md:p-7 flex flex-col flex-1">
-            <p class="font-sans text-sm text-argile mb-3">{r.question}</p>
-            <h2 class="font-display text-xl text-encre mb-2">{r.titre}</h2>
-            <p class="font-sans text-[15px] text-brun leading-relaxed flex-1">{r.benefice}</p>
-            <p class="font-sans text-sm text-brun/70 mt-5 flex items-center justify-between">
-              <span>{r.duree}</span>
-              <span class="text-argile font-medium group-hover:underline underline-offset-2">{r.cta}</span>
-            </p>
-          </div>
+          <span class="resource-index">{String(index + 1).padStart(2, '0')}</span>
+          <p class="resource-question">{r.question}</p>
+          <h2>{r.titre}</h2>
+          <p class="resource-benefit">{r.benefice}</p>
+          <p class="resource-meta"><span>{r.duree}</span><strong>{r.cta} →</strong></p>
         </a>
       ))}
     </div>
 
-    <div class="carte bg-argile-pale/40 p-7 md:p-9 md:flex items-center justify-between gap-8">
+    <div class="resource-chooser md:flex items-center justify-between gap-8">
       <div class="max-w-xl">
         <h2 class="font-display text-2xl text-encre mb-2">Vous ne savez pas par laquelle commencer ?</h2>
         <p class="font-sans text-[15px] text-brun leading-relaxed">
@@ -61,24 +58,33 @@ import ResponsiveImage from '../../components/ResponsiveImage.astro';
     </div>
 
     <p class="font-sans text-sm text-brun/80 mt-10 max-w-prose">
-      Ces contenus sont portés par {site.lea.nom} — <a href="/lea" class="text-argile underline underline-offset-2 hover:text-encre">la voix des contenus LEVOIS</a> —
-      et nourris par l'expérience de terrain de Mouaad sur le bassin chartrain.
+      Mouaad conçoit ces contenus à partir des questions rencontrées sur le terrain et des données disponibles sur le bassin chartrain.
+      L’objectif : vous être utile bien avant qu’une décision immobilière devienne urgente.
     </p>
   </div>
 </Layout>
 
 <style>
-  .ressource-thumb {
-    overflow: hidden;
-  }
-  /* Légère élévation de l'image au survol — même registre que les cartes rail */
-  :global(.ressource-thumb-img img) {
-    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  a:hover :global(.ressource-thumb-img img) {
-    transform: scale(1.05);
+  .resource-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #111522; }
+  .resource-entry { position: relative; min-height: 320px; display: flex; flex-direction: column; padding: clamp(24px, 3vw, 42px); border-right: 1px solid #111522; border-bottom: 1px solid #111522; color: #111522; text-decoration: none; transition: background-color .2s ease-out, color .2s ease-out; }
+  .resource-entry:nth-child(even) { border-right: 0; }
+  .resource-entry:hover { background: #243cff; color: #f2f5ef; }
+  .resource-index { color: #243cff; font: 700 13px/1 'Public Sans', system-ui, sans-serif; letter-spacing: .08em; }
+  .resource-entry:hover .resource-index { color: #d7ff42; }
+  .resource-question { max-width: 46ch; margin: 28px 0 0; font-size: 14px; line-height: 1.45; }
+  .resource-entry h2 { max-width: 18ch; margin: 14px 0 0; font: 700 clamp(24px, 2.7vw, 38px)/1.03 'Public Sans', system-ui, sans-serif; letter-spacing: -.03em; }
+  .resource-benefit { max-width: 54ch; margin: 18px 0 30px; color: currentColor; font-size: 15px; line-height: 1.55; opacity: .76; }
+  .resource-meta { display: flex; justify-content: space-between; gap: 20px; margin: auto 0 0; font-size: 13px; }
+  .resource-meta strong { color: #243cff; }
+  .resource-entry:hover .resource-meta strong { color: #d7ff42; }
+  .resource-chooser { padding: clamp(28px, 4vw, 50px); background: #111522; color: #f2f5ef; }
+  .resource-chooser h2 { color: #f2f5ef; }
+  .resource-chooser p { color: rgba(242,245,239,.72); }
+  @media (max-width: 720px) {
+    .resource-grid { grid-template-columns: 1fr; }
+    .resource-entry { min-height: 280px; border-right: 0; }
   }
   @media (prefers-reduced-motion: reduce) {
-    :global(.ressource-thumb-img img) { transition: none !important; }
+    .resource-entry { transition: none; }
   }
 </style>

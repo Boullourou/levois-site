@@ -3,19 +3,25 @@ import { site } from '../config/site';
 
 export interface Props {
   homeV2?: boolean;
+  flush?: boolean;
 }
 
-const { homeV2 = false } = Astro.props;
+const { homeV2 = false, flush = false } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
 {homeV2 ? (
-  <footer class="home-footer">
+  <footer class:list={['home-footer', { 'home-footer--flush': flush }]}>
     <div class="home-footer-brand">
       <b>LEVOIS</b>
       <span>Rendre la valeur lisible.</span>
     </div>
     <div class="home-footer-contact">
+      <nav aria-label="Liens utiles">
+        <a href="/accompagnement">Accompagnement</a>
+        <a href="/ressources">Ressources</a>
+        <a href="/contact">Contact</a>
+      </nav>
       <a href={`mailto:${site.email}`}>{site.email}</a>
       <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
     </div>
@@ -80,6 +86,7 @@ const year = new Date().getFullYear();
 {homeV2 && (
   <style>
     .home-footer {
+      margin-top: clamp(80px, 10vw, 150px);
       min-height: 132px;
       display: grid;
       grid-template-columns: .8fr .7fr 1.5fr;
@@ -90,12 +97,14 @@ const year = new Date().getFullYear();
       color: #111522;
       font-family: 'Public Sans', system-ui, sans-serif;
     }
+    .home-footer--flush { margin-top: 0; }
     .home-footer-brand { display: grid; gap: 5px; }
     .home-footer-brand b { font-family: 'Archivo Black', sans-serif; font-size: 25px; letter-spacing: -.03em; }
     .home-footer-brand span,
     .home-footer-contact,
     .home-footer-legal { font-size: 12px; line-height: 1.55; }
     .home-footer-contact { display: grid; gap: 4px; }
+    .home-footer-contact nav { display: flex; flex-wrap: wrap; gap: 5px 14px; margin-bottom: 4px; font-weight: 650; }
     .home-footer a { text-underline-offset: 4px; }
     .home-footer a:hover { text-decoration-thickness: 2px; }
     .home-footer-legal { display: grid; justify-items: end; gap: 7px; text-align: right; }

@@ -1,5 +1,4 @@
-# API formulaires → fonction Netlify
-/api/lead  /.netlify/functions/lead  200
+# /api/lead est servi directement par functions/api/lead.ts sur Cloudflare Pages.
 
 # Anciennes pages « carnet de terrain » → nouvelle architecture LEVOIS
 /le-projet            /mouaad           301
@@ -8,6 +7,7 @@
 /carnets-de-terrain/* /ressources       301
 /observatoire-immo    /                 301
 /vendre-a-leves       /situer-ma-vente  301
+/lea                  /mouaad           301
 /merci                /                 301
 
 # ——————————————————————————————————————————————————————————————

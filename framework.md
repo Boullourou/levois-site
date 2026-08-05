@@ -33,7 +33,7 @@ Les URLs imprimées ou déjà diffusées restent stables.
 
 1. **Promesse** — « Rendre la valeur lisible. »
 2. **Double entrée** — acheteur et vendeur au même niveau.
-3. **Mécanisme** — ce que le bien est, ce que le marché perçoit, ce que la personne décide.
+3. **Preuve locale immédiate** — photographie réelle, repères DVF sourcés et limites dans le premier écran.
 4. **Boucle de marché** — une recherche mieux définie et une vente mieux positionnée.
 5. **Méthode** — constater, interpréter, décider.
 6. **Preuve locale** — données DVF sourcées, période, territoire et limites.
@@ -43,6 +43,20 @@ Les URLs imprimées ou déjà diffusées restent stables.
 Une section ne doit rester que si elle remplit l’un de ces rôles. Les galeries, cartes de ressources ou profils exclusivement vendeurs appartiennent aux parcours secondaires tant qu’un équivalent acheteur n’existe pas.
 
 ## 5. Framework de contenu
+
+### Cible éditoriale vidéo prioritaire
+
+La ligne vidéo vise d’abord les propriétaires situés **avant la mise en vente** : ceux qui pensent vendre dans quelques mois et ceux qui ne passeront à l’action qu’après un changement de vie ou une contrainte imprévue. LEVOIS doit être la référence déjà connue, utile et crédible lorsque la décision devient concrète.
+
+Cette priorité modifie la nature des contenus :
+
+- préparer plutôt que récupérer une commercialisation déjà abîmée ;
+- expliquer les décisions qui se prennent avant l’annonce, le prix et les premières visites ;
+- créer des repères mémorisables et enregistrables, pas une urgence commerciale ;
+- proposer comme CTA une ressource, une vérification ou un outil utile maintenant, même si la vente n’aura lieu que plus tard ;
+- ne jamais instrumentaliser une succession, une séparation, une mutation professionnelle, une difficulté financière ou tout autre événement déclencheur.
+
+Les acheteurs restent présents dans la ligne éditoriale et dans le produit : leur lecture du marché rend les contenus vendeurs plus solides et entretient la boucle bilatérale LEVOIS. La priorité d’acquisition vidéo ne transforme donc pas le site en parcours exclusivement vendeur.
 
 Chaque contenu social ou éditorial suit une structure réutilisable :
 
@@ -89,10 +103,10 @@ L’automatisation prépare la lecture. Elle ne remplace ni l’estimation profe
 
 - Mobile d’abord, clavier utilisable, objectif WCAG 2.2 AA.
 - Aucun contenu essentiel ne dépend du mouvement, de la couleur ou de JavaScript.
-- Le récit scroll-driven est un enrichissement réservé aux écrans adaptés ; mobile et `prefers-reduced-motion` reçoivent une version statique complète.
+- La transition scroll-driven du héros (couleur → monochrome et montée des preuves) est un enrichissement réservé aux écrans adaptés ; mobile et `prefers-reduced-motion` reçoivent une version statique complète.
 - Les animations restent courtes, déterministes et informatives.
 - Les liens d’ancre compensent le header collant.
-- Les anciennes pages conservent leur interface tant qu’elles n’ont pas été migrées explicitement vers le système LEVOIS V2.
+- Toutes les pages publiques partagent le même en-tête, le même pied de page, les mêmes typographies et les mêmes tokens LEVOIS V2 ; les parcours longs conservent seulement leurs besoins fonctionnels spécifiques.
 
 ## 9. Critères de publication
 
@@ -107,4 +121,4 @@ Une surface est publiable lorsque :
 
 ## 10. État d’intégration
 
-La page d’accueil V2 et la route canonique acheteur `/ma-recherche` sont intégrées dans la même branche. Chaque environnement de production doit relier la fonction `/api/recherche` à la base D1 `RECHERCHE_DB` et configurer l’envoi Resend avant d’accepter de vraies demandes.
+La page d’accueil V2, les routes QR et les parcours acheteur/vendeur sont intégrés dans le même shell visuel. Chaque environnement de production doit relier `/api/recherche` à la base D1 `RECHERCHE_DB`, exposer `/api/lead` via Cloudflare Pages Functions et configurer l’envoi Resend avant d’accepter de vraies demandes.

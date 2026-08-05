@@ -11,9 +11,24 @@ export function getStaticPaths() {
 const { resource } = Astro.props;
 const contenu = getResourceContent(resource.id);
 const situationLiee = getSituation(contenu.situationLiee);
+const articleUrl = `https://levois.fr/ressources/${resource.slug}`;
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${articleUrl}#article`,
+  headline: resource.titre,
+  description: `${resource.question} ${resource.benefice}`,
+  mainEntityOfPage: articleUrl,
+  inLanguage: 'fr-FR',
+  author: { '@id': 'https://levois.fr/#mouaad-boullourou' },
+  publisher: { '@id': 'https://levois.fr/#organization' },
+  about: ['vente immobilière', 'décision immobilière', 'bassin chartrain'],
+  spatialCoverage: { '@type': 'Place', name: 'Bassin chartrain, Eure-et-Loir, France' },
+};
 ---
 
 <Layout title={resource.titre} description={`${resource.question} ${resource.benefice}`}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
   <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
     <header class="mb-10">

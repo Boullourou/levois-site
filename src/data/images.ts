@@ -28,6 +28,13 @@ export interface ImageAsset {
 }
 
 export const images: Record<string, ImageAsset> = {
+  // ——— Accueil V2 : preuve locale réelle ———
+  'hero-chartres-evidence': {
+    slug: 'hero-chartres-evidence', widths: [1536, 1152, 768, 480], w: 1536, h: 1024,
+    alt: 'Vue aérienne réelle de la cathédrale et du centre de Chartres',
+    posDesktop: 'center 48%', posMobile: 'center 45%',
+  },
+
   // ——— Hero, narration en trois temps ———
   'hero-proprietaires': {
     slug: 'hero-proprietaires', widths: [1536, 1152, 768, 480], w: 1536, h: 864,
@@ -135,13 +142,6 @@ export const images: Record<string, ImageAsset> = {
   'mouaad-rdv': {
     slug: 'mouaad-rdv', widths: [1022, 680, 440], w: 1022, h: 1536,
     alt: 'Mouaad Boullourou échange avec un propriétaire autour de son projet',
-    posDesktop: 'center 25%', posMobile: 'center 20%',
-  },
-
-  // ——— Léa (portrait réel) ———
-  'lea-portrait': {
-    slug: 'lea-portrait', widths: [1022, 680, 440], w: 1122, h: 1402,
-    alt: 'Léa, la voix des contenus LEVOIS',
     posDesktop: 'center 25%', posMobile: 'center 20%',
   },
 

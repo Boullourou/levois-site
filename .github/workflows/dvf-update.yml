@@ -47,18 +47,21 @@ jobs:
       - name: Générer le dataset DVF
         run: node scripts/build-dvf.mjs
 
+      - name: Régénérer les repères du marché
+        run: node scripts/build-market-summary.mjs
+
       - name: Committer uniquement si les données ont réellement changé
         run: |
           set -euo pipefail
 
-          git add -A public/data
+          git add -A public/data src/data/dvf-market-summary.json
 
           # Décision fondée sur le fichier de DONNÉES seul : le meta contient un
           # horodatage qui change à chaque exécution et ne doit pas, à lui seul,
           # déclencher un commit.
           if git diff --cached --quiet -- public/data/dvf-secteur.json; then
             echo "Aucun changement de données — rien à committer."
-            git reset -q            # abandonne un éventuel changement de meta seul
+            git reset -q            # abandonne un éventuel changement de meta/résumé seul
             exit 0
           fi
 

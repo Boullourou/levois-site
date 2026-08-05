@@ -32,7 +32,7 @@ import Layout from '../layouts/Layout.astro';
     <!-- ① Promesse + saisie -->
     <header class="mb-8 md:mb-10">
       <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
-      <h1 class="vr-titre text-encre mb-4">
+      <h1 class="vr-page-title text-encre mb-4">
         Combien s'est vendue la dernière maison de votre quartier&nbsp;?
       </h1>
       <p class="font-sans text-body-lg text-brun max-w-prose">
@@ -104,60 +104,60 @@ import Layout from '../layouts/Layout.astro';
      matcherait aucun élément injecté → contenu rendu sans aucun style.
      Tous les sélecteurs sont préfixés .vr- : aucun risque de collision. -->
 <style is:global>
-  .vr-titre {
-    font-family: 'Fraunces', Georgia, serif; font-weight: 500;
+  .vr-page-title {
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;
   }
   .vr-fraicheur {
     display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F;
-    background: #F0E2D8; border-radius: 999px; padding: 0.35rem 0.85rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B;
+    background: #D7FF42; border-radius: 999px; padding: 0.35rem 0.85rem;
   }
-  .vr-fraicheur::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #A85638; flex: 0 0 auto; }
+  .vr-fraicheur::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #243CFF; flex: 0 0 auto; }
 
   .vr-field { display: flex; flex-direction: column; gap: 0.75rem; }
   @media (min-width: 560px) { .vr-field { flex-direction: row; align-items: flex-start; } }
   .vr-combo { position: relative; flex: 1; }
   .vr-input {
-    width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
-    padding: 0.85rem 1rem; font-family: 'Instrument Sans', sans-serif; font-size: 1rem;
-    color: #211C16; min-height: 52px;
+    width: 100%; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0;
+    padding: 0.85rem 1rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem;
+    color: #111522; min-height: 52px;
   }
-  .vr-input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
+  .vr-input:focus { outline: 2px solid #243CFF; outline-offset: 2px; border-color: #243CFF; }
   .vr-submit { min-height: 52px; white-space: nowrap; }
   @media (max-width: 559px) { .vr-submit { width: 100%; } }
 
   .vr-suggestions {
     position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px);
-    background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 12px;
-    box-shadow: 0 24px 48px -28px rgba(33,28,22,0.5);
+    background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0;
+    box-shadow: none;
     list-style: none; margin: 0; padding: 0.35rem; max-height: 320px; overflow-y: auto;
   }
   .vr-suggestions li {
-    padding: 0.65rem 0.75rem; border-radius: 8px; cursor: pointer;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #211C16; line-height: 1.35;
+    padding: 0.65rem 0.75rem; border-radius: 0; cursor: pointer;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.95rem; color: #111522; line-height: 1.35;
   }
-  .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: #6B5D4F; }
-  .vr-suggestions li[aria-selected="true"], .vr-suggestions li:hover { background: #F0E2D8; }
+  .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: #58615B; }
+  .vr-suggestions li[aria-selected="true"], .vr-suggestions li:hover { background: #D7FF42; }
 
   /* ——— Analyse ——— */
   .vr-analyse { padding: 2.5rem 0 1rem; }
   .vr-analyse-step {
     display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
-    font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; color: #B8AA97;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; color: #58615B;
     transition: color 0.3s ease;
   }
-  .vr-analyse-step.is-active { color: #211C16; }
-  .vr-analyse-step.is-done { color: #6B5D4F; }
+  .vr-analyse-step.is-active { color: #111522; }
+  .vr-analyse-step.is-done { color: #58615B; }
   .vr-analyse-dot {
     width: 20px; height: 20px; border-radius: 999px; flex: 0 0 auto; position: relative;
     border: 2px solid currentColor;
   }
   .vr-analyse-step.is-active .vr-analyse-dot::after {
-    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: #A85638;
+    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: #243CFF;
     animation: vr-pulse 0.9s ease-in-out infinite;
   }
-  .vr-analyse-step.is-done .vr-analyse-dot { background: #A85638; border-color: #A85638; }
+  .vr-analyse-step.is-done .vr-analyse-dot { background: #243CFF; border-color: #243CFF; }
   .vr-analyse-step.is-done .vr-analyse-dot::after {
     content: ''; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   }
@@ -166,177 +166,177 @@ import Layout from '../layouts/Layout.astro';
   /* ——— Résultats : séquence compacte de cartes ——— */
   .vr-results { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
   .vr-head { margin: 0.25rem 0 0.1rem; }
-  .vr-head-eyebrow { font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #A85638; }
-  .vr-head-adr { font-family: 'Instrument Sans', sans-serif; font-size: 0.95rem; color: #6B5D4F; margin-top: 0.25rem; }
+  .vr-head-eyebrow { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #243CFF; }
+  .vr-head-adr { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.95rem; color: #58615B; margin-top: 0.25rem; }
 
   .vr-block { opacity: 0; transform: translateY(14px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
   .vr-block.is-in { opacity: 1; transform: none; }
 
-  .vr-card { background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.5rem 1.35rem; }
+  .vr-card { background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0; padding: 1.5rem 1.35rem; }
   @media (min-width: 768px) { .vr-card { padding: 1.9rem; } }
-  .vr-card--dark { background: #211C16; border-color: #211C16; }
-  .vr-card--warm { background: #F0E2D8; border-color: #EAD9C7; }
+  .vr-card--dark { background: #111522; border-color: #111522; }
+  .vr-card--warm { background: #D7FF42; border-color: #C9CEC8; }
 
-  .vr-label { font-family: 'Instrument Sans', sans-serif; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #A85638; }
-  .vr-card--dark .vr-label { color: #C97B52; }
-  .vr-num { font-family: 'Fraunces', Georgia, serif; font-weight: 500; line-height: 1; letter-spacing: -0.02em; color: #211C16; }
-  .vr-card--dark .vr-num { color: #F7F2EA; }
-  .vr-sub { font-family: 'Instrument Sans', sans-serif; color: #6B5D4F; }
-  .vr-card--dark .vr-sub { color: rgba(247,242,234,0.7); }
+  .vr-label { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #243CFF; }
+  .vr-card--dark .vr-label { color: #D7FF42; }
+  .vr-num { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: #111522; }
+  .vr-card--dark .vr-num { color: #F2F5EF; }
+  .vr-sub { font-family: 'Public Sans', system-ui, sans-serif; color: #58615B; }
+  .vr-card--dark .vr-sub { color: rgba(242,245,239,0.7); }
 
   /* B — compteur de ventes */
   .vr-b-num { font-size: clamp(3.4rem, 16vw, 5rem); }
-  .vr-b-l { font-family: 'Instrument Sans', sans-serif; font-size: 1.1rem; color: #211C16; margin-top: 0.15rem; }
+  .vr-b-l { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.1rem; color: #111522; margin-top: 0.15rem; }
   .vr-b-sub { font-size: 0.9rem; margin-top: 0.45rem; }
 
   /* C — prix du milieu + curseur de fourchette */
   .vr-c-num { font-size: clamp(2.7rem, 12vw, 3.8rem); }
   .vr-c-lbl { margin-top: 0.55rem; }
   .vr-range { margin-top: 1.8rem; }
-  .vr-range-line { position: relative; height: 3px; background: #E0D3BF; margin: 0 0.2rem; border-radius: 3px; }
-  .vr-range-dot { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 999px; background: #A85638; box-shadow: 0 0 0 4px #FDFBF6, 0 2px 8px rgba(168,86,56,0.55); transform: translate(-50%, -50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
-  .vr-range-cap { position: absolute; top: -1.55rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; color: #211C16; font-weight: 600; }
+  .vr-range-line { position: relative; height: 3px; background: #C9CEC8; margin: 0 0.2rem; border-radius: 3px; }
+  .vr-range-dot { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 999px; background: #243CFF; box-shadow: none; transform: translate(-50%, -50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .vr-range-cap { position: absolute; top: -1.55rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.92rem; color: #111522; font-weight: 600; }
   .vr-range-cap.g { left: 0; } .vr-range-cap.d { right: 0; }
-  .vr-range-arrows { display: flex; justify-content: space-between; color: #C0B29B; font-size: 1rem; margin-top: 0.35rem; padding: 0 0.1rem; }
-  .vr-c-phrase { font-family: 'Instrument Sans', sans-serif; font-size: 0.98rem; color: #6B5D4F; margin-top: 1rem; line-height: 1.5; }
-  .vr-c-m2 { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; opacity: 0.85; margin-top: 0.55rem; }
+  .vr-range-arrows { display: flex; justify-content: space-between; color: #58615B; font-size: 1rem; margin-top: 0.35rem; padding: 0 0.1rem; }
+  .vr-c-phrase { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.98rem; color: #58615B; margin-top: 1rem; line-height: 1.5; }
+  .vr-c-m2 { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; color: #58615B; opacity: 0.85; margin-top: 0.55rem; }
 
   /* D — tendance : titre + jauge baisse/stable/hausse */
   .vr-d-head { display: flex; align-items: center; gap: 0.65rem; margin-top: 0.7rem; }
   .vr-d-ico { width: 32px; height: 32px; flex: 0 0 auto; }
   .vr-d-ico svg { width: 100%; height: 100%; }
-  .vr-d-title { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.4rem, 5vw, 1.9rem); line-height: 1.1; color: #211C16; }
-  .vr-d-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-top: 0.9rem; }
+  .vr-d-title { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.4rem, 5vw, 1.9rem); line-height: 1.1; color: #111522; }
+  .vr-d-pct { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; color: #58615B; margin-top: 0.9rem; }
   .vr-gauge { margin-top: 1.3rem; }
-  .vr-gauge-track { position: relative; height: 12px; border-radius: 999px; background: linear-gradient(90deg, #DCD2C0 0 33%, #EFE6D6 33% 67%, #E6C3AB 67% 100%); }
-  .vr-gauge-cursor { position: absolute; top: -5px; width: 4px; height: 22px; border-radius: 2px; background: #211C16; transform: translateX(-50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
-  .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.55rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: #9C8E7C; }
-  .vr-gauge-lbls .on { color: #A85638; font-weight: 600; }
+  .vr-gauge-track { position: relative; height: 12px; border-radius: 999px; background: #C9CEC8; }
+  .vr-gauge-cursor { position: absolute; top: -5px; width: 4px; height: 22px; border-radius: 2px; background: #111522; transform: translateX(-50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.55rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: #58615B; }
+  .vr-gauge-lbls .on { color: #243CFF; font-weight: 600; }
 
   /* A — dernière vente */
   .vr-a-num { font-size: clamp(2.5rem, 11vw, 3.4rem); margin-top: 0.7rem; }
-  .vr-a-bien { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; margin-top: 0.5rem; color: rgba(247,242,234,0.92); }
-  .vr-a-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.92rem; margin-top: 0.35rem; }
+  .vr-a-bien { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; margin-top: 0.5rem; color: rgba(242,245,239,0.92); }
+  .vr-a-meta { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.92rem; margin-top: 0.35rem; }
 
   /* En clair */
-  .vr-ec { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.3rem, 4.6vw, 1.8rem); line-height: 1.32; color: #211C16; margin-top: 0.7rem; }
-  .vr-maj { font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem; color: #6B5D4F; margin-top: 0.9rem; }
+  .vr-ec { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.3rem, 4.6vw, 1.8rem); line-height: 1.32; color: #111522; margin-top: 0.7rem; }
+  .vr-maj { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem; color: #58615B; margin-top: 0.9rem; }
 
   /* Ventes détaillées (secondaire) */
   .vr-details { margin-top: 0.1rem; }
   .vr-details summary {
-    cursor: pointer; font-family: 'Instrument Sans', sans-serif; font-weight: 600; color: #A85638;
+    cursor: pointer; font-family: 'Public Sans', system-ui, sans-serif; font-weight: 600; color: #243CFF;
     padding: 0.9rem 0; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem;
   }
   .vr-details summary::-webkit-details-marker { display: none; }
   .vr-details summary::before { content: '＋'; font-weight: 400; }
   .vr-details[open] summary::before { content: '－'; }
-  .vr-autre { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.85rem 0; border-top: 1px solid #EDE3D4; font-family: 'Instrument Sans', sans-serif; }
-  .vr-autre-sub { display: block; font-size: 0.85rem; color: #6B5D4F; }
-  .vr-autre-prix { font-weight: 600; color: #211C16; }
+  .vr-autre { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.85rem 0; border-top: 1px solid #C9CEC8; font-family: 'Public Sans', system-ui, sans-serif; }
+  .vr-autre-sub { display: block; font-size: 0.85rem; color: #58615B; }
+  .vr-autre-prix { font-weight: 600; color: #111522; }
 
   /* ——— Conversion : rupture forte (carte sombre) ——— */
-  .vr-conv { background: #211C16; color: #F7F2EA; border-radius: 24px; padding: 2rem 1.5rem; margin-top: 1.75rem; }
+  .vr-conv { background: #111522; color: #F2F5EF; border-radius: 0; padding: 2rem 1.5rem; margin-top: 1.75rem; }
   @media (min-width: 768px) { .vr-conv { padding: 2.75rem; } }
-  .vr-conv-eyebrow { font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #C97B52; margin-bottom: 0.8rem; }
-  .vr-conv-titre { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.8rem, 6.5vw, 2.6rem); line-height: 1.08; color: #F7F2EA; margin-bottom: 0.7rem; }
-  .vr-conv-intro { font-family: 'Instrument Sans', sans-serif; font-size: 1.02rem; line-height: 1.6; color: rgba(247,242,234,0.72); margin-bottom: 1.6rem; }
+  .vr-conv-eyebrow { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #D7FF42; margin-bottom: 0.8rem; }
+  .vr-conv-titre { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.8rem, 6.5vw, 2.6rem); line-height: 1.08; color: #F2F5EF; margin-bottom: 0.7rem; }
+  .vr-conv-intro { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; line-height: 1.6; color: rgba(242,245,239,0.72); margin-bottom: 1.6rem; }
   .vr-paths { display: grid; gap: 0.7rem; }
-  .vr-path { text-align: left; width: 100%; border: 0; border-radius: 16px; padding: 1.15rem 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s; }
-  .vr-path-t { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.18rem; display: block; }
-  .vr-path-d { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; margin-top: 0.2rem; display: block; }
+  .vr-path { text-align: left; width: 100%; border: 0; border-radius: 0; padding: 1.15rem 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: transform 0.2s, background 0.2s, border-color 0.2s; }
+  .vr-path-t { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.18rem; display: block; }
+  .vr-path-d { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; margin-top: 0.2rem; display: block; }
   .vr-path-arrow { flex: 0 0 auto; font-size: 1.15rem; }
-  .vr-path--1 { background: #A85638; }
-  .vr-path--1 .vr-path-t { color: #FBF3EC; } .vr-path--1 .vr-path-d { color: rgba(251,243,236,0.82); } .vr-path--1 .vr-path-arrow { color: #FBF3EC; }
-  .vr-path--1:hover { background: #B5623F; transform: translateY(-2px); box-shadow: 0 18px 40px -22px rgba(168,86,56,0.85); }
-  .vr-path--2 { background: #F7F2EA; }
-  .vr-path--2 .vr-path-t { color: #211C16; } .vr-path--2 .vr-path-d { color: #6B5D4F; } .vr-path--2 .vr-path-arrow { color: #A85638; }
-  .vr-path--2:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -24px rgba(0,0,0,0.55); }
-  .vr-path--3 { background: transparent; border: 1px solid rgba(247,242,234,0.26); }
-  .vr-path--3 .vr-path-t { color: #F7F2EA; font-size: 1.04rem; } .vr-path--3 .vr-path-d { color: rgba(247,242,234,0.6); } .vr-path--3 .vr-path-arrow { color: rgba(247,242,234,0.6); }
-  .vr-path--3:hover { border-color: #C97B52; }
+  .vr-path--1 { background: #243CFF; }
+  .vr-path--1 .vr-path-t { color: #F2F5EF; } .vr-path--1 .vr-path-d { color: rgba(242,245,239,0.82); } .vr-path--1 .vr-path-arrow { color: #F2F5EF; }
+  .vr-path--1:hover { background: #202635; transform: translateY(-2px); box-shadow: none; }
+  .vr-path--2 { background: #F2F5EF; }
+  .vr-path--2 .vr-path-t { color: #111522; } .vr-path--2 .vr-path-d { color: #58615B; } .vr-path--2 .vr-path-arrow { color: #243CFF; }
+  .vr-path--2:hover { transform: translateY(-2px); box-shadow: none; }
+  .vr-path--3 { background: transparent; border: 1px solid rgba(242,245,239,0.26); }
+  .vr-path--3 .vr-path-t { color: #F2F5EF; font-size: 1.04rem; } .vr-path--3 .vr-path-d { color: rgba(242,245,239,0.6); } .vr-path--3 .vr-path-arrow { color: rgba(242,245,239,0.6); }
+  .vr-path--3:hover { border-color: #D7FF42; }
 
   /* Panneau (qualif / contact / explorer) — carte claire imbriquée dans la conversion sombre */
-  .vr-panneau { margin-top: 1.35rem; background: #FDFBF6; border-radius: 16px; padding: 1.5rem 1.35rem; }
+  .vr-panneau { margin-top: 1.35rem; background: #FFFFFF; border-radius: 0; padding: 1.5rem 1.35rem; }
   .vr-panneau:empty { display: none; }
   .vr-q-progress { display: flex; gap: 0.35rem; margin-bottom: 1.25rem; }
-  .vr-q-dot { height: 4px; flex: 1; border-radius: 999px; background: #E8DFD0; }
-  .vr-q-dot.is-on { background: #A85638; }
-  .vr-q-label { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.35rem; line-height: 1.2; color: #211C16; margin-bottom: 1.1rem; }
+  .vr-q-dot { height: 4px; flex: 1; border-radius: 999px; background: #C9CEC8; }
+  .vr-q-dot.is-on { background: #243CFF; }
+  .vr-q-label { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.2; color: #111522; margin-bottom: 1.1rem; }
   .vr-q-opts { display: grid; gap: 0.6rem; }
   .vr-q-opt {
-    text-align: left; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px;
-    padding: 0.9rem 1.1rem; cursor: pointer; font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16;
+    text-align: left; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0;
+    padding: 0.9rem 1.1rem; cursor: pointer; font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522;
     transition: border-color 0.15s, background 0.15s;
   }
-  .vr-q-opt:hover { border-color: #A85638; background: #F0E2D8; }
-  .vr-q-back { background: none; border: 0; color: #6B5D4F; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; padding: 0.3rem 0; }
-  .vr-q-back:hover { color: #A85638; }
+  .vr-q-opt:hover { border-color: #243CFF; background: #D7FF42; }
+  .vr-q-back { background: none; border: 0; color: #58615B; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; padding: 0.3rem 0; }
+  .vr-q-back:hover { color: #243CFF; }
 
   .vr-champ { display: block; margin-bottom: 0.9rem; }
-  .vr-champ label { display: block; font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem; color: #6B5D4F; margin-bottom: 0.4rem; }
+  .vr-champ label { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; color: #58615B; margin-bottom: 0.4rem; }
   .vr-champ input {
-    width: 100%; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px; padding: 0.8rem 1rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 1rem; color: #211C16; min-height: 50px;
+    width: 100%; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0; padding: 0.8rem 1rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522; min-height: 50px;
   }
-  .vr-champ input:focus { outline: 2px solid #A85638; outline-offset: 2px; border-color: #A85638; }
-  .vr-consent { display: flex; align-items: flex-start; gap: 0.6rem; font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; line-height: 1.5; margin: 0.5rem 0 1rem; cursor: pointer; }
-  .vr-consent input { margin-top: 0.15rem; width: 18px; height: 18px; accent-color: #A85638; flex: 0 0 auto; }
+  .vr-champ input:focus { outline: 2px solid #243CFF; outline-offset: 2px; border-color: #243CFF; }
+  .vr-consent { display: flex; align-items: flex-start; gap: 0.6rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; color: #58615B; line-height: 1.5; margin: 0.5rem 0 1rem; cursor: pointer; }
+  .vr-consent input { margin-top: 0.15rem; width: 18px; height: 18px; accent-color: #243CFF; flex: 0 0 auto; }
   .vr-contact-liens { display: flex; flex-wrap: wrap; gap: 0.6rem; }
   .vr-explorer { display: grid; gap: 0.6rem; }
-  .vr-explorer a { display: block; background: #F7F2EA; border: 1px solid #E8DFD0; border-radius: 12px; padding: 0.9rem 1.1rem; font-family: 'Instrument Sans', sans-serif; color: #211C16; transition: border-color 0.15s; }
-  .vr-explorer a:hover { border-color: #A85638; }
-  .vr-explorer a b { font-family: 'Fraunces', serif; font-weight: 500; }
+  .vr-explorer a { display: block; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0; padding: 0.9rem 1.1rem; font-family: 'Public Sans', system-ui, sans-serif; color: #111522; transition: border-color 0.15s; }
+  .vr-explorer a:hover { border-color: #243CFF; }
+  .vr-explorer a b { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; }
 
-  .vr-vide { background: #FDFBF6; border: 1px solid #E8DFD0; border-radius: 20px; padding: 1.75rem 1.5rem; }
+  .vr-vide { background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0; padding: 1.75rem 1.5rem; }
 
-  .vr-methode { margin-top: 2.5rem; font-family: 'Instrument Sans', sans-serif; }
-  .vr-methode summary { cursor: pointer; font-size: 0.85rem; color: #6B5D4F; }
+  .vr-methode { margin-top: 2.5rem; font-family: 'Public Sans', system-ui, sans-serif; }
+  .vr-methode summary { cursor: pointer; font-size: 0.85rem; color: #58615B; }
   .vr-methode-corps { margin-top: 0.8rem; display: grid; gap: 0.7rem; }
-  .vr-methode-corps p { font-size: 0.85rem; color: #6B5D4F; line-height: 1.6; }
+  .vr-methode-corps p { font-size: 0.85rem; color: #58615B; line-height: 1.6; }
 
   /* ——————————————————————————————————————————————————————————————
      Infographique premium — 7 blocs, IntersectionObserver
      Repli empilé : construireStack (prefers-reduced-motion).
      —————————————————————————————————————————————————————————————— */
 
-  .vr-cine-wrap { display: grid; gap: 0; border-radius: 22px; overflow: hidden; }
+  .vr-cine-wrap { display: grid; gap: 0; border-radius: 0; overflow: hidden; }
 
   .vr-bloc { padding: 2rem clamp(1.25rem, 5vw, 2.25rem) 2.25rem; }
-  .vr-bloc--hero  { background: #1B4332; padding-top: 2.75rem; padding-bottom: 2.75rem; }
-  .vr-bloc--b1    { background: #F3EDE4; }
-  .vr-bloc--b2    { background: #EDE7DC; }
-  .vr-bloc--surf  { background: #F3EDE4; }
-  .vr-bloc--spark { background: #EDE7DC; }
-  .vr-bloc--tx    { background: #FDFBF6; border-top: 1px solid #E8DFD0; }
-  .vr-bloc--conc  { background: #1F2937; }
+  .vr-bloc--hero  { background: #111522; padding-top: 2.75rem; padding-bottom: 2.75rem; }
+  .vr-bloc--b1    { background: #F2F5EF; }
+  .vr-bloc--b2    { background: #C9CEC8; }
+  .vr-bloc--surf  { background: #F2F5EF; }
+  .vr-bloc--spark { background: #C9CEC8; }
+  .vr-bloc--tx    { background: #FFFFFF; border-top: 1px solid #C9CEC8; }
+  .vr-bloc--conc  { background: #202635; }
 
   .vr-kicker {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Public Sans', system-ui, sans-serif;
     font-size: 0.72rem; font-weight: 600;
     letter-spacing: 0.18em; text-transform: uppercase;
     margin-bottom: 0.4rem;
   }
   .vr-kicker--light { color: rgba(255,255,255,0.5); }
-  .vr-kicker--terra { color: #C15A2B; }
-  .vr-kicker--ink   { color: #9C8E7C; }
+  .vr-kicker--terra { color: #243CFF; }
+  .vr-kicker--ink   { color: #58615B; }
 
   .vr-titre {
-    font-family: 'Fraunces', serif; font-weight: 500;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.2rem, 4.2vw, 1.6rem); line-height: 1.22;
     margin-bottom: 1.25rem;
   }
-  .vr-titre--dark { color: #211C16; }
+  .vr-titre--dark { color: #111522; }
 
   /* Héro */
   .vr-hero-counter {
-    font-family: 'Fraunces', serif; font-weight: 600;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
     font-size: clamp(3.5rem, 14vw, 6rem); line-height: 1;
-    color: #A8D5A2; letter-spacing: -0.02em;
+    color: #D7FF42; letter-spacing: -0.02em;
     margin: 0.2rem 0 0.05rem;
   }
   .vr-hero-count-lbl {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Public Sans', system-ui, sans-serif;
     font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase;
     color: rgba(255,255,255,0.55); font-weight: 500;
   }
@@ -346,7 +346,7 @@ import Layout from '../layouts/Layout.astro';
     align-items: center; gap: 0.65rem;
   }
   .vr-hero-bar-yr {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Public Sans', system-ui, sans-serif;
     font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.5);
   }
   .vr-hero-bar-track {
@@ -355,20 +355,20 @@ import Layout from '../layouts/Layout.astro';
   }
   .vr-hero-bar-fill {
     height: 100%; border-radius: 999px;
-    background: #A8D5A2; width: 0%;
+    background: #D7FF42; width: 0%;
     transition: width 1.1s cubic-bezier(0.25,0.46,0.45,0.94);
   }
   .vr-hero-bar-n {
-    font-family: 'Instrument Sans', sans-serif;
+    font-family: 'Public Sans', system-ui, sans-serif;
     font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75);
     text-align: right;
   }
   .vr-hero-badge {
     display: inline-flex; align-items: center;
-    background: rgba(168,213,162,0.15); border: 1px solid rgba(168,213,162,0.3);
+    background: rgba(215,255,66,0.15); border: 1px solid rgba(215,255,66,0.3);
     border-radius: 999px; padding: 0.2rem 0.65rem; margin-top: 1rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
-    color: #A8D5A2;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600;
+    color: #D7FF42;
   }
 
   /* Bloc dots — nuage de points */
@@ -377,8 +377,8 @@ import Layout from '../layouts/Layout.astro';
 
   .vr-dot-legend {
     display: flex; gap: 1.75rem; justify-content: center; margin-bottom: 0.75rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem;
-    color: #211C16; align-items: center;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.82rem;
+    color: #111522; align-items: center;
     opacity: 0; transition: opacity 0.5s ease;
   }
   .vr-dot-legend-ico {
@@ -392,26 +392,26 @@ import Layout from '../layouts/Layout.astro';
     opacity: 0; transition: opacity 0.55s ease;
   }
   .vr-dot-count {
-    font-family: 'Fraunces', serif; font-weight: 600;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
     font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: 1; display: block;
     letter-spacing: -0.02em;
   }
-  .vr-dot-count--M { color: #C15A2B; }
-  .vr-dot-count--A { color: #3A6FB0; }
+  .vr-dot-count--M { color: #243CFF; }
+  .vr-dot-count--A { color: #202635; }
   .vr-dot-count-item {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.8rem;
-    color: #6B5D4F; font-weight: 500; letter-spacing: 0.04em; text-align: center;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem;
+    color: #58615B; font-weight: 500; letter-spacing: 0.04em; text-align: center;
   }
 
   /* Textes narratifs des phases */
   .vr-phase-txt {
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: clamp(0.9rem, 2.8vw, 1rem); line-height: 1.62; color: #6B5D4F;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: clamp(0.9rem, 2.8vw, 1rem); line-height: 1.62; color: #58615B;
     transition: opacity 0.5s ease;
   }
   .vr-pt1 {
-    font-family: 'Fraunces', serif; font-weight: 400;
-    font-size: clamp(1rem, 3.5vw, 1.2rem); color: #211C16;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 600;
+    font-size: clamp(1rem, 3.5vw, 1.2rem); color: #111522;
     margin-top: 0.25rem; margin-bottom: 0.25rem;
   }
   .vr-pt2 { margin-top: 0.85rem; }
@@ -420,11 +420,11 @@ import Layout from '../layouts/Layout.astro';
   .vr-dist-type-pill {
     display: inline-block; border-radius: 999px;
     padding: 0.18rem 0.75rem; margin-bottom: 1rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
     letter-spacing: 0.07em; text-transform: uppercase;
   }
-  .vr-dist-type-pill--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
-  .vr-dist-type-pill--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
+  .vr-dist-type-pill--M { background: rgba(36,60,255,0.1); color: #243CFF; }
+  .vr-dist-type-pill--A { background: rgba(32,38,53,0.1); color: #202635; }
 
   .vr-dist-wrap { max-width: 42rem; }
   .vr-dist-svg { display: block; width: 100%; overflow: visible; }
@@ -432,28 +432,28 @@ import Layout from '../layouts/Layout.astro';
   .vr-dist-dot { opacity: 0; transition: opacity 0.25s ease; }
   .vr-dist-med-line { transition: opacity 0.5s ease; }
   .vr-dist-axis-lbl {
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.62rem; fill: #BBAA96; letter-spacing: 0.04em;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 0.62rem; fill: #58615B; letter-spacing: 0.04em;
   }
   .vr-dist-zone-lbl {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 0.85rem; fill: #211C16;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-size: 0.85rem; fill: #111522;
     transition: opacity 0.5s ease;
   }
   .vr-dist-zone-sub {
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 0.6rem; fill: #9C8E7C;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 0.6rem; fill: #58615B;
     text-transform: uppercase; letter-spacing: 0.07em;
     transition: opacity 0.5s ease;
   }
   .vr-dist-med-big {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 0.88rem; fill: #C15A2B;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-size: 0.88rem; fill: #243CFF;
     transition: opacity 0.5s ease;
   }
   .vr-dist-note {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
-    color: #6B5D4F; line-height: 1.58; margin-top: 0.9rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem;
+    color: #58615B; line-height: 1.58; margin-top: 0.9rem;
     opacity: 0; transform: translateY(6px);
     transition: opacity 0.55s ease, transform 0.55s ease;
   }
@@ -464,25 +464,25 @@ import Layout from '../layouts/Layout.astro';
     align-items: center; gap: 0.5rem; max-width: 24rem; text-align: center;
   }
   .vr-surf-col-val {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(1.3rem, 5vw, 1.85rem); line-height: 1.1; color: #211C16;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-size: clamp(1.3rem, 5vw, 1.85rem); line-height: 1.1; color: #111522;
   }
   .vr-surf-col-lbl {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.7rem;
-    color: #6B5D4F; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem;
+    color: #58615B; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem;
   }
   .vr-surf-delta-wrap { text-align: center; padding: 0 0.25rem; }
   .vr-surf-delta {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(1.8rem, 8vw, 2.8rem); line-height: 1; color: #C15A2B;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-size: clamp(1.8rem, 8vw, 2.8rem); line-height: 1; color: #243CFF;
     opacity: 0; transform: scale(0.7);
     transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
   }
   .vr-surf-delta.on { opacity: 1; transform: none; }
-  .vr-surf-arrow { font-size: 0.85rem; color: #9C8E7C; display: block; margin-top: 0.15rem; }
+  .vr-surf-arrow { font-size: 0.85rem; color: #58615B; display: block; margin-top: 0.15rem; }
   .vr-surf-note {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem;
-    color: #6B5D4F; line-height: 1.58; margin-top: 1.1rem; max-width: 24rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem;
+    color: #58615B; line-height: 1.58; margin-top: 1.1rem; max-width: 24rem;
   }
 
   /* Sparkline — grande */
@@ -491,16 +491,16 @@ import Layout from '../layouts/Layout.astro';
   .vr-spark-path { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   .vr-spark-dot { opacity: 0; transition: opacity 0.3s ease; }
   .vr-spark-dot.on { opacity: 1; }
-  .vr-spark-yr { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; fill: #9C8E7C; text-anchor: middle; }
-  .vr-spark-val { font-family: 'Fraunces', serif; font-size: 0.78rem; font-weight: 500; fill: #211C16; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+  .vr-spark-yr { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; fill: #58615B; text-anchor: middle; }
+  .vr-spark-val { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 500; fill: #111522; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
   .vr-spark-val.on { opacity: 1; }
-  .vr-spark-dir { font-family: 'Fraunces', serif; font-weight: 500; font-size: clamp(1.05rem,3.5vw,1.35rem); color: #211C16; margin-top: 0.65rem; }
-  .vr-spark-pct { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; margin-top: 0.15rem; }
+  .vr-spark-dir { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.05rem,3.5vw,1.35rem); color: #111522; margin-top: 0.65rem; }
+  .vr-spark-pct { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-top: 0.15rem; }
 
   /* Ventes réelles — cartes avec stagger */
   .vr-tx-cards { display: grid; gap: 0.7rem; }
   .vr-tx-card {
-    background: #FFFFFF; border: 1px solid #E8DFD0; border-radius: 14px;
+    background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0;
     padding: 0.85rem 1rem; display: grid;
     grid-template-columns: 2.2rem 1fr auto; gap: 0.6rem; align-items: start;
     opacity: 0; transform: translateY(10px);
@@ -508,57 +508,57 @@ import Layout from '../layouts/Layout.astro';
   }
   .vr-tx-card.on { opacity: 1; transform: none; }
   .vr-tx-ico {
-    width: 2.1rem; height: 2.1rem; border-radius: 8px; display: flex;
+    width: 2.1rem; height: 2.1rem; border-radius: 0; display: flex;
     align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
   }
-  .vr-tx-ico--M { background: rgba(193,90,43,0.1); }
-  .vr-tx-ico--A { background: rgba(58,111,176,0.1); }
+  .vr-tx-ico--M { background: rgba(36,60,255,0.1); }
+  .vr-tx-ico--A { background: rgba(32,38,53,0.1); }
   .vr-tx-info { min-width: 0; }
-  .vr-tx-name { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; font-weight: 600; color: #211C16; }
+  .vr-tx-name { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; font-weight: 600; color: #111522; }
   .vr-tx-addr {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.78rem;
-    color: #6B5D4F; margin-top: 0.12rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem;
+    color: #58615B; margin-top: 0.12rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .vr-tx-meta { font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; color: #9C8E7C; margin-top: 0.1rem; }
+  .vr-tx-meta { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; color: #58615B; margin-top: 0.1rem; }
   .vr-tx-right { text-align: right; flex-shrink: 0; }
-  .vr-tx-price { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1rem; color: #211C16; white-space: nowrap; }
+  .vr-tx-price { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1rem; color: #111522; white-space: nowrap; }
   .vr-tx-ppm {
     display: inline-block; margin-top: 0.25rem;
     border-radius: 999px; padding: 0.1rem 0.5rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.68rem; font-weight: 600; white-space: nowrap;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.68rem; font-weight: 600; white-space: nowrap;
   }
-  .vr-tx-ppm--M { background: rgba(193,90,43,0.1); color: #C15A2B; }
-  .vr-tx-ppm--A { background: rgba(58,111,176,0.1); color: #3A6FB0; }
-  .vr-tx-more summary { font-family: 'Instrument Sans', sans-serif; font-size: 0.85rem; color: #6B5D4F; cursor: pointer; padding: 0.4rem 0; list-style: none; }
+  .vr-tx-ppm--M { background: rgba(36,60,255,0.1); color: #243CFF; }
+  .vr-tx-ppm--A { background: rgba(32,38,53,0.1); color: #202635; }
+  .vr-tx-more summary { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; cursor: pointer; padding: 0.4rem 0; list-style: none; }
   .vr-tx-more summary::-webkit-details-marker { display: none; }
   .vr-tx-more[open] summary { margin-bottom: 0.7rem; }
 
   /* Conclusion */
   .vr-conc-eyebrow {
-    font-family: 'Instrument Sans', sans-serif; font-size: 0.72rem; font-weight: 600;
-    letter-spacing: 0.18em; text-transform: uppercase; color: rgba(243,237,228,0.45);
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase; color: rgba(242,245,239,0.45);
     margin-bottom: 0.75rem;
   }
   .vr-conc-hl {
-    font-family: 'Fraunces', serif; font-weight: 500;
+    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.3rem,5vw,1.75rem); line-height: 1.25; color: #FFFFFF;
     margin-bottom: 1.25rem;
   }
   .vr-conc-body {
-    font-family: 'Instrument Sans', sans-serif; font-size: clamp(0.9rem,3vw,1rem);
-    line-height: 1.68; color: rgba(243,237,228,0.75); margin-bottom: 1.75rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: clamp(0.9rem,3vw,1rem);
+    line-height: 1.68; color: rgba(242,245,239,0.75); margin-bottom: 1.75rem;
   }
   .vr-conc-body p + p { margin-top: 0.75rem; }
   .vr-conc-cta {
-    display: block; width: 100%; background: #C15A2B; color: #FFFFFF;
-    border-radius: 12px; padding: 0.95rem 1.5rem;
-    font-family: 'Instrument Sans', sans-serif; font-size: 1rem; font-weight: 600;
+    display: block; width: 100%; background: #243CFF; color: #FFFFFF;
+    border-radius: 0; padding: 0.95rem 1.5rem;
+    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; font-weight: 600;
     letter-spacing: 0.04em; text-align: center; text-decoration: none;
     border: none; cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease;
   }
-  .vr-conc-cta:hover { background: #A84D23; transform: translateY(-1px); }
+  .vr-conc-cta:hover { background: #D7FF42; color: #111522; transform: translateY(-1px); }
   .vr-conc-cta:active { transform: none; }
 
   /* Animation entrée (IntersectionObserver) */
@@ -569,10 +569,10 @@ import Layout from '../layouts/Layout.astro';
   .vr-bloc-anim.is-on { opacity: 1; transform: none; }
 
   /* Gardées — utilisées par construireStack */
-  .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #E8DFD0; }
-  .vr-ppm-alt-type { font-family: 'Instrument Sans', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7C6A; }
-  .vr-ppm-alt-val { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.3rem; color: #211C16; margin-top: 0.25rem; }
-  .vr-ppm-alt-range { font-family: 'Instrument Sans', sans-serif; font-size: 0.88rem; color: #6B5D4F; margin-top: 0.15rem; }
+  .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #C9CEC8; }
+  .vr-ppm-alt-type { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #58615B; }
+  .vr-ppm-alt-val { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.3rem; color: #111522; margin-top: 0.25rem; }
+  .vr-ppm-alt-range { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; color: #58615B; margin-top: 0.15rem; }
 
   .vr-after { margin-top: 1.5rem; }
 
@@ -859,9 +859,9 @@ import Layout from '../layouts/Layout.astro';
   const gaugePos = (delta: number) => Math.max(4, Math.min(96, ((delta + 10) / 20) * 100));
 
   function iconeTendance(dir: string) {
-    if (dir === 'hausse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#A85638" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17L11 10l4 4 6-6"/><path d="M15 8h6v6"/></svg>';
-    if (dir === 'baisse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#8A7C6A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l7 7 4-4 6 6"/><path d="M15 16h6v-6"/></svg>';
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="#8A7C6A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M16 8l4 4-4 4"/></svg>';
+    if (dir === 'hausse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#243CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17L11 10l4 4 6-6"/><path d="M15 8h6v6"/></svg>';
+    if (dir === 'baisse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#58615B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l7 7 4-4 6 6"/><path d="M15 16h6v-6"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="#58615B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M16 8l4 4-4 4"/></svg>';
   }
   function tendanceTitre(dir: string) {
     if (dir === 'hausse') return 'Prix orientés à la hausse';
@@ -1030,7 +1030,7 @@ import Layout from '../layouts/Layout.astro';
       ios.push(io);
     };
 
-    const domColor = model.dom === 'Maison' ? '#C15A2B' : '#3A6FB0';
+    const domColor = model.dom === 'Maison' ? '#243CFF' : '#202635';
     const D = model.D;
     const sf = model.surfaceEffect;
 
@@ -1049,7 +1049,7 @@ import Layout from '../layouts/Layout.astro';
       return { x0, y0, dx: x1 - x0, dy: y1 - y0, isM };
     });
     const dotSvg = dots.map((d, i) =>
-      `<circle class="vr-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 5 : 4}" fill="#C5BAA8" data-di="${i}"/>`
+      `<circle class="vr-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 5 : 4}" fill="#C9CEC8" data-di="${i}"/>`
     ).join('');
 
     // ——— Distribution jitter (€/m² réels) ———
@@ -1238,8 +1238,8 @@ import Layout from '../layouts/Layout.astro';
           <p class="vr-titre vr-titre--dark">Deux marchés différents autour de chez vous</p>
           <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
           <div class="vr-dot-legend" id="vr-dl">
-            <span><span class="vr-dot-legend-ico" style="background:#C15A2B"></span>Maisons</span>
-            <span><span class="vr-dot-legend-ico" style="background:#3A6FB0"></span>Appartements</span>
+            <span><span class="vr-dot-legend-ico" style="background:#243CFF"></span>Maisons</span>
+            <span><span class="vr-dot-legend-ico" style="background:#202635"></span>Appartements</span>
           </div>
           <div class="vr-dot-counts" id="vr-dc">
             <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--M">${model.nM}</span> maisons</div>
@@ -1289,7 +1289,7 @@ import Layout from '../layouts/Layout.astro';
       later(300, () => {
         dotEls.forEach((d, i) => {
           d.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
-          d.style.fill = dots[i].isM ? '#C15A2B' : '#3A6FB0';
+          d.style.fill = dots[i].isM ? '#243CFF' : '#202635';
         });
         const dl = scene.querySelector<HTMLElement>('#vr-dl');
         if (dl) dl.style.opacity = '1';
@@ -1589,7 +1589,7 @@ import Layout from '../layouts/Layout.astro';
           <form id="vr-lead" novalidate>
             <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
             <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
-            <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#B8AA97">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
+            <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#58615B">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
             <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
             <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
