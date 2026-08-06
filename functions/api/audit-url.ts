@@ -204,7 +204,7 @@ export const onRequestPost = async ({ request }: PagesContext): Promise<Response
     const { html, finalUrl } = await fetchPage(url);
     const snapshot = extractSnapshot(html, finalUrl);
     if (!snapshot.title && !snapshot.description) {
-      return json({ ok: false, message: 'La page est accessible, mais son contenu n’a pas pu être lu automatiquement.', fallback: true, url: finalUrl.toString() }, 422);
+      return json({ ok: false, message: 'La page est accessible, mais elle ne fournit pas assez d’informations lisibles automatiquement.', fallback: true, reason: 'unavailable', url: finalUrl.toString() }, 422);
     }
     return json({ ok: true, snapshot, analysis: analyseListing(snapshot) });
   } catch (error) {
@@ -213,9 +213,10 @@ export const onRequestPost = async ({ request }: PagesContext): Promise<Response
     return json({
       ok: false,
       message: blocked
-        ? 'Ce portail empêche la lecture automatique. Votre lien est conservé : copiez simplement le titre et la description pour obtenir les deux conseils.'
-        : 'La page n’est pas lisible pour le moment. Copiez le titre et la description pour poursuivre sans attendre.',
+        ? 'Ce site d’annonces refuse qu’un autre service lise automatiquement ses pages. Ce n’est ni une erreur de votre lien ni un problème avec votre annonce.'
+        : 'La page n’est pas accessible pour le moment. Ce n’est pas nécessairement un problème avec votre annonce.',
       fallback: true,
+      reason: blocked ? 'blocked' : 'unavailable',
       url: url.toString(),
     }, 422);
   }

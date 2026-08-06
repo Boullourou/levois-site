@@ -13,7 +13,7 @@ FINISH: contenu complet sur mobile, états chargement/erreur/secours/résultat, 
 const faq = [
   {
     q: 'Que se passe-t-il si le portail bloque la lecture ?',
-    a: 'Le lien reste affiché et l’outil vous demande uniquement de copier le titre et la description. Vous obtenez ensuite les deux conseils sans recommencer le parcours.',
+    a: 'Ce n’est pas une erreur de votre lien. Certains sites refusent qu’un autre service lise leurs pages. L’outil vous pose alors deux questions courtes, localise l’étape à vérifier et vous dirige vers la ressource la plus utile.',
   },
   {
     q: 'L’outil juge-t-il le prix de mon bien ?',
@@ -124,6 +124,7 @@ const faq = [
 
   <script>
     import { analyseListing, type ListingAnalysis, type ListingSnapshot } from '../lib/audit-url';
+    import { analyseBlockedListing, type BlockedAuditResult, type ListingDuration, type ListingSignal } from '../lib/audit-blocked';
 
     const urlForm = document.querySelector<HTMLFormElement>('[data-url-form]');
     const urlInput = document.querySelector<HTMLInputElement>('#listing-url');
@@ -142,46 +143,64 @@ const faq = [
       button.textContent = loading ? 'Lecture de la page…' : 'Analyser mon annonce';
     }
 
-    function showFallback(message: string) {
+    function showFallback(message: string, reason = 'blocked') {
       if (!output) return;
+      let duration: ListingDuration | null = null;
       output.hidden = false;
       output.innerHTML = `<div class="fallback-shell" tabindex="-1">
         <div class="fallback-copy">
-          <h2>Le portail ferme la porte.<br><span>Pas votre audit.</span></h2>
+          <h2>${reason === 'blocked' ? 'Votre lien n’est pas en cause.' : 'La page n’a pas pu être lue.'}<br><span>On continue autrement.</span></h2>
           <p>${escapeHtml(message)}</p>
+          <p>Vous n’avez rien à recopier. Deux réponses suffisent pour trouver la prochaine vérification utile.</p>
           <p class="fallback-url">Lien conservé&nbsp;: ${escapeHtml(currentUrl)}</p>
         </div>
-        <form class="fallback-form" data-fallback-form>
-          <label>Titre de l’annonce<input name="title" required maxlength="220" placeholder="Copiez le titre exact"></label>
-          <label>Description<textarea name="description" required maxlength="8000" rows="8" placeholder="Copiez le texte de l’annonce"></textarea></label>
-          <div class="fallback-fields">
-            <label>Nombre de photos <input name="photos" type="number" min="0" max="100" inputmode="numeric" placeholder="Ex. 12"></label>
-            <label>Prix affiché <input name="price" maxlength="60" placeholder="Ex. 249 000 €"></label>
-          </div>
-          <button type="submit">Obtenir mes 2 conseils</button>
-        </form>
+        <div class="fallback-form" data-fallback-flow>
+          <form data-duration-form>
+            <p>Question 1 sur 2</p>
+            <fieldset><legend>Depuis combien de temps l’annonce est-elle publiée&nbsp;?</legend>
+              <label><input type="radio" name="duration" value="moins-7"><span>Moins de 7 jours</span></label>
+              <label><input type="radio" name="duration" value="7-30"><span>De 7 à 30 jours</span></label>
+              <label><input type="radio" name="duration" value="plus-30"><span>Plus d’un mois</span></label>
+            </fieldset>
+          </form>
+          <form data-signal-form hidden>
+            <p>Question 2 sur 2</p>
+            <fieldset><legend tabindex="-1">Que se passe-t-il aujourd’hui&nbsp;?</legend>
+              <label><input type="radio" name="signal" value="peu-vues"><span>Très peu de vues</span></label>
+              <label><input type="radio" name="signal" value="vues-sans-contact"><span>Des vues, mais aucun contact</span></label>
+              <label><input type="radio" name="signal" value="contacts-sans-visite"><span>Des contacts, mais aucune visite</span></label>
+              <label><input type="radio" name="signal" value="visites-sans-offre"><span>Des visites, mais aucune offre</span></label>
+              <label><input type="radio" name="signal" value="offre-recue"><span>Une proposition ou une offre reçue</span></label>
+            </fieldset>
+          </form>
+        </div>
       </div>`;
       output.querySelector<HTMLElement>('.fallback-shell')?.focus();
       output.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-      output.querySelector<HTMLFormElement>('[data-fallback-form]')?.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const form = event.currentTarget as HTMLFormElement;
-        if (!form.reportValidity()) return;
-        const data = new FormData(form);
-        const photosRaw = String(data.get('photos') || '');
+      output.querySelector<HTMLFormElement>('[data-duration-form]')?.addEventListener('change', (event) => {
+        const input = (event.target as HTMLElement).closest<HTMLInputElement>('input[name="duration"]');
+        if (!input) return;
+        duration = input.value as ListingDuration;
+        const signalForm = output.querySelector<HTMLFormElement>('[data-signal-form]');
+        if (signalForm) {
+          signalForm.hidden = false;
+          signalForm.querySelector<HTMLElement>('legend')?.focus();
+        }
+      });
+      output.querySelector<HTMLFormElement>('[data-signal-form]')?.addEventListener('change', (event) => {
+        const input = (event.target as HTMLElement).closest<HTMLInputElement>('input[name="signal"]');
+        if (!input || !duration) return;
+        const result = analyseBlockedListing(duration, input.value as ListingSignal);
         const snapshot: ListingSnapshot = {
           url: currentUrl,
-          source: 'Informations copiées depuis l’annonce',
-          title: String(data.get('title') || ''),
-          description: String(data.get('description') || ''),
-          photoCount: photosRaw ? Number(photosRaw) : undefined,
-          price: String(data.get('price') || ''),
+          source: 'Lien non lisible — réponses du propriétaire',
+          title: '', description: '',
         };
-        showResult(snapshot, analyseListing(snapshot));
+        showResult(snapshot, result.analysis, result.resource);
       });
     }
 
-    function resultMarkup(snapshot: ListingSnapshot, analysis: ListingAnalysis) {
+    function resultMarkup(snapshot: ListingSnapshot, analysis: ListingAnalysis, resource?: BlockedAuditResult['resource']) {
       const tips = analysis.tips.map((tip, index) => `<article class="advice-row">
         <span>${index + 1}</span>
         <div><h3>${escapeHtml(tip.title)}</h3><p class="advice-observation">${escapeHtml(tip.observation)}</p><p><b>À faire&nbsp;:</b> ${escapeHtml(tip.action)}</p></div>
@@ -194,9 +213,10 @@ const faq = [
         </header>
         <div class="advice-list">${tips}</div>
         <div class="result-evidence">
-          <details><summary>Ce que l’outil a réellement pu lire<span aria-hidden="true"></span></summary><ul>${facts}</ul></details>
+          <details><summary>Ce résultat s’appuie sur<span aria-hidden="true"></span></summary><ul>${facts}</ul></details>
           <div><b>Ici s’arrête l’automatisation.</b><p>${escapeHtml(analysis.limit)}</p></div>
         </div>
+        ${resource ? `<a class="resource-next" href="${escapeHtml(resource.href)}"><span>La ressource adaptée à cette étape</span><b>${escapeHtml(resource.label)}</b><p>${escapeHtml(resource.description)}</p></a>` : ''}
         <section class="human-next">
           <div><h2>Vous voulez savoir ce que cela change dans votre cas&nbsp;?</h2><p>Transmettez cette première lecture à Mouaad. Il reprendra à partir de l’annonce, de votre situation et du marché — sans engagement et sans vous demander de modifier votre prix à l’aveugle.</p></div>
           <form data-lead-form novalidate>
@@ -216,10 +236,10 @@ const faq = [
       </div>`;
     }
 
-    function showResult(snapshot: ListingSnapshot, analysis: ListingAnalysis) {
+    function showResult(snapshot: ListingSnapshot, analysis: ListingAnalysis, resource?: BlockedAuditResult['resource']) {
       if (!output) return;
       output.hidden = false;
-      output.innerHTML = resultMarkup(snapshot, analysis);
+      output.innerHTML = resultMarkup(snapshot, analysis, resource);
       output.querySelector<HTMLElement>('.result-shell')?.focus();
       output.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
       output.querySelector<HTMLButtonElement>('[data-restart]')?.addEventListener('click', () => {
@@ -283,7 +303,7 @@ const faq = [
         if (response.ok && payload.snapshot && payload.analysis) {
           showResult(payload.snapshot as ListingSnapshot, payload.analysis as ListingAnalysis);
         } else if (payload.fallback) {
-          showFallback(payload.message || 'La page ne peut pas être lue automatiquement.');
+          showFallback(payload.message || 'La page ne peut pas être lue automatiquement.', payload.reason || 'blocked');
         } else {
           throw new Error(payload.message || 'Ce lien ne peut pas être analysé.');
         }
@@ -312,9 +332,9 @@ const faq = [
     .url-entry form { display: grid; }
     .url-entry label { margin-bottom: 12px; color: #fff; font-size: clamp(24px, 3vw, 42px); font-weight: 800; line-height: 1.05; }
     .url-entry input { min-height: 72px; width: 100%; padding: 0 20px; border: 2px solid #fff; border-radius: 0; background: #fff; color: #111522; font: 600 18px/1.2 'Public Sans', sans-serif; }
-    .url-entry button, .fallback-form button, .human-next button { min-height: 64px; padding: 0 22px; border: 0; border-radius: 0; background: #d7ff42; color: #111522; font: 800 17px/1.2 'Public Sans', sans-serif; cursor: pointer; }
+    .url-entry button, .human-next button { min-height: 64px; padding: 0 22px; border: 0; border-radius: 0; background: #d7ff42; color: #111522; font: 800 17px/1.2 'Public Sans', sans-serif; cursor: pointer; }
     .url-entry button { margin-top: 2px; }
-    .url-entry button:hover, .fallback-form button:hover { background: #111522; color: #d7ff42; }
+    .url-entry button:hover { background: #111522; color: #d7ff42; }
     button:disabled { cursor: wait; opacity: .68; }
     .url-entry__privacy { margin: 18px 0 0; color: #d5dad4; font-size: 12px; }
     .form-status { min-height: 24px; margin: 10px 0 0; color: #fff; font-weight: 700; }
@@ -325,12 +345,22 @@ const faq = [
     .fallback-copy h2 span { color: #d7ff42; }
     .fallback-copy > p { max-width: 60ch; margin: 28px 0 0; color: #d5dad4; font-size: 18px; line-height: 1.55; }
     .fallback-copy .fallback-url { padding-top: 18px; border-top: 1px solid #596158; color: #d5dad4; font-size: 12px; overflow-wrap: anywhere; }
-    .fallback-form { background: #f2f5ef; color: #111522; display: grid; gap: 22px; }
-    .fallback-form label, .human-next label { display: grid; gap: 8px; font-weight: 750; }
-    .fallback-form input, .fallback-form textarea, .human-next input, .human-next textarea { width: 100%; padding: 15px 16px; border: 1px solid #111522; border-radius: 0; background: #fff; color: #111522; font: 400 16px/1.45 'Public Sans', sans-serif; }
-    .fallback-form input { min-height: 56px; }
-    .fallback-form textarea, .human-next textarea { resize: vertical; }
-    .fallback-fields, .lead-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .fallback-form { background: #f2f5ef; color: #111522; display: grid; align-content: center; gap: 34px; }
+    .fallback-form form { display: grid; gap: 16px; }
+    .fallback-form form + form { padding-top: 30px; border-top: 1px solid #c9cec8; }
+    .fallback-form form > p { margin: 0; color: #243cff; font-size: 12px; font-weight: 800; }
+    .fallback-form fieldset { margin: 0; padding: 0; border: 0; display: grid; gap: 2px; background: #111522; }
+    .fallback-form legend { width: 100%; margin-bottom: 18px; background: #f2f5ef; font-size: clamp(28px, 3vw, 42px); font-weight: 800; line-height: 1.05; }
+    .fallback-form label { position: relative; cursor: pointer; }
+    .fallback-form input { position: absolute; opacity: 0; pointer-events: none; }
+    .fallback-form label span { min-height: 58px; padding: 14px 18px; display: flex; align-items: center; background: #fff; color: #111522; font-weight: 750; }
+    .fallback-form label:hover span, .fallback-form input:checked + span { background: #d7ff42; }
+    .fallback-form input:focus-visible + span { outline: 3px solid #243cff; outline-offset: -3px; }
+    .fallback-form [hidden] { display: none; }
+    .human-next label { display: grid; gap: 8px; font-weight: 750; }
+    .human-next input, .human-next textarea { width: 100%; padding: 15px 16px; border: 1px solid #111522; border-radius: 0; background: #fff; color: #111522; font: 400 16px/1.45 'Public Sans', sans-serif; }
+    .human-next textarea { resize: vertical; }
+    .lead-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .result-shell { background: #f2f5ef; color: #111522; outline: none; }
     .result-head { padding: clamp(54px, 7vw, 100px) clamp(24px, 6vw, 92px); display: flex; justify-content: space-between; align-items: end; gap: 30px; }
     .result-head p { margin: 0 0 14px; color: #243cff; font-weight: 800; }
@@ -358,6 +388,11 @@ const faq = [
     .result-evidence > div { background: #d7ff42; }
     .result-evidence > div b { font-size: clamp(28px, 3vw, 42px); line-height: 1; }
     .result-evidence > div p { max-width: 65ch; margin: 20px 0 0; line-height: 1.55; }
+    .resource-next { padding: clamp(34px, 5vw, 68px) clamp(24px, 6vw, 92px); display: grid; grid-template-columns: .45fr 1fr; column-gap: clamp(28px, 6vw, 90px); align-items: baseline; background: #f2f5ef; color: #111522; border-bottom: 1px solid #111522; text-decoration: none; }
+    .resource-next > span { color: #a84531; font-size: 12px; font-weight: 800; }
+    .resource-next > b { font-size: clamp(28px, 3vw, 42px); line-height: 1; }
+    .resource-next > p { grid-column: 2; max-width: 65ch; margin: 14px 0 0; color: #58615b; line-height: 1.5; }
+    .resource-next:hover { background: #d7ff42; }
     .human-next { padding: clamp(58px, 8vw, 112px) clamp(24px, 6vw, 92px); display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(45px, 8vw, 130px); background: #243cff; color: #fff; }
     .human-next h2 { margin: 0; font-size: clamp(42px, 5.5vw, 76px); line-height: .96; letter-spacing: -.03em; }
     .human-next > div p { max-width: 58ch; margin: 26px 0 0; color: #fff; font-size: 18px; line-height: 1.58; }
@@ -408,7 +443,9 @@ const faq = [
       .url-entry label { font-size: 28px; }
       .url-entry input { min-height: 66px; font-size: 16px; }
       .fallback-copy, .fallback-form, .result-head, .result-evidence > *, .human-next, .url-method, .url-boundary, .url-faq { padding-left: 20px; padding-right: 20px; }
-      .fallback-fields, .lead-grid { grid-template-columns: 1fr; }
+      .lead-grid { grid-template-columns: 1fr; }
+      .resource-next { grid-template-columns: 1fr; gap: 12px; }
+      .resource-next > p { grid-column: 1; }
       .advice-row { min-height: 0; padding: 46px 20px 54px; grid-template-columns: 1fr; gap: 28px; }
       .advice-row > span { font-size: 56px; }
       .advice-row h3 { font-size: clamp(28px, 3vw, 42px); }

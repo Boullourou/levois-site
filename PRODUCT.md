@@ -52,7 +52,7 @@ Mouaad ne se présente pas comme un agent qui « prospecte autrement ». Il acco
 Capacités existantes :
 
 - parcours vendeur adaptatif avec moteur de signaux déterministe ;
-- audit public d’annonce à partir d’un lien, avec deux conseils déterministes, secours par copier-coller, résultat avant coordonnées et transmission humaine facultative ;
+- audit public d’annonce à partir d’un lien, avec deux conseils déterministes, secours par deux questions lorsque le portail bloque, résultat avant coordonnées et transmission humaine facultative ;
 - ressources éducatives gratuites ;
 - lecture locale DVF par adresse ;
 - parcours acheteur « Situer ma recherche », avec restitution avant demande de contact ;
