@@ -54,6 +54,7 @@ Cette priorité modifie la nature des contenus :
 - expliquer les décisions qui se prennent avant l’annonce, le prix et les premières visites ;
 - créer des repères mémorisables et enregistrables, pas une urgence commerciale ;
 - proposer comme CTA une ressource, une vérification ou un outil utile maintenant, même si la vente n’aura lieu que plus tard ;
+- installer le « checkpoint propriétaire » comme réflexe de sécurité : connaître un premier positionnement local et disposer d'un contact de proximité avant qu'un calendrier subi réduise le temps de décision ;
 - ne jamais instrumentaliser une succession, une séparation, une mutation professionnelle, une difficulté financière ou tout autre événement déclencheur.
 
 Les acheteurs restent présents dans la ligne éditoriale et dans le produit : leur lecture du marché rend les contenus vendeurs plus solides et entretient la boucle bilatérale LEVOIS. La priorité d’acquisition vidéo ne transforme donc pas le site en parcours exclusivement vendeur.
@@ -103,7 +104,8 @@ L’automatisation prépare la lecture. Elle ne remplace ni l’estimation profe
 
 - Mobile d’abord, clavier utilisable, objectif WCAG 2.2 AA.
 - Aucun contenu essentiel ne dépend du mouvement, de la couleur ou de JavaScript.
-- La transition scroll-driven du héros (couleur → monochrome et montée des preuves) est un enrichissement réservé aux écrans adaptés ; mobile et `prefers-reduced-motion` reçoivent une version statique complète.
+- La transition scroll-driven du héros (couleur → monochrome et montée des preuves) reste progressive sur ordinateur comme sur mobile ; `prefers-reduced-motion` reçoit une version statique complète.
+- Dans les formulaires, un choix unique fait avancer le parcours automatiquement après un retour visuel bref. Une validation reste obligatoire pour les choix multiples, les champs saisis, la relecture et la transmission.
 - Les animations restent courtes, déterministes et informatives.
 - Les liens d’ancre compensent le header collant.
 - Toutes les pages publiques partagent le même en-tête, le même pied de page, les mêmes typographies et les mêmes tokens LEVOIS V2 ; les parcours longs conservent seulement leurs besoins fonctionnels spécifiques.

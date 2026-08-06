@@ -23,18 +23,14 @@ import Layout from '../layouts/Layout.astro';
 
     <!-- ——— Vue 1 · Sélecteur de situation ——— -->
     <section id="vue-selecteur" aria-labelledby="selecteur-titre">
-      <p class="eyebrow mb-4">Faire le point</p>
-      <h1 id="selecteur-titre" class="text-display text-encre mb-3">Où en est votre vente aujourd’hui ?</h1>
+      <h1 id="selecteur-titre" class="text-display text-encre mb-3">Votre bien est-il déjà sur le marché — ou simplement dans un coin de votre tête ?</h1>
       <p class="font-sans text-body-lg text-brun mb-8 max-w-prose">
-        Choisissez la situation qui se rapproche le plus de la vôtre, puis validez.
+        Choisissez la situation qui se rapproche le plus de la vôtre : le parcours démarre immédiatement.
         Trois à cinq questions suivront — vos réponses construisent le résultat,
-        et aucune coordonnée ne vous sera demandée avant.
+        et aucune coordonnée ne vous sera demandée avant. Même sans projet décidé, vous créez un premier repère utile pour plus tard.
       </p>
       <div id="liste-situations" class="grid gap-3" role="radiogroup" aria-labelledby="selecteur-titre"></div>
-      <div class="mt-8 flex items-center gap-4">
-        <button id="btn-commencer" class="btn-primaire opacity-50 pointer-events-none" aria-disabled="true">Commencer</button>
-        <p id="selecteur-aide" class="font-sans text-sm text-brun">Sélectionnez d’abord une situation.</p>
-      </div>
+      <p class="mt-5 font-sans text-sm font-semibold text-argile">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
     </section>
 
     <!-- ——— Vue 2 · Question ——— -->
@@ -60,7 +56,8 @@ import Layout from '../layouts/Layout.astro';
 
       <div class="mt-9 flex items-center justify-between gap-4">
         <button id="btn-precedent" class="btn-secondaire !px-5">Précédent</button>
-        <button id="btn-continuer" class="btn-primaire">Continuer</button>
+        <span class="font-sans text-sm font-semibold text-argile">Votre sélection est validée immédiatement.</span>
+        <button id="btn-continuer" class="hidden" tabindex="-1" aria-hidden="true">Continuer</button>
       </div>
     </section>
 
@@ -94,6 +91,16 @@ import Layout from '../layouts/Layout.astro';
   const contexte = $('contexte');
 
   let etat: Etat = { situationId: null, etape: 0, reponses: {} };
+  let autoTimer: number | undefined;
+
+  function apresSelection(action: () => void) {
+    if (autoTimer) window.clearTimeout(autoTimer);
+    const delai = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 180;
+    autoTimer = window.setTimeout(() => {
+      autoTimer = undefined;
+      action();
+    }, delai);
+  }
 
   // ——— Persistance de session (jamais de coordonnées ici) ———
   function sauver() {
@@ -134,7 +141,7 @@ import Layout from '../layouts/Layout.astro';
             <span class="block font-display text-lg md:text-xl text-encre">${s.titre}</span>
             <span class="block font-sans text-[15px] text-brun mt-0.5">${s.reconnaissance}</span>
           </span>
-          <span class="coche ${etat.situationId === s.id ? '' : 'invisible'} text-argile pt-1.5" aria-hidden="true">${svgCoche()}</span>
+          <span class="option-cue ${etat.situationId === s.id ? 'is-selected' : ''} text-argile pt-1.5" aria-hidden="true">${etat.situationId === s.id ? svgCoche() : svgFleche()}</span>
         </span>`;
       btn.addEventListener('click', () => {
         etat.situationId = s.id;
@@ -142,10 +149,7 @@ import Layout from '../layouts/Layout.astro';
         etat.reponses = {};
         sauver();
         rendreSelecteur();
-        const go = $('btn-commencer');
-        go.classList.remove('opacity-50', 'pointer-events-none');
-        go.setAttribute('aria-disabled', 'false');
-        $('selecteur-aide').textContent = `${s.titre} — vous pourrez modifier ce choix à tout moment.`;
+        apresSelection(() => rendreQuestion());
       });
       liste.appendChild(btn);
     }
@@ -180,12 +184,20 @@ import Layout from '../layouts/Layout.astro';
       btn.innerHTML = `
         <span class="flex items-center gap-3 w-full">
           <span class="flex-1 font-sans text-base text-encre">${opt.label}</span>
-          <span class="coche ${sel ? '' : 'invisible'} text-argile" aria-hidden="true">${svgCoche()}</span>
+          <span class="option-cue ${sel ? 'is-selected' : ''} text-argile" aria-hidden="true">${sel ? svgCoche() : svgFleche()}</span>
         </span>`;
       btn.addEventListener('click', () => {
         etat.reponses[q.id] = opt.value;
         sauver();
         rendreQuestion(false);
+        apresSelection(() => {
+          if (etat.etape + 1 >= s.questions.length) terminer();
+          else {
+            etat.etape += 1;
+            sauver();
+            rendreQuestion();
+          }
+        });
       });
       conteneur.appendChild(btn);
     }
@@ -231,23 +243,16 @@ import Layout from '../layouts/Layout.astro';
     return '<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 9.2l2.3 2.3 4.7-4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
 
-  // ——— Navigation ———
-  $('btn-commencer').addEventListener('click', () => {
-    if (!etat.situationId) return;
-    etat.etape = 0;
-    sauver();
-    rendreQuestion();
-  });
+  function svgFleche(): string {
+    return '<svg width="22" height="18" viewBox="0 0 22 18" fill="none"><path d="M2 9h17M14 3l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
 
+  // ——— Navigation ———
   $('btn-precedent').addEventListener('click', () => {
+    if (autoTimer) { window.clearTimeout(autoTimer); autoTimer = undefined; }
     if (etat.etape === 0) {
       montrer('selecteur');
       rendreSelecteur();
-      if (etat.situationId) {
-        const go = $('btn-commencer');
-        go.classList.remove('opacity-50', 'pointer-events-none');
-        go.setAttribute('aria-disabled', 'false');
-      }
     } else {
       etat.etape -= 1;
       sauver();
@@ -275,9 +280,6 @@ import Layout from '../layouts/Layout.astro';
   $('btn-modifier-situation').addEventListener('click', () => {
     montrer('selecteur');
     rendreSelecteur();
-    const go = $('btn-commencer');
-    go.classList.remove('opacity-50', 'pointer-events-none');
-    go.setAttribute('aria-disabled', 'false');
   });
 
   // ——— Démarrage : lien profond ?s=, reprise de session, ou sélecteur ———
@@ -301,9 +303,6 @@ import Layout from '../layouts/Layout.astro';
       rendreQuestion(false);
     } else {
       rendreSelecteur();
-      const go = $('btn-commencer');
-      go.classList.remove('opacity-50', 'pointer-events-none');
-      go.setAttribute('aria-disabled', 'false');
       montrer('selecteur');
     }
   } else {

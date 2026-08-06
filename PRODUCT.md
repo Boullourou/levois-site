@@ -78,11 +78,12 @@ Contraintes :
 
 ## Brand Commitments
 
-- Nom : LEVOIS.
-- Actif de marque actuel : le nom de domaine `levois.fr`. Aucun logo officiel n'est imposé ; un mot-symbole typographique peut être créé dans le nouveau système.
+- Nom conservé pour le lancement : **LEVOIS**. Il est court, disponible sur `levois.fr`, mémorisable et possède un ancrage réel à Lèves sans enfermer l'activité dans une adresse. Un changement de nom ne sera envisagé qu'après un test comparatif explicite, pas comme une correction esthétique improvisée.
+- Le mot-symbole actuel en Archivo Black est une signature de lancement, pas encore un logo propriétaire définitif. Il peut rester tant que la marque construit sa reconnaissance ; une personnalisation typographique viendra seulement si elle apporte un signe réellement distinctif.
 - Porte-parole et visage : Mouaad Boullourou.
 - Ton : direct, calme, précis, pédagogique, sans pression commerciale.
 - La valeur doit être donnée avant toute demande de coordonnées.
+- Les parcours à choix unique avancent dès la sélection ; seuls les champs à saisir, les choix multiples et la transmission finale demandent une validation explicite.
 - Acheteurs et vendeurs doivent être représentés avec la même dignité et la même importance.
 - L'intelligence artificielle est un avantage opérationnel assumé mais discret : elle accélère l'analyse et la production sans remplacer le jugement, la négociation ou la relation.
 - La mention du réseau SAFTI sert de preuve de cadre professionnel et de crédibilité, sans devoir gouverner l'identité LEVOIS ni occuper le premier plan.

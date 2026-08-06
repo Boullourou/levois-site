@@ -150,6 +150,14 @@ import { site } from '../config/site';
     font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
     line-height: 1.5; color: #58615B; margin: 0 0 1.75rem;
   }
+  .mr-auto-hint {
+    margin: -0.95rem 0 1.55rem;
+    color: #243CFF;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
 
   /* ——— Cartes de choix ——— */
   .mr-grille { display: grid; gap: 0.7rem; margin-bottom: 1.75rem; }
@@ -157,9 +165,20 @@ import { site } from '../config/site';
   .mr-choix {
     display: flex; flex-direction: column; background: #FFFFFF;
     border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: 1.1rem 1.35rem; cursor: pointer; text-align: left;
+    padding: 1.1rem 3.2rem 1.1rem 1.35rem; cursor: pointer; text-align: left;
     transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
     position: relative; font-family: inherit; width: 100%;
+  }
+  .mr-choix::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 1.25rem;
+    width: 10px;
+    height: 10px;
+    border-top: 2px solid #243CFF;
+    border-right: 2px solid #243CFF;
+    animation: mr-choice-cue 2.8s cubic-bezier(.16,1,.3,1) infinite;
   }
   .mr-choix:hover {
     border-color: rgba(36,60,255,0.3); transform: translateY(-2px);
@@ -172,6 +191,7 @@ import { site } from '../config/site';
     border-color: #243CFF; background: rgba(36,60,255,0.04);
     box-shadow: none;
   }
+  .mr-choix.actif::before { opacity: 0; animation: none; }
   .mr-choix.actif::after {
     content: ''; position: absolute; top: 10px; right: 12px;
     width: 20px; height: 20px; border-radius: 50%;
@@ -225,6 +245,7 @@ import { site } from '../config/site';
     border: none; border-radius: 0; cursor: pointer;
     transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
     box-shadow: none; text-decoration: none;
+    animation: mr-button-cue 3.2s cubic-bezier(.16,1,.3,1) infinite;
   }
   .mr-btn svg { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1); flex-shrink: 0; }
   .mr-btn:hover:not(:disabled) svg { transform: translateX(3px); }
@@ -234,6 +255,18 @@ import { site } from '../config/site';
   }
   .mr-btn:focus-visible { outline: 2.5px solid #243CFF; outline-offset: 3px; }
   .mr-btn:disabled { opacity: 0.42; cursor: default; box-shadow: none; transform: none; }
+
+  @keyframes mr-button-cue {
+    0%, 72%, 100% { transform: translateY(0); }
+    79% { transform: translateY(-2px); }
+    86% { transform: translateY(0); }
+    92% { transform: translateY(-1px); }
+  }
+
+  @keyframes mr-choice-cue {
+    0%, 68%, 100% { transform: translate(-4px, -50%) rotate(45deg); }
+    78%, 90% { transform: translate(2px, -50%) rotate(45deg); }
+  }
   .mr-btn-ghost {
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.75rem 1.4rem; font-family: 'Public Sans', system-ui, sans-serif;
@@ -465,7 +498,7 @@ import { site } from '../config/site';
   }
   @media (prefers-reduced-motion:reduce) {
     .mr-ecran-int { animation:none; }
-    .mr-barre, .mr-btn, .mr-btn svg, .mr-choix, .mr-chemin, .mr-pas, .mr-slot { transition:none; }
+    .mr-barre, .mr-btn, .mr-btn svg, .mr-choix, .mr-choix::before, .mr-chemin, .mr-pas, .mr-slot { animation:none; transition:none; }
   }
 </style>
 
@@ -556,6 +589,13 @@ import { site } from '../config/site';
   const zoneLbl = () => E.secteur==='chartres' ? 'Chartres intramuros' : 'la zone chartraine';
   const typeLbl = () => E.type==='Maison' ? 'maison' : E.type==='Appartement' ? 'appartement' : 'bien';
   const ICO_ARR = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  let autoTimer: number | undefined;
+
+  function autoAdvance(n:number) {
+    if(autoTimer) window.clearTimeout(autoTimer);
+    const delay=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:180;
+    autoTimer=window.setTimeout(()=>{ autoTimer=undefined; avancer(n); },delay);
+  }
 
   // Indicateur de progression — points
   function pas(n: number): string {
@@ -575,6 +615,7 @@ import { site } from '../config/site';
     window.scrollTo(0,0);
   }
   function reculer() {
+    if(autoTimer) { window.clearTimeout(autoTimer); autoTimer=undefined; }
     if(E.step<=0) return;
     let prev=E.step-1;
     if(prev===8&&(!E.lecture||E.lecture.position!=='sous_q1')) prev=7;
@@ -612,9 +653,10 @@ import { site } from '../config/site';
   function h0() {
     return `
       <p class="mr-kicker">LEVOIS · Parcours acquéreur</p>
-      <h1 class="mr-titre-xl">Votre projet d'achat mérite une vraie lecture.</h1>
-      <p class="mr-lede">Ce parcours ne vous demande pas simplement ce que vous voulez. Il vous aide à comprendre ce que vous cherchez réellement — et à transmettre une stratégie à Mouaad, pas seulement une liste de critères.</p>
-      <p class="mr-lede-s">Comptez 5 à 7 minutes. Vous pouvez commencer sans laisser vos coordonnées.</p>
+      <h1 class="mr-titre-xl">Votre recherche doit devenir une stratégie.</h1>
+      <p class="mr-lede">Ce checkpoint confronte budget, surface, secteur et priorités aux ventes réellement enregistrées. Vous repartez avec une première lecture, même si vous ne transmettez rien.</p>
+      <p class="mr-lede">Si vous choisissez ensuite d’être recontacté, Mouaad peut faire circuler votre recherche dans le réseau SAFTI et vous signaler certains biens avant leur diffusion lorsqu’ils y sont partagés.</p>
+      <p class="mr-lede-s">Gratuit · sans engagement · aucun contact demandé avant votre première lecture.</p>
       <div class="mr-actions"><button class="mr-btn" id="mr-start">Commencer ${ICO_ARR}</button></div>
     `;
   }
@@ -625,10 +667,10 @@ import { site } from '../config/site';
       <p class="mr-kicker">Étape 1 sur 10</p>
       <h2 class="mr-question">Qu'est-ce qui vous amène à chercher aujourd'hui&nbsp;?</h2>
       <p class="mr-sous-q">Ce contexte aide Mouaad à comprendre votre projet avant même de vous rencontrer.</p>
+      <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
       <div class="mr-grille" id="mr-sits">
         ${SITUATIONS.map(s=>`<button class="mr-choix${E.situation===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
       </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.situation?'disabled':''}>Continuer ${ICO_ARR}</button></div>
     `;
   }
 
@@ -643,10 +685,10 @@ import { site } from '../config/site';
       <p class="mr-kicker">Étape 2 sur 10</p>
       <h2 class="mr-question">Quel type de bien recherchez-vous&nbsp;?</h2>
       <p class="mr-sous-q">Ce choix oriente la lecture des données du marché chartrain.</p>
+      <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
       <div class="mr-grille mr-grille-2" id="mr-types">
         ${types.map(t=>`<button class="mr-choix${E.type===t.id?' actif':''}" data-id="${t.id}"><span class="mr-choix-lbl">${t.label}</span><span class="mr-choix-desc">${t.desc}</span></button>`).join('')}
       </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.type?'disabled':''}>Continuer ${ICO_ARR}</button></div>
     `;
   }
 
@@ -656,18 +698,17 @@ import { site } from '../config/site';
       <div class="mr-grille mr-grille-2" id="mr-sects">
         ${[{id:'chartres',label:'Chartres intramuros',desc:'La ville de Chartres'},{id:'tout',label:"L'ensemble de la zone",desc:'Lèves, Mainvilliers, Lucé, Champhol, Le Coudray, Luisant et Chartres'}].map(s=>`<button class="mr-choix${E.secteur===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
       </div>` : '';
-    const ok = E.secteurContraint!==null && !(E.secteurContraint===true&&!E.secteur);
     return `
       ${pas(3)}
       <p class="mr-kicker">Étape 3 sur 10</p>
       <h2 class="mr-question">Votre secteur est-il défini par une contrainte précise&nbsp;?</h2>
       <p class="mr-sous-q">Proximité école, travail, famille — ou liberté selon les biens.</p>
+      <p class="mr-auto-hint">Un choix suffit · si le secteur est précis, une seconde question apparaît.</p>
       <div class="mr-grille" id="mr-cont">
         <button class="mr-choix${E.secteurContraint===true?' actif':''}" data-id="oui"><span class="mr-choix-lbl">Oui, j'ai un secteur précis</span><span class="mr-choix-desc">Une contrainte géographique oriente ma recherche</span></button>
         <button class="mr-choix${E.secteurContraint===false?' actif':''}" data-id="non"><span class="mr-choix-lbl">Je suis ouvert au secteur</span><span class="mr-choix-desc">Je choisis selon les biens, sans ancrage fixe</span></button>
       </div>
       ${sub}
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${ok?'':'disabled'}>Continuer ${ICO_ARR}</button></div>
     `;
   }
 
@@ -796,6 +837,7 @@ import { site } from '../config/site';
       <p class="mr-kicker">Étape 8 sur 10</p>
       <h2 class="mr-question">Une décision à prendre</h2>
       <p class="mr-tension-intro">Votre budget, rapporté à votre surface cible, vous positionne en dessous du premier quartile des prix constatés dans ${zoneLbl()}. Ce n'est pas un obstacle — c'est une réalité à arbitrer. Trois chemins existent. Chacun a un prix.</p>
+      <p class="mr-auto-hint">Choisissez un chemin pour afficher directement votre synthèse.</p>
       <div id="mr-chem">
         ${chemins.map(c=>`
           <button class="mr-chemin${E.decisionTension===c.id?' actif':''}" data-id="${c.id}">
@@ -805,7 +847,6 @@ import { site } from '../config/site';
           </button>`).join('')}
       </div>
       <div class="mr-actions" style="margin-top:1.25rem">
-        <button class="mr-btn" id="mr-nxt" ${!E.decisionTension?'disabled':''}>Continuer ${ICO_ARR}</button>
         <button class="mr-btn-ghost" id="mr-pass">Passer cette étape</button>
       </div>
     `;
@@ -936,12 +977,10 @@ import { site } from '../config/site';
   }
 
   function b1(el:HTMLElement) {
-    choix(el,'#mr-sits','situation');
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.situation&&avancer(2));
+    choix(el,'#mr-sits','situation',()=>autoAdvance(2));
   }
   function b2(el:HTMLElement) {
-    choix(el,'#mr-types','type');
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.type&&avancer(3));
+    choix(el,'#mr-types','type',()=>autoAdvance(3));
   }
   function b3(el:HTMLElement) {
     el.querySelectorAll('#mr-cont .mr-choix').forEach(b=>{
@@ -950,6 +989,7 @@ import { site } from '../config/site';
         if(!E.secteurContraint) E.secteur='tout';
         else E.secteur=null;
         render(3);
+        if(!E.secteurContraint) autoAdvance(4);
       });
     });
     el.querySelectorAll('#mr-sects .mr-choix')?.forEach(b=>{
@@ -957,13 +997,8 @@ import { site } from '../config/site';
         E.secteur=(b as HTMLElement).dataset.id??null;
         el.querySelectorAll('#mr-sects .mr-choix').forEach(x=>x.classList.remove('actif'));
         b.classList.add('actif');
-        const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-        if(btn) btn.disabled=false;
+        autoAdvance(4);
       });
-    });
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>{
-      const ok=E.secteurContraint!==null&&!(E.secteurContraint===true&&!E.secteur);
-      if(ok) avancer(4);
     });
   }
   function numInput(el:HTMLElement, id:string, key:string, min=1) {
@@ -1021,10 +1056,9 @@ import { site } from '../config/site';
         E.decisionTension=(b as HTMLElement).dataset.id??null;
         el.querySelectorAll('#mr-chem .mr-chemin').forEach(x=>x.classList.remove('actif'));
         b.classList.add('actif');
-        const btn=el.querySelector('#mr-nxt') as HTMLButtonElement; if(btn) btn.disabled=!E.decisionTension;
+        autoAdvance(9);
       });
     });
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.decisionTension&&avancer(9));
     el.querySelector('#mr-pass')?.addEventListener('click',()=>avancer(9));
   }
   function b9(el:HTMLElement) {

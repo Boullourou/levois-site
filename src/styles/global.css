@@ -86,6 +86,7 @@
     @apply inline-flex items-center justify-center gap-2 bg-argile text-papier-vif
       font-sans font-semibold px-7 py-3.5 min-h-[48px] transition-colors duration-200
       hover:bg-encre hover:text-argile-lum active:bg-encre;
+    animation: levois-button-cue 3.2s cubic-bezier(.16, 1, .3, 1) infinite;
   }
 
   .btn-secondaire {
@@ -109,6 +110,30 @@
   .encart-limite {
     @apply border-l-2 border-argile/60 pl-5 text-brun;
   }
+}
+
+@keyframes levois-button-cue {
+  0%, 72%, 100% { transform: translateY(0); }
+  79% { transform: translateY(-2px); }
+  86% { transform: translateY(0); }
+  92% { transform: translateY(-1px); }
+}
+
+.option-cue {
+  display: inline-flex;
+  flex: 0 0 auto;
+  animation: levois-option-cue 2.8s cubic-bezier(.16, 1, .3, 1) infinite;
+}
+.option-cue.is-selected { animation: none; transform: none; }
+
+@keyframes levois-option-cue {
+  0%, 68%, 100% { transform: translateX(-4px); }
+  78%, 90% { transform: translateX(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primaire,
+  .option-cue { animation: none; }
 }
 
 @layer utilities {

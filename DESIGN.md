@@ -220,7 +220,7 @@ La palette oppose un fond minéral calme à des couleurs de calibration très fr
 
 La grille est éditoriale et bord à bord. La marge horizontale suit `clamp(22px, 5vw, 76px)` et les grandes sections respirent sur un rythme vertical proche de `clamp(80px, 9vw, 138px)`. Le héros associe une promesse compacte, une photographie réelle du territoire et un rail de preuves DVF ; les sections suivantes alternent deux colonnes, rangées structurées et médias pleine hauteur. Les divisions sont matérialisées par des lignes de 1px, tandis que les deux parcours sont réunis dans un cadre d’encre de 2px avec un interstice de 2px.
 
-Sur grand écran, la photographie du héros passe progressivement de la couleur au monochrome pendant que la courbe et les repères deviennent dominants. L’en-tête sticky mesure 78px. À 980px et moins, les grilles majeures s’empilent, l’en-tête passe à 68px et toutes les preuves sont immédiatement visibles sans dépendre du défilement. À 720px et moins, les deux parcours apparaissent immédiatement après le manifeste — avant la photographie et les chiffres — puis s’empilent sans changer de hiérarchie. La marge devient 20px et les rangées complexes passent à une colonne. Le pied de page se réorganise à 820px et la preuve chiffrée à 1100px.
+Sur grand écran, la photographie du héros passe progressivement de la couleur au monochrome pendant que la courbe et les repères deviennent dominants. L'en-tête sticky mesure 78px. À 980px et moins, les grilles majeures s'empilent, l'en-tête passe à 68px et toutes les preuves sont immédiatement visibles ; la photographie reste en couleur lorsqu'elle entre dans l'écran puis devient monochrome à mesure qu'elle le traverse. À 720px et moins, les deux parcours apparaissent immédiatement après le manifeste — avant la photographie et les chiffres — puis s'empilent sans changer de hiérarchie. La marge devient 20px et les rangées complexes passent à une colonne. Le pied de page se réorganise à 820px et la preuve chiffrée à 1100px.
 
 **The Equal Weight Rule.** Toute double entrée acheteur/vendeur conserve des dimensions, une présence et une proximité identiques ; la couleur distingue les chemins sans établir de priorité.
 
@@ -260,7 +260,11 @@ L’en-tête sticky garde le mot-symbole à gauche, six accès centrés — Marc
 
 ### Hero de preuve
 
-Le héros utilise une photographie réelle de Chartres, jamais une image immobilière générique. Les sélecteurs commune/type mettent à jour la médiane observée, l’évolution annuelle, les quartiles, l’échantillon et la courbe, avec source et limites dans le même cadre. Le passage couleur → noir et blanc améliore la lisibilité des données ; mobile et `prefers-reduced-motion` reçoivent directement l’état complet. Le rail ne formule jamais une estimation individuelle.
+Le héros utilise une photographie réelle de Chartres, jamais une image immobilière générique. Les sélecteurs commune/type mettent à jour la médiane observée, l'évolution annuelle, les quartiles, l'échantillon, une tendance explicite « hausse / baisse / stable » et la courbe, avec source et limites dans le même cadre. Le passage couleur → noir et blanc améliore la lisibilité des données ; `prefers-reduced-motion` reçoit directement l'état complet. Le crédit de la photographie tient dans une mention discrète et dépliable donnant l'auteur, la source, la licence et les transformations. Le rail ne formule jamais une estimation individuelle ni un verdict « favorable acheteur / vendeur » sans données d'offre et de demande actives.
+
+### Parcours et avancement
+
+Une option à choix unique agit immédiatement et passe à l'étape suivante après un retour visuel bref. Les étapes à choix multiples conservent un bouton de validation afin que l'utilisateur puisse composer et relire sa sélection. Les saisies numériques, les synthèses et l'envoi final gardent également une action explicite. Cette règle réduit les validations inutiles sans créer de navigation surprise.
 
 ### Principle, Method & Proof Rows
 

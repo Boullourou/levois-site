@@ -22,6 +22,12 @@ const selectorSpecs = [
 
 const qualityRank: Record<string, number> = { strong: 0, usable: 1, limited: 2, insufficient: 3 };
 const weakestQuality = (a: string, b: string) => qualityRank[a] >= qualityRank[b] ? a : b;
+const trendLabel = (percent: number, quality: string) => {
+  if (quality === 'limited' || quality === 'insufficient') return 'À confirmer';
+  if (percent > 1.5) return 'Hausse';
+  if (percent < -1.5) return 'Baisse';
+  return 'Stable';
+};
 
 const states = selectorSpecs.map((spec) => {
   const propertyType = spec.typeKey === 'maison' ? 'Maison' : 'Appartement';
@@ -57,6 +63,7 @@ const states = selectorSpecs.map((spec) => {
     annual,
     latest,
     yoy,
+    trend: trendLabel(yoy.percent, yoy.quality),
     range,
     medianPosition,
   };
@@ -99,6 +106,7 @@ const clientStates = states.map((state) => ({
   annual: state.annual,
   latest: state.latest,
   yoy: state.yoy,
+  trend: state.trend,
   range: state.range,
   medianPosition: state.medianPosition,
 }));
@@ -142,17 +150,21 @@ const clientStates = states.map((state) => ({
           {chart.points.map((point, index) => (
             <g class:list={['chart-point', { 'is-limited': point.quality === 'limited' }]} data-chart-point data-index={index}>
               <circle cx={point.x} cy={point.y} r="6" data-chart-dot />
-              <text class="chart-value" x={point.x} y={point.y - 16} text-anchor="middle" data-chart-value>{number.format(point.medianEurM2)}</text>
+              <text class="chart-value" x={point.x} y={point.y - 16} text-anchor="middle" data-chart-value>{number.format(point.medianEurM2)} €</text>
               <text class="chart-year" x={point.x} y="210" text-anchor="middle" data-chart-year>{point.year}</text>
             </g>
           ))}
         </svg>
         <figcaption id="chart-caption" class="chart-caption">
           <span data-chart-caption>{initial.commune} · {initial.type.toLowerCase()} · ventes simples</span>
-          <small>
-            Photo : <a href="https://commons.wikimedia.org/wiki/File:Chartres_Notre-Dame_DJI_0377.jpg" rel="license noopener noreferrer">Ludvig14 / Wikimedia Commons</a>
-            · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license noopener noreferrer">CC BY-SA 4.0</a>
-          </small>
+          <details class="photo-credit">
+            <summary>Crédit photo</summary>
+            <small>
+              <a href="https://commons.wikimedia.org/wiki/File:Chartres_Notre-Dame_DJI_0377.jpg" rel="license noopener noreferrer">Ludvig14 · Wikimedia Commons</a>
+              · <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr" rel="license noopener noreferrer">CC BY-SA 4.0</a>
+              · recadrage et traitement monochrome LEVOIS
+            </small>
+          </details>
         </figcaption>
       </figure>
 
@@ -183,6 +195,7 @@ const clientStates = states.map((state) => ({
           </div>
 
           <div class="rail-change" data-evidence-group="2">
+            <span class="rail-trend" data-market-trend>{initial.trend}</span>
             <strong data-market-yoy>{signed.format(initial.yoy.percent)} %</strong>
             <span data-market-yoy-note>
               {initial.yoy.quality === 'limited' ? `Échantillon limité · ${initial.yoy.fromYear}–${initial.yoy.toYear}` : `par rapport à ${initial.yoy.fromYear}`}
@@ -191,12 +204,12 @@ const clientStates = states.map((state) => ({
 
           <div class="rail-range" data-evidence-group="3" style={`--median-position:${initial.medianPosition.toFixed(2)}%`}>
             <div class="range-labels">
-              <span data-market-q1>{number.format(initial.range.p25EurM2)}</span>
-              <span data-market-range-median>{number.format(initial.range.medianEurM2)}</span>
-              <span data-market-q3>{number.format(initial.range.p75EurM2)} €/m²</span>
+              <span data-market-q1>{number.format(initial.range.p25EurM2)} €</span>
+              <span data-market-range-median>{number.format(initial.range.medianEurM2)} €</span>
+              <span data-market-q3>{number.format(initial.range.p75EurM2)} €</span>
             </div>
             <div class="range-track" aria-hidden="true"><i></i></div>
-            <p>50 % central des ventes · {initial.range.eligibleCount} mutations simples</p>
+            <p>Fourchette centrale en €/m² · {initial.range.eligibleCount} mutations simples</p>
           </div>
 
           <p class="rail-sample" data-evidence-group="4">
@@ -206,17 +219,18 @@ const clientStates = states.map((state) => ({
 
         <p class="rail-source">
           Source DVF · DGFiP. Ventes passées, hors mutations multi-lots. Ni estimation ni prévision.
+          <span>« Hausse », « baisse » ou « stable » décrit les prix signés. Dire quel côté est favorisé exige aussi l’offre active et la demande, absentes de DVF.</span>
         </p>
       </aside>
     </div>
 
     <nav class="hero-routes" aria-label="Choisir votre parcours">
       <a class="hero-route hero-route-buyer" href="/ma-recherche">
-        <span><b>Acheteur</b><small>Situer ma recherche</small></span>
+        <span><b>Acheteur</b><small>Faire mon checkpoint gratuit</small></span>
         <i aria-hidden="true"></i>
       </a>
       <a class="hero-route hero-route-seller" href="/situer-ma-vente">
-        <span><b>Vendeur</b><small>Situer ma vente</small></span>
+        <span><b>Propriétaire</b><small>Situer mon bien, même sans projet immédiat</small></span>
         <i aria-hidden="true"></i>
       </a>
     </nav>
@@ -247,6 +261,7 @@ const clientStates = states.map((state) => ({
     --lime: #d7ff42;
     --line: #c9cec8;
     --evidence-progress: 0;
+    --photo-progress: 0;
     min-height: 158svh;
     background: var(--paper);
     color: var(--ink);
@@ -334,7 +349,7 @@ const clientStates = states.map((state) => ({
 
   :global(.evidence-photo) { width: 100%; height: 100%; }
   :global(.evidence-photo img) {
-    filter: grayscale(var(--evidence-progress)) contrast(1.06);
+    filter: grayscale(var(--photo-progress)) contrast(1.06);
     transform: scale(1.035);
     transition: filter .12s linear;
   }
@@ -343,7 +358,7 @@ const clientStates = states.map((state) => ({
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, transparent 42%, rgba(4, 10, 17, .64) 100%);
-    opacity: var(--evidence-progress);
+    opacity: calc(.24 + var(--photo-progress) * .58);
     pointer-events: none;
   }
 
@@ -355,7 +370,6 @@ const clientStates = states.map((state) => ({
     width: min(92%, 680px);
     overflow: visible;
     color: var(--lime);
-    filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .5));
   }
   .chart-baseline { stroke: rgba(255, 255, 255, .35); stroke-width: 1; }
   .chart-line {
@@ -370,7 +384,16 @@ const clientStates = states.map((state) => ({
   .chart-point { opacity: calc(.45 + var(--evidence-progress)); }
   .chart-point circle { fill: currentColor; stroke: var(--ink); stroke-width: 2; }
   .chart-point.is-limited circle { fill: var(--ink); stroke: currentColor; }
-  .chart-point text { fill: #fff; font-family: 'Public Sans', system-ui, sans-serif; font-size: 15px; }
+  .chart-point text {
+    fill: #fff;
+    stroke: rgba(9, 19, 31, .92);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    paint-order: stroke fill;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 750;
+  }
   .chart-year { opacity: .92; font-size: 14px !important; }
 
   .chart-caption {
@@ -385,7 +408,30 @@ const clientStates = states.map((state) => ({
     color: rgba(255,255,255,.86);
     font-size: 10px;
   }
-  .chart-caption small { font-size: 9px; opacity: .78; }
+  .photo-credit { position: relative; margin-left: auto; text-align: right; }
+  .photo-credit summary {
+    min-height: 22px;
+    display: inline-flex;
+    align-items: center;
+    color: rgba(255,255,255,.72);
+    font-size: 9px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .photo-credit summary::-webkit-details-marker { display: none; }
+  .photo-credit small {
+    position: absolute;
+    right: 0;
+    bottom: 26px;
+    width: min(310px, 74vw);
+    padding: 9px 10px;
+    background: rgba(9,19,31,.96);
+    color: rgba(255,255,255,.86);
+    font-size: 9px;
+    line-height: 1.45;
+  }
   .chart-caption a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
   .evidence-rail {
@@ -441,6 +487,17 @@ const clientStates = states.map((state) => ({
   .rail-metric b { font-weight: inherit; }
   .rail-change { display: grid; gap: 5px; }
   .rail-change strong { font-size: clamp(32px, 3.2vw, 52px); }
+  .rail-trend {
+    width: max-content;
+    padding: 6px 9px 5px;
+    background: var(--lime);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
 
   .rail-range { --median-position: 50%; }
   .range-labels { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; }
@@ -479,6 +536,7 @@ const clientStates = states.map((state) => ({
   .rail-range p, .rail-sample { margin: 5px 0 0; font-size: 11px; line-height: 1.4; }
   .rail-sample strong { color: var(--lime); font-size: 16px; }
   .rail-source { margin: auto 0 0; color: rgba(242,245,239,.68); font-size: 9px; line-height: 1.35; }
+  .rail-source span { display: block; margin-top: 5px; color: rgba(242,245,239,.84); }
 
   .hero-routes {
     display: grid;
@@ -519,11 +577,19 @@ const clientStates = states.map((state) => ({
   .hero-route:hover span { transform: translateX(5px); }
   .hero-route:hover i { transform: translateX(7px); }
   .hero-route span, .hero-route i { transition: transform .22s cubic-bezier(.16,1,.3,1); }
+  .hero-route i { animation: route-cue 2.8s cubic-bezier(.16,1,.3,1) infinite; }
+
+  @keyframes route-cue {
+    0%, 68%, 100% { transform: translateX(0); }
+    76% { transform: translateX(8px); }
+    84% { transform: translateX(2px); }
+    90% { transform: translateX(8px); }
+  }
 
   .evidence-hero :focus-visible { outline: 3px solid var(--lime); outline-offset: 4px; }
 
   @media (max-width: 1080px) {
-    .evidence-hero { min-height: auto; --evidence-progress: .85; }
+    .evidence-hero { min-height: auto; --evidence-progress: 1; --photo-progress: 0; }
     .evidence-pin { position: static; height: auto; overflow: visible; }
     .evidence-grid { grid-template-columns: minmax(250px, .72fr) 1.28fr; }
     .evidence-manifesto { min-height: 530px; }
@@ -548,7 +614,7 @@ const clientStates = states.map((state) => ({
     .manifesto-context { max-width: 280px; }
     .evidence-media { min-height: 470px; }
     .market-chart { right: 8px; bottom: 36px; width: 96%; }
-    .chart-caption { align-items: flex-start; flex-direction: column; gap: 3px; }
+    .chart-caption { align-items: flex-start; gap: 8px; }
     .evidence-rail { grid-column: auto; grid-template-columns: 1fr; padding: 26px 20px; }
     .rail-live { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .rail-metric strong { font-size: 54px; }
@@ -562,13 +628,13 @@ const clientStates = states.map((state) => ({
   @media (max-width: 440px) {
     .rail-live { grid-template-columns: 1fr; }
     .evidence-media { min-height: 420px; }
-    .chart-value { font-size: 12px !important; }
-    .chart-year { font-size: 11px !important; }
+    .chart-value { font-size: 22px !important; stroke-width: 5px !important; }
+    .chart-year { font-size: 18px !important; stroke-width: 4px !important; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .evidence-hero { --evidence-progress: 1; }
-    :global(.evidence-photo img), .chart-line, .hero-route span, .hero-route i { transition: none; transform: none; }
+    .evidence-hero { --evidence-progress: 1; --photo-progress: 1; }
+    :global(.evidence-photo img), .chart-line, .hero-route span, .hero-route i { animation: none; transition: none; transform: none; }
   }
 </style>
 
@@ -581,6 +647,7 @@ const clientStates = states.map((state) => ({
     annual: AnnualPoint[];
     latest: AnnualPoint;
     yoy: { fromYear: number; toYear: number; percent: number; quality: string };
+    trend: string;
     range: { p25EurM2: number; medianEurM2: number; p75EurM2: number; eligibleCount: number };
     medianPosition: number;
   };
@@ -631,12 +698,13 @@ const clientStates = states.map((state) => ({
       setText('[data-market-median]', integer.format(state.latest.medianEurM2));
       setText('[data-market-year]', String(state.latest.year));
       setText('[data-market-yoy]', `${signedPercent.format(state.yoy.percent)} %`);
+      setText('[data-market-trend]', state.trend);
       setText('[data-market-yoy-note]', state.yoy.quality === 'limited'
         ? `Échantillon limité · ${state.yoy.fromYear}–${state.yoy.toYear}`
         : `par rapport à ${state.yoy.fromYear}`);
-      setText('[data-market-q1]', integer.format(state.range.p25EurM2));
-      setText('[data-market-range-median]', integer.format(state.range.medianEurM2));
-      setText('[data-market-q3]', `${integer.format(state.range.p75EurM2)} €/m²`);
+      setText('[data-market-q1]', `${integer.format(state.range.p25EurM2)} €`);
+      setText('[data-market-range-median]', `${integer.format(state.range.medianEurM2)} €`);
+      setText('[data-market-q3]', `${integer.format(state.range.p75EurM2)} €`);
       setText('[data-market-count]', String(state.latest.eligibleCount));
       setText('[data-market-count-year]', String(state.latest.year));
       setText('[data-chart-caption]', `${state.commune} · ${state.type.toLowerCase()} · ventes simples`);
@@ -655,7 +723,7 @@ const clientStates = states.map((state) => ({
         dot?.setAttribute('cx', String(point.x)); dot?.setAttribute('cy', String(point.y));
         value?.setAttribute('x', String(point.x)); value?.setAttribute('y', String(point.y - 16));
         year?.setAttribute('x', String(point.x));
-        if (value) value.textContent = integer.format(point.medianEurM2);
+        if (value) value.textContent = `${integer.format(point.medianEurM2)} €`;
         if (year) year.textContent = String(point.year);
       });
       if (!reduced.matches) root.animate([{ opacity: .94 }, { opacity: 1 }], { duration: 180, easing: 'ease-out' });
@@ -670,8 +738,21 @@ const clientStates = states.map((state) => ({
 
     const updateProgress = () => {
       pending = false;
-      if (reduced.matches || window.innerWidth <= 1080) {
+      if (reduced.matches) {
         root.style.setProperty('--evidence-progress', '1');
+        root.style.setProperty('--photo-progress', '1');
+        return;
+      }
+      if (window.innerWidth <= 1080) {
+        root.style.setProperty('--evidence-progress', '1');
+        const media = root.querySelector<HTMLElement>('.evidence-media');
+        const mediaRect = media?.getBoundingClientRect();
+        if (mediaRect) {
+          const start = window.innerHeight * .28;
+          const travel = Math.max(1, mediaRect.height * .55);
+          const photoProgress = Math.min(1, Math.max(0, (start - mediaRect.top) / travel));
+          root.style.setProperty('--photo-progress', photoProgress.toFixed(4));
+        }
         return;
       }
       const header = document.querySelector<HTMLElement>('[data-home-header]');
@@ -680,6 +761,7 @@ const clientStates = states.map((state) => ({
       const travel = Math.max(1, root.offsetHeight - (window.innerHeight - headerHeight));
       const progress = Math.min(1, Math.max(0, (headerHeight - rect.top) / travel));
       root.style.setProperty('--evidence-progress', progress.toFixed(4));
+      root.style.setProperty('--photo-progress', progress.toFixed(4));
     };
     const requestUpdate = () => {
       if (pending) return;
