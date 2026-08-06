@@ -1,0 +1,10 @@
+---
+const token = import.meta.env.PUBLIC_POSTHOG_KEY ?? '';
+const host = import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com';
+---
+
+<span hidden data-levois-analytics data-token={token} data-host={host} aria-hidden="true"></span>
+
+<script>
+  import '../scripts/analytics';
+</script>

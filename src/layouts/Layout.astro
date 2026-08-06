@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
 import { site } from '../config/site';
 import '../styles/global.css';
 
@@ -113,6 +114,7 @@ const ogImage = image.startsWith('http') ? image : site.url + image;
       <slot />
     </main>
     <Footer homeV2={homeV2} flush={title === 'Accueil'} />
+    <Analytics />
 
     <script>
       // Révélation à l'entrée dans le viewport — famille A (narration).

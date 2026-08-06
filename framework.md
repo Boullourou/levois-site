@@ -103,6 +103,15 @@ Le hook peut être fort, mais il ne doit jamais dépasser la force de la preuve 
 
 L’automatisation prépare la lecture. Elle ne remplace ni l’estimation professionnelle, ni la négociation, ni le jugement humain.
 
+### Mesure d’audience
+
+- PostHog EU est chargé uniquement lorsqu’une clé publique de projet est configurée.
+- Le mode sans cookies est obligatoire, ainsi que la désactivation des profils, des replays, des heatmaps et de l’autocapture.
+- Les URLs envoyées sont privées de leurs paramètres et fragments ; aucun contenu de formulaire, lien d’annonce ou coordonnée n’est collecté.
+- Les mesures couvrent l’entrée, la sortie, la source, le parcours, la durée active, la profondeur de lecture, les navigations, les formulaires et les sept événements canoniques de l’audit.
+- Les visiteurs peuvent refuser cette mesure depuis `/confidentialite#mesure-audience`.
+- Les statistiques restent séparées des demandes de contact et du fichier client.
+
 ## 8. Comportement de l’interface
 
 - Mobile d’abord, clavier utilisable, objectif WCAG 2.2 AA.
