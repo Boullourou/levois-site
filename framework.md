@@ -20,6 +20,17 @@ Les propriétaires déjà en vente, les propriétaires qui anticipent et les ach
 
 Le site ne présente jamais le vendeur comme le parcours principal et l’acheteur comme une simple preuve commerciale.
 
+### Deux parcours partenaires, dans un second cercle
+
+LEVOIS peut également orienter deux publics qui renforcent l’écosystème sans brouiller les parcours clients :
+
+- `prescriber` : une personne recommande un projet d’achat ou de vente via le dispositif officiel SAFTI Connect ;
+- `team_candidate` : une personne explore le métier de conseiller indépendant et la possibilité de rejoindre l’équipe de Mouaad.
+
+Ces entrées sont visibles mais secondaires. Elles disposent de leurs propres pages, contenus, preuves, formulaires et mesures. Elles ne sont jamais mélangées à une demande d’accompagnement immobilier.
+
+Le parcours prescripteur explique la règle officielle, les conditions de versement et le libre choix du contact. Le parcours candidat présente le travail réel, le statut indépendant, les outils SAFTI et la valeur ajoutée de l’accompagnement LEVOIS. Aucun des deux ne repose sur une promesse de gain ou une pression relationnelle.
+
 ## 3. Architecture des entrées
 
 | Intention | Entrée | Valeur délivrée avant contact | Suite possible |
@@ -29,6 +40,8 @@ Le site ne présente jamais le vendeur comme le parcours principal et l’achete
 | Situer une vente en cours | `/situer-ma-vente` | Lecture structurée des signaux disponibles | Ressource ou échange sur demande |
 | Auditer une annonce publiée | `/audit-annonce` | Deux améliorations concrètes à partir du lien ou du contenu copié | Résultat complet puis lecture humaine facultative |
 | Continuer depuis la carte de visite | `/carte` | Présentation et orientation courte | Choix du parcours pertinent |
+| Recommander un projet | `/recommander` *(à créer)* | Fonctionnement et conditions de SAFTI Connect | Transmission via le dispositif officiel |
+| Explorer le métier et l’équipe | `/rejoindre` *(à créer)* | Réalité du métier, ressources SAFTI et accompagnement proposé | Échange exploratoire volontaire |
 
 Les URLs imprimées ou déjà diffusées restent stables.
 
@@ -108,7 +121,7 @@ L’automatisation prépare la lecture. Elle ne remplace ni l’estimation profe
 - PostHog EU est chargé uniquement lorsqu’une clé publique de projet est configurée.
 - Le mode sans cookies est obligatoire, ainsi que la désactivation des profils, des replays, des heatmaps et de l’autocapture.
 - Les URLs envoyées sont privées de leurs paramètres et fragments ; aucun contenu de formulaire, lien d’annonce ou coordonnée n’est collecté.
-- Les mesures couvrent l’entrée, la sortie, la source, le parcours, la durée active, la profondeur de lecture, les navigations, les formulaires et les sept événements canoniques de l’audit.
+- Les mesures couvrent l’entrée, la sortie, la source, le parcours, la durée active, la profondeur de lecture, les navigations, les formulaires et les sept événements canoniques de l’audit. Les parcours `prescriber` et `team_candidate` restent séparés des trois parcours clients.
 - Les visiteurs peuvent refuser cette mesure depuis `/confidentialite#mesure-audience`.
 - Les statistiques restent séparées des demandes de contact et du fichier client.
 

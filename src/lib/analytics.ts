@@ -9,7 +9,7 @@ export const AUDIT_EVENTS = [
 ] as const;
 
 export type AuditEventName = (typeof AUDIT_EVENTS)[number];
-export type Journey = 'listing_live' | 'seller_future' | 'buyer' | 'brand';
+export type Journey = 'listing_live' | 'seller_future' | 'buyer' | 'prescriber' | 'team_candidate' | 'brand';
 
 const auditEventSet = new Set<string>(AUDIT_EVENTS);
 
@@ -44,6 +44,8 @@ export function journeyForPath(value: string): Journey {
     return 'seller_future';
   }
   if (path === '/ma-recherche' || path.startsWith('/ma-recherche/')) return 'buyer';
+  if (path === '/recommander' || path.startsWith('/recommander/')) return 'prescriber';
+  if (path === '/rejoindre' || path.startsWith('/rejoindre/')) return 'team_candidate';
   return 'brand';
 }
 

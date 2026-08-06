@@ -19,6 +19,8 @@ describe('analytics privacy contract', () => {
     expect(journeyForPath('/situer-ma-vente/resultat')).toBe('seller_future');
     expect(journeyForPath('/votre-rue')).toBe('seller_future');
     expect(journeyForPath('/ma-recherche')).toBe('buyer');
+    expect(journeyForPath('/recommander')).toBe('prescriber');
+    expect(journeyForPath('/rejoindre')).toBe('team_candidate');
     expect(journeyForPath('/ressources')).toBe('brand');
   });
 

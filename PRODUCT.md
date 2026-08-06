@@ -16,6 +16,13 @@ LEVOIS s'adresse à trois situations complémentaires du bassin chartrain :
 
 Ces publics ne sont pas deux silos. Un fichier d'acheteurs sérieux et qualifiés renforce la capacité de commercialisation proposée aux vendeurs. Les biens confiés à Mouaad alimentent en retour une offre plus pertinente pour les acheteurs et peuvent soutenir les accords TIM SAFTI ou les coopérations inter-agences.
 
+Deux publics partenaires complètent cette boucle sans remplacer les trois parcours clients :
+
+- les prescripteurs qui souhaitent recommander librement Mouaad à un proche ayant un projet d’achat ou de vente, dans le cadre officiel de SAFTI Connect ;
+- les candidats au métier de conseiller immobilier indépendant qui cherchent une équipe réellement présente, une méthode de démarrage et des systèmes de production et de suivi utiles.
+
+Ces deux parcours restent secondaires dans la navigation et disposent à terme de destinations dédiées. Ils ne doivent ni encombrer la promesse principale, ni transformer LEVOIS en vitrine de recrutement ou de rémunération.
+
 ## Product Purpose
 
 LEVOIS aide à réduire l'écart entre ce qu'un bien peut raisonnablement défendre et la façon dont le marché le perçoit. Le produit rend les signaux immobiliers compréhensibles avant de proposer un accompagnement humain.
@@ -25,6 +32,7 @@ Le succès ne se limite pas au volume de contacts. Il signifie :
 - être reconnu comme la référence locale en ligne à Lèves et dans le bassin chartrain ;
 - créer une audience utile de vendeurs et d'acheteurs ;
 - transformer cette audience en demandes entrantes qualifiées ;
+- développer un réseau de recommandations transparent et une équipe de conseillers effectivement accompagnés ;
 - automatiser la collecte, la première lecture et le suivi pour préserver le temps consacré à la relation, au jugement et à la négociation.
 
 ## Positioning
@@ -66,10 +74,14 @@ Capacités requises mais pas encore livrées :
 - préparation de courriers ciblés non nominatifs lorsque l'usage des données et le cadre légal le permettent ;
 - suivi par snapshots des changements de prix, de diffusion et de durée ;
 - continuité mesurable entre contenu, diagnostic, demande entrante et relation humaine.
+- parcours prescripteur expliquant SAFTI Connect, ses conditions et la transmission volontaire d’une information ;
+- parcours candidat présentant honnêtement le statut indépendant, l’accompagnement de Mouaad, les outils SAFTI et les systèmes LEVOIS, sans promesse de revenu ni recrutement agressif.
 
 Contraintes :
 
 - ne jamais fabriquer de prix, de preuve, de statistique, de témoignage ou de résultat ;
+- ne publier un chiffre SAFTI Connect ou une règle de rémunération que s’il est sourcé sur une documentation officielle à jour ;
+- ne jamais promettre un revenu, présenter une réussite comme automatique ou minimiser les exigences du métier indépendant ;
 - distinguer clairement hypothèse, signal et conclusion ;
 - préserver le fonctionnement du moteur déterministe et ses tests lors de la refonte ;
 - ne pas exposer de données personnelles ou d'adresses issues des exports ;
