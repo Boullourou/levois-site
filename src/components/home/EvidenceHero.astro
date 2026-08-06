@@ -23,10 +23,16 @@ const selectorSpecs = [
 const qualityRank: Record<string, number> = { strong: 0, usable: 1, limited: 2, insufficient: 3 };
 const weakestQuality = (a: string, b: string) => qualityRank[a] >= qualityRank[b] ? a : b;
 const trendLabel = (percent: number, quality: string) => {
-  if (quality === 'limited' || quality === 'insufficient') return 'À confirmer';
-  if (percent > 1.5) return 'Hausse';
-  if (percent < -1.5) return 'Baisse';
-  return 'Stable';
+  if (quality === 'limited' || quality === 'insufficient') return 'Tendance à confirmer';
+  if (percent > 1.5) return 'Prix en hausse';
+  if (percent < -1.5) return 'Prix en baisse';
+  return 'Prix stables';
+};
+const trendSentence = (trend: string) => {
+  if (trend === 'Prix en hausse') return 'Les prix du marché sont en hausse.';
+  if (trend === 'Prix en baisse') return 'Les prix du marché sont en baisse.';
+  if (trend === 'Tendance à confirmer') return 'Le marché manque de ventes comparables pour conclure.';
+  return 'Les prix du marché sont stables.';
 };
 
 const states = selectorSpecs.map((spec) => {
@@ -58,12 +64,15 @@ const states = selectorSpecs.map((spec) => {
   const rangeWidth = Math.max(1, range.p75EurM2 - range.p25EurM2);
   const medianPosition = Math.max(0, Math.min(100, ((range.medianEurM2 - range.p25EurM2) / rangeWidth) * 100));
 
+  const trend = trendLabel(yoy.percent, yoy.quality);
+
   return {
     ...spec,
     annual,
     latest,
     yoy,
-    trend: trendLabel(yoy.percent, yoy.quality),
+    trend,
+    trendSentence: trendSentence(trend),
     range,
     medianPosition,
   };
@@ -107,6 +116,7 @@ const clientStates = states.map((state) => ({
   latest: state.latest,
   yoy: state.yoy,
   trend: state.trend,
+  trendSentence: state.trendSentence,
   range: state.range,
   medianPosition: state.medianPosition,
 }));
@@ -190,23 +200,24 @@ const clientStates = states.map((state) => ({
 
         <div class="rail-live" aria-live="polite" aria-atomic="true">
           <div class="rail-verdict" data-evidence-group="1">
-            <span>Ce que disent les prix signés</span>
+            <span>État du marché local</span>
             <strong data-market-trend>{initial.trend}</strong>
             <small data-market-trend-period>
-              {initial.yoy.quality === 'limited' ? `Tendance à confirmer · ${initial.yoy.fromYear}–${initial.yoy.toYear}` : `Entre ${initial.yoy.fromYear} et ${initial.yoy.toYear}`}
+              <b data-market-trend-sentence>{initial.trendSentence}</b>
+              <em data-market-period-detail>{initial.yoy.quality === 'limited' ? ` À vérifier avec plus de ventes comparables.` : ` Entre ${initial.yoy.fromYear} et ${initial.yoy.toYear}.`}</em>
             </small>
           </div>
 
           <div class="rail-change" data-evidence-group="2">
             <strong data-market-yoy>{signed.format(initial.yoy.percent)} %</strong>
             <span data-market-yoy-note>
-              {initial.yoy.quality === 'limited' ? `Échantillon limité pour confirmer la tendance` : `Évolution de la médiane par rapport à ${initial.yoy.fromYear}`}
+              {initial.yoy.quality === 'limited' ? `Tendance à confirmer sur cet échantillon` : `Variation du prix médian au m² par rapport à ${initial.yoy.fromYear}`}
             </span>
           </div>
 
           <div class="rail-metric" data-evidence-group="3">
             <strong><span data-market-median>{number.format(initial.latest.medianEurM2)}</span><i> €/m²</i></strong>
-            <span>Médiane observée en <b data-market-year>{initial.latest.year}</b></span>
+            <span>Prix médian signé en <b data-market-year>{initial.latest.year}</b></span>
           </div>
 
           <div class="rail-range" data-evidence-group="4" style={`--median-position:${initial.medianPosition.toFixed(2)}%`}>
@@ -216,17 +227,17 @@ const clientStates = states.map((state) => ({
               <span data-market-q3>{number.format(initial.range.p75EurM2)} €</span>
             </div>
             <div class="range-track" aria-hidden="true"><i></i></div>
-            <p>Fourchette centrale en €/m² · {initial.range.eligibleCount} mutations simples</p>
+            <p>La moitié des ventes comparables se situe dans cette fourchette · {initial.range.eligibleCount} ventes simples</p>
           </div>
 
           <p class="rail-sample" data-evidence-group="5">
-            <strong data-market-count>{initial.latest.eligibleCount}</strong> ventes analysées en <span data-market-count-year>{initial.latest.year}</span>
+            <strong data-market-count>{initial.latest.eligibleCount}</strong> ventes comparables analysées en <span data-market-count-year>{initial.latest.year}</span>
           </p>
         </div>
 
         <p class="rail-source">
           Source DVF · DGFiP. Ventes passées, hors mutations multi-lots. Ni estimation ni prévision.
-          <span>Le verdict décrit uniquement l’évolution des prix signés. Ici s’arrête le diagnostic automatique : l’offre active, la demande réelle, l’état du bien et votre situation exigent une analyse personnalisée.</span>
+          <span>Ce bloc répond à une seule question : les prix signés montent-ils, baissent-ils ou restent-ils stables ? Pour décider quoi faire avec votre projet, il faut ensuite lire l’offre active, la demande réelle, l’état du bien et votre situation.</span>
         </p>
       </aside>
     </div>
@@ -493,7 +504,15 @@ const clientStates = states.map((state) => ({
     letter-spacing: -.035em;
     text-transform: uppercase;
   }
-  .rail-verdict small { color: var(--paper); font-size: 11px; line-height: 1.35; }
+  .rail-verdict small {
+    color: var(--paper);
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .rail-verdict small b,
+  .rail-verdict small em {
+    font: inherit;
+  }
   .rail-metric, .rail-change, .rail-range, .rail-sample {
     opacity: calc(.24 + var(--evidence-progress));
     transform: translateY(calc((1 - var(--evidence-progress)) * 12px));
@@ -513,11 +532,12 @@ const clientStates = states.map((state) => ({
   .rail-metric b { font-weight: inherit; }
   .rail-metric i {
     font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: .34em;
+    font-size: .42em;
     font-style: normal;
     font-weight: 750;
     letter-spacing: -.015em;
   }
+  .rail-metric strong { font-size: clamp(54px, 5vw, 84px); }
   .rail-change { display: grid; gap: 5px; }
   .rail-change strong { font-size: clamp(32px, 3.2vw, 52px); }
 
@@ -591,9 +611,9 @@ const clientStates = states.map((state) => ({
     right: 0;
     width: 26px;
     height: 26px;
-    border-top: 3px solid var(--lime);
-    border-right: 3px solid var(--lime);
-    transform: translateY(-50%) rotate(45deg);
+    background: var(--lime);
+    clip-path: polygon(0 0, 100% 50%, 0 100%, 0 70%, 58% 50%, 0 30%);
+    transform: translateY(-50%);
     content: '';
   }
   .hero-route:hover span { transform: translateX(5px); }
@@ -645,9 +665,9 @@ const clientStates = states.map((state) => ({
       border-top: 1px solid rgba(215,255,66,.5);
       border-bottom: 1px solid rgba(215,255,66,.5);
     }
-    .rail-verdict strong { font-size: clamp(62px, 19vw, 88px); }
+    .rail-verdict strong { font-size: clamp(48px, 15vw, 74px); }
     .rail-verdict small { font-size: 13px; }
-    .rail-metric strong { font-size: 54px; }
+    .rail-metric strong { font-size: clamp(64px, 17vw, 82px); }
     .rail-change strong { font-size: 42px; }
     .hero-routes { grid-template-columns: 1fr; }
     .hero-route { min-height: 106px; padding: 18px 20px; }
@@ -678,6 +698,7 @@ const clientStates = states.map((state) => ({
     latest: AnnualPoint;
     yoy: { fromYear: number; toYear: number; percent: number; quality: string };
     trend: string;
+    trendSentence: string;
     range: { p25EurM2: number; medianEurM2: number; p75EurM2: number; eligibleCount: number };
     medianPosition: number;
   };
@@ -729,12 +750,13 @@ const clientStates = states.map((state) => ({
       setText('[data-market-year]', String(state.latest.year));
       setText('[data-market-yoy]', `${signedPercent.format(state.yoy.percent)} %`);
       setText('[data-market-trend]', state.trend);
-      setText('[data-market-trend-period]', state.yoy.quality === 'limited'
-        ? `Tendance à confirmer · ${state.yoy.fromYear}–${state.yoy.toYear}`
-        : `Entre ${state.yoy.fromYear} et ${state.yoy.toYear}`);
+      setText('[data-market-trend-sentence]', state.trendSentence);
+      setText('[data-market-period-detail]', state.yoy.quality === 'limited'
+        ? ` À vérifier avec plus de ventes comparables.`
+        : ` Entre ${state.yoy.fromYear} et ${state.yoy.toYear}.`);
       setText('[data-market-yoy-note]', state.yoy.quality === 'limited'
-        ? 'Échantillon limité pour confirmer la tendance'
-        : `Évolution de la médiane par rapport à ${state.yoy.fromYear}`);
+        ? 'Tendance à confirmer sur cet échantillon'
+        : `Variation du prix médian au m² par rapport à ${state.yoy.fromYear}`);
       setText('[data-market-q1]', `${integer.format(state.range.p25EurM2)} €`);
       setText('[data-market-range-median]', `${integer.format(state.range.medianEurM2)} €`);
       setText('[data-market-q3]', `${integer.format(state.range.p75EurM2)} €`);
