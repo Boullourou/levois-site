@@ -5,15 +5,15 @@ import { site } from '../config/site';
 const designContract = `
 THESIS: Un lien d’annonce devient deux améliorations concrètes, puis une lecture humaine facultative là où l’automatisation s’arrête.
 OWN-WORLD: Papier minéral, encre profonde, cobalt analytique et lime décisif ; la page ressemble à une mise au point, jamais à un score opaque.
-STORY: Le propriétaire colle son lien, voit ce que la page permet réellement de lire, reçoit deux actions prioritaires et choisit ensuite de transmettre à Mouaad.
-FIRST VIEWPORT: Promesse massive et outil URL immédiatement utilisable ; le parcours Lien → 2 conseils → Mouaad est visible sans défilement.
-FORM: Une seule entrée d’abord, un secours court si le portail bloque, aucune coordonnée avant le résultat.
+STORY: Le propriétaire colle son lien, complète trois réponses sur les réactions reçues, obtient deux actions prioritaires et choisit ensuite de transmettre à Mouaad.
+FIRST VIEWPORT: Promesse massive et outil URL immédiatement utilisable ; le parcours Lien → 3 réponses → 2 actions est visible sans défilement.
+FORM: Le lien enrichit le diagnostic lorsqu’il est lisible mais ne bloque jamais le questionnaire ; aucune coordonnée avant le résultat.
 FINISH: contenu complet sur mobile, états chargement/erreur/secours/résultat, limite automatique explicite et transmission consentie.`;
 
 const faq = [
   {
     q: 'Que se passe-t-il si le portail bloque la lecture ?',
-    a: 'Ce n’est pas une erreur de votre lien. Certains sites refusent qu’un autre service lise leurs pages. L’outil vous pose alors deux questions courtes, localise l’étape à vérifier et vous dirige vers la ressource la plus utile.',
+    a: 'Ce n’est pas une erreur de votre lien. Certains sites refusent qu’un autre service lise leurs pages. Le même questionnaire de trois réponses prend alors le relais et vous dirige vers la ressource la plus utile.',
   },
   {
     q: 'L’outil juge-t-il le prix de mon bien ?',
@@ -45,7 +45,7 @@ const faq = [
         applicationCategory: 'BusinessApplication',
         operatingSystem: 'Navigateur web',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
-        description: 'Outil gratuit qui lit une annonce immobilière et propose deux améliorations concrètes avant toute demande de coordonnées.',
+        description: 'Outil gratuit qui croise le lien d’une annonce immobilière avec trois réponses courtes pour proposer deux actions concrètes avant toute demande de coordonnées.',
         areaServed: ['Lèves', 'Chartres', 'Bassin chartrain'],
       },
       {
@@ -62,8 +62,8 @@ const faq = [
   <main>
     <section class="url-hero" aria-labelledby="audit-title">
       <div class="url-hero__copy">
-        <h1 id="audit-title">Collez votre annonce.<br /><span>Repartez avec 2 améliorations.</span></h1>
-        <p>Pas de note inventée ni de baisse de prix automatique. L’outil lit ce que l’acheteur voit et vous indique les deux changements à tester en priorité.</p>
+        <h1 id="audit-title">Collez votre annonce.<br /><span>3 réponses. 2 actions.</span></h1>
+        <p>Le lien apporte le contexte. Vos réponses montrent ce qui se passe réellement entre les vues, les contacts, les visites et les offres.</p>
         <ul aria-label="Engagements de l’audit">
           <li>Gratuit</li>
           <li>Sans coordonnées</li>
@@ -74,8 +74,8 @@ const faq = [
       <div class="url-entry" id="outil">
         <div class="url-steps" aria-label="Parcours de l’audit">
           <span data-active>Votre lien</span>
-          <span>2 conseils</span>
-          <span>Mouaad, si utile</span>
+          <span>3 réponses</span>
+          <span>2 actions</span>
         </div>
         <form data-url-form novalidate>
           <label for="listing-url">Lien public de l’annonce</label>
@@ -123,8 +123,8 @@ const faq = [
   </main>
 
   <script>
-    import { analyseListing, type ListingAnalysis, type ListingSnapshot } from '../lib/audit-url';
-    import { analyseBlockedListing, type BlockedAuditResult, type ListingDuration, type ListingSignal } from '../lib/audit-blocked';
+    import { type ListingAnalysis, type ListingSnapshot } from '../lib/audit-url';
+    import { analyseHybridListing, getContextQuestion, type BlockedAuditResult, type ContextOption, type ListingDuration, type ListingSignal } from '../lib/audit-blocked';
 
     const urlForm = document.querySelector<HTMLFormElement>('[data-url-form]');
     const urlInput = document.querySelector<HTMLInputElement>('#listing-url');
@@ -136,6 +136,12 @@ const faq = [
       '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
     }[char] || char));
 
+    function trackAudit(event: string, detail: Record<string, unknown> = {}) {
+      window.dispatchEvent(new CustomEvent('levois:audit', { detail: { event, ...detail } }));
+      const dataLayer = (window as Window & { dataLayer?: Record<string, unknown>[] }).dataLayer;
+      if (Array.isArray(dataLayer)) dataLayer.push({ event, ...detail });
+    }
+
     function setLoading(loading: boolean) {
       const button = urlForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
       if (!button) return;
@@ -143,61 +149,65 @@ const faq = [
       button.textContent = loading ? 'Lecture de la page…' : 'Analyser mon annonce';
     }
 
-    function showFallback(message: string, reason = 'blocked') {
+    function choices(name: string, options: ContextOption[]) {
+      return options.map((option) => `<label><input type="radio" name="${escapeHtml(name)}" value="${escapeHtml(option.value)}"><span>${escapeHtml(option.label)}</span></label>`).join('');
+    }
+
+    function startQuestionnaire(snapshot: ListingSnapshot, readable: boolean, message: string) {
       if (!output) return;
       let duration: ListingDuration | null = null;
+      let signal: ListingSignal | null = null;
       output.hidden = false;
-      output.innerHTML = `<div class="fallback-shell" tabindex="-1">
+      output.innerHTML = `<div class="fallback-shell guided-shell" tabindex="-1">
         <div class="fallback-copy">
-          <h2>${reason === 'blocked' ? 'Votre lien n’est pas en cause.' : 'La page n’a pas pu être lue.'}<br><span>On continue autrement.</span></h2>
+          <h2>${readable ? 'Le lien apporte le contexte.' : 'Votre lien n’est pas en cause.'}<br><span>Vos réponses donnent le sens.</span></h2>
           <p>${escapeHtml(message)}</p>
-          <p>Vous n’avez rien à recopier. Deux réponses suffisent pour trouver la prochaine vérification utile.</p>
+          <p>Trois sélections suffisent. Aucune coordonnée n’est demandée pour voir les deux actions.</p>
           <p class="fallback-url">Lien conservé&nbsp;: ${escapeHtml(currentUrl)}</p>
         </div>
-        <div class="fallback-form" data-fallback-flow>
-          <form data-duration-form>
-            <p>Question 1 sur 2</p>
-            <fieldset><legend>Depuis combien de temps l’annonce est-elle publiée&nbsp;?</legend>
-              <label><input type="radio" name="duration" value="moins-7"><span>Moins de 7 jours</span></label>
-              <label><input type="radio" name="duration" value="7-30"><span>De 7 à 30 jours</span></label>
-              <label><input type="radio" name="duration" value="plus-30"><span>Plus d’un mois</span></label>
-            </fieldset>
-          </form>
-          <form data-signal-form hidden>
-            <p>Question 2 sur 2</p>
-            <fieldset><legend tabindex="-1">Que se passe-t-il aujourd’hui&nbsp;?</legend>
-              <label><input type="radio" name="signal" value="peu-vues"><span>Très peu de vues</span></label>
-              <label><input type="radio" name="signal" value="vues-sans-contact"><span>Des vues, mais aucun contact</span></label>
-              <label><input type="radio" name="signal" value="contacts-sans-visite"><span>Des contacts, mais aucune visite</span></label>
-              <label><input type="radio" name="signal" value="visites-sans-offre"><span>Des visites, mais aucune offre</span></label>
-              <label><input type="radio" name="signal" value="offre-recue"><span>Une proposition ou une offre reçue</span></label>
-            </fieldset>
-          </form>
+        <div class="fallback-form" data-guided-screen>
         </div>
       </div>`;
+      trackAudit(readable ? 'audit_url_readable' : 'audit_url_blocked', { source: snapshot.source });
       output.querySelector<HTMLElement>('.fallback-shell')?.focus();
       output.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-      output.querySelector<HTMLFormElement>('[data-duration-form]')?.addEventListener('change', (event) => {
-        const input = (event.target as HTMLElement).closest<HTMLInputElement>('input[name="duration"]');
-        if (!input) return;
-        duration = input.value as ListingDuration;
-        const signalForm = output.querySelector<HTMLFormElement>('[data-signal-form]');
-        if (signalForm) {
-          signalForm.hidden = false;
-          signalForm.querySelector<HTMLElement>('legend')?.focus();
-        }
-      });
-      output.querySelector<HTMLFormElement>('[data-signal-form]')?.addEventListener('change', (event) => {
-        const input = (event.target as HTMLElement).closest<HTMLInputElement>('input[name="signal"]');
-        if (!input || !duration) return;
-        const result = analyseBlockedListing(duration, input.value as ListingSignal);
-        const snapshot: ListingSnapshot = {
-          url: currentUrl,
-          source: 'Lien non lisible — réponses du propriétaire',
-          title: '', description: '',
-        };
-        showResult(snapshot, result.analysis, result.resource);
-      });
+
+      const screen = output.querySelector<HTMLElement>('[data-guided-screen]');
+      const durations: ContextOption[] = [
+        { value: 'moins-7', label: 'Moins de 7 jours' }, { value: '7-30', label: 'De 7 à 30 jours' }, { value: 'plus-30', label: 'Plus d’un mois' },
+      ];
+      const signals: ContextOption[] = [
+        { value: 'peu-vues', label: 'Très peu de vues' }, { value: 'vues-sans-contact', label: 'Des vues, mais aucun contact' },
+        { value: 'contacts-sans-visite', label: 'Des contacts, mais aucune visite' }, { value: 'visites-sans-offre', label: 'Des visites, mais aucune offre' },
+        { value: 'offre-recue', label: 'Une proposition ou une offre reçue' },
+      ];
+
+      function renderStep(step: 1 | 2 | 3) {
+        if (!screen) return;
+        const question = step === 1
+          ? { question: 'Depuis combien de temps l’annonce est-elle publiée ?', options: durations, name: 'duration' }
+          : step === 2
+            ? { question: 'Que se passe-t-il aujourd’hui ?', options: signals, name: 'signal' }
+            : { ...getContextQuestion(signal!), name: 'context' };
+        screen.innerHTML = `<form data-guided-form>
+          <p>Question ${step} sur 3</p>
+          <div class="guided-progress" aria-hidden="true"><i style="transform:scaleX(${step / 3})"></i></div>
+          <fieldset><legend tabindex="-1">${escapeHtml(question.question)}</legend>${choices(question.name, question.options)}</fieldset>
+          ${step > 1 ? '<button class="guided-back" type="button">Modifier la réponse précédente</button>' : ''}
+        </form>`;
+        screen.querySelector<HTMLElement>('legend')?.focus();
+        screen.querySelector<HTMLButtonElement>('.guided-back')?.addEventListener('click', () => renderStep((step - 1) as 1 | 2));
+        screen.querySelector<HTMLFormElement>('[data-guided-form]')?.addEventListener('change', (event) => {
+          const input = (event.target as HTMLElement).closest<HTMLInputElement>('input[type="radio"]');
+          if (!input) return;
+          if (step === 1) { duration = input.value as ListingDuration; renderStep(2); return; }
+          if (step === 2) { signal = input.value as ListingSignal; trackAudit('audit_stage_identified', { signal }); renderStep(3); return; }
+          if (!duration || !signal) return;
+          const result = analyseHybridListing(snapshot, duration, signal, input.value);
+          showResult(snapshot, result.analysis, result.resource, { duration, signal, context: input.value, urlReadable: readable });
+        });
+      }
+      renderStep(1);
     }
 
     function resultMarkup(snapshot: ListingSnapshot, analysis: ListingAnalysis, resource?: BlockedAuditResult['resource']) {
@@ -236,10 +246,11 @@ const faq = [
       </div>`;
     }
 
-    function showResult(snapshot: ListingSnapshot, analysis: ListingAnalysis, resource?: BlockedAuditResult['resource']) {
+    function showResult(snapshot: ListingSnapshot, analysis: ListingAnalysis, resource?: BlockedAuditResult['resource'], answers: Record<string, unknown> = {}) {
       if (!output) return;
       output.hidden = false;
       output.innerHTML = resultMarkup(snapshot, analysis, resource);
+      trackAudit('audit_result_viewed', { result: analysis.title });
       output.querySelector<HTMLElement>('.result-shell')?.focus();
       output.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
       output.querySelector<HTMLButtonElement>('[data-restart]')?.addEventListener('click', () => {
@@ -248,10 +259,11 @@ const faq = [
         urlInput?.focus();
         window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
       });
-      bindLead(snapshot, analysis);
+      output.querySelector<HTMLAnchorElement>('.resource-next')?.addEventListener('click', () => trackAudit('audit_resource_clicked', { href: resource?.href }));
+      bindLead(snapshot, analysis, answers);
     }
 
-    function bindLead(snapshot: ListingSnapshot, analysis: ListingAnalysis) {
+    function bindLead(snapshot: ListingSnapshot, analysis: ListingAnalysis, answers: Record<string, unknown>) {
       const form = output?.querySelector<HTMLFormElement>('[data-lead-form]');
       const status = output?.querySelector<HTMLElement>('[data-lead-status]');
       form?.addEventListener('submit', async (event) => {
@@ -270,15 +282,16 @@ const faq = [
               prenom: data.get('prenom'), nom: data.get('nom'), email: data.get('email'), telephone: data.get('telephone'),
               annonce: snapshot.url, detail: data.get('detail'), site_web: data.get('site_web'),
               audit: {
-                code: 'url-first', titre: analysis.title, resume: analysis.summary,
+                code: 'hybrid', titre: analysis.title, resume: analysis.summary,
                 faits: analysis.facts, actions: analysis.tips.map((tip) => `${tip.title} — ${tip.action}`),
-                reponses: { source: snapshot.source, titre: snapshot.title, prix: snapshot.price || 'non lu', photos: snapshot.photoCount ?? 'non lu' },
+                reponses: { ...answers, source: snapshot.source, titre: snapshot.title, prix: snapshot.price || 'non lu', photos: snapshot.photoCount ?? 'non lu' },
               },
             }),
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) throw new Error(payload.message || 'La transmission n’a pas abouti.');
           form.innerHTML = `<div class="lead-success" tabindex="-1" role="status"><b>Votre demande est transmise.</b><p>Mouaad dispose du lien, des deux premiers conseils et de votre précision. Il pourra reprendre exactement là où l’automatisation s’arrête.</p></div>`;
+          trackAudit('audit_human_requested', { result: analysis.title });
           form.querySelector<HTMLElement>('.lead-success')?.focus();
         } catch (error) {
           if (status) status.textContent = error instanceof Error ? error.message : 'La transmission n’a pas abouti.';
@@ -291,6 +304,7 @@ const faq = [
       event.preventDefault();
       if (!urlForm.reportValidity() || !urlInput) return;
       currentUrl = urlInput.value.trim();
+      trackAudit('audit_started');
       if (urlStatus) urlStatus.textContent = '';
       setLoading(true);
       try {
@@ -301,9 +315,9 @@ const faq = [
         });
         const payload = await response.json().catch(() => ({}));
         if (response.ok && payload.snapshot && payload.analysis) {
-          showResult(payload.snapshot as ListingSnapshot, payload.analysis as ListingAnalysis);
+          startQuestionnaire(payload.snapshot as ListingSnapshot, true, 'La page a fourni quelques éléments de présentation. Ils seront croisés avec les réactions que vous avez réellement reçues.');
         } else if (payload.fallback) {
-          showFallback(payload.message || 'La page ne peut pas être lue automatiquement.', payload.reason || 'blocked');
+          startQuestionnaire({ url: currentUrl, source: 'Portail non lisible', title: '', description: '' }, false, payload.message || 'La page ne peut pas être lue automatiquement.');
         } else {
           throw new Error(payload.message || 'Ce lien ne peut pas être analysé.');
         }
@@ -349,6 +363,8 @@ const faq = [
     .fallback-form form { display: grid; gap: 16px; }
     .fallback-form form + form { padding-top: 30px; border-top: 1px solid #c9cec8; }
     .fallback-form form > p { margin: 0; color: #243cff; font-size: 12px; font-weight: 800; }
+    .guided-progress { height: 4px; margin-bottom: 18px; background: #c9cec8; }
+    .guided-progress i { width: 100%; height: 100%; display: block; background: #243cff; transform-origin: left center; transition: transform .25s ease-out; }
     .fallback-form fieldset { margin: 0; padding: 0; border: 0; display: grid; gap: 2px; background: #111522; }
     .fallback-form legend { width: 100%; margin-bottom: 18px; background: #f2f5ef; font-size: clamp(28px, 3vw, 42px); font-weight: 800; line-height: 1.05; }
     .fallback-form label { position: relative; cursor: pointer; }
@@ -357,6 +373,7 @@ const faq = [
     .fallback-form label:hover span, .fallback-form input:checked + span { background: #d7ff42; }
     .fallback-form input:focus-visible + span { outline: 3px solid #243cff; outline-offset: -3px; }
     .fallback-form [hidden] { display: none; }
+    .guided-back { width: max-content; min-height: 42px; margin-top: 6px; padding: 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; color: #111522; font: 750 14px/1.2 'Public Sans', sans-serif; cursor: pointer; }
     .human-next label { display: grid; gap: 8px; font-weight: 750; }
     .human-next input, .human-next textarea { width: 100%; padding: 15px 16px; border: 1px solid #111522; border-radius: 0; background: #fff; color: #111522; font: 400 16px/1.45 'Public Sans', sans-serif; }
     .human-next textarea { resize: vertical; }
@@ -422,7 +439,7 @@ const faq = [
     .url-faq details:last-child { border-bottom: 1px solid #111522; }
     .url-faq summary { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 24px; cursor: pointer; font-size: 18px; font-weight: 800; list-style: none; }
     .url-faq details p { max-width: 68ch; margin: 0; padding: 0 46px 28px 0; color: #58615b; line-height: 1.58; }
-    input:focus-visible, textarea:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #d7ff42; outline-offset: 3px; }
+    input:focus-visible, textarea:focus-visible, button:focus-visible, summary:focus-visible, legend:focus-visible { outline: 3px solid #d7ff42; outline-offset: 3px; }
 
     @media (max-width: 980px) {
       .url-hero, .fallback-shell, .url-method, .url-boundary, .url-faq, .human-next { grid-template-columns: 1fr; }
@@ -457,7 +474,7 @@ const faq = [
 
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      .result-evidence summary span::after, .url-faq summary span::after { transition: none; }
+      .result-evidence summary span::after, .url-faq summary span::after, .guided-progress i { transition: none; }
     }
   </style>
 </Layout>
