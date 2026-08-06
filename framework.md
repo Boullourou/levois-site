@@ -8,13 +8,15 @@ La séquence de référence est toujours :
 
 **faits disponibles → perception du marché → décision à prendre → accompagnement humain facultatif**
 
-## 2. Deux côtés, une seule boucle
+## 2. Trois parcours, une seule boucle
 
-Acheteurs et vendeurs ont la même importance éditoriale et fonctionnelle.
+Les propriétaires déjà en vente, les propriétaires qui anticipent et les acheteurs ont chacun une porte d’entrée explicite. Ils appartiennent à une même marque et à une même lecture du marché.
 
+- Une annonce déjà publiée peut être améliorée sans transformer l’audit en prétexte commercial.
+- Une vente future mieux préparée laisse plus de choix lorsqu’un calendrier ou un imprévu accélère la décision.
 - Une recherche acheteur mieux définie renseigne ce que le marché attend réellement.
 - Une vente mieux positionnée produit une offre plus pertinente pour les acheteurs.
-- Les deux parcours convergent vers Mouaad seulement après une première restitution utile.
+- Les trois parcours convergent vers Mouaad seulement après une première restitution utile.
 
 Le site ne présente jamais le vendeur comme le parcours principal et l’acheteur comme une simple preuve commerciale.
 
@@ -25,7 +27,7 @@ Le site ne présente jamais le vendeur comme le parcours principal et l’achete
 | Comprendre une recherche | `/ma-recherche` | Synthèse des critères, compromis et niveau de préparation | Échange avec Mouaad sur demande |
 | Lire les ventes autour d’une adresse | `/votre-rue` | Transactions DVF et limites de lecture | Situer la vente ou approfondir |
 | Situer une vente en cours | `/situer-ma-vente` | Lecture structurée des signaux disponibles | Ressource ou échange sur demande |
-| Auditer une annonce publiée | `/audit-annonce` | Localisation du décrochage entre diffusion, vues, contacts, visites et décision | Résultat complet puis lecture humaine facultative |
+| Auditer une annonce publiée | `/audit-annonce` | Deux améliorations concrètes à partir du lien ou du contenu copié | Résultat complet puis lecture humaine facultative |
 | Continuer depuis la carte de visite | `/carte` | Présentation et orientation courte | Choix du parcours pertinent |
 
 Les URLs imprimées ou déjà diffusées restent stables.

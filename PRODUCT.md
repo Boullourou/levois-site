@@ -8,9 +8,10 @@ web
 
 ## Users
 
-LEVOIS s'adresse avec le même niveau de priorité à deux publics du bassin chartrain :
+LEVOIS s'adresse à trois situations complémentaires du bassin chartrain :
 
-- les propriétaires vendeurs, avant ou pendant la commercialisation de leur bien, qui veulent comprendre leur position sans subir une démarche commerciale classique ;
+- les propriétaires dont l’annonce est déjà publiée et qui veulent d’abord vendre seuls tout en améliorant leur commercialisation ;
+- les propriétaires qui ne vendent pas encore mais veulent anticiper une décision, un changement de vie ou une stratégie future ;
 - les acheteurs, qui veulent mieux lire la valeur, les compromis et les signaux d'un bien avant de décider.
 
 Ces publics ne sont pas deux silos. Un fichier d'acheteurs sérieux et qualifiés renforce la capacité de commercialisation proposée aux vendeurs. Les biens confiés à Mouaad alimentent en retour une offre plus pertinente pour les acheteurs et peuvent soutenir les accords TIM SAFTI ou les coopérations inter-agences.
@@ -51,7 +52,7 @@ Mouaad ne se présente pas comme un agent qui « prospecte autrement ». Il acco
 Capacités existantes :
 
 - parcours vendeur adaptatif avec moteur de signaux déterministe ;
-- audit public d’annonce avec moteur déterministe, résultat avant coordonnées et transmission humaine facultative ;
+- audit public d’annonce à partir d’un lien, avec deux conseils déterministes, secours par copier-coller, résultat avant coordonnées et transmission humaine facultative ;
 - ressources éducatives gratuites ;
 - lecture locale DVF par adresse ;
 - parcours acheteur « Situer ma recherche », avec restitution avant demande de contact ;
