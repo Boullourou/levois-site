@@ -25,6 +25,7 @@ Le site ne présente jamais le vendeur comme le parcours principal et l’achete
 | Comprendre une recherche | `/ma-recherche` | Synthèse des critères, compromis et niveau de préparation | Échange avec Mouaad sur demande |
 | Lire les ventes autour d’une adresse | `/votre-rue` | Transactions DVF et limites de lecture | Situer la vente ou approfondir |
 | Situer une vente en cours | `/situer-ma-vente` | Lecture structurée des signaux disponibles | Ressource ou échange sur demande |
+| Auditer une annonce publiée | `/audit-annonce` | Localisation du décrochage entre diffusion, vues, contacts, visites et décision | Résultat complet puis lecture humaine facultative |
 | Continuer depuis la carte de visite | `/carte` | Présentation et orientation courte | Choix du parcours pertinent |
 
 Les URLs imprimées ou déjà diffusées restent stables.

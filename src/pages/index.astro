@@ -171,6 +171,7 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
             <span><strong>Comprendre ma situation</strong><small>Maintenant, dans quelques mois ou simplement pour anticiper</small></span>
             <span class="direction-mark" aria-hidden="true"></span>
           </a>
+          <a class="checkpoint-audit" href="/audit-annonce">Mon annonce est déjà en ligne&nbsp;: l’auditer →</a>
           <p class="checkpoint-source">Une première lecture n’est ni une estimation automatique ni une obligation de vendre.</p>
         </article>
       </div>
@@ -442,6 +443,19 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
   .checkpoint-action > span:first-child { display: grid; gap: 4px; }
   .checkpoint-action strong { font-size: clamp(18px, 1.65vw, 24px); line-height: 1.1; }
   .checkpoint-action small { font-size: 12px; opacity: .72; }
+  .checkpoint-audit {
+    width: max-content;
+    max-width: 100%;
+    min-height: 44px;
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    color: var(--paper);
+    font-size: 14px;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+  .checkpoint-audit:hover { color: var(--lime); }
   .checkpoint-source {
     margin-top: 14px !important;
     color: rgba(242,245,239,.67);

@@ -1,0 +1,498 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../config/site';
+
+const designContract = `
+THESIS: L’audit localise l’endroit où l’intérêt disparaît ; il refuse le score opaque et l’estimation automatique.
+OWN-WORLD: Papier minéral, encre profonde, cobalt analytique et lime décisif ; lignes et rangées composent une table de diagnostic LEVOIS.
+STORY: Le propriétaire comprend le trajet de son annonce, répond sans livrer ses coordonnées, reçoit une lecture utile puis choisit une analyse humaine.
+FIRST VIEWPORT: Promesse massive à gauche, trajet de l’annonce à droite, action lime visible et preuve de gratuité immédiatement lisible.
+FORM: Table de signaux progressive, cinquième structure de la liste ordonnée ; seed a1c0c59e.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md`;
+
+const faq = [
+  {
+    q: 'L’audit donne-t-il la valeur de mon bien ?',
+    a: 'Non. Il repère où l’intérêt semble disparaître entre la diffusion, les vues, les contacts, les visites et les offres. Une valeur défendable exige ensuite des comparables, l’état du bien, son emplacement précis et la demande active.',
+  },
+  {
+    q: 'Dois-je donner mes coordonnées pour voir le résultat ?',
+    a: 'Non. Le résultat complet apparaît avant toute demande de coordonnées. Vous choisissez ensuite librement de transmettre l’audit à Mouaad pour une lecture humaine.',
+  },
+  {
+    q: 'Est-ce utile si mon annonce vient d’être publiée ?',
+    a: 'Oui, mais l’outil vous dira lorsqu’il est trop tôt pour conclure. Il vous aidera alors à relever les bons indicateurs sans modifier plusieurs éléments dans la précipitation.',
+  },
+];
+---
+
+<Layout
+  title="Audit gratuit d’annonce immobilière"
+  description="Auditez gratuitement votre annonce immobilière à Lèves, Chartres et dans le bassin chartrain. Repérez où l’intérêt disparaît, sans estimation automatique et avant de donner vos coordonnées."
+  designContract={designContract}
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebApplication',
+        name: 'Audit d’annonce LEVOIS',
+        url: `${site.url}/audit-annonce`,
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Navigateur web',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+        description: 'Outil gratuit pour localiser le décrochage d’une annonce immobilière entre sa diffusion, ses vues, ses contacts, ses visites et les offres reçues.',
+        areaServed: ['Lèves', 'Chartres', 'Bassin chartrain'],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faq.map((item) => ({
+          '@type': 'Question',
+          name: item.q,
+          acceptedAnswer: { '@type': 'Answer', text: item.a },
+        })),
+      },
+    ],
+  })} />
+
+  <section class="audit-hero" aria-labelledby="audit-title">
+    <div class="audit-hero-copy">
+      <p class="audit-place">Lèves · Chartres · bassin chartrain</p>
+      <h1 id="audit-title"><span class="audit-title-line">Votre</span><span class="audit-title-line">annonce</span><span class="audit-title-line">est vue.</span><span class="audit-title-line audit-title-accent">Est-elle</span><span class="audit-title-line audit-title-accent">comprise&nbsp;?</span></h1>
+      <p class="audit-intro">Suivez le trajet réel de votre annonce. Vous verrez où l’intérêt semble disparaître et ce qui doit encore être vérifié avant de toucher au prix.</p>
+      <a class="audit-start" href="#outil">Auditer mon annonce <span aria-hidden="true">→</span></a>
+      <ul class="audit-trust" aria-label="Engagements de l’outil">
+        <li>Gratuit</li><li>Résultat avant vos coordonnées</li><li>Sans estimation automatique</li>
+      </ul>
+    </div>
+    <div class="audit-route" aria-label="Les cinq étapes observées par l’audit">
+      <p>Le trajet d’une annonce</p>
+      <ol>
+        <li><b>Diffusée</b><span>Apparaît-elle dans les bonnes recherches&nbsp;?</span></li>
+        <li><b>Vue</b><span>La première impression donne-t-elle envie d’en savoir plus&nbsp;?</span></li>
+        <li><b>Contact</b><span>L’intérêt devient-il une vraie conversation&nbsp;?</span></li>
+        <li><b>Visite</b><span>La promesse résiste-t-elle à la réalité du bien&nbsp;?</span></li>
+        <li><b>Décision</b><span>Un acheteur est-il prêt à s’engager&nbsp;?</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="audit-explain" aria-labelledby="explain-title">
+    <h2 id="explain-title">Pas de note sur 100.<br />Une rupture à localiser.</h2>
+    <div>
+      <p>Une annonce peut être peu vue, beaucoup vue sans contact, produire des visites sans offre ou recevoir une proposition difficile à interpréter.</p>
+      <p>L’outil sépare les faits que vous fournissez, les signaux possibles et les éléments qui nécessitent un regard humain. Il ne transforme jamais un silence en baisse de prix automatique.</p>
+    </div>
+  </section>
+
+  <section class="audit-tool" id="outil" aria-labelledby="tool-title">
+    <div class="audit-tool-head">
+      <div>
+        <h2 id="tool-title">Où l’intérêt s’arrête-t-il&nbsp;?</h2>
+        <p>Environ 3 minutes. Aucune coordonnée demandée pour obtenir le résultat.</p>
+      </div>
+      <div class="audit-progress-text" aria-live="polite"><span data-progress-current>0</span> / <span data-progress-total>7</span></div>
+    </div>
+
+    <div class="audit-workspace">
+      <aside class="audit-funnel" aria-label="Progression de l’audit">
+        <ol>
+          <li data-funnel="0"><span>01</span> Diffusion</li>
+          <li data-funnel="1"><span>02</span> Première impression</li>
+          <li data-funnel="2"><span>03</span> Contact</li>
+          <li data-funnel="3"><span>04</span> Visite</li>
+          <li data-funnel="4"><span>05</span> Décision</li>
+        </ol>
+        <p>Les chiffres ne jugent pas votre bien. Ils montrent seulement à quelle étape il faut poser la prochaine question.</p>
+      </aside>
+
+      <div class="audit-panel">
+        <div class="audit-progress" aria-hidden="true"><i data-progress-bar></i></div>
+        <div data-audit-screen aria-live="polite">
+          <div class="audit-welcome">
+            <h3>Commencez avec ce que vous savez.</h3>
+            <p>Vous pourrez toujours choisir «&nbsp;Je ne sais pas&nbsp;». Une donnée absente vaut mieux qu’une réponse inventée.</p>
+            <button type="button" class="audit-primary" data-audit-begin>Commencer l’audit <span aria-hidden="true">→</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="audit-boundary" aria-labelledby="boundary-title">
+    <div>
+      <h2 id="boundary-title">L’outil repère.<br />L’humain interprète.</h2>
+      <p>Deux annonces avec les mêmes chiffres peuvent raconter deux histoires différentes. La concurrence du moment, la qualité des contacts, l’état du bien, sa rue et votre propre calendrier ne tiennent pas dans une note.</p>
+    </div>
+    <p class="audit-boundary-statement">Le résultat vous aide à poser la bonne question. Il ne prend aucune décision à votre place.</p>
+  </section>
+
+  <section class="audit-faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Ce que l’audit fait.<br />Et ce qu’il ne fait pas.</h2>
+    <div>
+      {faq.map((item) => (
+        <details>
+          <summary>{item.q}<span aria-hidden="true">+</span></summary>
+          <p>{item.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <script>
+    import { computeAudit, type AuditAnswers, type AuditResult } from '../lib/audit-annonce';
+
+    const screen = document.querySelector<HTMLElement>('[data-audit-screen]');
+    const currentEl = document.querySelector<HTMLElement>('[data-progress-current]');
+    const totalEl = document.querySelector<HTMLElement>('[data-progress-total]');
+    const bar = document.querySelector<HTMLElement>('[data-progress-bar]');
+    const begin = document.querySelector<HTMLButtonElement>('[data-audit-begin]');
+    const funnel = [...document.querySelectorAll<HTMLElement>('[data-funnel]')];
+
+    type Step = {
+      id: keyof AuditAnswers | 'identite' | 'presentation';
+      question: string;
+      aide: string;
+      options?: { value: string; label: string; detail?: string }[];
+    };
+
+    const steps: Step[] = [
+      { id: 'identite', question: 'Quel bien est concerné ?', aide: 'La commune sert uniquement à reformuler votre résultat.', options: [
+        { value: 'maison', label: 'Une maison' }, { value: 'appartement', label: 'Un appartement' }, { value: 'autre', label: 'Un autre bien' },
+      ] },
+      { id: 'duree', question: 'Depuis combien de temps l’annonce est-elle en ligne ?', aide: 'Comptez depuis la première publication, même si elle a été republiée.', options: [
+        { value: 'moins-7', label: 'Moins de 7 jours' }, { value: '7-30', label: '7 à 30 jours' }, { value: '31-60', label: '1 à 2 mois' }, { value: 'plus-60', label: 'Plus de 2 mois' },
+      ] },
+      { id: 'vues', question: 'Comment situez-vous le nombre de vues ?', aide: 'Comparez si possible avec les annonces similaires ou les indications du portail.', options: [
+        { value: 'faibles', label: 'Peu de vues' }, { value: 'moyennes', label: 'Un volume moyen' }, { value: 'fortes', label: 'Beaucoup de vues' }, { value: 'inconnu', label: 'Je ne sais pas' },
+      ] },
+      { id: 'contacts', question: 'Combien de personnes vous ont contacté ?', aide: 'Comptez les appels et messages réellement liés à l’annonce.', options: [
+        { value: 'aucun', label: 'Aucune' }, { value: 'un-trois', label: '1 à 3' }, { value: 'quatre-plus', label: '4 ou plus' }, { value: 'inconnu', label: 'Je ne sais pas' },
+      ] },
+      { id: 'visites', question: 'Combien de visites ont réellement eu lieu ?', aide: 'Ne comptez pas les rendez-vous annulés.', options: [
+        { value: 'aucune', label: 'Aucune' }, { value: 'une-deux', label: '1 à 2' }, { value: 'trois-plus', label: '3 ou plus' }, { value: 'inconnu', label: 'Je ne sais pas' },
+      ] },
+      { id: 'offres', question: 'Avez-vous reçu une proposition ?', aide: 'Une proposition orale reste un signal différent d’une offre écrite.', options: [
+        { value: 'aucune', label: 'Aucune' }, { value: 'orale', label: 'Un intérêt ou une proposition orale' }, { value: 'ecrite', label: 'Une offre écrite' }, { value: 'inconnu', label: 'Je ne sais pas' },
+      ] },
+      { id: 'presentation', question: 'Que montre l’annonce aujourd’hui ?', aide: 'Ces éléments complètent le parcours. Ils ne produisent jamais seuls un verdict sur le prix.' },
+    ];
+
+    const answers: Partial<AuditAnswers> = {};
+    let index = -1;
+    let transitionTimer: number | undefined;
+    if (totalEl) totalEl.textContent = String(steps.length);
+
+    const esc = (value: string) => value.replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char] || char));
+
+    function setProgress(value: number) {
+      const safe = Math.max(0, Math.min(steps.length, value));
+      if (currentEl) currentEl.textContent = String(safe);
+      if (bar) bar.style.width = `${(safe / steps.length) * 100}%`;
+    }
+
+    function setFunnel(active: number) {
+      funnel.forEach((item) => {
+        const row = Number(item.dataset.funnel);
+        item.toggleAttribute('data-active', row === active);
+        item.toggleAttribute('data-passed', row < active);
+      });
+    }
+
+    function renderStep(nextIndex: number) {
+      if (!screen) return;
+      if (transitionTimer) window.clearTimeout(transitionTimer);
+      transitionTimer = undefined;
+      index = nextIndex;
+      const step = steps[index];
+      setProgress(index + 1);
+      setFunnel(Math.min(index, 4));
+
+      if (step.id === 'identite') {
+        screen.innerHTML = `<form class="audit-question" data-step-form novalidate>
+          <p class="audit-step-label">Question ${index + 1} sur ${steps.length}</p>
+          <h3>${step.question}</h3><p class="audit-help">${step.aide}</p>
+          <label class="audit-field"><span>Commune du bien</span><input name="commune" autocomplete="address-level2" required maxlength="80" placeholder="Ex. Lèves ou Chartres"></label>
+          <fieldset class="audit-options"><legend>Type de bien</legend>${step.options!.map((o) => `<label><input type="radio" name="typeBien" value="${o.value}" required><span>${o.label}</span></label>`).join('')}</fieldset>
+          <div class="audit-controls"><button class="audit-back" type="button" data-back>Retour</button><button class="audit-primary" type="submit">Continuer <span aria-hidden="true">→</span></button></div>
+        </form>`;
+      } else if (step.id === 'presentation') {
+        screen.innerHTML = `<form class="audit-question" data-step-form novalidate>
+          <p class="audit-step-label">Question ${index + 1} sur ${steps.length}</p>
+          <h3>${step.question}</h3><p class="audit-help">${step.aide}</p>
+          ${group('photos', 'Nombre de photos', [['cinq-moins','5 ou moins'],['six-dix','6 à 10'],['onze-plus','11 ou plus']])}
+          ${group('description', 'Description', [['complete','Elle répond aux questions essentielles'],['partielle','Il manque quelques informations'],['courte','Elle est très courte']])}
+          ${group('retours', 'Retour le plus fréquent', [['prix','Le prix'],['presentation','La présentation'],['travaux','Les travaux'],['autre','Un autre point'],['aucun','Aucun retour précis']])}
+          ${group('prixModifie', 'Prix affiché déjà modifié', [['non','Non'],['oui','Oui']])}
+          <div class="audit-controls"><button class="audit-back" type="button" data-back>Retour</button><button class="audit-primary" type="submit">Voir mon audit <span aria-hidden="true">→</span></button></div>
+        </form>`;
+      } else {
+        screen.innerHTML = `<form class="audit-question" data-step-form novalidate>
+          <p class="audit-step-label">Question ${index + 1} sur ${steps.length}</p>
+          <h3>${step.question}</h3><p class="audit-help">${step.aide}</p>
+          <fieldset class="audit-options audit-options--large"><legend class="sr-only">${step.question}</legend>${step.options!.map((o) => `<label><input type="radio" name="${step.id}" value="${o.value}" required><span>${o.label}${o.detail ? `<small>${o.detail}</small>` : ''}</span></label>`).join('')}</fieldset>
+          <div class="audit-controls"><button class="audit-back" type="button" data-back>Retour</button></div>
+        </form>`;
+      }
+      bindStep();
+      screen.querySelector<HTMLElement>('input, button')?.focus({ preventScroll: true });
+    }
+
+    function group(name: string, legend: string, options: string[][]) {
+      return `<fieldset class="audit-compact"><legend>${legend}</legend><div>${options.map(([value,label]) => `<label><input type="radio" name="${name}" value="${value}" required><span>${label}</span></label>`).join('')}</div></fieldset>`;
+    }
+
+    function bindStep() {
+      const form = screen?.querySelector<HTMLFormElement>('[data-step-form]');
+      if (!form) return;
+      form.querySelector('[data-back]')?.addEventListener('click', () => index <= 0 ? renderWelcome() : renderStep(index - 1));
+
+      if (steps[index].id !== 'identite' && steps[index].id !== 'presentation') {
+        form.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach((radio) => radio.addEventListener('change', () => {
+          const next = index + 1;
+          (answers as Record<string,string>)[radio.name] = radio.value;
+          form.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach((input) => { input.disabled = true; });
+          transitionTimer = window.setTimeout(() => renderStep(next), 160);
+        }));
+      }
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        const data = new FormData(form);
+        if (steps[index].id === 'identite') {
+          answers.commune = String(data.get('commune') || '').trim();
+          answers.typeBien = String(data.get('typeBien')) as AuditAnswers['typeBien'];
+          renderStep(index + 1);
+          return;
+        }
+        answers.photos = String(data.get('photos')) as AuditAnswers['photos'];
+        answers.description = String(data.get('description')) as AuditAnswers['description'];
+        answers.retours = String(data.get('retours')) as AuditAnswers['retours'];
+        answers.prixModifie = String(data.get('prixModifie')) as AuditAnswers['prixModifie'];
+        renderResult(computeAudit(answers as AuditAnswers));
+      });
+    }
+
+    function renderWelcome() {
+      if (!screen) return;
+      index = -1; setProgress(0); setFunnel(-1);
+      screen.innerHTML = `<div class="audit-welcome"><h3>Commencez avec ce que vous savez.</h3><p>Vous pourrez toujours choisir « Je ne sais pas ». Une donnée absente vaut mieux qu’une réponse inventée.</p><button type="button" class="audit-primary" data-audit-begin>Commencer l’audit <span aria-hidden="true">→</span></button></div>`;
+      screen.querySelector('[data-audit-begin]')?.addEventListener('click', () => renderStep(0));
+    }
+
+    function renderResult(result: AuditResult) {
+      if (!screen) return;
+      setProgress(steps.length); setFunnel(result.etape);
+      const signalLabel = { observe: 'Fait observé', possible: 'Signal possible', inconnu: 'À mesurer' };
+      screen.innerHTML = `<article class="audit-result" data-result-code="${result.code}">
+        <p class="audit-verdict">Votre première lecture</p>
+        <h3 tabindex="-1">${esc(result.titre)}</h3><p class="audit-result-lead">${esc(result.resume)}</p>
+        <div class="audit-result-grid">
+          <section><h4>Ce que vous avez indiqué</h4><ul>${result.faits.map((f) => `<li>${esc(f)}</li>`).join('')}</ul></section>
+          <section><h4>Ce que cela peut signifier</h4>${result.signaux.map((s) => `<div class="audit-signal" data-status="${s.statut}"><b>${signalLabel[s.statut]}</b><h5>${esc(s.titre)}</h5><p>${esc(s.texte)}</p></div>`).join('')}</section>
+        </div>
+        <section class="audit-actions"><h4>Les prochaines vérifications utiles</h4><ol>${result.actions.map((a) => `<li>${esc(a)}</li>`).join('')}</ol></section>
+        <aside class="audit-limit"><b>Ici s’arrête l’audit automatique.</b><p>${esc(result.limite)}</p></aside>
+        <section class="audit-human"><div><h4>Vous voulez confronter cette lecture à votre bien&nbsp;?</h4><p>Transmettez ce résultat à Mouaad. Il vous répondra avec les questions à vérifier, sans vous imposer de décision.</p></div>
+          <form data-lead-form novalidate>
+            <div class="audit-contact-grid"><label><span>Prénom</span><input name="prenom" autocomplete="given-name" required maxlength="80"></label><label><span>Nom</span><input name="nom" autocomplete="family-name" required maxlength="80"></label><label><span>Email</span><input name="email" type="email" autocomplete="email" required maxlength="200"></label><label><span>Téléphone <small>(facultatif)</small></span><input name="telephone" type="tel" autocomplete="tel" maxlength="40"></label></div>
+            <label class="audit-consent"><input type="checkbox" required><span>J’accepte que Mouaad me recontacte au sujet de cet audit. Mes données ne sont pas utilisées pour une prospection automatisée.</span></label>
+            <input name="site_web" class="audit-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="audit-primary" type="submit">Demander la lecture humaine <span aria-hidden="true">→</span></button><p class="audit-form-status" data-form-status role="status"></p>
+          </form>
+        </section>
+        <button type="button" class="audit-restart" data-restart>Recommencer avec une autre annonce</button>
+      </article>`;
+      screen.querySelector('[data-restart]')?.addEventListener('click', renderWelcome);
+      bindLead(result);
+      screen.closest('.audit-tool')?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      screen.querySelector<HTMLElement>('.audit-result > h3')?.focus({ preventScroll: true });
+    }
+
+    function bindLead(result: AuditResult) {
+      const form = screen?.querySelector<HTMLFormElement>('[data-lead-form]');
+      const status = screen?.querySelector<HTMLElement>('[data-form-status]');
+      form?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!form.reportValidity()) return;
+        const data = new FormData(form);
+        const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+        if (button) { button.disabled = true; button.textContent = 'Transmission…'; }
+        if (status) status.textContent = '';
+        try {
+          const response = await fetch('/api/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({
+            type: 'audit-annonce', consentement: true, prenom: data.get('prenom'), nom: data.get('nom'), email: data.get('email'), telephone: data.get('telephone'), commune: answers.commune, site_web: data.get('site_web'),
+            audit: { code: result.code, titre: result.titre, resume: result.resume, faits: result.faits, signaux: result.signaux, actions: result.actions, reponses: answers },
+          }) });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(payload.message || 'La transmission n’a pas abouti.');
+          form.innerHTML = `<div class="audit-success" tabindex="-1" role="status"><b>Audit transmis.</b><p>Mouaad dispose maintenant de votre lecture et pourra reprendre avec vous là où l’automatisation s’arrête.</p></div>`;
+          form.querySelector<HTMLElement>('.audit-success')?.focus();
+        } catch (error) {
+          if (status) status.textContent = error instanceof Error ? error.message : 'La transmission n’a pas abouti.';
+          if (button) { button.disabled = false; button.innerHTML = 'Réessayer <span aria-hidden="true">→</span>'; }
+        }
+      });
+    }
+
+    begin?.addEventListener('click', () => renderStep(0));
+  </script>
+
+  <style is:global>
+    .audit-hero { min-height: calc(100svh - var(--site-header-h)); display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(370px, .88fr); background: #f2f5ef; color: #111522; }
+    .audit-hero > * { min-width: 0; }
+    .audit-hero-copy { box-sizing: border-box; min-width: 0; padding: clamp(48px, 7vw, 104px) clamp(24px, 6vw, 92px); display: flex; flex-direction: column; justify-content: center; }
+    .audit-place { margin: 0 0 28px; font-size: 14px; font-weight: 700; }
+    .audit-hero h1 { max-width: 920px; margin: 0; font-family: 'Archivo Black', sans-serif; font-size: clamp(52px, 7vw, 108px); font-weight: 400; line-height: .88; letter-spacing: -.035em; }
+    .audit-title-line { display: block; }
+    .audit-title-accent { color: #243cff; }
+    .audit-intro { max-width: min(650px, 100%); margin: 34px 0 0; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.48; }
+    .audit-start, .audit-primary { border: 0; border-radius: 0; background: #d7ff42; color: #111522; font: 750 17px/1.2 'Public Sans', sans-serif; text-decoration: none; cursor: pointer; }
+    .audit-start { box-sizing: border-box; width: min(100%, 370px); max-width: 100%; min-height: 66px; margin-top: 32px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+    .audit-start span, .audit-primary span { font-size: 28px; line-height: 0; transition: transform .2s ease-out; }
+    .audit-start:hover span, .audit-primary:hover span { transform: translateX(5px); }
+    .audit-trust { margin: 25px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; list-style: none; color: #58615b; font-size: 13px; }
+    .audit-trust li + li::before { margin-right: 22px; content: '·'; }
+    .audit-route { padding: clamp(38px, 5vw, 74px); background: #111522; color: #f2f5ef; display: flex; flex-direction: column; justify-content: center; }
+    .audit-route > p { margin: 0 0 20px; color: #d7ff42; font-size: 14px; font-weight: 750; }
+    .audit-route ol { margin: 0; padding: 0; list-style: none; border-top: 1px solid #667067; counter-reset: route; }
+    .audit-route li { min-height: 96px; padding: 18px 0; display: grid; grid-template-columns: minmax(115px, .65fr) 1.35fr; gap: 20px; align-items: center; border-bottom: 1px solid #667067; }
+    .audit-route b { color: #d7ff42; font-size: clamp(20px, 2vw, 30px); }
+    .audit-route span { color: #d5dad4; font-size: 14px; line-height: 1.45; }
+    .audit-explain, .audit-boundary, .audit-faq { padding: clamp(82px, 10vw, 150px) clamp(24px, 6vw, 92px); display: grid; grid-template-columns: 1fr 1fr; gap: clamp(46px, 8vw, 130px); }
+    .audit-explain h2, .audit-boundary h2, .audit-faq h2 { margin: 0; font-size: clamp(42px, 5.2vw, 76px); line-height: .96; letter-spacing: -.03em; }
+    .audit-explain > div { max-width: 680px; font-size: clamp(18px, 1.45vw, 22px); line-height: 1.58; }
+    .audit-explain p { margin: 0 0 24px; }
+    .audit-tool { scroll-margin-top: var(--site-header-h); background: #111522; color: #f2f5ef; }
+    .audit-tool-head { min-height: 190px; padding: 44px clamp(24px, 6vw, 92px); display: flex; justify-content: space-between; align-items: end; gap: 30px; border-bottom: 1px solid #596158; }
+    .audit-tool-head h2 { margin: 0; font-size: clamp(38px, 4.8vw, 70px); line-height: .98; letter-spacing: -.03em; }
+    .audit-tool-head p { margin: 14px 0 0; color: #d5dad4; }
+    .audit-progress-text { color: #d7ff42; font-size: 28px; font-weight: 800; white-space: nowrap; }
+    .audit-workspace { min-height: 690px; display: grid; grid-template-columns: minmax(280px, .62fr) minmax(0, 1.38fr); }
+    .audit-funnel { padding: clamp(32px, 4vw, 62px) clamp(24px, 5vw, 72px); border-right: 1px solid #596158; }
+    .audit-funnel ol { margin: 0; padding: 0; list-style: none; }
+    .audit-funnel li { min-height: 64px; padding: 0 12px; display: flex; align-items: center; gap: 18px; border-bottom: 1px solid #596158; color: #879087; font-weight: 680; transition: background .25s ease-out, color .25s ease-out; }
+    .audit-funnel li span { font-size: 12px; }
+    .audit-funnel li[data-passed] { color: #d5dad4; }
+    .audit-funnel li[data-active] { background: #d7ff42; color: #111522; }
+    .audit-funnel > p { max-width: 35ch; margin: 42px 0 0; color: #aeb5ae; font-size: 13px; line-height: 1.55; }
+    .audit-panel { min-width: 0; background: #f2f5ef; color: #111522; }
+    .audit-progress { height: 5px; background: #c9cec8; }
+    .audit-progress i { width: 0; height: 100%; display: block; background: #243cff; transition: width .35s ease-out; }
+    [data-audit-screen] { min-height: 685px; }
+    .audit-welcome, .audit-question { min-height: 685px; padding: clamp(42px, 7vw, 100px); display: flex; flex-direction: column; justify-content: center; }
+    .audit-welcome h3, .audit-question h3, .audit-result > h3 { max-width: 900px; margin: 0; font-size: clamp(38px, 5vw, 72px); font-weight: 800; line-height: .98; letter-spacing: -.03em; }
+    .audit-welcome p, .audit-help { max-width: 650px; margin: 20px 0 32px; color: #58615b; font-size: 18px; line-height: 1.5; }
+    .audit-primary { min-height: 58px; padding: 0 22px; display: inline-flex; align-items: center; justify-content: space-between; gap: 30px; }
+    .audit-welcome .audit-primary { width: min(100%, 320px); }
+    .audit-primary:hover { background: #111522; color: #d7ff42; }
+    .audit-primary:disabled { cursor: wait; opacity: .68; }
+    .audit-step-label, .audit-verdict { margin: 0 0 18px; color: #243cff; font-weight: 750; }
+    .audit-field { max-width: 620px; display: grid; gap: 9px; font-weight: 700; }
+    .audit-field input, .audit-contact-grid input { min-height: 58px; width: 100%; padding: 0 16px; border: 1px solid #111522; border-radius: 0; background: #fff; color: #111522; font: inherit; }
+    .audit-options, .audit-compact { margin: 32px 0 0; padding: 0; border: 0; }
+    .audit-options legend, .audit-compact legend { margin-bottom: 12px; font-weight: 750; }
+    .audit-options { max-width: 850px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #111522; }
+    .audit-options--large { grid-template-columns: repeat(2, 1fr); }
+    .audit-options label, .audit-compact label { position: relative; cursor: pointer; }
+    .audit-options input, .audit-compact input { position: absolute; opacity: 0; pointer-events: none; }
+    .audit-options label > span { min-height: 76px; padding: 16px 18px; display: flex; align-items: center; background: #fff; color: #111522; font-weight: 700; transition: background .18s ease-out, color .18s ease-out; }
+    .audit-options label:hover > span, .audit-options input:checked + span, .audit-options input:focus-visible + span { background: #d7ff42; color: #111522; }
+    .audit-options input:focus-visible + span, .audit-compact input:focus-visible + span { outline: 3px solid #243cff; outline-offset: -3px; }
+    .audit-controls { margin-top: 36px; display: flex; justify-content: space-between; gap: 16px; }
+    .audit-back, .audit-restart { min-height: 48px; padding: 0; border: 0; border-bottom: 1px solid currentColor; background: transparent; color: #111522; font: 700 15px/1 'Public Sans', sans-serif; cursor: pointer; }
+    .audit-compact { max-width: 900px; padding-bottom: 22px; border-bottom: 1px solid #c9cec8; }
+    .audit-compact > div { display: flex; flex-wrap: wrap; gap: 8px; }
+    .audit-compact label > span { min-height: 46px; padding: 11px 15px; display: flex; align-items: center; border: 1px solid #111522; background: transparent; font-size: 14px; font-weight: 650; }
+    .audit-compact label:hover > span, .audit-compact input:checked + span { background: #243cff; color: #fff; }
+    .audit-result { padding: clamp(42px, 7vw, 100px); }
+    .audit-result-lead { max-width: 860px; margin: 22px 0 58px; font-size: clamp(19px, 1.5vw, 23px); line-height: 1.5; }
+    .audit-result-grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: 2px; background: #111522; }
+    .audit-result-grid > section { padding: clamp(24px, 3vw, 42px); background: #fff; }
+    .audit-result h4 { margin: 0 0 24px; font-size: 23px; }
+    .audit-result-grid ul { margin: 0; padding: 0; list-style: none; }
+    .audit-result-grid li { padding: 14px 0; border-bottom: 1px solid #c9cec8; line-height: 1.45; }
+    .audit-signal { padding: 20px 0; border-bottom: 1px solid #c9cec8; }
+    .audit-signal > b { display: inline-block; margin-bottom: 9px; color: #243cff; font-size: 12px; }
+    .audit-signal[data-status="observe"] > b { color: #a84531; }
+    .audit-signal[data-status="inconnu"] > b { color: #58615b; }
+    .audit-signal h5 { margin: 0 0 7px; font-size: 19px; }
+    .audit-signal p { margin: 0; color: #58615b; line-height: 1.5; }
+    .audit-actions { padding: clamp(26px, 4vw, 48px); background: #d7ff42; }
+    .audit-actions ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; list-style: none; counter-reset: action; }
+    .audit-actions li { min-height: 130px; padding: 20px; border-top: 1px solid #111522; counter-increment: action; line-height: 1.45; }
+    .audit-actions li::before { display: block; margin-bottom: 25px; content: '0' counter(action); font-size: 12px; font-weight: 800; }
+    .audit-limit { padding: clamp(26px, 4vw, 48px); background: #111522; color: #f2f5ef; }
+    .audit-limit b { color: #d7ff42; font-size: clamp(24px, 2.4vw, 34px); }
+    .audit-limit p { max-width: 880px; margin: 16px 0 0; color: #d5dad4; line-height: 1.55; }
+    .audit-human { padding: clamp(30px, 5vw, 62px); display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(34px, 6vw, 90px); background: #243cff; color: #fff; }
+    .audit-human h4 { font-size: clamp(30px, 3.3vw, 48px); line-height: 1; }
+    .audit-human p { line-height: 1.55; }
+    .audit-contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .audit-contact-grid label { display: grid; gap: 7px; font-weight: 700; }
+    .audit-contact-grid small { font-weight: 400; }
+    .audit-consent { margin: 20px 0; display: grid; grid-template-columns: 20px 1fr; gap: 12px; align-items: start; font-size: 13px; line-height: 1.45; }
+    .audit-consent input { width: 18px; height: 18px; accent-color: #d7ff42; }
+    .audit-human .audit-primary:hover { background: #fff; color: #243cff; }
+    .audit-form-status { min-height: 22px; margin: 12px 0 0; color: #fff; font-weight: 700; }
+    .audit-hp { position: absolute; left: -10000px; }
+    .audit-success { padding: 28px; background: #d7ff42; color: #111522; }
+    .audit-success b { font-size: 25px; }
+    .audit-restart { margin-top: 34px; }
+    .audit-boundary { background: #243cff; color: #fff; }
+    .audit-boundary > div p { max-width: 660px; margin: 30px 0 0; font-size: 18px; line-height: 1.58; }
+    .audit-boundary-statement { align-self: end; margin: 0; padding-top: 22px; border-top: 1px solid #fff; font-size: clamp(23px, 2.4vw, 36px); font-weight: 750; line-height: 1.15; }
+    .audit-faq details { border-top: 1px solid #111522; }
+    .audit-faq details:last-child { border-bottom: 1px solid #111522; }
+    .audit-faq summary { min-height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 20px; cursor: pointer; font-size: 18px; font-weight: 750; list-style: none; }
+    .audit-faq summary::-webkit-details-marker { display: none; }
+    .audit-faq summary span { color: #243cff; font-size: 28px; transition: transform .2s ease-out; }
+    .audit-faq details[open] summary span { transform: rotate(45deg); }
+    .audit-faq details p { max-width: 65ch; margin: 0; padding: 0 50px 26px 0; color: #58615b; line-height: 1.58; }
+
+    @media (max-width: 980px) {
+      .audit-hero { min-height: auto; grid-template-columns: 1fr; }
+      .audit-hero-copy { min-height: calc(100svh - var(--site-header-h)); }
+      .audit-route { padding-block: 60px; }
+      .audit-explain, .audit-boundary, .audit-faq { grid-template-columns: 1fr; }
+      .audit-workspace { grid-template-columns: 1fr; }
+      .audit-funnel { padding: 0 24px; border-right: 0; border-bottom: 1px solid #596158; }
+      .audit-funnel ol { display: grid; grid-template-columns: repeat(5, 1fr); }
+      .audit-funnel li { min-height: 58px; padding: 8px; justify-content: center; border: 0; border-right: 1px solid #596158; font-size: 0; }
+      .audit-funnel li:last-child { border-right: 0; }
+      .audit-funnel li span { font-size: 12px; }
+      .audit-funnel > p { display: none; }
+      .audit-result-grid, .audit-human { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .audit-hero { width: 100%; overflow: hidden; }
+      .audit-hero-copy { min-height: auto; width: 100%; padding: 58px 20px 68px; }
+      .audit-hero h1 { max-width: 100%; font-size: clamp(42px, 12.5vw, 54px); overflow-wrap: normal; word-break: normal; }
+      .audit-intro { margin-top: 26px; }
+      .audit-trust { display: grid; gap: 7px; }
+      .audit-trust li + li::before { margin-right: 9px; }
+      .audit-route { padding: 48px 20px; }
+      .audit-route li { grid-template-columns: 105px 1fr; }
+      .audit-explain, .audit-boundary, .audit-faq { padding: 72px 20px; gap: 38px; }
+      .audit-tool-head { min-height: 154px; padding: 32px 20px; align-items: end; }
+      .audit-tool-head p { font-size: 13px; }
+      .audit-progress-text { font-size: 20px; }
+      .audit-welcome, .audit-question, .audit-result { min-height: 0; padding: 52px 20px; }
+      .audit-welcome h3, .audit-question h3, .audit-result > h3 { font-size: clamp(38px, 11vw, 52px); }
+      .audit-options, .audit-options--large { grid-template-columns: 1fr; }
+      .audit-options label > span { min-height: 58px; }
+      .audit-controls .audit-primary { flex: 1; }
+      .audit-result-lead { margin-bottom: 38px; }
+      .audit-actions ol { grid-template-columns: 1fr; }
+      .audit-actions li { min-height: 0; }
+      .audit-contact-grid { grid-template-columns: 1fr; }
+      .audit-faq summary { font-size: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .audit-progress i, .audit-start span, .audit-primary span, .audit-faq summary span { transition: none; }
+    }
+  </style>
+</Layout>

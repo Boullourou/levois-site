@@ -51,6 +51,7 @@ Mouaad ne se présente pas comme un agent qui « prospecte autrement ». Il acco
 Capacités existantes :
 
 - parcours vendeur adaptatif avec moteur de signaux déterministe ;
+- audit public d’annonce avec moteur déterministe, résultat avant coordonnées et transmission humaine facultative ;
 - ressources éducatives gratuites ;
 - lecture locale DVF par adresse ;
 - parcours acheteur « Situer ma recherche », avec restitution avant demande de contact ;
@@ -60,7 +61,6 @@ Capacités existantes :
 Capacités requises mais pas encore livrées :
 
 - constitution volontaire et exploitable d'un fichier d'acheteurs qualifiés à partir de ce parcours, avec possibilité secondaire d'ajouter un bien précis à analyser ;
-- outil d'audit d'annonce ;
 - import sécurisé des exports Yanport, score d'opportunité et déduplication ;
 - préparation de courriers ciblés non nominatifs lorsque l'usage des données et le cadre légal le permettent ;
 - suivi par snapshots des changements de prix, de diffusion et de durée ;

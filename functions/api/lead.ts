@@ -146,6 +146,31 @@ function formaterInfographie(v: unknown): string[] {
   return lignes;
 }
 
+function formaterListe(v: unknown, max = 8): string[] {
+  if (!Array.isArray(v)) return [];
+  return v.slice(0, max).map((item) => texteLigne(item, 500)).filter(Boolean);
+}
+
+function formaterAudit(v: unknown): string[] {
+  if (!estObjet(v)) return [];
+  const lignes: string[] = [];
+  const code = texteLigne(v.code, 80);
+  const titre = texteLigne(v.titre, 300);
+  const resume = texteLigne(v.resume, 1000);
+  if (code) lignes.push(`Code de lecture : ${code}`);
+  if (titre) lignes.push(`Résultat : ${titre}`);
+  if (resume) lignes.push(`Résumé : ${resume}`);
+  const faits = formaterListe(v.faits);
+  if (faits.length) lignes.push('', 'Faits déclarés :', ...faits.map((item) => `  · ${item}`));
+  const actions = formaterListe(v.actions);
+  if (actions.length) lignes.push('', 'Vérifications proposées :', ...actions.map((item) => `  · ${item}`));
+  if (estObjet(v.reponses)) {
+    const reponses = formaterQualification(v.reponses);
+    if (reponses.length) lignes.push('', 'Réponses brutes :', ...reponses);
+  }
+  return lignes;
+}
+
 function adresseIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
   return (request.headers.get('cf-connecting-ip') || forwarded || 'inconnue').slice(0, 128);
@@ -249,6 +274,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   const erreurs: string[] = [];
   const type = texteLigne(body.type, 40);
   const estVotreRue = type === 'votre-rue';
+  const estAuditAnnonce = type === 'audit-annonce';
   const prenom = texteLigne(body.prenom, 80);
   const nom = texteLigne(body.nom, 80);
   const email = texteLigne(body.email, 200);
@@ -257,6 +283,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   if (!estVotreRue && !nom) erreurs.push('nom');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) erreurs.push('email');
   if (type === 'parcours' && !commune) erreurs.push('commune');
+  if (estAuditAnnonce && body.consentement !== true) erreurs.push('consentement');
   if (erreurs.length) {
     return json({ ok: false, message: `Champs à vérifier : ${erreurs.join(', ')}.` }, 400);
   }
@@ -276,6 +303,8 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   const sujet = sujetTexte(
     type === 'parcours'
       ? `LEVOIS · ${nomComplet} — ${texteLigne(contexte?.situation, 160) || 'Parcours'} (${commune})`
+      : estAuditAnnonce
+        ? `LEVOIS · Audit d’annonce — ${nomComplet}${commune ? ` (${commune})` : ''}`
       : estVotreRue
         ? `LEVOIS · Votre rue — ${nomComplet}${commune ? ` (${commune})` : ''}`
         : `LEVOIS · Message de ${nomComplet}${objet ? ` — ${objet}` : ''}`,
@@ -313,6 +342,11 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     );
     if (qualification.length) lignes.push('Qualification :', ...qualification);
     if (infographie.length) lignes.push('', '————— Contexte de l’infographie —————', ...infographie);
+  }
+
+  if (estAuditAnnonce) {
+    const audit = formaterAudit(body.audit);
+    lignes.push('', '————— Audit d’annonce —————', ...audit);
   }
 
   if (contexte) {

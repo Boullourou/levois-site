@@ -163,6 +163,49 @@ describe.sequential('Cloudflare /api/lead', () => {
     expect(email.text).not.toContain('\r');
   });
 
+  it('transmet la lecture structurée de l’audit d’annonce', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_audit"}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const response = await onRequest(
+      contexte(
+        {
+          type: 'audit-annonce',
+          consentement: true,
+          prenom: 'Camille',
+          nom: 'Martin',
+          email: 'camille@example.test',
+          commune: 'Lèves',
+          audit: {
+            code: 'premiere-impression',
+            titre: 'L’annonce est vue, mais elle ne déclenche pas de contact.',
+            resume: 'Le décrochage probable se situe avant le contact.',
+            faits: ['Beaucoup de vues.', 'Aucun contact reçu.'],
+            actions: ['Comparer la photo principale.'],
+            reponses: { duree: '31-60', vues: 'fortes' },
+          },
+        },
+        { RESEND_API_KEY: 'test-key' },
+      ),
+    );
+
+    expect(response.status).toBe(200);
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const email = JSON.parse(String(init.body));
+    expect(email.subject).toBe('LEVOIS · Audit d’annonce — Camille Martin (Lèves)');
+    expect(email.text).toContain('Résultat : L’annonce est vue, mais elle ne déclenche pas de contact.');
+    expect(email.text).toContain('· Beaucoup de vues.');
+    expect(email.text).toContain('· duree : 31-60');
+  });
+
+  it('refuse la transmission d’un audit sans consentement explicite', async () => {
+    const response = await onRequest(
+      contexte({ type: 'audit-annonce', prenom: 'Camille', nom: 'Martin', email: 'camille@example.test' }),
+    );
+    expect(response.status).toBe(400);
+    expect(await donnees(response)).toEqual({ ok: false, message: 'Champs à vérifier : consentement.' });
+  });
+
   it('utilise le Formspree historique si la clé Resend est absente', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response('{"ok":true}', { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
