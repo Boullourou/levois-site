@@ -274,7 +274,7 @@ const faq = [
       if (urlStatus) urlStatus.textContent = '';
       setLoading(true);
       try {
-        const response = await fetch('/api/audit-url', {
+        const response = await fetch('/api/audit-url/', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ url: currentUrl }),
