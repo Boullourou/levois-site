@@ -163,7 +163,25 @@ describe.sequential('Cloudflare /api/lead', () => {
     expect(email.text).not.toContain('\r');
   });
 
-  it('ne confirme jamais un lead si la clé Resend est absente', async () => {
+  it('utilise le Formspree historique si la clé Resend est absente', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('{"ok":true}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const response = await onRequest(
+      contexte({ prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test', message: 'Bonjour' }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(await donnees(response)).toEqual({ ok: true });
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toBe('https://formspree.io/f/xnjynroj');
+    expect(String(init.body)).toContain('_subject=');
+    expect(String(init.body)).toContain('mouaad%40example.test');
+  });
+
+  it('ne confirme jamais un lead si Resend et Formspree sont indisponibles', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('indisponible', { status: 503 })));
+
     const response = await onRequest(
       contexte({ prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test', message: 'Bonjour' }),
     );

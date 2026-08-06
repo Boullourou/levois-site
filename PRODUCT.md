@@ -83,6 +83,8 @@ Contraintes :
 - Porte-parole et visage : Mouaad Boullourou.
 - Ton : direct, calme, précis, pédagogique, sans pression commerciale.
 - La valeur doit être donnée avant toute demande de coordonnées.
+- Le site conduit de la curiosité vers la méthode : verdict visible, preuves, limites franches, première lecture, puis analyse humaine comme suite logique.
+- Le diagnostic automatique doit annoncer clairement sa frontière. Mouaad compare ensuite les scénarios et leurs conséquences ; l’acheteur ou le propriétaire garde la décision.
 - Les parcours à choix unique avancent dès la sélection ; seuls les champs à saisir, les choix multiples et la transmission finale demandent une validation explicite.
 - Acheteurs et vendeurs doivent être représentés avec la même dignité et la même importance.
 - L'intelligence artificielle est un avantage opérationnel assumé mais discret : elle accélère l'analyse et la production sans remplacer le jugement, la négociation ou la relation.

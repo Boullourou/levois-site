@@ -6,7 +6,8 @@
  * Un succès n'est renvoyé que lorsque Resend a confirmé l'envoi.
  *
  * Bindings Cloudflare Pages (Dashboard → Settings → Functions) :
- *   RESEND_API_KEY  : secret Resend (obligatoire)
+ *   RESEND_API_KEY  : secret Resend (voie principale)
+ *   FORMSPREE_ENDPOINT : secours sans secret (défaut : formulaire historique)
  *   LEAD_TO_EMAIL   : destinataire (défaut : mouaad@levois.fr)
  *   LEAD_FROM_EMAIL : expéditeur vérifié (défaut : onboarding@resend.dev)
  *   LEAD_TO / LEAD_FROM : alias partagés avec /api/recherche, si déjà définis
@@ -15,6 +16,7 @@
 
 interface Env {
   RESEND_API_KEY?: string;
+  FORMSPREE_ENDPOINT?: string;
   LEAD_TO_EMAIL?: string;
   LEAD_FROM_EMAIL?: string;
   LEAD_TO?: string;
@@ -271,18 +273,6 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   const to = ctx.env.LEAD_TO_EMAIL || ctx.env.LEAD_TO || 'mouaad@levois.fr';
   const from = ctx.env.LEAD_FROM_EMAIL || ctx.env.LEAD_FROM || 'LEVOIS <onboarding@resend.dev>';
 
-  if (!apiKey) {
-    console.error('[lead] RESEND_API_KEY absente — transmission impossible.');
-    return json(
-      {
-        ok: false,
-        message:
-          'La transmission est momentanément indisponible. Vos réponses restent affichées — vous pouvez contacter Mouaad directement : mouaad@levois.fr · 07 81 38 01 21.',
-      },
-      503,
-    );
-  }
-
   const sujet = sujetTexte(
     type === 'parcours'
       ? `LEVOIS · ${nomComplet} — ${texteLigne(contexte?.situation, 160) || 'Parcours'} (${commune})`
@@ -351,6 +341,39 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
         }
       }
     }
+  }
+
+  if (!apiKey) {
+    const endpoint = ctx.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+    try {
+      const formulaire = new URLSearchParams({
+        _subject: sujet,
+        nom: nomComplet,
+        email,
+        telephone,
+        message: lignes.filter((ligne) => ligne !== '').join('\n'),
+      });
+      const rep = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: formulaire.toString(),
+      });
+      if (rep.ok) return json({ ok: true });
+      console.error('[lead] Échec Formspree :', rep.status);
+    } catch (error) {
+      console.error('[lead] Erreur Formspree :', error);
+    }
+    return json(
+      {
+        ok: false,
+        message:
+          'La transmission est momentanément indisponible. Vos réponses restent affichées — vous pouvez contacter Mouaad directement : mouaad@levois.fr · 07 81 38 01 21.',
+      },
+      503,
+    );
   }
 
   try {

@@ -2,14 +2,15 @@
  * POST /api/recherche — Cloudflare Pages Function.
  *
  * Reçoit la Lecture de votre recherche produite par /ma-recherche et
- * l'enregistre dans D1 avant d'envoyer une notification à Mouaad via Resend.
+ * l'enregistre dans D1 avant d'envoyer une notification à Mouaad via Resend,
+ * puis via le Formspree historique si Resend n'est pas configuré ou échoue.
  *
  * Ordre de traitement garanti :
  *   1. Validation de la requête (JSON, champs requis)
  *   2. Honeypot anti-bot
  *   3. Rate limit par IP
  *   4. Insertion dans D1 (binding natif RECHERCHE_DB)
- *   5. Tentative d'envoi Resend
+ *   5. Tentative d'envoi Resend puis Formspree de secours
  *   6. Mise à jour du statut email_envoye dans D1
  *   7. Réponse explicite au navigateur
  *
@@ -17,13 +18,14 @@
  * — D1 absent ou insert échoué → erreur 503/500 explicite, aucun ok:true
  * — Resend échoué après insert D1 réussi → la lecture reste dans D1
  *   (email_envoye=0), réponse ok:true (donnée sûre, Mouaad consulte D1)
- * — RESEND_API_KEY absente → ok:false avec marqueur dry-run (dev uniquement)
+ * — RESEND_API_KEY absente → Formspree de secours ; erreur explicite si les deux voies échouent
  * — Aucun secret exposé au navigateur
  * — Aucun ok:true sans donnée persistée
  *
  * Bindings Cloudflare Pages (Dashboard → Settings → Functions) :
  *   RECHERCHE_DB : D1 database « levois-recherche » (binding obligatoire)
  *   RESEND_API_KEY : variable d'environnement secrète
+ *   FORMSPREE_ENDPOINT : endpoint de secours (défaut : formulaire historique)
  *   LEAD_TO   : destinataire (défaut mouaad@levois.fr)
  *   LEAD_FROM : expéditeur vérifié Resend (défaut contact@levois.fr)
  *
@@ -34,6 +36,7 @@
 interface Env {
   RECHERCHE_DB: D1Database;
   RESEND_API_KEY?: string;
+  FORMSPREE_ENDPOINT?: string;
   LEAD_TO?: string;
   LEAD_FROM?: string;
   RATE_LIMIT?: KVNamespace;
@@ -183,6 +186,32 @@ function formaterCorps(body: any, prenom: string, contact: string): string {
   return l.join('\n');
 }
 
+async function notifierFormspree(env: Env, sujet: string, prenom: string, contact: string, corps: string): Promise<boolean> {
+  const endpoint = env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+  try {
+    const formulaire = new URLSearchParams({
+      _subject: sujet,
+      prenom,
+      contact,
+      message: corps,
+    });
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact)) formulaire.set('email', contact);
+    const rep = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: formulaire.toString(),
+    });
+    if (!rep.ok) console.error('[recherche] Formspree error:', rep.status);
+    return rep.ok;
+  } catch (e) {
+    console.error('[recherche] Formspree fetch error:', e);
+    return false;
+  }
+}
+
 export const onRequestPost = async (ctx: PagesContext<Env>) => {
   // ——— 1. Binding D1 obligatoire ———
   if (!ctx.env.RECHERCHE_DB) {
@@ -231,19 +260,23 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
     );
   }
 
-  // ——— 5. Envoi Resend ———
+  // ——— 5. Notification — Resend, puis Formspree de secours ———
+  const sujet = `LEVOIS · Lecture de recherche — ${prenom}`;
+  const corps = formaterCorps(payload, prenom, contact);
   if (!ctx.env.RESEND_API_KEY) {
-    // Mode dry-run — D1 enregistré (email_envoye=0), e-mail non configuré.
+    const formspreeOk = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
+    if (formspreeOk) {
+      ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id));
+      return json({ ok: true });
+    }
     return json(
-      { ok: false, message: "Configuration e-mail incomplète (dry-run) — votre recherche est bien enregistrée. Vous pouvez aussi écrire à mouaad@levois.fr." },
+      { ok: false, message: "Votre recherche est bien enregistrée, mais la notification n'a pas abouti. Vous pouvez aussi écrire à mouaad@levois.fr." },
       503,
     );
   }
 
   const from = ctx.env.LEAD_FROM || 'LEVOIS <contact@levois.fr>';
   const to = ctx.env.LEAD_TO || 'mouaad@levois.fr';
-  const sujet = `LEVOIS · Lecture de recherche — ${prenom}`;
-  const corps = formaterCorps(payload, prenom, contact);
 
   let resendOk = false;
   try {
@@ -268,7 +301,11 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
     console.error('[recherche] Resend fetch error:', e);
   }
 
-  // ——— 6. Mise à jour statut e-mail dans D1 ———
+  if (!resendOk) {
+    resendOk = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
+  }
+
+  // ——— 6. Mise à jour statut de notification dans D1 ———
   // Lecture déjà persistée. On ne supprime jamais un insert D1 réussi.
   if (resendOk) {
     ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id));

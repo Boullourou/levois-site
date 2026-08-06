@@ -260,7 +260,7 @@ L’en-tête sticky garde le mot-symbole à gauche, six accès centrés — Marc
 
 ### Hero de preuve
 
-Le héros utilise une photographie réelle de Chartres, jamais une image immobilière générique. Les sélecteurs commune/type mettent à jour la médiane observée, l'évolution annuelle, les quartiles, l'échantillon, une tendance explicite « hausse / baisse / stable » et la courbe, avec source et limites dans le même cadre. Le passage couleur → noir et blanc améliore la lisibilité des données ; `prefers-reduced-motion` reçoit directement l'état complet. Le crédit de la photographie tient dans une mention discrète et dépliable donnant l'auteur, la source, la licence et les transformations. Le rail ne formule jamais une estimation individuelle ni un verdict « favorable acheteur / vendeur » sans données d'offre et de demande actives.
+Le héros utilise une photographie réelle de Chartres, jamais une image immobilière générique. Les sélecteurs commune/type affichent d’abord une tendance dominante « hausse / baisse / stable », puis la variation qui la justifie, la médiane en €/m², les quartiles et l’échantillon. Le passage couleur → noir et blanc améliore la lisibilité des données ; `prefers-reduced-motion` reçoit directement l'état complet. Le crédit de la photographie tient dans une mention discrète et dépliable donnant l'auteur, la source, la licence et les transformations. Le rail ne formule jamais une estimation individuelle ni un verdict « favorable acheteur / vendeur » sans données d'offre et de demande actives ; il annonce franchement la frontière entre diagnostic automatique et analyse personnalisée.
 
 ### Parcours et avancement
 
@@ -269,6 +269,8 @@ Une option à choix unique agit immédiatement et passe à l'étape suivante apr
 ### Principle, Method & Proof Rows
 
 Le rail de principes aligne trois cellules égales de 66px minimum. La méthode emploie trois rangées avec libellé et résultat, la dernière étant entièrement lime. La preuve DVF utilise des cellules chiffrées séparées par des lignes d’encre ; les libellés restent discrets et les valeurs dominantes.
+
+Le récit de la page suit un tunnel pédagogique : verdict, justification, limites, méthode, application au projet, puis regard humain. Le rendez-vous n’est jamais présenté comme une faveur ou une pression commerciale ; il devient l’étape nécessaire pour confronter les premières hypothèses au terrain et comparer les conséquences de chaque scénario.
 
 ### Cards / Containers
 

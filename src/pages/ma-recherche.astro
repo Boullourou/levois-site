@@ -654,9 +654,9 @@ import { site } from '../config/site';
     return `
       <p class="mr-kicker">LEVOIS · Parcours acquéreur</p>
       <h1 class="mr-titre-xl">Votre recherche doit devenir une stratégie.</h1>
-      <p class="mr-lede">Ce checkpoint confronte budget, surface, secteur et priorités aux ventes réellement enregistrées. Vous repartez avec une première lecture, même si vous ne transmettez rien.</p>
-      <p class="mr-lede">Si vous choisissez ensuite d’être recontacté, Mouaad peut faire circuler votre recherche dans le réseau SAFTI et vous signaler certains biens avant leur diffusion lorsqu’ils y sont partagés.</p>
-      <p class="mr-lede-s">Gratuit · sans engagement · aucun contact demandé avant votre première lecture.</p>
+      <p class="mr-lede">Ce parcours confronte budget, surface, secteur et priorités aux ventes réellement enregistrées. Vous obtenez une première lecture avant de transmettre la moindre coordonnée.</p>
+      <p class="mr-lede">À la fin, le site vous dira clairement ce qu’il peut conclure et ce qui exige encore un échange. Si vous choisissez de poursuivre, Mouaad partira de cette synthèse pour construire la stratégie avec vous.</p>
+      <p class="mr-lede-s">Gratuit · aucune coordonnée demandée avant votre première lecture.</p>
       <div class="mr-actions"><button class="mr-btn" id="mr-start">Commencer ${ICO_ARR}</button></div>
     `;
   }
@@ -866,7 +866,7 @@ import { site } from '../config/site';
       ${pas(9)}
       <p class="mr-kicker">Étape 9 sur 10</p>
       <h2 class="mr-question">Votre manière de décider</h2>
-      <p class="mr-sous-q">Voici ce que LEVOIS a compris de votre projet. Vous pouvez reculer pour corriger.</p>
+      <p class="mr-sous-q">Voici ce que les données et vos choix permettent déjà de comprendre. Vous pouvez reculer pour corriger.</p>
       <div class="mr-relecture">
         <div class="mr-rel-header">
           <p class="mr-rel-eyebrow">Synthèse de votre parcours</p>
@@ -882,9 +882,9 @@ import { site } from '../config/site';
           </div>
         </div>
         ${decHtml}${arb}
-        <p class="mr-rel-note">Cette lecture deviendra le point de départ des recherches et des échanges avec Mouaad.</p>
+        <p class="mr-rel-note"><strong>Le calcul s’arrête ici.</strong> Le terrain, les biens disponibles, votre capacité réelle à arbitrer et le bon rythme de recherche exigent maintenant un regard humain.</p>
       </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Transmettre ma recherche ${ICO_ARR}</button></div>
+      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Passer à l’analyse personnalisée ${ICO_ARR}</button></div>
     `;
   }
 
@@ -892,8 +892,8 @@ import { site } from '../config/site';
     return `
       ${pas(10)}
       <p class="mr-kicker">Étape 10 sur 10</p>
-      <h2 class="mr-question">Comment Mouaad peut-il vous recontacter&nbsp;?</h2>
-      <p class="mr-sous-q">Un seul moyen de contact suffit. Votre recherche lui sera transmise dans la même foulée.</p>
+      <h2 class="mr-question">Transformer cette lecture en stratégie&nbsp;?</h2>
+      <p class="mr-sous-q">Mouaad recevra toute votre synthèse. Lors de l’échange, il pourra confronter vos choix aux biens disponibles, expliquer les scénarios possibles et vous laisser décider en connaissance de cause.</p>
       <form id="mr-form" novalidate autocomplete="off">
         <input type="text" name="site_web" class="mr-hp" tabindex="-1" aria-hidden="true" autocomplete="off"/>
         <div class="mr-cg">
@@ -915,7 +915,7 @@ import { site } from '../config/site';
         </div>
         <div id="mr-err" hidden></div>
         <div class="mr-actions">
-          <button type="submit" class="mr-btn" id="mr-sub" disabled>Transmettre ma recherche ${ICO_ARR}</button>
+          <button type="submit" class="mr-btn" id="mr-sub" disabled>Demander mon analyse personnalisée ${ICO_ARR}</button>
         </div>
       </form>
     `;
@@ -932,8 +932,8 @@ import { site } from '../config/site';
       <p class="mr-kicker">Lecture transmise</p>
       <h2 class="mr-titre">Votre recherche a changé de nature.</h2>
       <p class="mr-conc-pivot">Au début de ce parcours, vous aviez une idée de votre futur bien. À présent, nous comprenons ce qui compte réellement pour vous, ce qui peut évoluer et les décisions qui restent à prendre.</p>
-      <p class="mr-conc-corps">Votre recherche n'est plus une liste de critères. Elle est devenue une stratégie de recherche. C'est à partir de cette lecture que le travail de Mouaad peut réellement commencer.</p>
-      <p class="mr-conc-corps">Mouaad vous recontactera pour travailler votre recherche ensemble. Il pourra également vous signaler certains biens avant leur diffusion lorsqu'ils correspondent à votre projet.</p>
+      <p class="mr-conc-corps">Votre recherche n'est plus une liste de critères. Elle est devenue une base de décision. Mouaad reprendra cette lecture avec vous pour comparer les options, leurs conséquences et le rythme le plus cohérent.</p>
+      <p class="mr-conc-corps">Vous garderez la décision. Si vous choisissez de poursuivre, il pourra ensuite activer le réseau SAFTI et vous signaler certains biens avant leur diffusion lorsqu'ils correspondent à votre projet.</p>
       <div class="mr-conc-liens">
         <a class="mr-lien" href="tel:${lv_.tel||'+33781380121'}">
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M3.5 2.5h2l1 3-1.5 1a8 8 0 0 0 3.5 3.5l1-1.5 3 1v2A1.5 1.5 0 0 1 11 13 8 8 0 0 1 2 4a1.5 1.5 0 0 1 1.5-1.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>

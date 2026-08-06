@@ -60,14 +60,15 @@ Variables d'environnement à définir dans Cloudflare Pages :
 
 | Variable | Rôle |
 |---|---|
-| `RESEND_API_KEY` | Clé API [Resend](https://resend.com) — **obligatoire** pour activer l'envoi |
+| `RESEND_API_KEY` | Clé API [Resend](https://resend.com) — voie principale lorsqu’elle est configurée |
+| `FORMSPREE_ENDPOINT` | Endpoint Formspree de secours (défaut : formulaire historique `xnjynroj`) |
 | `LEAD_TO_EMAIL` | Destinataire (défaut : mouaad@levois.fr) |
 | `LEAD_FROM_EMAIL` | Expéditeur vérifié Resend (défaut : onboarding@resend.dev) |
 | `RECHERCHE_DB` | Binding D1 requis par `/api/recherche` |
 | `RATE_LIMIT` | Binding KV optionnel pour partager la limitation de `/api/lead` |
 
-Sans clé, le formulaire affiche une erreur honnête avec les coordonnées directes —
-jamais de fausse confirmation.
+Sans clé Resend, le serveur utilise le Formspree historique. Il ne confirme la demande que si l’un des deux services
+a réellement accepté la notification ; sinon, il affiche les coordonnées directes sans fausse confirmation.
 
 ## Déploiement
 

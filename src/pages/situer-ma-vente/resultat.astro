@@ -98,13 +98,13 @@ import Layout from '../../layouts/Layout.astro';
       <!-- 8 · Transmission à Mouaad — après la valeur, jamais avant -->
       <section class="rounded-panel bg-encre text-papier p-7 md:p-10" aria-labelledby="titre-transmission">
         <span class="ligne-ecart !bg-argile-lum mb-6"></span>
-        <h2 id="titre-transmission" class="text-h2 text-papier mb-3">Poursuivre avec un regard humain ?</h2>
+        <h2 id="titre-transmission" class="text-h2 text-papier mb-3">Le diagnostic automatique s’arrête ici.</h2>
         <p class="font-sans text-body-lg text-papier/75 mb-2 max-w-prose">
-          Vous n’aurez pas à raconter une nouvelle fois votre situation :
-          Mouaad recevra la synthèse que vous venez de construire.
+          Les réponses permettent de repérer une tension probable, pas de décider à votre place. Mouaad recevra la
+          synthèse déjà construite pour la confronter au bien, à la demande actuelle et à votre calendrier.
         </p>
         <p class="font-sans text-sm text-papier/55 mb-8">
-          Sans engagement, sans pression — et votre lecture ci-dessus reste acquise, transmission ou non.
+          L’échange sert à comparer les scénarios, leurs conséquences et la stratégie la plus cohérente. Vous gardez la décision.
         </p>
 
         <form id="form-lead" novalidate class="grid gap-4 font-sans">
@@ -169,7 +169,7 @@ import Layout from '../../layouts/Layout.astro';
           <p id="form-erreur" class="hidden text-sm text-argile-lum" role="alert"></p>
 
           <button type="submit" id="btn-envoyer" class="btn-sur-encre mt-2 w-full sm:w-auto">
-            Transmettre ma situation à Mouaad
+            Demander mon analyse personnalisée
           </button>
         </form>
 
@@ -352,7 +352,7 @@ import Layout from '../../layouts/Layout.astro';
       } finally {
         envoiEnCours = false;
         btnEnvoyer.disabled = false;
-        btnEnvoyer.textContent = 'Transmettre ma situation à Mouaad';
+        btnEnvoyer.textContent = 'Demander mon analyse personnalisée';
       }
     });
 

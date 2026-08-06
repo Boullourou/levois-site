@@ -34,11 +34,11 @@ Les URLs imprimées ou déjà diffusées restent stables.
 1. **Promesse** — « Rendre la valeur lisible. »
 2. **Double entrée** — acheteur et vendeur au même niveau.
 3. **Preuve locale immédiate** — photographie réelle, repères DVF sourcés et limites dans le premier écran.
-4. **Boucle de marché** — une recherche mieux définie et une vente mieux positionnée.
-5. **Méthode** — constater, interpréter, décider.
-6. **Preuve locale** — données DVF sourcées, période, territoire et limites.
-7. **Passage à l’humain** — Mouaad intervient pour arbitrer, négocier et organiser la suite.
-8. **Double sortie** — reprise des deux parcours sans pression commerciale.
+4. **Preuve locale** — données DVF sourcées, période, territoire et limites.
+5. **Frontière franche** — le site dit ce que les chiffres et le diagnostic automatique ne peuvent pas conclure.
+6. **Méthode** — constater, interpréter, comparer les scénarios puis décider.
+7. **Application au projet** — première lecture acheteur ou propriétaire avant toute coordonnée.
+8. **Passage à l’humain** — Mouaad confronte la synthèse au terrain ; le client garde la décision.
 
 Une section ne doit rester que si elle remplit l’un de ces rôles. Les galeries, cartes de ressources ou profils exclusivement vendeurs appartiennent aux parcours secondaires tant qu’un équivalent acheteur n’existe pas.
 
@@ -54,7 +54,7 @@ Cette priorité modifie la nature des contenus :
 - expliquer les décisions qui se prennent avant l’annonce, le prix et les premières visites ;
 - créer des repères mémorisables et enregistrables, pas une urgence commerciale ;
 - proposer comme CTA une ressource, une vérification ou un outil utile maintenant, même si la vente n’aura lieu que plus tard ;
-- installer le « checkpoint propriétaire » comme réflexe de sécurité : connaître un premier positionnement local et disposer d'un contact de proximité avant qu'un calendrier subi réduise le temps de décision ;
+- installer le repère propriétaire comme réflexe d’anticipation : connaître un premier positionnement local et disposer d'un contact de proximité avant qu'un calendrier subi réduise le temps de décision ;
 - ne jamais instrumentaliser une succession, une séparation, une mutation professionnelle, une difficulté financière ou tout autre événement déclencheur.
 
 Les acheteurs restent présents dans la ligne éditoriale et dans le produit : leur lecture du marché rend les contenus vendeurs plus solides et entretient la boucle bilatérale LEVOIS. La priorité d’acquisition vidéo ne transforme donc pas le site en parcours exclusivement vendeur.
@@ -123,4 +123,4 @@ Une surface est publiable lorsque :
 
 ## 10. État d’intégration
 
-La page d’accueil V2, les routes QR et les parcours acheteur/vendeur sont intégrés dans le même shell visuel. Chaque environnement de production doit relier `/api/recherche` à la base D1 `RECHERCHE_DB`, exposer `/api/lead` via Cloudflare Pages Functions et configurer l’envoi Resend avant d’accepter de vraies demandes.
+La page d’accueil V2, les routes QR et les parcours acheteur/vendeur sont intégrés dans le même shell visuel. Chaque environnement de production doit relier `/api/recherche` à la base D1 `RECHERCHE_DB` et exposer `/api/lead` via Cloudflare Pages Functions. Resend est la voie de notification principale ; le Formspree historique assure le secours lorsqu’aucune clé Resend n’est configurée.

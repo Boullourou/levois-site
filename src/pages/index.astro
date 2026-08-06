@@ -57,91 +57,12 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
       <span>Préparer une vente avant l’urgence</span>
     </div>
 
-    <section class="checkpoints" id="marche" aria-labelledby="checkpoints-title">
-      <header class="checkpoints-intro">
-        <h2 id="checkpoints-title">Faire le point avant que le calendrier décide pour vous.</h2>
-        <p>
-          Un checkpoint ne vous engage à rien. Il transforme une intuition en repères concrets — avant une visite,
-          avant une annonce ou simplement avant qu’un changement de vie impose son rythme.
-        </p>
-      </header>
-
-      <div class="checkpoint-grid">
-        <article class="checkpoint checkpoint-buyer">
-          <div class="checkpoint-heading">
-            <span>Acheteur</span>
-            <strong>Checkpoint recherche</strong>
-          </div>
-          <h3>Une recherche claire ouvre plus de portes.</h3>
-          <p>
-            Budget, surface, secteur et priorités sont confrontés aux ventes réellement enregistrées.
-            Vous obtenez une première lecture avant de transmettre la moindre coordonnée.
-          </p>
-          <div class="checkpoint-proof">
-            <strong>+ 6 000</strong>
-            <span>
-              conseillers SAFTI en France. Si vous choisissez de transmettre votre recherche, Mouaad peut la faire
-              circuler dans son réseau et vous signaler certains biens avant leur diffusion lorsqu’ils y sont partagés.
-            </span>
-          </div>
-          <a class="checkpoint-action" href="/ma-recherche">
-            <span><strong>Faire mon checkpoint</strong><small>Gratuit · sans engagement</small></span>
-            <span class="direction-mark" aria-hidden="true"></span>
-          </a>
-          <p class="checkpoint-source">
-            Taille du réseau : <a href="https://www.safti.fr/qui-sommes-nous" rel="noopener noreferrer">SAFTI, chiffres officiels 2026</a>.
-          </p>
-        </article>
-
-        <article class="checkpoint checkpoint-seller">
-          <div class="checkpoint-heading">
-            <span>Propriétaire</span>
-            <strong>Checkpoint de sécurité</strong>
-          </div>
-          <h3>Le meilleur moment pour préparer une vente, c’est avant d’avoir à vendre.</h3>
-          <p>
-            Un imprévu n’est jamais un argument commercial. C’est une raison de disposer, dès maintenant, d’un repère
-            sur votre bien et d’un interlocuteur local qui connaît déjà votre situation — sans lancer de vente.
-          </p>
-          <div class="checkpoint-proof">
-            <strong>{annualLocalMutations.toLocaleString('fr-FR')}</strong>
-            <span>
-              mutations par an en moyenne dans les sept communes suivies, soit {localMutationCount.toLocaleString('fr-FR')}
-              ventes recensées par DVF entre {marketSummary.period.fromYear} et {marketSummary.period.toYear}.
-            </span>
-          </div>
-          <a class="checkpoint-action" href="/situer-ma-vente">
-            <span><strong>Créer mon repère propriétaire</strong><small>Utile aujourd’hui ou plus tard</small></span>
-            <span class="direction-mark" aria-hidden="true"></span>
-          </a>
-          <p class="checkpoint-source">Un repère de marché n’est ni une estimation automatique ni une obligation de vendre.</p>
-        </article>
-      </div>
-
-      <p class="checkpoint-bridge">
-        Les recherches qualifiées renforcent les ventes. Les biens bien préparés renforcent les recherches.
-        <strong>Deux côtés, un même marché.</strong>
-      </p>
-    </section>
-
-    <section class="method" id="methode" aria-labelledby="method-title">
-      <div class="method-copy">
-        <h2 id="method-title">Une décision solide tient en trois gestes.</h2>
-        <p>Chaque couleur a désormais un rôle : le fait observé, sa lecture par le marché, puis l’action qui mérite d’être prise.</p>
-      </div>
-      <div class="method-list" aria-label="Les trois gestes de la méthode">
-        <div class="method-row"><strong>Constater</strong><span>Les faits disponibles.</span></div>
-        <div class="method-row"><strong>Interpréter</strong><span>La perception du marché.</span></div>
-        <div class="method-row"><strong>Décider</strong><span>Ce qui mérite une action.</span></div>
-      </div>
-    </section>
-
     <section class="local-proof" id="territoire" aria-labelledby="territory-title">
       <div class="local-copy">
-        <h2 id="territory-title">Les ventes passées mesurent un contexte. Pas votre bien.</h2>
+        <h2 id="territory-title">Les chiffres situent le marché. Ils ne connaissent pas votre projet.</h2>
         <p class="local-lead">
-          Les ventes passées donnent un contexte. Elles ne connaissent ni l’état de votre bien,
-          ni sa présentation, ni la demande qui le découvrira demain.
+          Les ventes passées permettent de comparer une commune, un type de bien et une période.
+          Elles ne voient ni votre réalité, ni les acheteurs actifs aujourd’hui, ni ce que chaque choix changera pour vous.
         </p>
 
         <dl class="proof-line" aria-label="Méthode de lecture des données locales">
@@ -161,8 +82,8 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
       </div>
 
       <aside class="data-boundary" aria-labelledby="boundary-title">
-        <h3 id="boundary-title">Ce que les prix passés ne peuvent pas décider.</h3>
-        <p class="boundary-intro">Quatre informations absentes de DVF peuvent pourtant changer toute la stratégie.</p>
+        <h3 id="boundary-title">Le diagnostic automatique s’arrête ici.</h3>
+        <p class="boundary-intro">Ces quatre réalités peuvent changer toute la stratégie et exigent un regard humain.</p>
         <dl>
           <div><dt>La demande active aujourd’hui</dt><dd>Non mesuré</dd></div>
           <div><dt>L’état et les travaux du bien</dt><dd>Non mesuré</dd></div>
@@ -170,9 +91,93 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
           <div><dt>Le compromis acceptable pour un acheteur</dt><dd>Non mesuré</dd></div>
         </dl>
         <p class="boundary-conclusion">
-          C’est dans cet écart entre les données et la perception que se joue la décision.
+          Un site peut montrer les faits. Il ne peut pas confronter votre projet au terrain, lire les réactions humaines
+          ni construire plusieurs scénarios avec leurs conséquences. C’est précisément là que commence l’analyse personnalisée.
         </p>
       </aside>
+    </section>
+
+    <section class="method" id="methode" aria-labelledby="method-title">
+      <div class="method-copy">
+        <h2 id="method-title">La méthode commence là où le chiffre s’arrête.</h2>
+        <p>
+          Je ne vous donne pas une consigne à suivre. Nous séparons les faits des suppositions, comparons les options
+          et rendons leurs conséquences lisibles. Vous gardez la décision ; elle devient simplement mieux informée.
+        </p>
+        <a class="text-link method-link" href="/methode">Comprendre la méthode complète <span class="direction-mark" aria-hidden="true"></span></a>
+      </div>
+      <div class="method-list" aria-label="Les trois gestes de la méthode">
+        <div class="method-row"><strong>Constater</strong><span>Ce que les données et le terrain montrent réellement.</span></div>
+        <div class="method-row"><strong>Interpréter</strong><span>Ce que ces signaux signifient pour votre situation.</span></div>
+        <div class="method-row"><strong>Décider</strong><span>Le scénario dont vous comprenez les bénéfices et les renoncements.</span></div>
+      </div>
+    </section>
+
+    <section class="checkpoints" id="marche" aria-labelledby="checkpoints-title">
+      <header class="checkpoints-intro">
+        <h2 id="checkpoints-title">Appliquer cette méthode à votre situation.</h2>
+        <p>
+          Le parcours organise d’abord vos faits, vos priorités et vos contraintes. Vous obtenez une première lecture.
+          Si vous souhaitez aller plus loin, cette synthèse devient directement la base de notre échange : vous ne repartez pas de zéro.
+        </p>
+      </header>
+
+      <div class="checkpoint-grid">
+        <article class="checkpoint checkpoint-buyer">
+          <div class="checkpoint-heading">
+            <span>Acheteur</span>
+            <strong>Clarifier ma recherche</strong>
+          </div>
+          <h3>Une recherche comprise ouvre plus de portes.</h3>
+          <p>
+            Budget, surface, secteur et priorités sont confrontés aux ventes réellement enregistrées.
+            Vous voyez ce qui est cohérent, ce qui demande un arbitrage et ce qui doit encore être vérifié sur le terrain.
+          </p>
+          <div class="checkpoint-proof">
+            <strong>+ 6 000</strong>
+            <span>
+              conseillers SAFTI en France. Si vous choisissez de poursuivre, Mouaad peut faire circuler une recherche
+              devenue précise et vous signaler certains biens avant leur diffusion lorsqu’ils sont partagés dans le réseau.
+            </span>
+          </div>
+          <a class="checkpoint-action" href="/ma-recherche">
+            <span><strong>Clarifier ma recherche</strong><small>Première lecture gratuite · coordonnées demandées seulement à la fin</small></span>
+            <span class="direction-mark" aria-hidden="true"></span>
+          </a>
+          <p class="checkpoint-source">
+            Taille du réseau : <a href="https://www.safti.fr/qui-sommes-nous" rel="noopener noreferrer">SAFTI, chiffres officiels 2026</a>.
+          </p>
+        </article>
+
+        <article class="checkpoint checkpoint-seller">
+          <div class="checkpoint-heading">
+            <span>Propriétaire</span>
+            <strong>Comprendre mon point de départ</strong>
+          </div>
+          <h3>Le meilleur moment pour préparer une vente, c’est avant d’avoir à vendre.</h3>
+          <p>
+            Vous clarifiez votre calendrier, les signaux déjà reçus et ce qui mérite réellement une décision.
+            Le résultat ne vous dicte rien : il montre ce que les données suggèrent et ce qu’un professionnel doit encore vérifier avec vous.
+          </p>
+          <div class="checkpoint-proof">
+            <strong>{annualLocalMutations.toLocaleString('fr-FR')}</strong>
+            <span>
+              mutations par an en moyenne dans les sept communes suivies, soit {localMutationCount.toLocaleString('fr-FR')}
+              ventes recensées par DVF entre {marketSummary.period.fromYear} et {marketSummary.period.toYear}.
+            </span>
+          </div>
+          <a class="checkpoint-action" href="/situer-ma-vente">
+            <span><strong>Comprendre ma situation</strong><small>Maintenant, dans quelques mois ou simplement pour anticiper</small></span>
+            <span class="direction-mark" aria-hidden="true"></span>
+          </a>
+          <p class="checkpoint-source">Une première lecture n’est ni une estimation automatique ni une obligation de vendre.</p>
+        </article>
+      </div>
+
+      <p class="checkpoint-bridge">
+        La stratégie de recherche ou de commercialisation vient après le diagnostic, jamais avant.
+        <strong>Vous comprenez chaque choix avant de le prendre.</strong>
+      </p>
     </section>
 
     <section class="human" id="mouaad" aria-labelledby="human-title">
@@ -185,14 +190,15 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
         />
       </figure>
       <div class="human-copy">
-        <h2 id="human-title">L’analyse éclaire.<br />La relation décide.</h2>
+        <h2 id="human-title">Vous gardez la décision.<br />Je rends chaque choix lisible.</h2>
         <p class="statement">
-          Une fois les signaux clarifiés, je vous aide à arbitrer les compromis, négocier et choisir la suite — que vous achetiez ou vendiez.
+          Au rendez-vous, je reprends la synthèse déjà construite, la confronte au terrain et vous présente les scénarios possibles,
+          leurs bénéfices, leurs risques et leurs renoncements. Rien n’est imposé : la stratégie retenue découle de ce que vous avez compris.
         </p>
-        <p class="privacy-promise">Vos informations ne me sont transmises que si vous le demandez.</p>
+        <p class="privacy-promise">La stratégie de commercialisation ou de recherche n’est proposée qu’après cette analyse.</p>
         <div class="route-pair" aria-label="Choisir votre parcours avec Mouaad">
           <a class="route route-buyer" href="/ma-recherche">
-            <span class="route-copy"><small>Acheteur</small><strong>Faire mon checkpoint</strong></span>
+            <span class="route-copy"><small>Acheteur</small><strong>Clarifier ma recherche</strong></span>
             <span class="direction-mark" aria-hidden="true"></span>
           </a>
           <a class="route route-seller" href="/situer-ma-vente">
@@ -454,6 +460,7 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
   .method { min-height: 560px; display: grid; grid-template-columns: .86fr 1.14fr; background: var(--paper); color: var(--ink); }
   .method-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(64px, 8vw, 112px) var(--page-pad); }
   .method-copy p { max-width: 580px; margin-top: 30px; color: var(--muted); font-size: 19px; line-height: 1.58; }
+  .method-link { width: max-content; max-width: 100%; margin-top: 28px; }
   .method-list { display: grid; grid-template-rows: repeat(3, 1fr); }
   .method-row { display: grid; grid-template-columns: minmax(120px, .45fr) 1fr; align-items: center; gap: 28px; padding: 30px clamp(28px, 5vw, 68px); border-bottom: 1px solid var(--ink); }
   .method-row:nth-child(1) { background: var(--blue); color: var(--paper); }
@@ -511,9 +518,9 @@ const localMutationCount = marketSummary.source.datasetMutationCount;
     margin-top: 42px !important;
     padding: 24px;
     background: var(--blue);
-    font-size: clamp(20px, 2.1vw, 30px);
+    font-size: clamp(18px, 1.7vw, 24px);
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.35;
     letter-spacing: -.02em;
   }
 

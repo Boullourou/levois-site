@@ -189,20 +189,27 @@ const clientStates = states.map((state) => ({
         </div>
 
         <div class="rail-live" aria-live="polite" aria-atomic="true">
-          <div class="rail-metric" data-evidence-group="1">
-            <strong data-market-median>{number.format(initial.latest.medianEurM2)}</strong>
-            <span>€/m² · médiane observée en <b data-market-year>{initial.latest.year}</b></span>
+          <div class="rail-verdict" data-evidence-group="1">
+            <span>Ce que disent les prix signés</span>
+            <strong data-market-trend>{initial.trend}</strong>
+            <small data-market-trend-period>
+              {initial.yoy.quality === 'limited' ? `Tendance à confirmer · ${initial.yoy.fromYear}–${initial.yoy.toYear}` : `Entre ${initial.yoy.fromYear} et ${initial.yoy.toYear}`}
+            </small>
           </div>
 
           <div class="rail-change" data-evidence-group="2">
-            <span class="rail-trend" data-market-trend>{initial.trend}</span>
             <strong data-market-yoy>{signed.format(initial.yoy.percent)} %</strong>
             <span data-market-yoy-note>
-              {initial.yoy.quality === 'limited' ? `Échantillon limité · ${initial.yoy.fromYear}–${initial.yoy.toYear}` : `par rapport à ${initial.yoy.fromYear}`}
+              {initial.yoy.quality === 'limited' ? `Échantillon limité pour confirmer la tendance` : `Évolution de la médiane par rapport à ${initial.yoy.fromYear}`}
             </span>
           </div>
 
-          <div class="rail-range" data-evidence-group="3" style={`--median-position:${initial.medianPosition.toFixed(2)}%`}>
+          <div class="rail-metric" data-evidence-group="3">
+            <strong><span data-market-median>{number.format(initial.latest.medianEurM2)}</span><i> €/m²</i></strong>
+            <span>Médiane observée en <b data-market-year>{initial.latest.year}</b></span>
+          </div>
+
+          <div class="rail-range" data-evidence-group="4" style={`--median-position:${initial.medianPosition.toFixed(2)}%`}>
             <div class="range-labels">
               <span data-market-q1>{number.format(initial.range.p25EurM2)} €</span>
               <span data-market-range-median>{number.format(initial.range.medianEurM2)} €</span>
@@ -212,21 +219,21 @@ const clientStates = states.map((state) => ({
             <p>Fourchette centrale en €/m² · {initial.range.eligibleCount} mutations simples</p>
           </div>
 
-          <p class="rail-sample" data-evidence-group="4">
+          <p class="rail-sample" data-evidence-group="5">
             <strong data-market-count>{initial.latest.eligibleCount}</strong> ventes analysées en <span data-market-count-year>{initial.latest.year}</span>
           </p>
         </div>
 
         <p class="rail-source">
           Source DVF · DGFiP. Ventes passées, hors mutations multi-lots. Ni estimation ni prévision.
-          <span>« Hausse », « baisse » ou « stable » décrit les prix signés. Dire quel côté est favorisé exige aussi l’offre active et la demande, absentes de DVF.</span>
+          <span>Le verdict décrit uniquement l’évolution des prix signés. Ici s’arrête le diagnostic automatique : l’offre active, la demande réelle, l’état du bien et votre situation exigent une analyse personnalisée.</span>
         </p>
       </aside>
     </div>
 
     <nav class="hero-routes" aria-label="Choisir votre parcours">
       <a class="hero-route hero-route-buyer" href="/ma-recherche">
-        <span><b>Acheteur</b><small>Faire mon checkpoint gratuit</small></span>
+        <span><b>Acheteur</b><small>Clarifier ma recherche</small></span>
         <i aria-hidden="true"></i>
       </a>
       <a class="hero-route hero-route-seller" href="/situer-ma-vente">
@@ -469,8 +476,27 @@ const clientStates = states.map((state) => ({
   }
 
   .rail-live { display: contents; }
+  .rail-verdict { display: grid; gap: 8px; }
+  .rail-verdict > span {
+    color: rgba(242,245,239,.72);
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .08em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+  .rail-verdict strong {
+    color: var(--lime);
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(43px, 4vw, 68px);
+    line-height: .86;
+    letter-spacing: -.035em;
+    text-transform: uppercase;
+  }
+  .rail-verdict small { color: var(--paper); font-size: 11px; line-height: 1.35; }
   .rail-metric, .rail-change, .rail-range, .rail-sample {
-    opacity: calc(.58 + var(--evidence-progress));
+    opacity: calc(.24 + var(--evidence-progress));
+    transform: translateY(calc((1 - var(--evidence-progress)) * 12px));
     transition: opacity .18s ease-out, transform .18s ease-out;
   }
   .rail-metric { display: grid; gap: 3px; }
@@ -485,19 +511,15 @@ const clientStates = states.map((state) => ({
   }
   .rail-metric span, .rail-change span { font-size: clamp(11px, .95vw, 15px); line-height: 1.35; }
   .rail-metric b { font-weight: inherit; }
+  .rail-metric i {
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: .34em;
+    font-style: normal;
+    font-weight: 750;
+    letter-spacing: -.015em;
+  }
   .rail-change { display: grid; gap: 5px; }
   .rail-change strong { font-size: clamp(32px, 3.2vw, 52px); }
-  .rail-trend {
-    width: max-content;
-    padding: 6px 9px 5px;
-    background: var(--lime);
-    color: var(--ink);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: .08em;
-    line-height: 1;
-    text-transform: uppercase;
-  }
 
   .rail-range { --median-position: 50%; }
   .range-labels { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; }
@@ -596,7 +618,7 @@ const clientStates = states.map((state) => ({
     .evidence-media { min-height: 530px; }
     .evidence-rail { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; overflow: visible; }
     .selector-set { align-self: start; }
-    .rail-live { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .rail-live { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 20px; }
     .rail-source { grid-column: 1 / -1; }
     .hero-routes { min-height: 126px; }
   }
@@ -616,7 +638,15 @@ const clientStates = states.map((state) => ({
     .market-chart { right: 8px; bottom: 36px; width: 96%; }
     .chart-caption { align-items: flex-start; gap: 8px; }
     .evidence-rail { grid-column: auto; grid-template-columns: 1fr; padding: 26px 20px; }
-    .rail-live { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .rail-live { grid-template-columns: 1fr; gap: 28px; }
+    .rail-verdict {
+      margin: 4px -20px 2px;
+      padding: 28px 20px 30px;
+      border-top: 1px solid rgba(215,255,66,.5);
+      border-bottom: 1px solid rgba(215,255,66,.5);
+    }
+    .rail-verdict strong { font-size: clamp(62px, 19vw, 88px); }
+    .rail-verdict small { font-size: 13px; }
     .rail-metric strong { font-size: 54px; }
     .rail-change strong { font-size: 42px; }
     .hero-routes { grid-template-columns: 1fr; }
@@ -699,9 +729,12 @@ const clientStates = states.map((state) => ({
       setText('[data-market-year]', String(state.latest.year));
       setText('[data-market-yoy]', `${signedPercent.format(state.yoy.percent)} %`);
       setText('[data-market-trend]', state.trend);
+      setText('[data-market-trend-period]', state.yoy.quality === 'limited'
+        ? `Tendance à confirmer · ${state.yoy.fromYear}–${state.yoy.toYear}`
+        : `Entre ${state.yoy.fromYear} et ${state.yoy.toYear}`);
       setText('[data-market-yoy-note]', state.yoy.quality === 'limited'
-        ? `Échantillon limité · ${state.yoy.fromYear}–${state.yoy.toYear}`
-        : `par rapport à ${state.yoy.fromYear}`);
+        ? 'Échantillon limité pour confirmer la tendance'
+        : `Évolution de la médiane par rapport à ${state.yoy.fromYear}`);
       setText('[data-market-q1]', `${integer.format(state.range.p25EurM2)} €`);
       setText('[data-market-range-median]', `${integer.format(state.range.medianEurM2)} €`);
       setText('[data-market-q3]', `${integer.format(state.range.p75EurM2)} €`);
