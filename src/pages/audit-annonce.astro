@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
+import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 
 const designContract = `
 THESIS: Un lien d’annonce devient deux améliorations concrètes, puis une lecture humaine facultative là où l’automatisation s’arrête.
@@ -59,6 +60,13 @@ const faq = [
     ],
   })} />
 
+  <JourneyImmersion
+    world="selling"
+    title="Votre annonce parle déjà. Regardons ce qu’elle dit."
+    text="Les vues, les messages, les visites et les silences sont des signaux. Bien lus, ils montrent quoi améliorer avant de perdre du temps."
+    action="Lire mes signaux"
+    target="#outil"
+  />
   <main>
     <section class="url-hero" aria-labelledby="audit-title">
       <div class="url-hero__copy">
@@ -346,7 +354,7 @@ const faq = [
     .url-entry form { display: grid; }
     .url-entry label { margin-bottom: 12px; color: #fff; font-size: clamp(24px, 3vw, 42px); font-weight: 800; line-height: 1.05; }
     .url-entry input { min-height: 72px; width: 100%; padding: 0 20px; border: 2px solid #fff; border-radius: 0; background: #fff; color: #111522; font: 600 18px/1.2 'Public Sans', sans-serif; }
-    .url-entry button, .human-next button { min-height: 64px; padding: 0 22px; border: 0; border-radius: 0; background: #d7ff42; color: #111522; font: 800 17px/1.2 'Public Sans', sans-serif; cursor: pointer; }
+    .url-entry button, .human-next button { min-height: 64px; padding: 0 26px; border: 0; border-radius: 999px; background: #d7ff42; color: #111522; font: 800 17px/1.2 'Public Sans', sans-serif; cursor: pointer; }
     .url-entry button { margin-top: 2px; }
     .url-entry button:hover { background: #111522; color: #d7ff42; }
     button:disabled { cursor: wait; opacity: .68; }
@@ -369,7 +377,7 @@ const faq = [
     .fallback-form legend { width: 100%; margin-bottom: 18px; background: #f2f5ef; font-size: clamp(28px, 3vw, 42px); font-weight: 800; line-height: 1.05; }
     .fallback-form label { position: relative; cursor: pointer; }
     .fallback-form input { position: absolute; opacity: 0; pointer-events: none; }
-    .fallback-form label span { min-height: 58px; padding: 14px 18px; display: flex; align-items: center; background: #fff; color: #111522; font-weight: 750; }
+    .fallback-form label span { min-height: 58px; padding: 14px 18px; display: flex; align-items: center; border-radius: 16px; background: #fff; color: #111522; font-weight: 750; }
     .fallback-form label:hover span, .fallback-form input:checked + span { background: #d7ff42; }
     .fallback-form input:focus-visible + span { outline: 3px solid #243cff; outline-offset: -3px; }
     .fallback-form [hidden] { display: none; }

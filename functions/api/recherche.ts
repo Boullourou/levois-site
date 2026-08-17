@@ -84,11 +84,24 @@ function texte(v: unknown, max: number): string {
   return v.trim().slice(0, max);
 }
 
+function objetSimple(v: unknown): Record<string, unknown> | null {
+  return v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
+}
+
 function estEmail(s: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
 }
 
 async function insererD1(db: D1Database, id: string, body: any, prenom: string, contact: string): Promise<void> {
+  const lecture = objetSimple(body.lecture);
+  const lectureJson = lecture
+    ? JSON.stringify({
+        ...lecture,
+        projet: objetSimple(body.project),
+        consentements: objetSimple(body.consents),
+      })
+    : null;
+
   await db
     .prepare(
       `INSERT INTO lectures_recherche (
@@ -116,7 +129,7 @@ async function insererD1(db: D1Database, id: string, body: any, prenom: string, 
       JSON.stringify(Array.isArray(body.flexibles) ? body.flexibles : []),
       JSON.stringify(Array.isArray(body.flexiblesLabels) ? body.flexiblesLabels : []),
       body.decisionTension ?? null,
-      body.lecture ? JSON.stringify(body.lecture) : null,
+      lectureJson,
     )
     .run();
 }
@@ -145,6 +158,20 @@ function formaterCorps(body: any, prenom: string, contact: string): string {
   l.push(`Secteur          : ${body.secteur ?? '—'}${contraint}`);
   if (body.budget != null) l.push(`Budget           : ${Number(body.budget).toLocaleString('fr-FR')} €`);
   if (body.surface != null) l.push(`Surface cible    : ${body.surface} m²`);
+
+  const project = objetSimple(body.project);
+  if (project) {
+    const communes = texte(project.communesAcceptables, 500);
+    const temps = texte(project.tempsMaxLabel, 100);
+    const financement = texte(project.financementLabel, 120);
+    const ventePrealable = texte(project.ventePrealableLabel, 120);
+    const horizon = texte(project.horizonLabel, 120);
+    if (communes) l.push(`Communes acceptées : ${communes}`);
+    if (temps) l.push(`Temps maximal      : ${temps}`);
+    if (financement) l.push(`Financement        : ${financement}`);
+    if (ventePrealable) l.push(`Vente préalable    : ${ventePrealable}`);
+    if (horizon) l.push(`Horizon            : ${horizon}`);
+  }
 
   const lm = body.lecture;
   if (lm && typeof lm === 'object') {
@@ -181,7 +208,14 @@ function formaterCorps(body: any, prenom: string, contact: string): string {
 
   l.push('');
   l.push('————— Consentement —————');
-  l.push("L'utilisateur a accepté d'être recontacté par Mouaad Boullourou au sujet de sa recherche immobilière.");
+  const consents = objetSimple(body.consents);
+  if (consents) {
+    l.push(`Recevoir la lecture      : ${consents.lecture === true ? 'oui' : 'non'}`);
+    l.push(`Alerte rapprochement     : ${consents.matching === true ? 'oui' : 'non'}`);
+    l.push(`Demander un échange      : ${consents.contact === true ? 'oui' : 'non'}`);
+  } else {
+    l.push("L'utilisateur a accepté d'être recontacté par Mouaad Boullourou au sujet de sa recherche immobilière.");
+  }
 
   return l.join('\n');
 }

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 
 // Le parcours est une « île » interactive : tout le reste du site est statique.
 // Les données et le moteur sont importés par le script client ci-dessous.
@@ -9,7 +10,14 @@ import Layout from '../layouts/Layout.astro';
   title="Situer ma vente"
   description="Choisissez votre situation, répondez à quelques questions, recevez une première lecture liée à vos réponses — sans coordonnées."
 >
-  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section min-h-[70vh]">
+  <JourneyImmersion
+    world="anticipate"
+    title="Rien ne vous oblige à vendre. Mais demain peut tout accélérer."
+    text="Connaître la place de votre bien aujourd’hui, c’est éviter de devoir décider dans l’urgence si votre vie change demain."
+    action="Créer mon premier repère"
+    target="#parcours"
+  />
+  <div id="parcours" class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section min-h-[70vh]">
 
     <!-- Contexte : situation choisie + modifier -->
     <div id="contexte" class="hidden items-center justify-between gap-4 mb-8 font-sans text-sm">

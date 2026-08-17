@@ -95,6 +95,27 @@ if (token && !privacyOptOut && !globalPrivacyControl) {
     capture(detail.event, safeAuditProperties(detail.event, detail));
   });
 
+  window.addEventListener('levois:journey', (rawEvent) => {
+    const detail = (rawEvent as CustomEvent<Record<string, unknown>>).detail ?? {};
+    const event = typeof detail.event === 'string' ? detail.event : '';
+    const allowed = new Set([
+      'journey_started',
+      'journey_step_completed',
+      'journey_completed',
+      'result_viewed',
+      'contact_consent_submitted',
+      'matching_consent_submitted',
+      'reading_consent_submitted',
+    ]);
+    if (!allowed.has(event)) return;
+    const safe: Record<string, string | number | boolean> = {};
+    if (typeof detail.step === 'number') safe.step = detail.step;
+    if (typeof detail.step_name === 'string') safe.step_name = detail.step_name.slice(0, 80);
+    if (typeof detail.selected_journey === 'string') safe.selected_journey = detail.selected_journey.slice(0, 40);
+    if (typeof detail.consent_type === 'string') safe.consent_type = detail.consent_type.slice(0, 40);
+    capture(event, safe);
+  });
+
   document.addEventListener('click', (event) => {
     const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
     if (!link) return;
@@ -107,6 +128,16 @@ if (token && !privacyOptOut && !globalPrivacyControl) {
       return;
     }
     const isInternal = destination.origin === window.location.origin;
+    const selectedJourney = link.dataset.journey;
+    if (selectedJourney) {
+      const routeProperties = {
+        selected_journey: selectedJourney,
+        placement: linkPlacement(link),
+        destination_path: isInternal ? cleanPath(destination.pathname) : destination.hostname,
+      };
+      capture('route_selected', routeProperties);
+      capture('levois_journey_selected', routeProperties);
+    }
     capture('levois_navigation_clicked', {
       placement: linkPlacement(link),
       link_type: isInternal ? 'internal' : destination.protocol.replace(':', ''),

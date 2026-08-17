@@ -15,6 +15,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Antonio';
+  src: url('/fonts/antonio-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/bricolage-grotesque-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -85,20 +101,20 @@
   .btn-primaire {
     @apply inline-flex items-center justify-center gap-2 bg-argile text-papier-vif
       font-sans font-semibold px-7 py-3.5 min-h-[48px] transition-colors duration-200
-      hover:bg-encre hover:text-argile-lum active:bg-encre;
+      rounded-full hover:bg-encre hover:text-argile-lum active:bg-encre;
     animation: levois-button-cue 3.2s cubic-bezier(.16, 1, .3, 1) infinite;
   }
 
   .btn-secondaire {
     @apply inline-flex items-center justify-center gap-2 border border-encre text-encre
       font-sans font-semibold px-7 py-3.5 min-h-[48px] transition-colors duration-200
-      hover:bg-argile hover:border-argile hover:text-papier-vif;
+      rounded-full hover:bg-argile hover:border-argile hover:text-papier-vif;
   }
 
   .btn-sur-encre {
     @apply inline-flex items-center justify-center gap-2 bg-argile-lum text-encre
       font-sans font-medium px-7 py-3.5 min-h-[48px] transition-colors duration-200
-      hover:bg-papier-vif;
+      rounded-full hover:bg-papier-vif;
   }
 
   /* Carte générique */

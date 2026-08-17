@@ -17,6 +17,7 @@
  */
 import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
+import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 ---
 
 <Layout
@@ -25,6 +26,13 @@ import { site } from '../config/site';
   noindex={true}
   headerTransparent={false}
 >
+  <JourneyImmersion
+    world="buying"
+    title="Voir plus de biens ne suffit pas. Savoir choisir, oui."
+    text="Quand vos priorités sont claires, vous visitez mieux, vous comparez mieux et vous négociez avec de vraies raisons."
+    action="Mettre de l’ordre dans ma recherche"
+    target="#mr-root"
+  />
   <div id="mr-root" class="mr-root">
     <div class="mr-barre-wrap" aria-hidden="true">
       <div class="mr-barre" id="mr-barre" style="width:0%" role="progressbar"
@@ -81,7 +89,7 @@ import { site } from '../config/site';
     background: rgba(247,244,240,0.90);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
-    border: none; border-radius: 0; cursor: pointer;
+    border: none; border-radius: 999px; cursor: pointer;
     padding: 0.45rem 0.7rem;
     min-height: 44px; /* zone tactile iOS */
     transition: color 0.15s ease;
@@ -162,9 +170,18 @@ import { site } from '../config/site';
   /* ——— Cartes de choix ——— */
   .mr-grille { display: grid; gap: 0.7rem; margin-bottom: 1.75rem; }
   .mr-grille-2 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+  .mr-choice-group { margin: 0 0 1.45rem; }
+  .mr-choice-group-title {
+    margin: 0 0 0.65rem;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 750;
+    color: #111522;
+  }
+  .mr-choice-group .mr-grille { margin-bottom: 0; }
   .mr-choix {
     display: flex; flex-direction: column; background: #FFFFFF;
-    border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
+    border: 1.5px solid rgba(17,21,34,0.08); border-radius: 16px;
     padding: 1.1rem 3.2rem 1.1rem 1.35rem; cursor: pointer; text-align: left;
     transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
     position: relative; font-family: inherit; width: 100%;
@@ -242,7 +259,7 @@ import { site } from '../config/site';
     display: inline-flex; align-items: center; gap: 0.5rem;
     min-height: 52px; padding: 0.9rem 1.8rem; font-family: 'Public Sans', system-ui, sans-serif;
     font-size: 0.97rem; font-weight: 600; color: #FFFFFF; background: #243CFF;
-    border: none; border-radius: 0; cursor: pointer;
+    border: none; border-radius: 999px; cursor: pointer;
     transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
     box-shadow: none; text-decoration: none;
     animation: mr-button-cue 3.2s cubic-bezier(.16,1,.3,1) infinite;
@@ -271,7 +288,7 @@ import { site } from '../config/site';
     display: inline-flex; align-items: center; gap: 0.5rem;
     padding: 0.75rem 1.4rem; font-family: 'Public Sans', system-ui, sans-serif;
     font-size: 0.92rem; font-weight: 500; color: #58615B; background: transparent;
-    border: 1.5px solid rgba(17,21,34,0.1); border-radius: 0; cursor: pointer;
+    border: 1.5px solid rgba(17,21,34,0.1); border-radius: 999px; cursor: pointer;
     transition: all 0.18s ease;
   }
   .mr-btn-ghost:hover { border-color: rgba(36,60,255,0.3); color: #111522; }
@@ -372,7 +389,7 @@ import { site } from '../config/site';
     border-left: 1px solid #243CFF; border-radius: 0;
   }
   .mr-chemin {
-    background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
+    background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 16px;
     padding: 1.1rem 1.25rem; margin-bottom: 0.75rem; cursor: pointer;
     transition: border-color 0.18s ease, background 0.18s ease; text-align: left;
     font-family: inherit; width: 100%;
@@ -446,6 +463,12 @@ import { site } from '../config/site';
   .mr-ci-ta { min-height: 90px; resize: vertical; }
   .mr-ci-aide { font-family:'Public Sans',system-ui,sans-serif; font-size:0.82rem; color:#58615B; margin-top:0.35rem; }
   .mr-consent { display:flex; align-items:flex-start; gap:0.65rem; margin:1.25rem 0; }
+  .mr-consent--option {
+    margin: 0 0 0.75rem;
+    padding: 0.95rem 1rem;
+    background: #FFFFFF;
+    border: 1.5px solid rgba(17,21,34,0.08);
+  }
   .mr-consent input[type=checkbox] { margin-top:3px; flex:0 0 auto; accent-color:#243CFF; width:16px; height:16px; cursor:pointer; }
   .mr-consent-lbl { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; }
   .mr-hp { display:none !important; }
@@ -520,9 +543,12 @@ import { site } from '../config/site';
   interface Etat {
     step:number; situation:string|null; type:string|null;
     secteurContraint:boolean|null; secteur:string|null;
+    communesAcceptables:string; tempsMax:string|null;
+    financement:string|null; ventePrealable:string|null; horizon:string|null;
     budget:number|null; surface:number|null; preserves:string[];
     decisionTension:string|null; lecture:LM|null;
     prenom:string; contact:string; commentaire:string;
+    consentLecture:boolean; consentMatching:boolean; consentContact:boolean;
     src:string;
   }
 
@@ -543,15 +569,40 @@ import { site } from '../config/site';
     { id:'rapprochement', label:'Rapprochement',              desc:'Pour être plus proche — famille, emploi, services' },
     { id:'autre',         label:'Autre situation',            desc:'Mon projet est différent' },
   ];
-  const TOTAL = 11;
+  const TEMPS_MAX = [
+    { id:'10', label:'10 minutes', desc:'Je veux rester très proche du point important' },
+    { id:'15', label:'15 minutes', desc:'Je peux élargir un peu si le bien est cohérent' },
+    { id:'20', label:'20 minutes', desc:'Je privilégie le bon compromis au secteur strict' },
+    { id:'30_plus', label:'30 minutes ou plus', desc:'La zone peut s’ouvrir largement' },
+  ];
+  const FINANCEMENTS = [
+    { id:'accord', label:'Financement déjà cadré', desc:'Banque, courtier ou accord de principe déjà avancé' },
+    { id:'estime', label:'Budget estimé', desc:'J’ai une enveloppe crédible, mais elle reste à confirmer' },
+    { id:'a_preciser', label:'À préciser', desc:'Je veux d’abord comprendre ce que mon projet demande' },
+  ];
+  const VENTES_PREALABLES = [
+    { id:'non', label:'Non', desc:'Mon achat ne dépend pas de la vente d’un autre bien' },
+    { id:'oui', label:'Oui', desc:'Je dois vendre ou sécuriser une vente pour acheter' },
+    { id:'possible', label:'Peut-être', desc:'Cela dépendra du bien, du timing ou du financement' },
+  ];
+  const HORIZONS = [
+    { id:'0_3', label:'0 à 3 mois', desc:'Je dois pouvoir agir rapidement' },
+    { id:'3_6', label:'3 à 6 mois', desc:'Je cherche activement, sans urgence absolue' },
+    { id:'6_12', label:'6 à 12 mois', desc:'Je prépare le bon moment' },
+    { id:'plus', label:'Plus tard', desc:'Je veux clarifier avant de me lancer' },
+  ];
+  const TOTAL = 12;
   const eur = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
   const num = new Intl.NumberFormat('fr-FR');
 
   // ——— État ———
   const E: Etat = {
     step:0, situation:null, type:null, secteurContraint:null, secteur:null,
+    communesAcceptables:'', tempsMax:null,
+    financement:null, ventePrealable:null, horizon:null,
     budget:null, surface:null, preserves:[], decisionTension:null, lecture:null,
     prenom:'', contact:'', commentaire:'',
+    consentLecture:false, consentMatching:false, consentContact:false,
     src: new URLSearchParams(window.location.search).get('src')??'',
   };
 
@@ -588,6 +639,16 @@ import { site } from '../config/site';
   const flexibles = () => PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.id);
   const zoneLbl = () => E.secteur==='chartres' ? 'Chartres intramuros' : 'la zone chartraine';
   const typeLbl = () => E.type==='Maison' ? 'maison' : E.type==='Appartement' ? 'appartement' : 'bien';
+  const esc = (v:unknown) => String(v??'').replace(/[&<>"']/g,(c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c] as string));
+  const label = (items:{id:string;label:string}[], id:string|null) => items.find(i=>i.id===id)?.label ?? 'À préciser';
+  const situationLbl = () => label(SITUATIONS,E.situation);
+  const tempsLbl = () => label(TEMPS_MAX,E.tempsMax);
+  const financementLbl = () => label(FINANCEMENTS,E.financement);
+  const ventePrealableLbl = () => label(VENTES_PREALABLES,E.ventePrealable);
+  const horizonLbl = () => label(HORIZONS,E.horizon);
+  const journeyEvent = (event:string, detail:Record<string,unknown>={}) => {
+    window.dispatchEvent(new CustomEvent('levois:journey',{detail:{event,selected_journey:'buyer',...detail}}));
+  };
   const ICO_ARR = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   let autoTimer: number | undefined;
 
@@ -600,12 +661,15 @@ import { site } from '../config/site';
   // Indicateur de progression — points
   function pas(n: number): string {
     return `<div class="mr-passos" aria-hidden="true">${
-      Array.from({length:10},(_,i)=>`<span class="mr-pas${i<n-1?' mr-pas-done':i===n-1?' mr-pas-cur':''}"></span>`).join('')
+      Array.from({length:11},(_,i)=>`<span class="mr-pas${i<n-1?' mr-pas-done':i===n-1?' mr-pas-cur':''}"></span>`).join('')
     }</div>`;
   }
 
   // ——— Barre + navigation ———
   function avancer(n:number) {
+    if (E.step > 0 && E.step < TOTAL && n > E.step) {
+      journeyEvent('journey_step_completed',{step:E.step,step_name:`ma-recherche-${E.step}`});
+    }
     E.step=n;
     const b=document.getElementById('mr-barre');
     if(b){ const p=n<=0?0:Math.round((n/TOTAL)*100); b.style.width=p+'%'; b.setAttribute('aria-valuenow',String(p)); }
@@ -618,7 +682,7 @@ import { site } from '../config/site';
     if(autoTimer) { window.clearTimeout(autoTimer); autoTimer=undefined; }
     if(E.step<=0) return;
     let prev=E.step-1;
-    if(prev===8&&(!E.lecture||E.lecture.position!=='sous_q1')) prev=7;
+    if(prev===9&&(!E.lecture||E.lecture.position!=='sous_q1')) prev=8;
     avancer(prev);
   }
 
@@ -645,6 +709,7 @@ import { site } from '../config/site';
       case 9:  return h9();
       case 10: return h10();
       case 11: return h11();
+      case 12: return h12();
       default: return '';
     }
   }
@@ -664,7 +729,7 @@ import { site } from '../config/site';
   function h1() {
     return `
       ${pas(1)}
-      <p class="mr-kicker">Étape 1 sur 10</p>
+      <p class="mr-kicker">Étape 1 sur 11</p>
       <h2 class="mr-question">Qu'est-ce qui vous amène à chercher aujourd'hui&nbsp;?</h2>
       <p class="mr-sous-q">Ce contexte aide Mouaad à comprendre votre projet avant même de vous rencontrer.</p>
       <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
@@ -682,7 +747,7 @@ import { site } from '../config/site';
     ];
     return `
       ${pas(2)}
-      <p class="mr-kicker">Étape 2 sur 10</p>
+      <p class="mr-kicker">Étape 2 sur 11</p>
       <h2 class="mr-question">Quel type de bien recherchez-vous&nbsp;?</h2>
       <p class="mr-sous-q">Ce choix oriente la lecture des données du marché chartrain.</p>
       <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
@@ -698,24 +763,67 @@ import { site } from '../config/site';
       <div class="mr-grille mr-grille-2" id="mr-sects">
         ${[{id:'chartres',label:'Chartres intramuros',desc:'La ville de Chartres'},{id:'tout',label:"L'ensemble de la zone",desc:'Lèves, Mainvilliers, Lucé, Champhol, Le Coudray, Luisant et Chartres'}].map(s=>`<button class="mr-choix${E.secteur===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
       </div>` : '';
+    const peutContinuer = E.secteurContraint===false || (E.secteurContraint===true && !!E.secteur);
     return `
       ${pas(3)}
-      <p class="mr-kicker">Étape 3 sur 10</p>
-      <h2 class="mr-question">Votre secteur est-il défini par une contrainte précise&nbsp;?</h2>
-      <p class="mr-sous-q">Proximité école, travail, famille — ou liberté selon les biens.</p>
-      <p class="mr-auto-hint">Un choix suffit · si le secteur est précis, une seconde question apparaît.</p>
+      <p class="mr-kicker">Étape 3 sur 11</p>
+      <h2 class="mr-question">Quel territoire est réellement acceptable&nbsp;?</h2>
+      <p class="mr-sous-q">On ne cherche pas encore une adresse parfaite. On clarifie la zone dans laquelle votre décision reste possible.</p>
       <div class="mr-grille" id="mr-cont">
         <button class="mr-choix${E.secteurContraint===true?' actif':''}" data-id="oui"><span class="mr-choix-lbl">Oui, j'ai un secteur précis</span><span class="mr-choix-desc">Une contrainte géographique oriente ma recherche</span></button>
         <button class="mr-choix${E.secteurContraint===false?' actif':''}" data-id="non"><span class="mr-choix-lbl">Je suis ouvert au secteur</span><span class="mr-choix-desc">Je choisis selon les biens, sans ancrage fixe</span></button>
       </div>
       ${sub}
+      <div class="mr-saisie">
+        <label class="mr-label" for="mr-communes">Communes acceptables</label>
+        <div class="mr-input-wrap">
+          <input id="mr-communes" type="text" class="mr-input" placeholder="Chartres, Lèves, Champhol…" value="${esc(E.communesAcceptables)}"/>
+        </div>
+        <p class="mr-input-aide">Liste libre. Elle servira à distinguer une zone vraiment acceptable d'une zone seulement théorique.</p>
+      </div>
+      <div class="mr-choice-group">
+        <p class="mr-choice-group-title">Temps maximal autour du point important</p>
+        <div class="mr-grille mr-grille-2" id="mr-temps">
+          ${TEMPS_MAX.map(t=>`<button class="mr-choix${E.tempsMax===t.id?' actif':''}" data-id="${t.id}"><span class="mr-choix-lbl">${t.label}</span><span class="mr-choix-desc">${t.desc}</span></button>`).join('')}
+        </div>
+      </div>
+      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!peutContinuer?'disabled':''}>Continuer ${ICO_ARR}</button></div>
     `;
   }
 
   function h4() {
+    const pret = !!E.financement && !!E.ventePrealable && !!E.horizon;
     return `
       ${pas(4)}
-      <p class="mr-kicker">Étape 4 sur 10</p>
+      <p class="mr-kicker">Étape 4 sur 11</p>
+      <h2 class="mr-question">Votre projet est-il prêt à avancer&nbsp;?</h2>
+      <p class="mr-sous-q">Ces réponses changent la stratégie : vitesse, crédibilité en visite, capacité à se positionner et marge de négociation.</p>
+      <div class="mr-choice-group">
+        <p class="mr-choice-group-title">Financement</p>
+        <div class="mr-grille" id="mr-fin">
+          ${FINANCEMENTS.map(f=>`<button class="mr-choix${E.financement===f.id?' actif':''}" data-id="${f.id}"><span class="mr-choix-lbl">${f.label}</span><span class="mr-choix-desc">${f.desc}</span></button>`).join('')}
+        </div>
+      </div>
+      <div class="mr-choice-group">
+        <p class="mr-choice-group-title">Achat conditionné à une vente</p>
+        <div class="mr-grille" id="mr-vente">
+          ${VENTES_PREALABLES.map(v=>`<button class="mr-choix${E.ventePrealable===v.id?' actif':''}" data-id="${v.id}"><span class="mr-choix-lbl">${v.label}</span><span class="mr-choix-desc">${v.desc}</span></button>`).join('')}
+        </div>
+      </div>
+      <div class="mr-choice-group">
+        <p class="mr-choice-group-title">Horizon</p>
+        <div class="mr-grille mr-grille-2" id="mr-horizon">
+          ${HORIZONS.map(h=>`<button class="mr-choix${E.horizon===h.id?' actif':''}" data-id="${h.id}"><span class="mr-choix-lbl">${h.label}</span><span class="mr-choix-desc">${h.desc}</span></button>`).join('')}
+        </div>
+      </div>
+      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!pret?'disabled':''}>Passer au budget ${ICO_ARR}</button></div>
+    `;
+  }
+
+  function h5() {
+    return `
+      ${pas(5)}
+      <p class="mr-kicker">Étape 5 sur 11</p>
       <h2 class="mr-question">Quel est votre budget global&nbsp;?</h2>
       <p class="mr-sous-q">Le montant que vous ne dépasserez pas — frais de notaire et éventuels travaux inclus, quelles que soient les circonstances.</p>
       <div class="mr-saisie">
@@ -730,10 +838,10 @@ import { site } from '../config/site';
     `;
   }
 
-  function h5() {
+  function h6() {
     return `
-      ${pas(5)}
-      <p class="mr-kicker">Étape 5 sur 10</p>
+      ${pas(6)}
+      <p class="mr-kicker">Étape 6 sur 11</p>
       <h2 class="mr-question">Quelle surface habitable visez-vous&nbsp;?</h2>
       <p class="mr-sous-q">La surface minimale qui correspondrait à votre projet de vie. Pas l'idéal — le minimum acceptable.</p>
       <div class="mr-saisie">
@@ -748,7 +856,7 @@ import { site } from '../config/site';
     `;
   }
 
-  function h6() {
+  function h7() {
     if(!E.lecture) return `<p class="mr-lede">Chargement des données…</p>`;
     const l=E.lecture;
     const zlbl = E.secteur==='chartres'?'Chartres intramuros':'la zone chartraine';
@@ -762,8 +870,8 @@ import { site } from '../config/site';
     else if(l.position==='q1_q3') signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget est cohérent avec les prix constatés. À ${num.format(l.budgetPPM2)} €/m², vous êtes dans la fourchette centrale du marché.</span></div>`;
     else signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget vous positionne dans le quartile supérieur. À ${num.format(l.budgetPPM2)} €/m², vous dépassez 75 % des prix constatés dans cette zone sur les cinq dernières années.</span></div>`;
     return `
-      ${pas(6)}
-      <p class="mr-kicker">Étape 6 sur 10</p>
+      ${pas(7)}
+      <p class="mr-kicker">Étape 7 sur 11</p>
       <h2 class="mr-question">Ce que le marché dit de votre projet</h2>
       <p class="mr-sous-q">Données issues des DVF — transactions réellement enregistrées dans la zone.</p>
       <div class="mr-pos-hero">
@@ -797,11 +905,11 @@ import { site } from '../config/site';
     `;
   }
 
-  function h7() {
+  function h8() {
     const c=E.preserves.length;
     return `
-      ${pas(7)}
-      <p class="mr-kicker">Étape 7 sur 10</p>
+      ${pas(8)}
+      <p class="mr-kicker">Étape 8 sur 11</p>
       <h2 class="mr-question">Ce que vous souhaitez préserver en priorité</h2>
       <p class="mr-sous-q">Sélectionnez 1 à 3 éléments. Ce que vous ne sélectionnez pas restera flexible dans la recherche.</p>
       <div class="mr-slot-track" id="mr-slots" aria-hidden="true">
@@ -817,8 +925,8 @@ import { site } from '../config/site';
     `;
   }
 
-  function h8() {
-    if(!E.lecture) return h9();
+  function h9() {
+    if(!E.lecture) return h10();
     const l=E.lecture;
     const bN=Math.round(E.surface!*l.median), delta=E.surface!-l.surfaceAuMedian;
     const chemins=[
@@ -833,8 +941,8 @@ import { site } from '../config/site';
        moins:`La facilité et le délai. Ce profil existe dans la zone mais se présente moins fréquemment — cela demande du temps et une réactivité forte lorsqu'un bien arrive.`},
     ];
     return `
-      ${pas(8)}
-      <p class="mr-kicker">Étape 8 sur 10</p>
+      ${pas(9)}
+      <p class="mr-kicker">Étape 9 sur 11</p>
       <h2 class="mr-question">Une décision à prendre</h2>
       <p class="mr-tension-intro">Votre budget, rapporté à votre surface cible, vous positionne en dessous du premier quartile des prix constatés dans ${zoneLbl()}. Ce n'est pas un obstacle — c'est une réalité à arbitrer. Trois chemins existent. Chacun a un prix.</p>
       <p class="mr-auto-hint">Choisissez un chemin pour afficher directement votre synthèse.</p>
@@ -852,7 +960,7 @@ import { site } from '../config/site';
     `;
   }
 
-  function h9() {
+  function h10() {
     const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
     const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
     const decMap:Record<string,string>={
@@ -860,68 +968,101 @@ import { site } from '../config/site';
       surface:'Préserver la surface, explorer une zone plus large si nécessaire',
       les_deux:'Tenir les deux — recherche plus longue, réactivité forte',
     };
-    const decHtml=E.decisionTension?`<hr class="mr-sep"/><p class="mr-rel-flex-lbl">Décision prise</p><p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${decMap[E.decisionTension]??''}</p>`:'';
-    const arb=E.decisionTension==='les_deux'?`<hr class="mr-sep"/><p class="mr-rel-flex-lbl">Arbitrage ouvert</p><p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0">La tension budget / surface reste à clarifier avec Mouaad — notamment la capacité éventuelle de travaux.</p>`:'';
+    const l=E.lecture;
+    const decision=E.decisionTension?decMap[E.decisionTension]:'Aucun arbitrage forcé par les données à ce stade.';
+    const communes=E.communesAcceptables.trim() || (E.secteur==='chartres'?'Chartres intramuros':'Zone chartraine ouverte');
+    const marche=l?`${num.format(l.budgetPPM2)} €/m² pour votre couple budget/surface ; fourchette centrale ${num.format(l.q1)} à ${num.format(l.q3)} €/m² sur ${num.format(l.n)} ventes.`:'Données DVF insuffisantes pour produire un repère fiable.';
+    const evolution=l?.position==='sous_q1'
+      ? `Ajuster la surface, élargir la zone ou accepter un délai plus long. Au prix médian observé, votre budget correspond plutôt à ${num.format(l.surfaceAuMedian)} m².`
+      : l?.position==='au_dessus_q3'
+      ? 'Votre budget donne une marge de choix, mais il faut éviter de confondre marge financière et bon achat.'
+      : 'Le couple budget/surface semble cohérent avec la fourchette centrale ; la différence se jouera surtout sur les priorités et le terrain.';
+    const prochaineAction=E.ventePrealable==='oui'
+      ? 'Sécuriser le calendrier de vente avant de se positionner fortement sur un achat.'
+      : E.financement==='a_preciser'
+      ? 'Valider la capacité de financement avant de multiplier les visites.'
+      : 'Construire une veille courte sur les communes acceptables et comparer chaque bien avec vos priorités réellement préservées.';
     return `
-      ${pas(9)}
-      <p class="mr-kicker">Étape 9 sur 10</p>
-      <h2 class="mr-question">Votre manière de décider</h2>
-      <p class="mr-sous-q">Voici ce que les données et vos choix permettent déjà de comprendre. Vous pouvez reculer pour corriger.</p>
+      ${pas(10)}
+      <p class="mr-kicker">Étape 10 sur 11</p>
+      <h2 class="mr-question">Lecture du projet</h2>
+      <p class="mr-sous-q">Voici ce que vos réponses permettent déjà de comprendre avant tout contact. Ce n’est pas une sélection de biens : c’est une base de décision.</p>
       <div class="mr-relecture">
         <div class="mr-rel-header">
-          <p class="mr-rel-eyebrow">Synthèse de votre parcours</p>
+          <p class="mr-rel-eyebrow">1 · Situation</p>
+          <p class="mr-rel-titre">${situationLbl()} · ${typeLbl()} · ${zoneLbl()}</p>
+          <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#58615B;margin:0">Communes acceptables : ${esc(communes)}. Temps maximal : ${tempsLbl()}. Horizon : ${horizonLbl()}.</p>
         </div>
+        <hr class="mr-sep"/>
         <div class="mr-rel-body">
           <div>
-            <p class="mr-rel-titre">Vous avez choisi de préserver en priorité :</p>
+            <p class="mr-rel-flex-lbl">2 · Décisions prises</p>
+            <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0 0 0.75rem">Budget ${eur.format(E.budget!)} · surface cible ${num.format(E.surface!)} m² · financement : ${financementLbl()} · vente préalable : ${ventePrealableLbl()}.</p>
             <ul class="mr-rel-liste">${pL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
           </div>
           <div>
-            <p class="mr-rel-flex-lbl">Flexible sur</p>
+            <p class="mr-rel-flex-lbl">3 · Axes d’évolution</p>
             <ul class="mr-rel-liste">${fL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
+            <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0.65rem 0 0">${evolution}</p>
           </div>
         </div>
-        ${decHtml}${arb}
+        <hr class="mr-sep"/>
+        <p class="mr-rel-flex-lbl">4 · Arbitrage restant</p>
+        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${decision}</p>
+        <hr class="mr-sep"/>
+        <p class="mr-rel-flex-lbl">5 · Repère DVF et limite</p>
+        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0">${marche} Les DVF décrivent des ventes passées ; ils ne prouvent ni la disponibilité d’un bien ni la demande actuelle.</p>
+        <hr class="mr-sep"/>
+        <p class="mr-rel-flex-lbl">6 · Prochaine action utile</p>
+        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${prochaineAction}</p>
         <p class="mr-rel-note"><strong>Le calcul s’arrête ici.</strong> Le terrain, les biens disponibles, votre capacité réelle à arbitrer et le bon rythme de recherche exigent maintenant un regard humain.</p>
       </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Passer à l’analyse personnalisée ${ICO_ARR}</button></div>
+      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Choisir la suite ${ICO_ARR}</button></div>
     `;
   }
 
-  function h10() {
+  function h11() {
     return `
-      ${pas(10)}
-      <p class="mr-kicker">Étape 10 sur 10</p>
-      <h2 class="mr-question">Transformer cette lecture en stratégie&nbsp;?</h2>
-      <p class="mr-sous-q">Mouaad recevra toute votre synthèse. Lors de l’échange, il pourra confronter vos choix aux biens disponibles, expliquer les scénarios possibles et vous laisser décider en connaissance de cause.</p>
+      ${pas(11)}
+      <p class="mr-kicker">Étape 11 sur 11</p>
+      <h2 class="mr-question">Que souhaitez-vous activer&nbsp;?</h2>
+      <p class="mr-sous-q">Votre lecture est déjà affichée. La suite est volontaire : recevoir une copie, être averti d’un rapprochement pertinent ou demander un échange avec Mouaad.</p>
       <form id="mr-form" novalidate autocomplete="off">
         <input type="text" name="site_web" class="mr-hp" tabindex="-1" aria-hidden="true" autocomplete="off"/>
         <div class="mr-cg">
           <label class="mr-label" for="mr-prenom">Prénom</label>
-          <input id="mr-prenom" name="prenom" type="text" class="mr-ci" placeholder="Votre prénom" value="${E.prenom}" autocomplete="given-name" required/>
+          <input id="mr-prenom" name="prenom" type="text" class="mr-ci" placeholder="Votre prénom" value="${esc(E.prenom)}" autocomplete="given-name" required/>
         </div>
         <div class="mr-cg">
           <label class="mr-label" for="mr-contact">Téléphone ou e-mail</label>
-          <input id="mr-contact" name="contact" type="text" class="mr-ci" placeholder="07 XX XX XX XX ou nom@exemple.fr" value="${E.contact}"/>
-          <p class="mr-ci-aide">L'un ou l'autre suffit pour que Mouaad vous recontacte.</p>
+          <input id="mr-contact" name="contact" type="text" class="mr-ci" placeholder="07 XX XX XX XX ou nom@exemple.fr" value="${esc(E.contact)}"/>
+          <p class="mr-ci-aide">L'un ou l'autre suffit selon l'activation choisie.</p>
         </div>
         <div class="mr-cg">
           <label class="mr-label" for="mr-comm">Un mot sur votre projet <span style="color:#58615B;font-weight:400">(facultatif)</span></label>
-          <textarea id="mr-comm" name="commentaire" class="mr-ci mr-ci-ta" placeholder="Précision, délai, question…">${E.commentaire}</textarea>
+          <textarea id="mr-comm" name="commentaire" class="mr-ci mr-ci-ta" placeholder="Précision, délai, question…">${esc(E.commentaire)}</textarea>
         </div>
-        <div class="mr-consent">
-          <input type="checkbox" id="mr-cb" name="consent"/>
-          <label class="mr-consent-lbl" for="mr-cb">J'accepte d'être recontacté par Mouaad Boullourou au sujet de ma recherche immobilière.</label>
+        <div class="mr-consent mr-consent--option">
+          <input type="checkbox" id="mr-consent-lecture" name="consent_lecture" ${E.consentLecture?'checked':''}/>
+          <label class="mr-consent-lbl" for="mr-consent-lecture"><strong>Recevoir ma lecture.</strong><br/>J'accepte que cette synthèse me soit envoyée et conservée pour ce projet.</label>
+        </div>
+        <div class="mr-consent mr-consent--option">
+          <input type="checkbox" id="mr-consent-matching" name="consent_matching" ${E.consentMatching?'checked':''}/>
+          <label class="mr-consent-lbl" for="mr-consent-matching"><strong>Être averti d’un rapprochement pertinent.</strong><br/>J'accepte que Mouaad me signale une opportunité cohérente avec cette recherche.</label>
+        </div>
+        <div class="mr-consent mr-consent--option">
+          <input type="checkbox" id="mr-consent-contact" name="consent_contact" ${E.consentContact?'checked':''}/>
+          <label class="mr-consent-lbl" for="mr-consent-contact"><strong>Demander un échange.</strong><br/>J'accepte d'être recontacté par Mouaad Boullourou au sujet de ma recherche immobilière.</label>
         </div>
         <div id="mr-err" hidden></div>
         <div class="mr-actions">
-          <button type="submit" class="mr-btn" id="mr-sub" disabled>Demander mon analyse personnalisée ${ICO_ARR}</button>
+          <button type="submit" class="mr-btn" id="mr-sub" disabled>Valider ma suite ${ICO_ARR}</button>
         </div>
       </form>
     `;
   }
 
-  function h11() {
+  function h12() {
     const lv_=lv();
     return `
       <div class="mr-conc-done" aria-hidden="true">
@@ -957,10 +1098,11 @@ import { site } from '../config/site';
     if(s===8)  b8(el);
     if(s===9)  b9(el);
     if(s===10) b10(el);
+    if(s===11) b11(el);
   }
 
   function b0(el:HTMLElement) {
-    el.querySelector('#mr-start')?.addEventListener('click',()=>{ loadDvf(); avancer(1); });
+    el.querySelector('#mr-start')?.addEventListener('click',()=>{ journeyEvent('journey_started',{step:0,step_name:'ma-recherche-start'}); loadDvf(); avancer(1); });
   }
 
   function choix(el:HTMLElement, sel:string, key:string, cb?:(id:string)=>void) {
@@ -983,13 +1125,17 @@ import { site } from '../config/site';
     choix(el,'#mr-types','type',()=>autoAdvance(3));
   }
   function b3(el:HTMLElement) {
+    const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
+    const sync=()=>{
+      E.communesAcceptables=(el.querySelector('#mr-communes') as HTMLInputElement)?.value.trim()??'';
+      if(btn) btn.disabled=!(E.secteurContraint===false || (E.secteurContraint===true && !!E.secteur));
+    };
     el.querySelectorAll('#mr-cont .mr-choix').forEach(b=>{
       b.addEventListener('click',()=>{
         E.secteurContraint=(b as HTMLElement).dataset.id==='oui';
         if(!E.secteurContraint) E.secteur='tout';
         else E.secteur=null;
         render(3);
-        if(!E.secteurContraint) autoAdvance(4);
       });
     });
     el.querySelectorAll('#mr-sects .mr-choix')?.forEach(b=>{
@@ -997,9 +1143,18 @@ import { site } from '../config/site';
         E.secteur=(b as HTMLElement).dataset.id??null;
         el.querySelectorAll('#mr-sects .mr-choix').forEach(x=>x.classList.remove('actif'));
         b.classList.add('actif');
-        autoAdvance(4);
+        sync();
       });
     });
+    el.querySelectorAll('#mr-temps .mr-choix')?.forEach(b=>{
+      b.addEventListener('click',()=>{
+        E.tempsMax=(b as HTMLElement).dataset.id??null;
+        el.querySelectorAll('#mr-temps .mr-choix').forEach(x=>x.classList.remove('actif'));
+        b.classList.add('actif');
+      });
+    });
+    el.querySelector('#mr-communes')?.addEventListener('input',sync);
+    btn?.addEventListener('click',()=>{ sync(); avancer(4); });
   }
   function numInput(el:HTMLElement, id:string, key:string, min=1) {
     const inp=el.querySelector(id) as HTMLInputElement;
@@ -1012,10 +1167,28 @@ import { site } from '../config/site';
     return inp;
   }
   function b4(el:HTMLElement) {
-    numInput(el,'#mr-bgt','budget',1);
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.budget&&avancer(5));
+    const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
+    const sync=()=>{ if(btn) btn.disabled=!(E.financement&&E.ventePrealable&&E.horizon); };
+    const bindChoice=(sel:string,key:keyof Etat)=>{
+      el.querySelectorAll(`${sel} .mr-choix`).forEach(b=>{
+        b.addEventListener('click',()=>{
+          (E as any)[key]=(b as HTMLElement).dataset.id??null;
+          el.querySelectorAll(`${sel} .mr-choix`).forEach(x=>x.classList.remove('actif'));
+          b.classList.add('actif');
+          sync();
+        });
+      });
+    };
+    bindChoice('#mr-fin','financement');
+    bindChoice('#mr-vente','ventePrealable');
+    bindChoice('#mr-horizon','horizon');
+    btn?.addEventListener('click',()=>{ sync(); if(!btn.disabled) avancer(5); });
   }
   function b5(el:HTMLElement) {
+    numInput(el,'#mr-bgt','budget',1);
+    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.budget&&avancer(6));
+  }
+  function b6(el:HTMLElement) {
     numInput(el,'#mr-surf','surface',1);
     el.querySelector('#mr-nxt')?.addEventListener('click',async()=>{
       if(!E.surface||!E.budget) return;
@@ -1023,13 +1196,14 @@ import { site } from '../config/site';
       if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Calcul en cours…`; }
       const data=await loadDvf();
       E.lecture=analyser(data,E.type,E.secteur,E.budget,E.surface);
-      avancer(6);
+      avancer(7);
     });
   }
-  function b6(el:HTMLElement) {
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(7));
-  }
   function b7(el:HTMLElement) {
+    journeyEvent('result_viewed',{step:7,step_name:'market_reading'});
+    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(8));
+  }
+  function b8(el:HTMLElement) {
     function syncPr() {
       const c=E.preserves.length;
       const prc=el.querySelector('#mr-prc'); if(prc) prc.textContent=String(c);
@@ -1047,59 +1221,89 @@ import { site } from '../config/site';
     });
     el.querySelector('#mr-nxt')?.addEventListener('click',()=>{
       if(E.preserves.length===0) return;
-      avancer(E.lecture&&E.lecture.position==='sous_q1'?8:9);
+      avancer(E.lecture&&E.lecture.position==='sous_q1'?9:10);
     });
   }
-  function b8(el:HTMLElement) {
+  function b9(el:HTMLElement) {
     el.querySelectorAll('#mr-chem .mr-chemin').forEach(b=>{
       b.addEventListener('click',()=>{
         E.decisionTension=(b as HTMLElement).dataset.id??null;
         el.querySelectorAll('#mr-chem .mr-chemin').forEach(x=>x.classList.remove('actif'));
         b.classList.add('actif');
-        autoAdvance(9);
+        autoAdvance(10);
       });
     });
-    el.querySelector('#mr-pass')?.addEventListener('click',()=>avancer(9));
-  }
-  function b9(el:HTMLElement) {
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(10));
+    el.querySelector('#mr-pass')?.addEventListener('click',()=>avancer(10));
   }
   function b10(el:HTMLElement) {
+    journeyEvent('result_viewed',{step:10,step_name:'project_reading'});
+    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(11));
+  }
+  function b11(el:HTMLElement) {
     const prenom=el.querySelector('#mr-prenom') as HTMLInputElement;
     const contact=el.querySelector('#mr-contact') as HTMLInputElement;
     const comm=el.querySelector('#mr-comm') as HTMLTextAreaElement;
-    const cb=el.querySelector('#mr-cb') as HTMLInputElement;
+    const cbLecture=el.querySelector('#mr-consent-lecture') as HTMLInputElement;
+    const cbMatching=el.querySelector('#mr-consent-matching') as HTMLInputElement;
+    const cbContact=el.querySelector('#mr-consent-contact') as HTMLInputElement;
     const btn=el.querySelector('#mr-sub') as HTMLButtonElement;
     const valider=()=>{
       E.prenom=prenom?.value.trim()??'';
       E.contact=contact?.value.trim()??'';
       E.commentaire=comm?.value.trim()??'';
-      if(btn) btn.disabled=!E.prenom||!E.contact||!cb?.checked;
+      E.consentLecture=!!cbLecture?.checked;
+      E.consentMatching=!!cbMatching?.checked;
+      E.consentContact=!!cbContact?.checked;
+      if(btn) btn.disabled=!E.prenom||!E.contact||!(E.consentLecture||E.consentMatching||E.consentContact);
     };
     prenom?.addEventListener('input',valider);
     contact?.addEventListener('input',valider);
-    cb?.addEventListener('change',valider);
+    cbLecture?.addEventListener('change',valider);
+    cbMatching?.addEventListener('change',valider);
+    cbContact?.addEventListener('change',valider);
     el.querySelector('#mr-form')?.addEventListener('submit',async(e:Event)=>{
       e.preventDefault(); valider();
-      if(!E.prenom||!E.contact||!cb.checked) return;
+      if(!E.prenom||!E.contact||!(E.consentLecture||E.consentMatching||E.consentContact)) return;
       const errEl=el.querySelector('#mr-err') as HTMLElement;
       if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Transmission…`; }
       const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
       const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
       const hp=(el.querySelector('[name=site_web]') as HTMLInputElement)?.value??'';
+      const project={
+        communesAcceptables:E.communesAcceptables,
+        tempsMax:E.tempsMax,
+        tempsMaxLabel:tempsLbl(),
+        financement:E.financement,
+        financementLabel:financementLbl(),
+        ventePrealable:E.ventePrealable,
+        ventePrealableLabel:ventePrealableLbl(),
+        horizon:E.horizon,
+        horizonLabel:horizonLbl(),
+      };
+      const consents={
+        lecture:E.consentLecture,
+        matching:E.consentMatching,
+        contact:E.consentContact,
+      };
       const payload={
         source:'ma-recherche', src:E.src, site_web:hp,
         prenom:E.prenom, contact:E.contact, commentaire:E.commentaire, consent:true,
         situation:E.situation, type:E.type, secteur:E.secteur, secteurContraint:E.secteurContraint,
+        communesAcceptables:E.communesAcceptables, tempsMax:E.tempsMax,
+        financement:E.financement, ventePrealable:E.ventePrealable, horizon:E.horizon,
         budget:E.budget, surface:E.surface,
         preserves:E.preserves, preservesLabels:pL, flexibles:flexibles(), flexiblesLabels:fL,
-        decisionTension:E.decisionTension, lecture:E.lecture,
+        decisionTension:E.decisionTension, lecture:E.lecture, project, consents,
       };
       try {
         const r=await fetch('/api/recherche',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
         const d=await r.json() as {ok:boolean;message?:string};
         if(!d.ok) throw new Error(d.message??'Erreur');
-        avancer(11);
+        if(E.consentLecture) journeyEvent('reading_consent_submitted',{consent_type:'reading'});
+        if(E.consentMatching) journeyEvent('matching_consent_submitted',{consent_type:'matching'});
+        if(E.consentContact) journeyEvent('contact_consent_submitted',{consent_type:'contact'});
+        journeyEvent('journey_completed',{step:11,step_name:'buyer_activation'});
+        avancer(12);
       } catch(err:any) {
         if(errEl){ errEl.hidden=false; errEl.className='mr-erreur';
           errEl.textContent=err.message?.includes('dry-run')

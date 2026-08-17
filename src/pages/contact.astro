@@ -96,6 +96,10 @@ import { site } from '../config/site';
   const form = document.getElementById('form-contact') as HTMLFormElement;
   const btn = document.getElementById('c-envoyer') as HTMLButtonElement;
   const erreur = document.getElementById('c-erreur')!;
+  const motif = new URLSearchParams(window.location.search).get('motif');
+  const objectField = document.getElementById('c-objet') as HTMLInputElement;
+  if (motif === 'recommandation') objectField.value = 'Recommandation SAFTI Connect';
+  if (motif === 'equipe') objectField.value = 'Découvrir le métier et votre accompagnement';
   let enCours = false;
 
   form.addEventListener('submit', async (e) => {

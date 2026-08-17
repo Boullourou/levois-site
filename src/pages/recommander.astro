@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const connectUrl = 'https://www.safti.fr/conseiller-safti/mouaad-boullourou/contact/safti-connect';
+---
+
+<Layout
+  title="Recommander un proche"
+  description="Vous connaissez un proche qui souhaite acheter ou vendre ? Découvrez SAFTI Connect avec Mouaad Boullourou, conseiller immobilier à Lèves et Chartres."
+  designContract="LEVOIS_CONNECT — Un geste humain, trois étapes, un seul appel à l’action. Aucun revenu promis."
+>
+  <div class="connect-world">
+    <section class="connect-hero" aria-labelledby="connect-title">
+      <div class="connect-copy">
+        <p class="eyebrow">Une recommandation utile. Une règle claire.</p>
+        <h1 id="connect-title">Aidez un proche.<br />Recevez <em>10&nbsp;%.</em></h1>
+        <p class="lead">Vous me recommandez auprès d’une personne qui veut acheter ou vendre. Si la vente se conclut, vous recevez 10&nbsp;% des honoraires d’agence.</p>
+
+        <a class="primary-action" href={connectUrl} rel="noopener noreferrer" data-journey="prescriber" data-event="partner_cta_click">
+          <span>Télécharger SAFTI Connect</span>
+          <i aria-hidden="true">↗</i>
+        </a>
+        <p class="micro">Mon code conseiller : <strong>813785</strong></p>
+      </div>
+
+      <div class="ten-stage" aria-hidden="true"><b>10</b><span>%</span><small>si la vente se conclut</small></div>
+
+    </section>
+
+    <section class="gesture" aria-labelledby="gesture-title">
+      <p class="section-number">01 — 03</p>
+      <h2 id="gesture-title">Trois gestes.<br />Rien de compliqué.</h2>
+      <ol>
+        <li><span>01</span><strong>Téléchargez l’application.</strong></li>
+        <li><span>02</span><strong>Choisissez Mouaad avec le code <mark>813785</mark>.</strong></li>
+        <li><span>03</span><strong>Partagez l’information avec l’accord de votre proche.</strong></li>
+      </ol>
+    </section>
+
+    <section class="reward" aria-label="Fonctionnement de la recommandation">
+      <div class="reward-copy">
+        <p class="eyebrow">Et si le projet aboutit ?</p>
+        <h2>Votre coup de pouce compte aussi pour vous.</h2>
+        <p>La règle est simple : quand la vente issue de votre recommandation se conclut, vous recevez 10&nbsp;% des honoraires d’agence, selon les conditions du dispositif SAFTI Connect en vigueur.</p>
+      </div>
+      <div class="reward-signal" aria-hidden="true">
+        <span>une mise en relation</span>
+        <b>→</b>
+        <span>un projet suivi</span>
+      </div>
+      <a href={connectUrl} rel="noopener noreferrer">Commencer avec Mouaad <span aria-hidden="true">↗</span></a>
+      <small>Source : SAFTI Connect, consultée le 7 août 2026. La récompense dépend de la réalisation effective de la transaction et des conditions SAFTI en vigueur.</small>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .connect-world { --orange: #ff5a1f; --ink: #161616; --cream: #fff9f2; overflow: clip; background: var(--cream); color: var(--ink); font-family: 'Public Sans', system-ui, sans-serif; }
+  .connect-hero { position: relative; min-height: min(900px, calc(100svh - 70px)); display: grid; grid-template-columns: minmax(0,1.05fr) minmax(340px,.95fr); align-items: center; gap: clamp(30px,5vw,90px); padding: clamp(72px, 9vw, 150px) clamp(24px, 8vw, 120px); isolation: isolate; }
+  .eyebrow { margin: 0 0 24px; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  h1, h2 { margin:0; font-family:'Bricolage Grotesque','Public Sans',sans-serif; font-weight:720; letter-spacing:-.035em; text-wrap:balance; }
+  h1 { max-width: 900px; font-size: clamp(66px, 8.8vw, 142px); line-height: .96; }
+  h1 em { color: var(--orange); font-style: normal; white-space: nowrap; }
+  .lead { max-width: 620px; margin: clamp(32px, 5vw, 58px) 0 0; font-size: clamp(20px, 2vw, 28px); line-height: 1.38; }
+  .primary-action { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 24px; margin-top: 36px; padding: 18px 24px 18px 30px; border-radius: 999px; background: var(--ink); color: white; font-size: 18px; font-weight: 800; text-decoration: none; transition: transform .25s ease, background .25s ease; }
+  .primary-action i { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--orange); font-style: normal; }
+  .primary-action:hover { transform: translateY(-4px); background: var(--orange); }
+  .micro { position: relative; z-index: 4; width: max-content; margin: 12px 0 0 24px; color: #6e6258; font-size: 13px; }
+  .micro strong { color: var(--ink); font-size: 1.1em; }
+  .ten-stage { position: relative; min-height: 480px; display: grid; place-content: center; grid-template-columns:auto auto; align-items:start; color:white; background:var(--orange); border-radius:50% 42% 48% 44% / 44% 48% 42% 50%; animation:morph 9s ease-in-out infinite; }
+  .ten-stage b { font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(160px,20vw,320px); font-weight:800; line-height:.72; letter-spacing:-.08em; }
+  .ten-stage span { font-family:'Bricolage Grotesque',sans-serif; font-size:clamp(72px,8vw,120px); font-weight:800; line-height:.75; }
+  .ten-stage small { grid-column:1/-1; margin:30px auto 0; font-size:16px; font-weight:800; letter-spacing:.02em; }
+  .orbit { position: absolute; z-index: -1; border: 2px solid rgba(255,90,31,.38); border-radius: 50%; pointer-events: none; }
+  .orbit-one { width: min(48vw, 650px); aspect-ratio: 1; right: -8vw; top: 2%; animation: breathe 7s ease-in-out infinite; }
+  .orbit-two { width: min(30vw, 390px); aspect-ratio: 1; right: 7vw; top: 20%; animation: breathe 7s 1.4s ease-in-out infinite reverse; }
+  .human-pair { position: absolute; right: clamp(24px, 12vw, 180px); bottom: clamp(35px, 8vw, 100px); display: flex; align-items: center; }
+  .person { width: clamp(70px, 9vw, 130px); aspect-ratio: .75; background: var(--orange); border-radius: 48% 48% 24% 24% / 34% 34% 12% 12%; }
+  .person-two { background: var(--ink); transform: scale(.82); }
+  .connection { width: clamp(55px, 8vw, 120px); height: 3px; background: var(--orange); transform: rotate(-8deg); transform-origin: center; }
+  .gesture { padding: clamp(100px, 15vw, 220px) clamp(24px, 8vw, 120px); background: var(--orange); color: white; clip-path: polygon(0 4%, 100% 0, 100% 94%, 0 100%); }
+  .section-number { margin: 0 0 40px; font-size: 13px; font-weight: 800; letter-spacing: .15em; }
+  .gesture h2 { max-width: 1050px; font-size: clamp(64px, 8.5vw, 132px); line-height: .98; }
+  .gesture ol { max-width: 980px; margin: clamp(70px, 9vw, 130px) 0 0 auto; padding: 0; list-style: none; }
+  .gesture li { display: grid; grid-template-columns: 60px 1fr; gap: 22px; align-items: baseline; padding: 26px 0; border-top: 1px solid rgba(255,255,255,.55); }
+  .gesture li span { font-size: 13px; font-weight: 800; }
+  .gesture li strong { font-size: clamp(22px, 3vw, 42px); line-height: 1.12; }
+  mark { display: inline-block; padding: .05em .28em .11em; border-radius: 999px; background: white; color: var(--orange); }
+  .reward { min-height: 820px; display: grid; grid-template-columns: 1.15fr .85fr; align-content: center; gap: clamp(40px, 7vw, 110px); padding: clamp(110px, 14vw, 200px) clamp(24px, 8vw, 120px); }
+  .reward-copy h2 { max-width: 800px; font-size: clamp(60px, 7.2vw, 110px); line-height: .98; }
+  .reward-copy > p:last-child { max-width: 670px; margin: 36px 0 0; font-size: clamp(18px, 1.6vw, 23px); line-height: 1.5; }
+  .reward-signal { display: grid; place-items: center; align-content: center; gap: 20px; min-height: 360px; border-radius: 50%; background: var(--ink); color: white; text-align: center; }
+  .reward-signal span { max-width: 180px; font-size: 16px; font-weight: 750; }
+  .reward-signal b { color: var(--orange); font-size: 48px; }
+  .reward > a { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding: 30px 0; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); color: inherit; font-size: clamp(24px, 3vw, 44px); font-weight: 850; text-decoration: none; }
+  .reward small { grid-column: 1 / -1; max-width: 900px; color: #6e6258; line-height: 1.55; }
+  @keyframes breathe { 50% { transform: scale(1.06) rotate(3deg); opacity: .6; } }
+  @keyframes morph { 50% { border-radius:43% 51% 44% 48% / 51% 43% 49% 45%; transform:rotate(1deg) scale(1.02); } }
+  @media (max-width: 760px) {
+    .connect-hero { min-height: 0; grid-template-columns:1fr; padding-top: 88px; }
+    h1 { font-size: clamp(58px, 16vw, 86px); }
+    .ten-stage { min-height:0; aspect-ratio:1; margin-top:30px; }
+    .human-pair { right: 22px; bottom: 12px; transform: scale(.88); transform-origin: right bottom; }
+    .orbit-one { width: 92vw; right: -44vw; top: 36%; }
+    .orbit-two { width: 60vw; right: -8vw; top: 46%; }
+    .gesture { clip-path: polygon(0 2%, 100% 0, 100% 97%, 0 100%); }
+    .gesture ol { margin-top: 58px; }
+    .gesture li { grid-template-columns: 42px 1fr; }
+    .reward { grid-template-columns: 1fr; min-height: 0; }
+    .reward-signal { width: min(84vw, 380px); min-height: auto; aspect-ratio: 1; justify-self: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .orbit,.ten-stage { animation: none; } .primary-action { transition: none; } }
+</style>

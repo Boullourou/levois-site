@@ -1,10 +1,11 @@
 # LEVOIS — levois.fr
 
-**Une expérience numérique de décision immobilière.** Le propriétaire choisit sa
-situation, répond à trois à cinq questions, reçoit une lecture réellement liée à
-ses réponses — et ne transmet ses coordonnées que s'il le souhaite, après la valeur.
+**Une expérience numérique de décision immobilière.** L'acheteur clarifie sa
+recherche, le vendeur lit ses signaux, puis chacun reçoit une première lecture
+utile avant de transmettre ses coordonnées, seulement s'il le souhaite.
 
-Voir `PROPOSITION.md` pour la vision, la direction artistique et l'architecture.
+Voir `PRODUCT.md` et `DESIGN.md` pour l'état actif. `PROPOSITION.md` est une
+archive de cadrage supersédée.
 
 ## Stack
 
