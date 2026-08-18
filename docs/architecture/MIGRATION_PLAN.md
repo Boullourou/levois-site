@@ -27,7 +27,8 @@ La stratégie est `expand → backfill → shadow → bascule → contract`. Les
 9. rollback applicatif par configuration avant toute restauration D1 ;
 10. sauvegardes, exports et rapports contenant des données restent privés et hors Git ;
 11. aucune fixture ne contient de personne, adresse, annonce ou conversation réelle ;
-12. la politique de confidentialité est mise à jour avant d’activer une nouvelle persistance publique.
+12. la politique de confidentialité est mise à jour avant d’activer une nouvelle persistance publique ;
+13. aucun Accord TIM réel n’est reconstruit depuis un email, OMEGA, une notice ou un document interne, et aucune personne transmise n’entre automatiquement dans le pipeline client.
 
 ## État de départ vérifié
 
@@ -40,6 +41,7 @@ La stratégie est `expand → backfill → shadow → bascule → contract`. Les
 | `/situer-ma-vente` | réponses/résultat sans coordonnées dans `sessionStorage` et code `?r=` |
 | `/audit-annonce` | lecture URL et questionnaire en mémoire ; persistance uniquement sous forme d’email après demande humaine |
 | `/votre-rue` | géocodage et calcul DVF côté navigateur ; qualification envoyée uniquement par email |
+| Accords TIM | informations opérationnelles actuelles conservées hors Git et hors D1 ; aucun endpoint, schéma central ou import applicatif |
 | tests | `/api/lead` et `/api/audit-url` couverts ; aucun test contractuel dédié à `/api/recherche` |
 
 ### Dette de consentement à ne pas masquer
@@ -90,6 +92,8 @@ Le mode est une configuration serveur, pas un secret, mais sa modification doit 
 - exporter la D1 existante dans un emplacement privé et vérifier la procédure de restauration sur une base isolée ;
 - mesurer volumes, taille, lignes lues/écrites et nombre de lignes `email_envoye=0`.
 
+Les Accords TIM ne font pas partie des contrats publics à capturer : aucune fixture ne doit être fabriquée depuis un accord, un email, un formulaire OMEGA ou une notice réels. Les futurs tests du modèle TIM utiliseront uniquement des cas synthétiques et anonymisés.
+
 ### Critère d’acceptation
 
 Aucune page, réponse HTTP, validation ou notification ne change. Tous les contrats actuels ont une fixture fictive et un test de référence.
@@ -109,6 +113,8 @@ Après validation explicite de l’architecture :
 - enregistrer une version de schéma ;
 - prévoir l’unicité de la référence `source + source_id + mapper_version` et les lots d’import désactivables ;
 - commencer en mode central `off`.
+
+Le schéma TIM est exclu de ce noyau Phase 2. Sa création exige un lot additif distinct et une validation explicite de son périmètre, de ses règles financières, de sa conservation et de son accès privé.
 
 ### Critère d’acceptation
 
@@ -242,6 +248,22 @@ Pages et emails inchangés ; idempotence garantie pour une même clé valide, do
 
 Désactiver l’écriture centralisée ; `/api/lead` redevient email-only. Conserver les intakes déjà enregistrés selon leur politique de rétention.
 
+## Accords TIM — initialisation privée différée
+
+Les Accords TIM connus aujourd’hui ne sont ni dans D1 ni dans Git. Ils ne constituent pas une source legacy des parcours publics et ne doivent pas être aspirés depuis la boîte email, OMEGA, une notice interne ou des documents existants.
+
+Après validation d’un lot TIM séparé, l’initialisation des accords réels se fera manuellement dans un outil privé authentifié, ou au moyen d’un script ponctuel privé offrant les mêmes validations et le même audit. Elle devra :
+
+- créer explicitement l’accord dédié sans créer automatiquement de projet vendeur, mandat ou statut client ;
+- demander une allocation explicite pour chaque conseiller, le type d’opération et les conditions applicables à cet accord ;
+- exiger pour une location la saisie manuelle des pourcentages, du fait générateur du paiement et des conditions, sans appliquer de preset 20/80 ;
+- conserver séparément l’état de l’accord, l’état de l’opération et l’état de la rémunération ;
+- rattacher une personne, un bien, un projet ou une interaction seulement après choix humain et selon le minimum nécessaire ;
+- créer une prochaine action ou signaler immédiatement l’accord ouvert comme dépourvu de prochaine action ;
+- conserver toute référence de formulaire signé ou de dépôt OMEGA dans un stockage privé contrôlé, jamais dans Git.
+
+Cette initialisation n’est ni un backfill automatique ni une tâche du noyau Phase 2 proposé ci-dessous. Aucun accord réel, nombre d’accords, identité, bien, montant ou document interne ne doit apparaître dans les migrations, fixtures, rapports versionnés ou logs.
+
 ## M5 — Cockpit en lecture seule
 
 - protéger hostname/routes/API avant toute donnée ;
@@ -272,6 +294,8 @@ Ordre recommandé :
 8. exports et suppression.
 
 Chaque incrément possède ses tests, audit et rollback applicatif. Toute modification de critère crée un événement ; toute fusion, confirmation, export, suppression et validation de matching est auditée.
+
+Les Accords TIM suivent une séquence ultérieure indépendante : modèle et contraintes, tests fictifs, routes privées, saisie manuelle auditée, puis seulement initialisation des accords réels hors Git. Ils ne sont pas ajoutés au volet vendeur par commodité.
 
 ### Critère d’acceptation
 
@@ -326,6 +350,11 @@ Une reprise critique ne dépend pas uniquement de `waitUntil` : pour l’acquér
 | consentement legacy absent | fausse autorisation | `unknown`, jamais déduit |
 | même coordonnée sur deux projets | fusion erronée | personne/projets séparés et fusion humaine |
 | options vendeur modifiées | code `?r=` mal interprété | versionner questionnaire/codes avant réutilisation serveur |
+| Accord TIM transformé en statut vendeur ou projet client | faux mandat et pipeline trompeur | entité dédiée ; aucun rattachement ou projet créé sans décision humaine |
+| reprise automatique depuis email, OMEGA ou document interne | fuite, doublon ou interprétation erronée | reprise interdite ; initialisation privée manuelle, validée et auditée |
+| location préremplie en 20/80 | partage ou exigibilité inventés | pourcentages, fait générateur et conditions obligatoirement saisis par accord |
+| états TIM fusionnés | rémunération déclarée due trop tôt ou accord clôturé à tort | trois axes et historiques distincts, transitions testées séparément |
+| saisie TIM répétée | double suivi ou double montant attendu | identifiant stable, contrôle de doublon et confirmation humaine sans fusion automatique |
 | preview cockpit non protégée | fuite client | Access et test automatisé sur toutes les URLs de preview |
 | export interrompu | fichier partiel | génération atomique, lien seulement après succès |
 | suppression partielle | résidus/orphelins | état de demande, inventaire et vérification finale |
@@ -378,7 +407,19 @@ Une reprise critique ne dépend pas uniquement de `waitUntil` : pour l’acquér
 - finalité/version/date des consentements ;
 - retrait, export, délai de grâce et purge ;
 - expiration/révocation des URLs d’export, absence dans les referrers et rétention effective des payloads temporaires ;
-- absence d’audio/transcription brute.
+- absence d’audio/transcription brute ;
+- absence d’Accord TIM réel, de formulaire signé, de contenu OMEGA ou de notice interne dans les fixtures et le dépôt.
+
+### Accords TIM — lot ultérieur
+
+- fixtures exclusivement synthétiques, sans reproduire un accord réel ni son document ;
+- indépendance des états accord/opération/rémunération, notamment accord signé avec opération en cours et rémunération non due ;
+- aucun projet, `seller_case`, mandat ou statut client créé lors de la saisie d’un accord ;
+- parts enregistrées sur chaque accord et modifiables par commande auditée, sans règle immuable 20/80 ou 50/50 ;
+- `transaction_type=rental` sans valeur par défaut, refusé tant que pourcentages, fait générateur et conditions ne sont pas saisis ;
+- montants estimé, dû et payé non confondus, y compris paiement partiel ou correction future ;
+- accord ouvert sans prochaine action visible dans les contrôles opérationnels ;
+- initialisation manuelle idempotente, accès privé, audit et rollback applicatif sans suppression de preuve utile.
 
 ## Dépendances et parallélisation de la future réalisation
 
@@ -391,6 +432,7 @@ Une reprise critique ne dépend pas uniquement de `waitUntil` : pour l’acquér
 | Adaptateur `/api/lead` | fonction lead, services ingestion | schéma + consentements validés |
 | Auth/cockpit lecture | routes privées, BFF | projections centrales fiables |
 | Exports/effacement | services privés | cockpit + politique de conservation |
+| Accords TIM | migrations additives, services métier et vues privées dédiées | validation explicite du lot TIM + authentification privée + interactions/tâches + politique financière et de conservation |
 
 Les tests de contrat et la conception des migrations peuvent avancer en parallèle. Les deux adaptateurs partagent les services d’ingestion et doivent être séquencés ou coordonnés. Le cockpit attend la réconciliation du modèle central.
 
@@ -400,24 +442,34 @@ Limiter la Phase 2 à la fondation de données, sans cockpit :
 
 1. valider les arbitrages bloquants du modèle et des consentements ;
 2. écrire les tests contractuels manquants, surtout `/api/recherche` ;
-3. créer les migrations D1 additives du noyau seulement : ingestion/import/réconciliation, capture de consentement, personne/contact, projet/participants, recherche/scénarios/révisions/critères, interaction et notification minimales ; différer vendeur avancé, annonces, visites, matching, IA, Lab et exports ;
+3. créer les migrations D1 additives du noyau seulement : ingestion/import/réconciliation, capture de consentement, personne/contact, projet/participants, recherche/scénarios/révisions/critères, interaction et notification minimales ; différer vendeur avancé, Accords TIM, annonces, visites, matching, IA, Lab et exports ;
 4. écrire des adaptateurs purs source → commandes centrales ;
 5. exécuter un backfill idempotent en lecture seule de `lectures_recherche` ;
 6. produire un rapport de réconciliation sans données personnelles ;
 7. rester en mode central `off` ou shadow contrôlé ;
 8. ne créer ni cockpit, ni IA, ni API Yanport, ni bascule d’autorité dans ce même incrément.
 
-Cette Phase 2 proposée nécessite une validation explicite séparée.
+Cette Phase 2 proposée nécessite une validation explicite séparée. Elle n’autorise ni schéma TIM, ni interface TIM, ni reprise des accords existants.
 
 ## Arbitrages avant Phase 2
 
-1. définition métier de TIM ;
-2. échelles et règle de confirmation des critères ;
-3. création d’un projet brouillon à l’intake ou triage préalable ;
-4. sémantique future si D1 réussit mais l’email échoue ;
-5. finalités/textes de consentement par parcours ;
-6. durées de conservation et délai de grâce ;
-7. import ou non des anciens emails — recommandation : non automatique ;
-8. fenêtre et seuils de validation du mode shadow ;
-9. objectifs de restauration et fréquence d’exports privés ;
-10. définition opérationnelle d’un projet actif et de sa prochaine action.
+La définition métier de TIM est désormais validée. Les questions TIM suivantes ne bloquent pas le noyau Phase 2, mais devront être tranchées avant le lot TIM :
+
+1. assiette des honoraires et représentation HT/TTC/devise ;
+2. fait générateur et conditions de rémunération de chaque location ;
+3. gestion des paiements partiels, multiples, corrigés ou contestés ;
+4. règle de clôture lorsqu’une rémunération reste due ou à vérifier ;
+5. somme des pourcentages : contrainte stricte ou alerte autorisant un accord personnalisé ;
+6. emplacement privé, durée de conservation et droits d’accès des références de formulaire signé et de dépôt OMEGA.
+
+Arbitrages restant nécessaires pour le noyau Phase 2 :
+
+1. échelles et règle de confirmation des critères ;
+2. création d’un projet brouillon à l’intake ou triage préalable ;
+3. sémantique future si D1 réussit mais l’email échoue ;
+4. finalités/textes de consentement par parcours ;
+5. durées de conservation et délai de grâce ;
+6. import ou non des anciens emails — recommandation : non automatique ;
+7. fenêtre et seuils de validation du mode shadow ;
+8. objectifs de restauration et fréquence d’exports privés ;
+9. définition opérationnelle d’un projet actif et de sa prochaine action.

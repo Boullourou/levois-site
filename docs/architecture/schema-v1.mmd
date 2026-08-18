@@ -1,5 +1,15 @@
 %% Modèle conceptuel LEVOIS Phase 1 — aucune table n'est créée par ce fichier.
 %% Les deux types de matching restent séparés afin de conserver des clés étrangères réelles.
+%% Les clés TIM vers personne, bien, projet et transaction sont facultatives et ne créent aucun statut client.
+%% Les répartitions TIM sont explicites, versionnées en points de base ; aucun partage n'est déduit du type d'accord.
+%% Une opération rental exige des termes saisis manuellement ; aucun preset 20/80 ne s'applique.
+%% TASK a un périmètre projet ou Accord TIM ; INTERACTION également, hors triage temporaire contrôlé ; ATTACHMENT_REFERENCE a un périmètre interaction ou Accord TIM.
+%% Un accord formalisé a au moins deux conseillers distincts ; toutes ses clés TIM croisées restent dans le même accord.
+%% Les montants sont des entiers 64 bits en unité mineure ; termes, compensation et paiements partagent leur devise sans conversion implicite.
+%% Allocations (termes, partie) et paiements (compensation, idempotency_key) sont uniques.
+%% Une seule compensation is_current existe par (accord, bénéficiaire) ; ses termes historiques ne sont jamais repointés.
+%% En V1, exactement un ADVISOR_PROFILE actif a is_current_operator=true ; les autres conseillers n'obtiennent aucun accès.
+%% Un événement de l'axe compensation exige tim_compensation_id ; les deux autres axes l'interdisent.
 erDiagram
     INBOUND_SUBMISSION {
         string id PK
@@ -271,6 +281,120 @@ erDiagram
         datetime received_at
     }
 
+    ADVISOR_PROFILE {
+        string id PK
+        string person_id FK
+        string network
+        string external_advisor_ref
+        boolean is_current_operator
+        string status
+    }
+
+    TRANSACTION_RECORD {
+        string id PK
+        string transaction_type
+        string external_reference
+        datetime finalized_at
+    }
+
+    TIM_AGREEMENT {
+        string id PK
+        string agreement_type
+        string transaction_type
+        string information_nature
+        string subject_person_id FK
+        string property_id FK
+        string project_id FK
+        string source_interaction_id FK
+        string transaction_record_id FK
+        string current_terms_id FK
+        string next_task_id FK
+        string current_agreement_status
+        string current_operation_status
+        string mandate_status
+        string mandate_reference
+        string summary
+        datetime information_transmitted_at
+        datetime formalized_at
+        datetime form_signed_at
+        datetime omega_uploaded_at
+        datetime mandate_obtained_at
+        int version
+    }
+
+    TIM_AGREEMENT_PARTY {
+        string id PK
+        string tim_agreement_id FK
+        string advisor_profile_id FK
+        string role
+        string responsibility_text
+    }
+
+    TIM_AGREEMENT_TERMS {
+        string id PK
+        string tim_agreement_id FK
+        int version_number
+        string currency_code
+        string fee_basis
+        string calculation_method
+        string payment_trigger
+        string conditions_text
+        string evidence_attachment_id FK
+        string change_reason
+        datetime effective_at
+    }
+
+    TIM_AGREEMENT_ALLOCATION {
+        string id PK
+        string tim_agreement_terms_id FK
+        string tim_agreement_party_id FK
+        int share_basis_points
+    }
+
+    TIM_COMPENSATION {
+        string id PK
+        string tim_agreement_id FK
+        string beneficiary_party_id FK
+        string tim_agreement_terms_id FK
+        string supersedes_compensation_id FK
+        boolean is_current
+        string current_compensation_status
+        int estimated_total_fees_minor
+        int estimated_share_minor
+        int amount_due_minor
+        int amount_paid_minor
+        string currency_code
+        datetime expected_payment_at
+        int version
+    }
+
+    TIM_PAYMENT {
+        string id PK
+        string tim_compensation_id FK
+        string idempotency_key
+        int amount_minor
+        string currency_code
+        string status
+        string external_reference
+        datetime paid_at
+        datetime recorded_at
+    }
+
+    TIM_STATUS_EVENT {
+        string id PK
+        string tim_agreement_id FK
+        string tim_compensation_id FK
+        string state_axis
+        string from_state
+        string to_state
+        string source_kind
+        string source_ref
+        string actor_id
+        string reason
+        datetime effective_at
+        datetime recorded_at
+    }
+
     PROPERTY_EVALUATION {
         string id PK
         string buyer_search_id FK
@@ -319,6 +443,7 @@ erDiagram
     INTERACTION {
         string id PK
         string project_id FK
+        string tim_agreement_id FK
         string type
         string direction
         datetime occurred_at
@@ -334,13 +459,19 @@ erDiagram
     ATTACHMENT_REFERENCE {
         string id PK
         string interaction_id FK
+        string tim_agreement_id FK
         string kind
         string classification
+        string external_system
+        string external_reference
+        datetime signed_at
+        datetime uploaded_at
     }
 
     TASK {
         string id PK
         string project_id FK
+        string tim_agreement_id FK
         string status
         string priority
         datetime due_at
@@ -483,6 +614,8 @@ erDiagram
     PERSON ||--o{ ERASURE_REQUEST : requests
     PERSON ||--o{ PERSON_MERGE_EVENT : survives
     PERSON ||--o{ PERSON_MERGE_EVENT : merged_from
+    PERSON ||--o| ADVISOR_PROFILE : may_be_advisor
+    PERSON o|--o{ TIM_AGREEMENT : may_be_subject
 
     PROJECT ||--o{ PROJECT_PARTY : includes
     PROJECT ||--o{ PROJECT_RELATIONSHIP : source
@@ -490,8 +623,8 @@ erDiagram
     PROJECT ||--o| BUYER_SEARCH : owns
     PROJECT ||--o| SELLER_CASE : specializes
     PROJECT ||--o{ PROJECT_PROPERTY : concerns
-    PROJECT ||--o{ INTERACTION : records
-    PROJECT ||--o{ TASK : plans
+    PROJECT o|--o{ INTERACTION : records
+    PROJECT o|--o{ TASK : plans
     PROJECT ||--o{ DECISION : decides
     PROJECT ||--o{ VISIT : schedules
     PROJECT o|--o{ CONSENT_EVENT : scopes
@@ -520,6 +653,27 @@ erDiagram
     SELLER_CASE ||--o{ SELLER_SIGNAL : observes
     SELLER_CASE ||--o{ OFFER : receives
 
+    PROPERTY o|--o{ TIM_AGREEMENT : may_concern
+    PROJECT o|--o{ TIM_AGREEMENT : may_concern
+    INTERACTION o|--o{ TIM_AGREEMENT : originates
+    TRANSACTION_RECORD o|--o{ TIM_AGREEMENT : may_realize
+    TIM_AGREEMENT ||--|{ TIM_AGREEMENT_PARTY : involves
+    ADVISOR_PROFILE ||--o{ TIM_AGREEMENT_PARTY : participates
+    TIM_AGREEMENT ||--o{ TIM_AGREEMENT_TERMS : versions
+    TIM_AGREEMENT_TERMS ||--o{ TIM_AGREEMENT_ALLOCATION : allocates
+    TIM_AGREEMENT_PARTY ||--o{ TIM_AGREEMENT_ALLOCATION : receives_share
+    TIM_AGREEMENT ||--o{ TIM_COMPENSATION : tracks
+    TIM_AGREEMENT_PARTY ||--o{ TIM_COMPENSATION : benefits
+    TIM_AGREEMENT_TERMS ||--o{ TIM_COMPENSATION : governs
+    TIM_COMPENSATION o|--o| TIM_COMPENSATION : supersedes
+    TIM_COMPENSATION ||--o{ TIM_PAYMENT : receives
+    TIM_AGREEMENT ||--o{ TIM_STATUS_EVENT : records
+    TIM_COMPENSATION o|--o{ TIM_STATUS_EVENT : records
+    TIM_AGREEMENT o|--o{ INTERACTION : documents
+    TIM_AGREEMENT o|--o{ TASK : plans
+    TIM_AGREEMENT o|--o{ ATTACHMENT_REFERENCE : references
+    ATTACHMENT_REFERENCE o|--o{ TIM_AGREEMENT_TERMS : evidences
+
     BUYER_SEARCH ||--o{ PROPERTY_EVALUATION : evaluates
     SEARCH_REVISION ||--o{ PROPERTY_EVALUATION : freezes
     PROPERTY ||--o{ PROPERTY_EVALUATION : subject
@@ -533,7 +687,7 @@ erDiagram
     VISIT ||--o{ VISIT_OBSERVATION : produces
 
     INTERACTION ||--o{ INTERACTION_PARTICIPANT : includes
-    INTERACTION ||--o{ ATTACHMENT_REFERENCE : references
+    INTERACTION o|--o{ ATTACHMENT_REFERENCE : references
 
     BUYER_SEARCH ||--o{ PROPERTY_MATCH : proposes
     SEARCH_REVISION ||--o{ PROPERTY_MATCH : freezes

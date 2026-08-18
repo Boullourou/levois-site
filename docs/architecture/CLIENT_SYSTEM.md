@@ -50,6 +50,7 @@ Cette phase définit le modèle, les responsabilités, la sécurité et la migra
 - score de matching présenté comme une vérité : contraire à la doctrine LEVOIS ;
 - conservation d’audios, transcriptions ou emails bruts : non nécessaire pour la V1 ;
 - changement des parcours publics existants : aucun changement fonctionnel en Phase 1.
+- import des Accords TIM existants ou de la notice interne SAFTI : données privées et document interne hors dépôt ; toute reprise sera un chantier privé séparé.
 
 ## Ce qui existe déjà
 
@@ -63,6 +64,7 @@ Le futur système réutilise les éléments actuels au lieu de les reconstruire 
 - `/votre-rue` produit une lecture DVF réelle, puis une qualification volontaire ;
 - les consentements acheteur sont déjà séparés dans l’interface, même s’ils ne sont pas encore exploitables comme événements autonomes ;
 - les événements analytiques mesurent des parcours, mais ne doivent jamais devenir une fiche client ou une source métier.
+- les Accords TIM opérationnels actuels restent hors Git et ne disposent encore d’aucun stockage structuré dans l’application.
 
 ## Audit des données actuelles
 
@@ -85,6 +87,7 @@ Le futur système réutilise les éléments actuels au lieu de les reconstruire 
 | `/api/lead` | contact générique, vendeur, audit-annonce ou votre-rue ; corps email structuré | Resend si configuré, sinon Formspree ; aucune base | rétention dépendante du fournisseur et de la boîte email ; absence d’idempotence, de statut métier et de recherche ; impossible de détecter un lead non traité | point d’entrée stable, ajout futur d’une persistance D1 avant notification, avec statut de triage et identifiant de corrélation |
 | `/contact` | prénom, nom, email, téléphone, objet, message | `/api/lead` puis email uniquement | mêmes limites que `/api/lead` ; consentement UI non auditable dans le système | personne éventuelle, interaction de type formulaire, consentement/finalité, projet créé seulement après qualification |
 | événements PostHog | navigation, étapes, résultats vus, activations | plateforme analytique externe ; seul le choix d’opposition est mémorisé localement dans `localStorage` (`levois_analytics_opt_out`) | événements produit, pas données client canoniques ; ne doivent pas servir au matching ou à la relation client | conserver séparé ; importer uniquement des agrégats produit dans LEVOIS Lab si utile, sans identité client |
+| Accords TIM actuels | collaboration entre conseillers, information transmise, opération, formalisation et rémunération | hors Git et hors modèle D1 actuel ; aucune source applicative à auditer | aucune alerte, séparation d’états ou prochaine action dans LEVOIS ; un contact transmis risque d’être confondu avec un client géré | futur agrégat privé `tim_agreement`, initialisé manuellement hors fixtures et sans importer automatiquement emails, OMEGA ou notice interne |
 
 ### Schéma D1 vérifié
 
@@ -104,6 +107,7 @@ Le futur système réutilise les éléments actuels au lieu de les reconstruire 
 10. Le parcours vendeur garde des informations non identifiantes dans `sessionStorage`; le code `?r=` expose un résumé compact dans l’URL et dépend d’indices d’options non versionnés.
 11. La politique publique annonce au maximum trois ans sans contact, mais le schéma ne contient encore aucun mécanisme de purge, d’export ou d’effacement.
 12. Aucun contenu client réel ne doit être reconstitué depuis les emails dans Git ou dans des fixtures de test.
+13. Un propriétaire, acquéreur, bailleur ou locataire transmis dans un Accord TIM n’est pas automatiquement un client géré par Mouaad et ne doit pas entrer seul dans le pipeline Clients.
 
 ## Architecture fonctionnelle cible
 
@@ -116,6 +120,7 @@ Le futur système réutilise les éléments actuels au lieu de les reconstruire 
 | Client/projet | identité minimale, projets multiples, stade, calendrier, responsable | D1 personnes/projets |
 | Recherche acquéreur | scénarios, critères, certitudes, historique et révisions | D1 événements de critères + projection courante |
 | Vente/bien | situation vendeur, bien, commercialisation, diagnostics, signaux, visites, offres | D1 projet vendeur + entités immobilières |
+| Collaboration inter-conseillers / TIM | accords, parties, termes, opération, rémunération et prochaine action | D1 agrégat TIM distinct des projets clients |
 | Relation | interactions, tâches, documents/liens et prochaine action | D1 interactions/tâches |
 | Matching | candidats explicables et décision humaine | D1 rapprochements versionnés |
 | Cockpit | lecture/action privée ; aucune vérité propre | projections D1 |
@@ -129,7 +134,29 @@ Le futur système réutilise les éléments actuels au lieu de les reconstruire 
 - Obsidian reçoit une photographie Markdown datée. Une note humaine ne doit pas être écrasée par un futur pont local.
 - Yanport reçoit un filtre exporté depuis une révision précise de recherche.
 - PostHog conserve la mesure produit séparément.
+- un Accord TIM peut référencer un contact, un bien, un projet ou une transaction, sans créer automatiquement un projet client ni prétendre que Mouaad détient le mandat ;
+- les pourcentages et conditions sont enregistrés sur chaque accord et ne sont jamais déduits d’un modèle global ;
 - Les fichiers sources, tests et documentation Git ne contiennent aucune donnée client, adresse privée, transcription ou audio.
+
+### Accords TIM — définition métier
+
+TIM signifie « Taux Inter Mandataire ». Un Accord TIM est une collaboration interne entre conseillers SAFTI qui formalise la répartition d’honoraires lorsqu’ils travaillent sur une même information, opportunité ou transaction. Ce n’est ni un statut client, ni une étape vendeur, ni un mandat détenu par Mouaad, ni une transaction acquise.
+
+Deux configurations usuelles servent de point de départ, sans devenir des règles immuables :
+
+- `information_referral_20_80` : un conseiller transmet une information qualifiée et l’autre traite le mandat, les clients et l’opération ; le partage recommandé est 20 % / 80 % ;
+- `mandate_50_50` : un conseiller gère le mandat et le vendeur, l’autre trouve et gère l’acquéreur ; le partage recommandé est 50 % / 50 % ;
+- `custom` : termes librement renseignés.
+
+Le cas d’usage principal actuel est l’envoi d’information, mais le modèle reste symétrique : Mouaad peut être apporteur ou conseiller traitant. Les pourcentages effectivement convenus sont toujours persistés dans l’accord et peuvent différer du partage usuel.
+
+Chaque Accord TIM conserve trois axes indépendants :
+
+1. état de l’accord : `to_formalize|signed|uploaded_to_omega|active|cancelled|closed` ;
+2. état de l’opération : `information_transmitted|contact_made|mandate_obtained|marketing_or_search_in_progress|offer_or_application_received|precontract_or_lease_signed|deed_or_rental_finalized|operation_abandoned` ;
+3. état de la rémunération : `not_yet_due|estimated|due|paid|to_verify|disputed|cancelled`.
+
+Un accord peut donc être signé alors que l’opération est encore en cours et que la rémunération n’est pas due. `transaction_type` accepte `sale|rental|other`. Pour `rental`, pourcentages, conditions et fait générateur du paiement sont obligatoirement saisis manuellement : aucun 20/80 automatique.
 
 ## Choix de base de données
 
@@ -191,6 +218,9 @@ Cloudflare Access peut protéger un hostname ou un chemin et applique une politi
 - confirmation d’un critère ;
 - validation ou envoi d’un rapprochement ;
 - modification d’un consentement ;
+- modification des termes, répartitions ou trois états d’un Accord TIM ;
+- constatation d’un montant dû, enregistrement ou correction d’un paiement TIM ;
+- formalisation, signature ou indication de téléchargement OMEGA ;
 - suppression, pseudonymisation ou restauration ;
 - changement de politique de conservation.
 
@@ -227,6 +257,7 @@ Obsidian reste la mémoire longue et stratégique ; D1 reste la source opératio
 - annonces, évaluations et visites ;
 - interactions résumées ;
 - tâches et prochaine action ;
+- Accords TIM dans une section distincte, avec parties, termes, trois états, échéances et montants selon le mode d’export ;
 - enseignements LEVOIS Lab.
 
 Le fichier utilise des identifiants stables en front matter, un horodatage, un manifeste et éventuellement un hash. Un futur script local peut déposer ou mettre à jour des blocs gérés dans le vault. Cloudflare ne reçoit aucun accès direct au chemin local du vault.
@@ -235,21 +266,23 @@ Le fichier utilise des identifiants stables en front matter, un horodatage, un m
 
 - un acquéreur entièrement fictif, projet de retraite et résidence principale autour de Chartres, avec scénarios préférés et conditionnels, critères confirmés et questions `to_confirm` ;
 - un vendeur générique sans identité ni adresse exacte, couvrant bien, commercialisation, mandat, diagnostics, signaux, visites, offres et tâches ;
-- le marqueur **TIM: définition métier à confirmer** est conservé sans lui attribuer de sens opérationnel.
+- un Accord TIM fictif d’envoi d’information lié à une vente, avec deux conseillers anonymes, termes explicitement enregistrés et trois états indépendants.
 
 Le détail des pilotes se trouve dans `DATA_MODEL.md`. Aucune donnée réelle n’est utilisée.
 
 ## Arbitrages nécessaires avant implémentation
 
-1. définition métier exacte de TIM ;
-2. stades propres à chaque type de projet et définition d’un dossier actif ;
-3. règles qui transforment importance, flexibilité et certitude en critère dur ;
-4. finalités et durées de conservation ;
-5. niveau de détail financier réellement nécessaire ;
-6. gestion d’un foyer/couple et des coordonnées partagées ;
-7. règles de déduplication des personnes, biens et annonces ;
-8. format opérationnel Yanport réellement utilisé ;
-9. politique de conflit du futur pont Obsidian ;
-10. sous-domaine privé ou routes protégées pour le cockpit ;
-11. éventuels futurs utilisateurs autres que Mouaad et leurs droits ;
-12. règle de suppression quand une obligation professionnelle impose une trace minimale.
+1. stades propres à chaque type de projet et définition d’un dossier actif ;
+2. règles qui transforment importance, flexibilité et certitude en critère dur ;
+3. finalités et durées de conservation ;
+4. base des honoraires TIM (HT/TTC), devise et règle d’arrondi ;
+5. fait générateur exact du montant dû, notamment hors vente 20/80 ;
+6. paiements TIM partiels, multiples, corrigés ou annulés après versement ;
+7. preuve métier attendue pour `signed` et `uploaded_to_omega` ;
+8. gestion d’un foyer/couple et des coordonnées partagées ;
+9. règles de déduplication des personnes, biens et annonces ;
+10. format opérationnel Yanport réellement utilisé ;
+11. politique de conflit du futur pont Obsidian ;
+12. sous-domaine privé ou routes protégées pour le cockpit ;
+13. éventuels futurs utilisateurs autres que Mouaad et leurs droits ;
+14. règle de suppression quand une obligation professionnelle impose une trace minimale, y compris pour les accords et paiements TIM.

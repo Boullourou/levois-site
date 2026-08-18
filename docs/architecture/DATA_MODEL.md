@@ -14,6 +14,7 @@ Statut : modèle conceptuel Phase 1. Les noms sont proposés pour fixer les resp
 8. **L’IA ne possède aucune donnée métier.** Elle dépose des propositions séparées.
 9. **Les données brutes sont minimisées.** Résumé utile et référence contrôlée plutôt que copie systématique d’emails, audios ou transcriptions.
 10. **L’effacement reste possible.** « Append-only » décrit le fonctionnement normal, pas une immutabilité opposable à une demande de suppression.
+11. **Une collaboration TIM n’est pas un projet client.** Elle suit des conseillers, une opération et une rémunération sans créer automatiquement un client, un mandat ou une transaction acquise.
 
 ## Conventions communes
 
@@ -37,6 +38,7 @@ Statut : modèle conceptuel Phase 1. Les noms sont proposés pour fixer les resp
 | Recherche | `buyer_search`, `search_scenario`, `search_revision`, `criterion_definition`, `criterion_event`, `criterion_current` | critères versionnés, conditions, certitude et photographie opérationnelle |
 | Immobilier | `property`, `listing`, `listing_snapshot`, `project_property` | bien réel, publications observées et rattachement aux projets |
 | Vendeur | `seller_case`, `commercialization_episode`, `mandate_event`, `diagnostic_record`, `seller_signal`, `offer` | situation vendeur, commercialisation, diagnostics, signaux et offres |
+| Accords TIM | `advisor_profile`, `tim_agreement`, `tim_agreement_party`, `tim_agreement_terms`, `tim_agreement_allocation`, `transaction_record`, `tim_compensation`, `tim_payment`, `tim_status_event` | collaboration inter-conseillers, termes versionnés, opération, rémunération et pilotage hors pipeline client |
 | Qualification | `property_evaluation`, `evaluation_factor` | lecture d’un bien pour une recherche et verdict explicable |
 | Terrain | `visit`, `visit_participant`, `visit_observation` | préparation, retour, blocages et enseignements d’une visite |
 | Relation | `interaction`, `interaction_participant`, `attachment_reference` | appels, emails, SMS, WhatsApp, rencontres, formulaires et résumés |
@@ -102,7 +104,7 @@ Une personne réelle avec le minimum utile :
 - état `active|archived|erasure_pending|erased` ;
 - note de synthèse minimale, distincte des interactions.
 
-Une personne n’a aucun rôle global « acheteur » ou « vendeur ». Les rôles vivent dans `project_party`.
+Une personne n’a aucun rôle global « acheteur » ou « vendeur ». Les rôles vivent dans `project_party`. De même, une personne enregistrée uniquement parce qu’elle est concernée par une information TIM n’est pas, de ce seul fait, un client ou un prospect géré par Mouaad.
 
 ### `contact_method`
 
@@ -154,6 +156,8 @@ Champs :
 ### `project_party`
 
 Relation plusieurs-à-plusieurs entre personnes et projets : rôle `primary`, `co_buyer`, `co_seller`, `referrer`, `advisor`, autre rôle configuré, dates de validité et source.
+
+Les rôles `referrer|advisor` décrivent seulement la participation à un projet ; ils ne remplacent jamais un Accord TIM, qui porte ses propres parties, termes, états et rémunérations.
 
 ### `project_relationship`
 
@@ -265,11 +269,7 @@ Déduplication : un rapprochement de biens/annonces garde sa confiance et ses ra
 
 ### `seller_case`
 
-Extension d’un projet vendeur : situation, stratégie, configuration de workflow et statut métier extensible. Aucun statut spécifique n’est inventé pour TIM.
-
-> **TIM: définition métier à confirmer**
-
-La configuration peut réserver la clé `TIM`, désactivée et sans transition ni effet tant que Mouaad n’a pas validé sa définition.
+Extension d’un projet vendeur : situation, stratégie, configuration de workflow et statut métier extensible. Un Accord TIM n’est jamais un statut de `seller_case` et ne prouve pas que Mouaad détient le mandat.
 
 ### Entités vendeurs
 
@@ -280,7 +280,109 @@ La configuration peut réserver la clé `TIM`, désactivée et sans transition n
 - `offer` : montant, conditions, date, état et décision, avec accès restreint ;
 - `visit`, `interaction`, `task` et `decision` : entités communes, pas copies vendeurs.
 
-## 7. Évaluation d’un bien pour une recherche
+## 7. Accords TIM — collaboration inter-conseillers
+
+TIM signifie « Taux Inter Mandataire ». Un Accord TIM formalise une collaboration et une répartition d’honoraires entre plusieurs conseillers SAFTI qui travaillent sur une même opportunité ou transaction. `tim_agreement` est donc un agrégat autonome : ce n’est ni un statut client, ni une étape vendeur, ni un mandat détenu par Mouaad, ni une transaction acquise.
+
+Deux configurations métier usuelles servent de vocabulaire, pas de règles automatiques :
+
+- `mandate_50_50` : un conseiller entre le mandat et gère le vendeur, un autre trouve et gère l’acquéreur ; partage recommandé 50 % / 50 % ;
+- `information_referral_20_80` : un conseiller transmet une information qualifiée, l’autre entre le mandat, gère les clients et l’opération ; partage recommandé 20 % / 80 %.
+
+Le cas d’usage actuellement prioritaire est l’envoi d’information 20/80. Cette orientation ne doit faire entrer dans Git ni le nombre, ni l’identité, ni les détails des accords réels. L’accord peut exister dès la transmission d’une information, avant mandat, sans bien précisément identifié et avant qu’une transaction existe.
+
+### `advisor_profile`
+
+Extension professionnelle facultative d’une `person` : réseau, référence conseiller facultative, statut et identité minimale utile. La présence d’un conseiller dans un accord ne lui donne aucun accès au cockpit. En V1, exactement un profil actif porte la projection privée `is_current_operator=true`, protégée par une contrainte d’unicité ; il identifie le conseiller courant sans nom codé en dur. Si plusieurs utilisateurs sont introduits, cette projection est remplacée par une association explicite acteur ↔ conseiller.
+
+### `tim_agreement`
+
+Champs conceptuels :
+
+- `id` opaque ;
+- `agreement_type` : `information_referral_20_80|mandate_50_50|custom` ;
+- `transaction_type` : `sale|rental|other` ;
+- `information_nature` : `seller|buyer|landlord|tenant|other` ;
+- `source_interaction_id` et liens facultatifs explicites `subject_person_id`, `property_id`, `project_id` et `transaction_record_id` ;
+- `current_agreement_status` et `current_operation_status`, toujours séparés ;
+- `information_transmitted_at`, `formalized_at`, `form_signed_at` et `omega_uploaded_at` ;
+- `mandate_status` projeté (`unknown|not_yet_obtained|obtained`), `mandate_obtained_at` et `mandate_reference` facultative et minimisée lorsqu’elle apporte une valeur opérationnelle ; cette projection reste cohérente avec l’historique de l’axe opération ;
+- `current_terms_id`, `next_task_id`, synthèse/notes minimales utiles, dates techniques et version de concurrence.
+
+Une personne liée uniquement comme sujet d’information reste neutre : aucun projet, `project_party`, `seller_case`, lead actif ou pipeline Clients n’est créé automatiquement. Les liens sont facultatifs et n’impliquent ni propriété du bien, ni mandat détenu, ni résultat futur.
+
+### `tim_agreement_party`, `tim_agreement_terms` et `tim_agreement_allocation`
+
+- `tim_agreement_party` relie un `advisor_profile` avec rôle `referrer|handling_advisor|seller_mandate_advisor|buyer_advisor|other` et une responsabilité libre obligatoire pour `other` ; `seller_mandate_advisor` représente le conseiller qui entre le mandat/gère le vendeur et `buyer_advisor` celui qui trouve/gère l’acquéreur dans un 50/50 ; plusieurs conseillers restent possibles ;
+- `tim_agreement_terms` versionne assiette, devise, mode de calcul, fait générateur du paiement, conditions, date d’effet, référence facultative vers une preuve privée et raison de modification ;
+- `tim_agreement_allocation` porte pour chaque version de termes et partie un pourcentage entier en points de base (`0..10000`).
+
+`agreement_type` décrit le cadre de l’accord ; il ne calcule jamais les parts. Même un futur préréglage pour une vente reste une proposition éditable et explicitement confirmée. Les pourcentages convenus sont toujours enregistrés dans chaque version de termes. Une différence entre le nom du type et la répartition signée reste visible et doit être validée humainement.
+
+Lorsque les allocations décrivent la totalité d’une même assiette, leur somme attendue est `10000`. Toute différence reste visible, n’est jamais corrigée silencieusement et exige un accord `custom`, une assiette/condition explicite et une validation auditée. Le choix entre contrainte bloquante et alerte reste à arbitrer avant implémentation.
+
+Contraintes inter-entités à faire respecter par la future couche métier et, lorsque possible, par D1 :
+
+- un accord comporte au moins deux conseillers distincts avant formalisation ;
+- `information_referral_20_80` exige au moins un `referrer` et un `handling_advisor` distincts ; `mandate_50_50` exige un `seller_mandate_advisor` et un `buyer_advisor` distincts ; `custom` exige des responsabilités explicitement confirmées ; ces contrôles de rôle n’imposent jamais les pourcentages ;
+- une seule allocation existe par couple `(tim_agreement_terms_id, tim_agreement_party_id)` ; la version de termes et la partie appartiennent au même accord ;
+- `current_terms_id` et `next_task_id`, lorsqu’ils existent, appartiennent au même accord ;
+- le bénéficiaire et la version de termes d’une compensation appartiennent au même accord que cette compensation ;
+- la compensation d’un événement d’état, lorsqu’elle existe, appartient à l’accord de l’événement ;
+- le type d’un `transaction_record` lié reste cohérent avec `transaction_type` ;
+- la preuve d’une version de termes, lorsqu’elle existe, est autorisée et rattachée au même accord.
+
+Pour `transaction_type=rental`, aucun pourcentage, fait générateur ou condition n’est prérempli depuis le modèle 20/80. La répartition et les conditions sont saisies manuellement pour chaque accord avant toute activation financière. Le type `information_referral_20_80` ne suffit donc jamais à établir les termes d’une location.
+
+### `transaction_record`
+
+Référence facultative vers une opération identifiable : type, référence externe éventuelle et date de finalisation connue. Elle n’est matérialisée que lorsqu’une opération réelle existe ; l’accord reste valide sans elle.
+
+### `tim_compensation` et `tim_payment`
+
+Une compensation par bénéficiaire suivi — notamment la partie correspondant au conseiller courant du cockpit — conserve :
+
+- `current_compensation_status` ;
+- `tim_agreement_terms_id`, afin de figer les termes ayant produit le calcul ou la constatation ;
+- `supersedes_compensation_id` et `is_current` pour conserver les versions successives sans repointer une ligne historique ;
+- `estimated_total_fees_minor` et `estimated_share_minor` ;
+- `amount_due_minor`, `amount_paid_minor` et `expected_payment_at` ;
+- devise, version de termes, mode de calcul, fait générateur et conditions appliqués ;
+- dates techniques et version de concurrence.
+
+Au plus une compensation est courante par couple `(tim_agreement_id, beneficiary_party_id)`. Avant constatation d’un montant dû, une révision de termes crée une nouvelle compensation liée aux nouveaux termes, supersède la précédente et déplace atomiquement cette projection ; elle ne modifie jamais le lien historique. Dès qu’un montant est dû ou qu’un paiement existe, la compensation et sa version de termes ne peuvent plus être supersédées automatiquement : une correction exige un ajustement explicite et audité, dont la mécanique exacte reste à arbitrer. Le cockpit affiche la compensation courante et conserve l’accès aux versions antérieures ; aucun ancien dû ou payé ne disparaît de ses totaux financiers.
+
+Les montants utilisent des entiers 64 bits en unités monétaires mineures, jamais des flottants. Sans fonction de change explicitement validée, termes, compensation et paiements d’une même rémunération utilisent la même devise. `tim_payment` conserve chaque versement avec montant, date de paiement, date d’enregistrement, statut, clé d’idempotence et référence privée éventuelle ; `(tim_compensation_id, idempotency_key)` est unique. `amount_paid_minor` est la somme reconstruisible des paiements validés. Recalculer une estimation ne modifie jamais un montant réellement dû ni un paiement enregistré.
+
+### `tim_status_event`
+
+Événement append-only avec accord, compensation éventuelle, axe `agreement|operation|compensation`, ancien/nouvel état, date effective, date d’enregistrement, source/référence, acteur et raison. Un contrôle fermé vérifie que le code appartient à l’axe choisi. `tim_compensation_id` est obligatoire si et seulement si l’axe vaut `compensation`; il reste nul pour `agreement|operation`. Les trois projections courantes sont mises à jour atomiquement avec l’événement, restent reconstruisibles et ne se déclenchent jamais entre elles :
+
+```text
+accord       = signed
+opération    = marketing_or_search_in_progress
+rémunération = not_yet_due
+```
+
+États autorisés :
+
+- accord : `to_formalize|signed|uploaded_to_omega|active|cancelled|closed` ;
+- opération : `information_transmitted|contact_made|mandate_obtained|marketing_or_search_in_progress|offer_or_application_received|precontract_or_lease_signed|deed_or_rental_finalized|operation_abandoned` ;
+- rémunération : `not_yet_due|estimated|due|paid|to_verify|disputed|cancelled`.
+
+Pour éviter tout chevauchement, `not_yet_due` signifie que le fait générateur n’est pas atteint et qu’aucune estimation validée n’est portée par la compensation courante. `estimated` signifie qu’une estimation est enregistrée mais que le montant n’est toujours pas dû. `due` exige une constatation humaine du droit et du montant ; `paid` exige les paiements validés correspondants. `to_verify` signale une incertitude sur l’exigibilité ou le calcul. Ces états ne sont pas déduits d’un autre axe.
+
+Une opération finalisée ne rend pas automatiquement une rémunération `due`, particulièrement pour une location. `paid` exige des paiements validés couvrant le montant dû ; tant que la gestion d’un paiement partiel n’est pas arbitrée, l’état reste `due` avec un solde visible.
+
+`mandate_status` est une projection factuelle de l’historique de l’axe opération, pas un quatrième axe d’état. `mandate_status=obtained` exige un événement `mandate_obtained` ; `mandate_obtained_at` et la référence restent facultatifs si leur précision n’est pas connue.
+
+### Documents, interactions et pilotage TIM
+
+Le formulaire signé et son état OMEGA sont représentés par une `attachment_reference` privée : type, système externe, référence, dates et classification. `signed_at` et `omega_uploaded_at` sont des projections de preuves ou d’événements, pas deux booléens indépendants susceptibles de diverger. Ni le formulaire, ni la notice interne SAFTI ne sont placés dans Git.
+
+`interaction`, `task` et `attachment_reference` acceptent un `tim_agreement_id` explicite sans exiger de projet. Ils ne passent pas par un couple polymorphe `target_kind/target_id`. Les notes détaillées utiles prennent la forme d’interactions datées plutôt que d’un texte libre illimité. Tout accord non terminal, ainsi que toute rémunération `due|to_verify|disputed`, possède une prochaine tâche ouverte ou apparaît dans « Accords TIM sans prochaine action ». Une interaction ou une tâche liée à un Accord TIM n’est pas présentée comme une interaction client si aucun projet client ne lui est relié.
+
+## 8. Évaluation d’un bien pour une recherche
 
 ### `property_evaluation`
 
@@ -298,7 +400,7 @@ Une ligne par facteur : critère/règle, résultat `met|not_met|unknown|conditio
 
 Le verdict n’est jamais un simple « aimé/refusé ». Il doit rester explicable et relié à la révision de recherche utilisée.
 
-## 8. Visite
+## 9. Visite
 
 ### `visit`
 
@@ -310,12 +412,13 @@ Type `expectation|liked|blocker|learning|follow_up`, contenu minimal, source, au
 
 Une observation peut générer une `information_proposal` ou une `decision`; elle ne change jamais directement un critère.
 
-## 9. Interaction
+## 10. Interaction
 
 ### `interaction`
 
 - type `call|email|sms|whatsapp|meeting|form|visit` ;
-- projet principal et personnes concernées ;
+- contexte principal explicite : `project_id` ou `tim_agreement_id`, sans créer artificiellement l’un pour satisfaire l’autre ; une interaction de triage sans contexte métier ne peut rester orpheline que pendant une durée contrôlée ;
+- personnes concernées via `interaction_participant` ;
 - date effective et date d’enregistrement ;
 - résumé minimal, source et sens entrant/sortant ;
 - résultat et prochaine action promise ;
@@ -328,19 +431,19 @@ Personne, rôle et canal utilisé. Permet plusieurs participants sans dupliquer 
 
 ### `attachment_reference`
 
-URL ou identifiant d’un document autorisé, type, description, classification et politique de conservation. La V1 ne copie pas les pièces dans D1 et ne versionne jamais un chemin local privé comme lien public.
+URL ou identifiant privé d’un document autorisé, type, description, classification et politique de conservation. Des clés étrangères explicites permettent de le rattacher à une interaction ou à un Accord TIM ; au moins un contexte est obligatoire. D’autres contextes documentaires exigeraient une extension explicite du schéma après la V1. Pour un Accord TIM, la référence peut distinguer formulaire signé et preuve de téléchargement OMEGA sans stocker la notice interne. La V1 ne copie pas les pièces dans D1 et ne versionne jamais un chemin local privé comme lien public.
 
-## 10. Tâche, décision et chronologie
+## 11. Tâche, décision et chronologie
 
 ### `task`
 
-- projet, titre/action, échéance, priorité `low|normal|high|urgent` ;
+- contexte principal explicite `project_id` ou `tim_agreement_id`, titre/action, échéance, priorité `low|normal|high|urgent` ;
 - état `todo|in_progress|waiting|done|cancelled` ;
 - responsable, rappel facultatif ;
 - raison d’attente et interaction promise éventuelle ;
 - dates de création/fin.
 
-Le projet référence au maximum une tâche ouverte comme prochaine action. Le cockpit contrôle l’absence et les incohérences.
+Un projet ou un Accord TIM référence au maximum une tâche ouverte comme prochaine action. Le cockpit contrôle l’absence, l’échéance et les incohérences. Une tâche TIM autonome ne nécessite ni personne déclarée client, ni projet vendeur artificiel.
 
 ### `decision`
 
@@ -350,7 +453,7 @@ Décision humaine : projet, type, résumé, raison, contexte, source, auteur et 
 
 La chronologie est une projection ordonnée des interactions, décisions, événements de critères, visites, offres, tâches significatives et changements de projet. Elle n’exige pas de dupliquer tous les textes dans une table universelle.
 
-## 11. Matching
+## 12. Matching
 
 Deux relations préservent l’intégrité :
 
@@ -381,11 +484,13 @@ Règles :
 - `sent` exige une validation humaine auditée ;
 - la V1 peut trier des candidats, pas décider automatiquement à la place de Mouaad.
 
-## 12. Gouvernance, exports et LEVOIS Lab
+## 13. Gouvernance, exports et LEVOIS Lab
 
 ### `audit_event`
 
 Acteur, action sensible, type/id de cible, date, résultat et corrélation. Aucun payload, secret, transcription ou coordonnée en clair dans le message d’audit.
+
+Pour les Accords TIM, l’audit couvre au minimum les modifications de termes/allocation, les transitions des trois axes, les références de formulaire ou OMEGA, les montants dus, les paiements, les annulations et les exports. Il garde les identifiants techniques et le résultat, jamais le contenu de la notice ou une copie du formulaire.
 
 ### `export_manifest`
 
@@ -397,6 +502,8 @@ Configuration versionnée par catégorie/finalité : durée, déclencheur, déla
 
 Un inventaire associe chaque catégorie à toutes ses copies : D1 actif, Time Travel/sauvegardes, exports privés, fichiers temporaires, Resend/Formspree, boîte email et futur fournisseur IA. Il fixe responsable, TTL, capacité d’effacement et limites connues. Les sauvegardes sont chiffrées, expirent selon leur propre TTL et, après restauration, reçoivent un registre minimal non identifiant des effacements à rejouer afin de ne pas ressusciter un dossier supprimé.
 
+Les coordonnées d’une personne uniquement transmise dans un Accord TIM suivent une catégorie de conservation distincte des dossiers clients. Leur présence doit rester justifiée par le suivi de l’accord ; elles ne sont pas réutilisées pour la prospection ni prolongées par la seule conservation comptable des montants.
+
 ### `erasure_request`
 
 Demande, périmètre, export préalable, gel, exécution, erreurs, vérification et date de clôture. Après purge, le journal restant ne doit plus permettre de reconstituer la donnée supprimée.
@@ -405,11 +512,11 @@ Demande, périmètre, export préalable, gel, exécution, erreurs, vérification
 
 Observation produit, problème actuel, enseignement, proposition, état et références anonymisées. Par défaut, le texte ne contient ni nom, ni coordonnées, ni adresse exacte.
 
-## 13. Architecture IA future
+## 14. Architecture IA future
 
 Le modèle réserve `ai_run`, `information_proposal`, `proposal_evidence` et `proposal_review`. La confiance IA est distincte de la certitude métier. Une proposition acceptée crée un événement humain traçable ; une proposition rejetée reste explicable selon sa politique de conservation. Voir `AI_BOUNDARIES.md`.
 
-## 14. Pilote acquéreur fictif et anonymisé
+## 15. Pilote acquéreur fictif et anonymisé
 
 Identifiant de démonstration : `demo-buyer-retirement-001`. Aucun nom, contact, adresse exacte ou donnée réelle.
 
@@ -442,7 +549,7 @@ Projet : retraite, achat de résidence principale. Recherche : bassin chartrain.
 - validation humaine : création d’un événement conditionnel, puis `R2` ;
 - les évaluations produites sur `R1` restent consultables mais passent `stale`.
 
-## 15. Pilote vendeur fictif
+## 16. Pilote vendeur fictif
 
 Identifiant : `demo-seller-generic-001`. Bien volontairement imprécis dans le bassin chartrain, aucune identité ni adresse.
 
@@ -459,11 +566,30 @@ Identifiant : `demo-seller-generic-001`. Bien volontairement imprécis dans le b
 | offres | aucune offre | liste vide, aucun montant fictif |
 | tâches | réunir les documents ; confirmer les diagnostics ; définir la prochaine action | tâches fictives avec une seule prochaine action |
 | journal | formulaire fictif puis entretien de qualification fictif | interactions minimales sans contenu réel |
-| TIM | **TIM: définition métier à confirmer** | clé de configuration réservée, sans effet |
+| Accord TIM | aucun | une vente suivie directement n’implique aucun Accord TIM ; les deux agrégats restent indépendants |
 
 Ce pilote vérifie que le modèle vendeur ne dépend pas d’une annonce existante et réutilise les interactions, visites, tâches et décisions communes.
 
-## 16. Index et projections à prévoir lors d’une phase ultérieure
+## 17. Pilote Accord TIM fictif et anonymisé
+
+Identifiant de démonstration : `demo-tim-sale-referral-001`. Cet exemple ne correspond à aucun accord réel et ne contient aucun nom, contact, adresse, référence de mandat ou document.
+
+| Dimension | Valeur fictive | Modélisation |
+|---|---|---|
+| cadre | transmission d’une information vendeur pour une vente | `agreement_type=information_referral_20_80`, `transaction_type=sale`, `information_nature=seller` |
+| conseillers | conseiller A apporteur ; conseiller B traitant | deux `advisor_profile` fictifs et deux `tim_agreement_party` ; aucun accès accordé par ce rôle |
+| partage | 20 % / 80 % explicitement convenu dans cet exemple | allocations `2000` et `8000` points de base rattachées à une version de termes ; aucune déduction depuis le type |
+| personne concernée | non matérialisée dans la démonstration | `subject_person_id=NULL` ; aucun client, lead ou projet créé |
+| bien/projet/transaction | non identifiés | liens facultatifs nuls ; aucun mandat ou résultat déduit |
+| accord | signé, téléchargement OMEGA restant à confirmer | `current_agreement_status=signed`, référence de démonstration sans document ni fichier dans Git |
+| opération | information transmise | `current_operation_status=information_transmitted` |
+| rémunération | estimation disponible, mais montant non encore dû | `current_compensation_status=estimated` ; cet état ne vaut jamais constatation du dû |
+| estimation | honoraires fictifs 10 000 €, part apporteur fictive 2 000 € | montants mineurs et devise EUR ; estimation distincte du dû et du payé |
+| prochaine action | confirmer le téléchargement OMEGA | une `task` TIM fictive, sans projet client |
+
+Ce pilote valide qu’un accord peut être signé tandis que l’opération n’a pas encore produit de mandat et qu’aucune rémunération n’est due. Un test de contrat séparé doit vérifier qu’un accord `transaction_type=rental` ne reçoit aucune allocation, aucun fait générateur et aucune condition par défaut ; il ne constitue pas une fixture d’accord réel.
+
+## 18. Index et projections à prévoir lors d’une phase ultérieure
 
 Sans créer de schéma maintenant, les accès attendus imposent au minimum :
 
@@ -472,28 +598,41 @@ Sans créer de schéma maintenant, les accès attendus imposent au minimum :
 - soumission par source/idempotence/statut ;
 - critère courant unique par recherche/scénario/clé ;
 - événements de critère par recherche/clé/date décroissante ;
-- interaction par projet/date décroissante ;
-- tâche par état/échéance et projet ;
+- interaction par projet/date décroissante et par Accord TIM/date décroissante ;
+- tâche par état/échéance et contexte projet ou Accord TIM ;
 - listing par source/identifiant externe ou URL canonique ;
 - snapshot par listing/date ;
 - évaluation par recherche/verdict/date ;
 - visite par projet/date ;
 - matching par recherche/état/date ;
+- Accord TIM par états accord/opération, type d’opération et prochaine tâche ;
+- partie TIM par accord/rôle et conseiller ;
+- version de termes et allocation par accord/date d’effet ;
+- compensation TIM par bénéficiaire/état/date attendue ;
+- événement TIM par accord/axe/date décroissante ;
+- paiement TIM unique par compensation/clé d’idempotence et consultable par date ;
 - audit par date et acteur.
 
-Les projections de `last_contact_at`, `next_task_id`, `criterion_current` et compteurs cockpit doivent être reconstructibles. Une projection divergente doit être détectable par un job de cohérence, pas devenir une seconde vérité.
+Les projections de `last_contact_at`, `next_task_id`, `criterion_current`, états TIM courants, `amount_paid_minor` et compteurs cockpit doivent être reconstructibles. Une projection divergente doit être détectable par un job de cohérence, pas devenir une seconde vérité.
 
-## 17. Arbitrages de modèle
+## 19. Arbitrages de modèle
 
 1. échelles exactes d’importance et de flexibilité ;
 2. règle humaine qui autorise `confirmed` et `hard` ;
 3. gestion explicite d’un foyer ou couple ;
 4. granularité de l’adresse et de la géolocalisation ;
 5. taxonomie des stades de chaque projet ;
-6. définition métier de TIM ;
-7. profondeur de stockage des offres et informations financières ;
-8. règles de fusion personnes/biens/annonces ;
-9. durée des payloads d’entrée et propositions IA ;
-10. événements de lecture à auditer ou non ;
-11. format des documents/liens et futur stockage de fichiers ;
-12. politique de suppression des historiques et snapshots liés.
+6. assiette exacte des honoraires TIM : HT, TTC, avant ou après retenues réseau ;
+7. fait générateur précis d’une rémunération TIM de vente et règle de saisie pour chaque location ;
+8. traitement des paiements partiels : conserver `due` avec solde ou ajouter ultérieurement un état dédié ;
+9. corrections, trop-perçus, reprises de paiement et montants négatifs éventuels ;
+10. condition métier exacte du passage `uploaded_to_omega` à `active` et règle de clôture ;
+11. accords TIM à plus de deux conseillers et exceptions de somme pour les termes personnalisés ;
+12. données minimales d’identification d’un conseiller et durée de conservation d’un contact transmis qui ne devient jamais client ;
+13. stockage futur du formulaire signé : référence OMEGA seule ou coffre documentaire privé ;
+14. profondeur de stockage des offres et autres informations financières ;
+15. règles de fusion personnes/biens/annonces ;
+16. durée des payloads d’entrée et propositions IA ;
+17. événements de lecture à auditer ou non ;
+18. format général des documents/liens et futur stockage de fichiers ;
+19. politique de suppression des historiques et snapshots liés.
