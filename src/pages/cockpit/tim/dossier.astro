@@ -1,5 +1,6 @@
 ---
 import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import '../../../styles/cockpit-experience.css';
 import {
   PRIORITIES,
   TIM_COMPENSATION_STATUSES,
@@ -12,12 +13,13 @@ import {
   eyebrow="Suivi indépendant"
   description="Accord, opération et rémunération évoluent sans effet automatique entre les axes."
   pageId="tim-detail"
+  experience="partition-active"
 >
   <a slot="actions" class="cockpit-button cockpit-button-quiet" href="/cockpit/tim">Tous les accords</a>
   <button slot="actions" class="cockpit-button cockpit-button-secondary" type="button" data-dialog-open="tim-status-dialog" disabled data-requires-tim>Changer un état</button>
   <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-dialog-open="tim-task-dialog" disabled data-requires-tim>Nouvelle tâche</button>
 
-  <section class="cockpit-detail-root" data-tim-detail aria-live="polite" aria-busy="true">
+  <section class="cockpit-detail-root" data-tim-detail aria-busy="true">
     <div class="cockpit-screen-state is-loading" role="status"><span class="cockpit-spinner" aria-hidden="true"></span><p>Chargement de l’accord…</p></div>
   </section>
 

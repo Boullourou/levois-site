@@ -118,7 +118,10 @@ export function formDataObject(form: HTMLFormElement): Record<string, string> {
 
 export function openDialog(dialog: HTMLDialogElement): void {
   if (!dialog.open) dialog.showModal();
-  const first = dialog.querySelector<HTMLElement>('input:not([type="hidden"]), select, textarea, button');
+  const selector = document.body.dataset.cockpitExperience === 'partition-active'
+    ? 'input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([data-dialog-close]):not([disabled])'
+    : 'input:not([type="hidden"]), select, textarea, button';
+  const first = dialog.querySelector<HTMLElement>(selector);
   window.setTimeout(() => first?.focus(), 0);
 }
 

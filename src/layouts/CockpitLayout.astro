@@ -1,5 +1,6 @@
 ---
 import '../styles/cockpit.css';
+import CockpitIcon from '../components/CockpitIcon.astro';
 
 export interface Props {
   title: string;
@@ -7,6 +8,7 @@ export interface Props {
   eyebrow?: string;
   description?: string;
   pageId?: string;
+  experience?: 'partition-active';
 }
 
 const {
@@ -15,7 +17,10 @@ const {
   eyebrow = 'Cockpit privé',
   description,
   pageId = active,
+  experience,
 } = Astro.props;
+
+const themeColor = experience === 'partition-active' ? '#15221e' : '#101827';
 
 const navigation = [
   { id: 'today', label: 'Aujourd’hui', shortLabel: 'Aujourd’hui', href: '/cockpit', icon: '⌂' },
@@ -33,13 +38,21 @@ const navigation = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow, noarchive" />
     <meta name="referrer" content="no-referrer" />
-    <meta name="theme-color" content="#101827" />
+    <meta name="theme-color" content={themeColor} />
     <meta name="color-scheme" content="light" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/cockpit.webmanifest" />
     <title>{title} · Cockpit LEVOIS</title>
   </head>
-  <body data-cockpit-page={pageId}>
+  <body data-cockpit-page={pageId} data-cockpit-experience={experience}>
+    <!--
+      THESIS: l’attention se lit comme une partition continue, jamais comme une grille de CRM.
+      OWN-WORLD: fond minéral, encre vert-noir, ultramarin actif, règles fines et typographie condensée pour le temps.
+      STORY: comprendre la situation, repérer la prochaine décision, agir, puis ouvrir la profondeur du dossier.
+      FIRST VIEWPORT: en-tête compact, premier signal dominant, temps en marge et action unique immédiatement accessible.
+      FORM: Partition active, cinquième forme de la dérivation opératoire, seed bc058939.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
     <a class="cockpit-skip" href="#cockpit-main">Aller au contenu</a>
 
     <div class="cockpit-shell">
@@ -56,7 +69,9 @@ const navigation = [
               href={item.href}
               aria-current={item.id === active ? 'page' : undefined}
             >
-              <span class="cockpit-nav-icon" aria-hidden="true">{item.icon}</span>
+              <span class="cockpit-nav-icon" aria-hidden="true">
+                {experience ? <CockpitIcon name={item.id} /> : item.icon}
+              </span>
               <span>{item.label}</span>
             </a>
           ))}
@@ -71,7 +86,7 @@ const navigation = [
       <main class="cockpit-main" id="cockpit-main">
         <header class="cockpit-topbar">
           <div class="cockpit-heading">
-            <p class="cockpit-kicker">{eyebrow}</p>
+            {eyebrow && <p class="cockpit-kicker">{eyebrow}</p>}
             <h1>{title}</h1>
             {description && <p class="cockpit-description">{description}</p>}
           </div>
@@ -88,7 +103,9 @@ const navigation = [
             href={item.href}
             aria-current={item.id === active ? 'page' : undefined}
           >
-            <span class="cockpit-mobile-icon" aria-hidden="true">{item.icon}</span>
+            <span class="cockpit-mobile-icon" aria-hidden="true">
+              {experience ? <CockpitIcon name={item.id} /> : item.icon}
+            </span>
             <span>{item.shortLabel}</span>
           </a>
         ))}

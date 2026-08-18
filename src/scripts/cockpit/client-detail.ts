@@ -9,6 +9,7 @@ import {
   INTERACTION_CHANNELS,
   MATCHING_ROLES,
   PRIORITIES,
+  PROJECT_STAGES,
   PROJECT_STATUSES,
   PROJECT_TYPES,
   SCENARIO_TYPES,
@@ -137,6 +138,34 @@ type ClientDetail = {
   relationships?: Array<{ sourceProjectId?: string; targetProjectId?: string; type?: string; detail?: string }>;
 };
 
+const TIMELINE_TYPE_LABELS: Readonly<Record<string, string>> = {
+  task: 'Tâche',
+  interaction: 'Interaction',
+  criterion: 'Critère',
+  criterion_change: 'Changement de critère',
+  stage_change: 'Changement de stade',
+  decision: 'Décision',
+};
+
+const SOURCE_LABELS: Readonly<Record<string, string>> = {
+  manual: 'Saisie manuelle',
+  observation: 'Observation',
+  fixture: 'Donnée fictive',
+  form: 'Formulaire',
+  interaction: 'Échange',
+};
+
+function timelineTypeLabel(value?: string): string {
+  return value ? TIMELINE_TYPE_LABELS[value] ?? displayText(value).replaceAll('_', ' ') : 'Événement';
+}
+
+function sourceLabel(value?: string): string {
+  if (!value) return 'À préciser';
+  const [kind, ...context] = value.split(/[·:]/).map((part) => part.trim()).filter(Boolean);
+  const prefix = SOURCE_LABELS[kind] ?? displayText(kind).replaceAll('_', ' ');
+  return context.length ? `${prefix} · ${context.join(' · ')}` : prefix;
+}
+
 const root = requiredElement<HTMLElement>('[data-client-detail]');
 const params = new URLSearchParams(window.location.search);
 const personId = params.get('id')?.trim() ?? '';
@@ -206,19 +235,80 @@ function fullName(data: ClientDetail): string {
 
 function criterionValue(item: Criterion): string {
   if (item.valueText) return item.valueText;
-  if (typeof item.value === 'string') return item.value;
-  if (typeof item.value === 'number' || typeof item.value === 'boolean') return String(item.value);
-  if (item.value && typeof item.value === 'object') {
-    try { return JSON.stringify(item.value); } catch { return 'Valeur structurée'; }
+  if (typeof item.value === 'string') {
+    const trimmed = item.value.trim();
+    if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+      try { return humanCriterionValue(JSON.parse(trimmed)); } catch { return item.value; }
+    }
+    return humanCriterionValue(item.value);
   }
+  if (typeof item.value === 'number' || typeof item.value === 'boolean') return String(item.value);
+  if (item.value && typeof item.value === 'object') return humanCriterionValue(item.value);
   return 'À préciser';
+}
+
+function criterionEditorValue(item: Criterion): string {
+  if (typeof item.value === 'string') return item.value;
+  if (item.value !== undefined) return JSON.stringify(item.value, null, 2);
+  if (item.valueJson) {
+    const parsed = parseCriterionValue(item.valueJson).value;
+    return typeof parsed === 'string' ? parsed : JSON.stringify(parsed, null, 2);
+  }
+  return item.valueText ?? '';
+}
+
+function criterionPayloadValue(value: string): unknown {
+  const trimmed = value.trim();
+  if (!trimmed.startsWith('{') && !trimmed.startsWith('[')) return value;
+  try { return JSON.parse(trimmed) as unknown; } catch { return value; }
+}
+
+function humanCriterionValue(value: unknown): string {
+  const labels: Record<string, string> = {
+    house: 'Maison',
+    apartment: 'Appartement',
+    targeted_if_global_cost_coherent: 'Travaux ciblés si le coût global reste cohérent',
+    excellent: 'Excellent',
+    sqm: 'm²',
+  };
+  if (typeof value === 'string') return labels[value] ?? value.replaceAll('_', ' ');
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  if (Array.isArray(value)) return value.length ? value.map(humanCriterionValue).join(', ') : 'À confirmer';
+  if (!value || typeof value !== 'object') return 'À préciser';
+
+  const entry = value as Record<string, unknown>;
+  if (typeof entry.value === 'string') return humanCriterionValue(entry.value);
+  if (typeof entry.min_minor === 'number' || typeof entry.max_minor === 'number') {
+    const currency = typeof entry.currency === 'string' ? entry.currency : 'EUR';
+    const format = (minor: unknown) => typeof minor === 'number'
+      ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency, maximumFractionDigits: 0 }).format(minor / 100)
+      : undefined;
+    return [format(entry.min_minor), format(entry.max_minor)].filter(Boolean).join(' – ');
+  }
+  if (typeof entry.min === 'number' || typeof entry.max === 'number') {
+    const range = [entry.min, entry.max].filter((part): part is number => typeof part === 'number').join(' – ');
+    const unit = typeof entry.unit === 'string' ? labels[entry.unit] ?? entry.unit : '';
+    const condition = typeof entry.condition === 'string' ? ` · ${humanCriterionValue(entry.condition)}` : '';
+    return `${range}${unit ? ` ${unit}` : ''}${condition}`;
+  }
+  if (Array.isArray(entry.values)) return humanCriterionValue(entry.values);
+  if (Array.isArray(entry.excluded)) return `Refusés : ${entry.excluded.map(humanCriterionValue).join(', ')}`;
+  if (typeof entry.label === 'string') {
+    const duration = typeof entry.max_minutes === 'number' ? ` · ${entry.max_minutes} min maximum` : '';
+    return `${entry.label}${duration}`;
+  }
+  if (typeof entry.accepted === 'string') return humanCriterionValue(entry.accepted);
+  if (typeof entry.requirement === 'string') return humanCriterionValue(entry.requirement);
+
+  const readable = Object.values(entry).filter((part) => part !== null && part !== undefined).map(humanCriterionValue).filter(Boolean);
+  return readable.length ? readable.join(' · ') : 'À confirmer';
 }
 
 function section(title: string, kicker: string, action?: HTMLElement): { shell: HTMLElement; body: HTMLElement } {
   const shell = node('section', { className: 'cockpit-detail-section' });
   const header = node('header', { className: 'cockpit-detail-section-header' });
   const copy = node('div');
-  copy.append(node('p', { className: 'cockpit-kicker', text: kicker }), node('h2', { text: title }));
+  copy.append(node('h2', { text: title }), node('p', { className: 'cockpit-section-context', text: kicker }));
   header.append(copy);
   if (action) header.append(action);
   const body = node('div', { className: 'cockpit-detail-section-body' });
@@ -234,41 +324,52 @@ function updatePageTitle(data: ClientDetail): void {
 }
 
 function renderSummary(data: ClientDetail): HTMLElement {
-  const { shell, body } = section('Synthèse', 'Dossier');
+  const { shell, body } = section('Situation', 'L’essentiel avant le détail');
+  shell.classList.add('cockpit-client-summary');
   const person = data.person ?? {};
   const projects = data.projects ?? [];
+  const currentProject = projects.find((project) => project.status === 'active') ?? projects[0];
   const openTasks = (data.tasks ?? []).filter((task) => !['completed', 'cancelled'].includes(task.status ?? 'open'));
   const nextTask = openTasks.find((task) => task.isNextAction) ?? openTasks[0];
   const contacts = data.contactMethods ?? [];
 
   const intro = node('div', { className: 'cockpit-summary-intro' });
   const identity = node('div');
-  identity.append(node('h3', { text: fullName(data) }), node('p', { text: person.summary || 'Aucune synthèse enregistrée.' }));
+  identity.append(node('p', { className: 'cockpit-summary-copy', text: person.summary || 'Aucune synthèse enregistrée.' }));
   const flags = node('div', { className: 'cockpit-badge-row' });
   for (const project of projects.filter((item) => item.status === 'active')) flags.append(badge(labelFor(PROJECT_TYPES, project.type), 'success'));
   if (!nextTask && projects.some((project) => project.status === 'active')) flags.append(badge('Sans prochaine action', 'warning'));
   intro.append(identity, flags);
 
+  const next = node('div', { className: `cockpit-next-action${nextTask ? '' : ' is-missing'}` });
+  const nextCopy = node('div');
+  nextCopy.append(
+    node('span', { text: 'Prochaine action' }),
+    node('strong', { text: nextTask?.title ?? 'Aucune action planifiée' }),
+  );
+  next.append(nextCopy, node('time', { text: nextTask ? formatDate(nextTask.dueAt, true) : 'À planifier' }));
+
   const facts = node('dl', { className: 'cockpit-data-grid' });
   const values: Array<[string, string]> = [
+    ['Projet', labelFor(PROJECT_TYPES, currentProject?.type)],
+    ['Stade', labelFor(PROJECT_STAGES, currentProject?.stage)],
+    ['Dernier contact', formatDate(person.lastContactAt, true)],
     ['Origine', labelFor(CONTACT_ORIGINS, person.origin)],
     ['Email', contacts.find((contact) => contact.type === 'email')?.value ?? 'Non renseigné'],
     ['Téléphone', contacts.find((contact) => contact.type === 'phone')?.value ?? 'Non renseigné'],
-    ['Dernier contact', formatDate(person.lastContactAt, true)],
-    ['Prochaine action', nextTask?.title ?? 'Aucune'],
-    ['Échéance', nextTask ? formatDate(nextTask.dueAt, true) : 'Non planifiée'],
   ];
   for (const [label, value] of values) {
     const group = node('div', { className: 'cockpit-data-item' });
     group.append(node('dt', { text: label }), node('dd', { text: value }));
     facts.append(group);
   }
-  body.append(intro, facts);
+  body.append(intro, next, facts);
   return shell;
 }
 
 function renderProjects(data: ClientDetail): HTMLElement {
-  const { shell, body } = section('Projets', 'Suivi');
+  const { shell, body } = section('Projets', 'Cadre et progression');
+  shell.classList.add('cockpit-client-projects');
   const projects = data.projects ?? [];
   if (!projects.length) {
     body.append(node('p', { className: 'cockpit-inline-empty', text: 'Aucun projet enregistré.' }));
@@ -282,7 +383,7 @@ function renderProjects(data: ClientDetail): HTMLElement {
     copy.append(node('p', { className: 'cockpit-record-kicker', text: labelFor(PROJECT_TYPES, project.type) }), node('h3', { text: project.objective || 'Objectif à préciser' }));
     header.append(copy, badge(labelFor(PROJECT_STATUSES, project.status), project.status === 'active' ? 'success' : 'neutral'));
     const meta = node('dl', { className: 'cockpit-record-details' });
-    for (const [label, value] of [['Stade', displayText(project.stage).replaceAll('_', ' ')], ['Calendrier', displayText(project.timeline)]]) {
+    for (const [label, value] of [['Stade', labelFor(PROJECT_STAGES, project.stage)], ['Calendrier', displayText(project.timeline)]]) {
       const group = node('div'); group.append(node('dt', { text: label }), node('dd', { text: value })); meta.append(group);
     }
     const relationship = data.relationships?.find((item) => item.sourceProjectId === project.id || item.targetProjectId === project.id);
@@ -308,13 +409,13 @@ function prepareCriterionRevision(item?: Criterion): void {
   set('supersedesCriterionEventId', item?.id ?? '');
   set('criterionType', item?.criterionType ?? item?.type);
   set('customLabel', item?.customLabel);
-  set('value', item ? criterionValue(item) : undefined);
+  set('value', item ? criterionEditorValue(item) : undefined);
   set('scenario', item?.scenarioType ?? item?.scenario);
   set('importance', item?.importance);
   set('flexibility', item?.flexibility);
   set('certainty', item?.certainty);
   set('matchingRole', item?.matchingRole);
-  set('source', item?.source);
+  set('source', item?.sourceRef ?? item?.source);
   set('effectiveAt', new Date().toISOString().slice(0, 10));
   updateCustomCriterion();
   openDialog(dialog);
@@ -324,14 +425,17 @@ function renderSearch(data: ClientDetail): HTMLElement {
   const search = data.buyerSearch ?? data.buyer_search ?? null;
   const action = search ? node('button', { className: 'cockpit-button cockpit-button-secondary', text: 'Ajouter un critère', attrs: { type: 'button' } }) : undefined;
   action?.addEventListener('click', () => prepareCriterionRevision());
-  const { shell, body } = section('Recherche acquéreur', 'Critères évolutifs', action);
+  const { shell, body } = section('Recherche acquéreur', 'Ce qui compte aujourd’hui', action);
+  shell.classList.add('cockpit-client-search');
   if (!search) {
     body.append(node('p', { className: 'cockpit-inline-empty', text: 'Aucune recherche n’est attachée à ce dossier. Elle peut être créée avec un nouveau projet acquéreur.' }));
     return shell;
   }
   body.append(node('p', { className: 'cockpit-search-summary', text: search.summary || 'Résumé à compléter.' }));
-  const scenarioRow = node('div', { className: 'cockpit-badge-row' });
-  for (const scenario of search.scenarios ?? []) scenarioRow.append(badge(labelFor(SCENARIO_TYPES, scenario.type), 'info'));
+  const scenarioRow = node('div', { className: 'cockpit-scenario-strip', attrs: { 'aria-label': 'Scénarios de recherche' } });
+  for (const scenario of search.scenarios ?? []) {
+    scenarioRow.append(node('span', { className: `cockpit-scenario is-${scenario.type ?? 'unknown'}`, text: labelFor(SCENARIO_TYPES, scenario.type) }));
+  }
   body.append(scenarioRow);
 
   const criteria = data.currentCriteria ?? data.criteria ?? [];
@@ -341,12 +445,12 @@ function renderSearch(data: ClientDetail): HTMLElement {
   }
   const list = node('div', { className: 'cockpit-criterion-list' });
   for (const item of criteria) {
-    const card = node('article', { className: 'cockpit-criterion-card' });
-    const heading = node('div', { className: 'cockpit-record-header' });
+    const card = node('article', { className: 'cockpit-criterion-row' });
+    const heading = node('div', { className: 'cockpit-criterion-main' });
     const copy = node('div');
     copy.append(node('p', { className: 'cockpit-record-kicker', text: item.customLabel || labelFor(CRITERION_TYPES, item.criterionType ?? item.type) }), node('h3', { text: criterionValue(item) }));
     const certaintyTone = item.certainty === 'confirmed' ? 'success' : item.certainty === 'to_confirm' ? 'warning' : 'neutral';
-    heading.append(copy, badge(labelFor(CERTAINTY_LEVELS, item.certainty), certaintyTone));
+    heading.append(copy, node('span', { className: `cockpit-certainty is-${certaintyTone}`, text: labelFor(CERTAINTY_LEVELS, item.certainty) }));
     const meta = node('div', { className: 'cockpit-badge-row' });
     meta.append(
       badge(labelFor(SCENARIO_TYPES, item.scenarioType ?? item.scenario), 'info'),
@@ -355,10 +459,12 @@ function renderSearch(data: ClientDetail): HTMLElement {
       badge(`Rôle : ${labelFor(MATCHING_ROLES, item.matchingRole)}`),
     );
     if (item.isHardConstraint) meta.append(badge('Contrainte dure validée', 'danger'));
-    const source = node('p', { className: 'cockpit-record-note', text: `Source : ${displayText(item.source)} · effective le ${formatDate(item.effectiveAt)} · enregistrée le ${formatDate(item.recordedAt)}` });
+    const source = node('p', { className: 'cockpit-record-note', text: `Source : ${sourceLabel(item.source)} · valable depuis le ${formatDate(item.effectiveAt)} · enregistrée le ${formatDate(item.recordedAt)}` });
     const revise = node('button', { className: 'cockpit-button cockpit-button-quiet', text: 'Réviser sans effacer', attrs: { type: 'button' } });
     revise.addEventListener('click', () => prepareCriterionRevision(item));
-    card.append(heading, meta, source, revise);
+    const details = node('details', { className: 'cockpit-criterion-details' });
+    details.append(node('summary', { text: 'Importance, flexibilité et historique' }), meta, source, revise);
+    card.append(heading, details);
     list.append(card);
   }
   body.append(list);
@@ -368,7 +474,8 @@ function renderSearch(data: ClientDetail): HTMLElement {
 function renderInteractions(data: ClientDetail): HTMLElement {
   const action = node('button', { className: 'cockpit-button cockpit-button-secondary', text: 'Ajouter une interaction', attrs: { type: 'button' } });
   action.addEventListener('click', () => openDialog(requiredElement<HTMLDialogElement>('#interaction-dialog')));
-  const { shell, body } = section('Interactions', 'Journal', action);
+  const { shell, body } = section('Interactions', 'Derniers échanges utiles', action);
+  shell.classList.add('cockpit-client-interactions');
   const items = data.interactions ?? [];
   if (!items.length) {
     body.append(node('p', { className: 'cockpit-inline-empty', text: 'Aucune interaction enregistrée.' }));
@@ -404,9 +511,8 @@ async function completeTask(task: Task, button: HTMLButtonElement): Promise<void
 }
 
 function renderTasks(data: ClientDetail): HTMLElement {
-  const action = node('button', { className: 'cockpit-button cockpit-button-secondary', text: 'Nouvelle tâche', attrs: { type: 'button' } });
-  action.addEventListener('click', () => openDialog(requiredElement<HTMLDialogElement>('#task-dialog')));
-  const { shell, body } = section('Tâches', 'Prochaine action', action);
+  const { shell, body } = section('Tâches', 'Prochaine action et engagements');
+  shell.classList.add('cockpit-client-tasks');
   const tasks = data.tasks ?? [];
   if (!tasks.length) {
     body.append(node('p', { className: 'cockpit-inline-empty is-warning', text: 'Aucune tâche : tout projet actif apparaîtra dans les anomalies.' }));
@@ -440,7 +546,8 @@ function renderTasks(data: ClientDetail): HTMLElement {
 }
 
 function renderTimeline(data: ClientDetail): HTMLElement {
-  const { shell, body } = section('Décisions et évolution', 'Chronologie');
+  const { shell, body } = section('Décisions et évolution', 'Ce qui a changé');
+  shell.classList.add('cockpit-client-timeline');
   const explicit = data.timeline ?? [];
   const generated: TimelineItem[] = explicit.length ? explicit : [
     ...(data.criterionHistory ?? data.criteria ?? []).map((item) => ({ type: 'criterion', effectiveAt: item.effectiveAt, recordedAt: item.recordedAt, title: `Critère · ${labelFor(CRITERION_TYPES, item.criterionType ?? item.type)}`, summary: criterionValue(item), source: item.source })),
@@ -455,14 +562,16 @@ function renderTimeline(data: ClientDetail): HTMLElement {
   generated.sort((a, b) => String(b.effectiveAt ?? b.occurredAt ?? b.recordedAt).localeCompare(String(a.effectiveAt ?? a.occurredAt ?? a.recordedAt)));
   const list = node('ol', { className: 'cockpit-timeline-list' });
   for (const item of generated) {
-    const row = node('li'); row.append(node('span', { className: 'cockpit-timeline-dot', attrs: { 'aria-hidden': 'true' } }));
+    const row = node('li', { className: `is-${displayText(item.type, 'event').replaceAll('_', '-')}` }); row.append(node('span', { className: 'cockpit-timeline-dot', attrs: { 'aria-hidden': 'true' } }));
     const copy = node('div');
-    copy.append(node('p', { className: 'cockpit-record-kicker', text: `${displayText(item.type, 'Événement').replaceAll('_', ' ')} · ${formatDate(item.effectiveAt ?? item.occurredAt ?? item.recordedAt, true)}` }), node('h3', { text: item.title || 'Évolution du dossier' }));
+    copy.append(node('p', { className: 'cockpit-record-kicker', text: `${timelineTypeLabel(item.type)} · ${formatDate(item.effectiveAt ?? item.occurredAt ?? item.recordedAt, true)}` }), node('h3', { text: item.title || 'Évolution du dossier' }));
     if (item.summary ?? item.detail) copy.append(node('p', { text: item.summary ?? item.detail }));
-    if (item.source) copy.append(node('small', { text: `Source : ${item.source}` }));
+    if (item.source) copy.append(node('small', { text: `Source : ${sourceLabel(item.source)}` }));
     row.append(copy); list.append(row);
   }
-  body.append(list);
+  const disclosure = node('details', { className: 'cockpit-timeline-disclosure' });
+  disclosure.append(node('summary', { text: `Ouvrir la chronologie complète · ${generated.length} événements` }), list);
+  body.append(disclosure);
   return shell;
 }
 
@@ -471,10 +580,10 @@ function renderDetail(data: ClientDetail): void {
   const layout = node('div', { className: 'cockpit-detail-layout' });
   layout.append(
     renderSummary(data),
-    renderProjects(data),
+    renderTasks(data),
     renderSearch(data),
     renderInteractions(data),
-    renderTasks(data),
+    renderProjects(data),
     renderTimeline(data),
   );
   root.replaceChildren(layout);
@@ -602,7 +711,7 @@ criterionForm.addEventListener('submit', (event) => {
     criterionKey: values.criterionType,
     operation: values.supersedesCriterionEventId ? 'revise' : 'set',
     customLabel: values.customLabel || undefined,
-    value: values.value,
+    value: criterionPayloadValue(values.value),
     importance: values.importance,
     flexibility: values.flexibility,
     certainty: values.certainty,

@@ -1,6 +1,6 @@
 import { requestJson } from './api';
 import { PRIORITIES, labelFor } from './options';
-import { badge, formatDate, linkButton, node, renderError, renderLoading, requiredElement } from './ui';
+import { formatDate, node, renderError, renderLoading, requiredElement } from './ui';
 
 type WorkItem = {
   id: string;
@@ -56,41 +56,62 @@ function itemHref(item: WorkItem | MissingAction): string {
   return '#';
 }
 
+function formatTime(value?: string): string {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(date);
+}
+
 function renderWorkItem(item: WorkItem, context: 'today' | 'overdue' | 'promised'): HTMLLIElement {
-  const row = node('li', { className: 'cockpit-work-item' });
-  const main = node('div', { className: 'cockpit-work-item-main' });
-  const title = node('a', {
-    className: 'cockpit-work-item-title',
-    text: item.title || item.label || 'Action à préciser',
-    attrs: { href: itemHref(item) },
-  });
-  const meta = node('p', { className: 'cockpit-work-item-meta' });
+  const row = node('li', { className: `cockpit-work-item is-${context}` });
+  const link = node('a', { className: 'cockpit-score-link', attrs: { href: itemHref(item) } });
   const due = context === 'promised' ? item.promisedAt || item.dueAt : item.dueAt;
+  const timing = node('div', { className: 'cockpit-score-time' });
+  timing.append(
+    node('strong', { text: formatTime(due) }),
+    node('span', { text: context === 'overdue' ? 'En retard' : context === 'promised' ? 'Promis' : 'Aujourd’hui' }),
+  );
+  const main = node('div', { className: 'cockpit-work-item-main' });
+  if (item.subjectLabel || item.contextLabel) {
+    main.append(node('p', { className: 'cockpit-score-subject', text: item.subjectLabel || item.contextLabel }));
+  }
+  const title = node('h3', { className: 'cockpit-work-item-title', text: item.title || item.label || 'Action à préciser' });
+  const meta = node('p', { className: 'cockpit-work-item-meta' });
   meta.append(node('span', { text: formatDate(due, true) }));
-  if (item.subjectLabel || item.contextLabel) meta.append(node('span', { text: item.subjectLabel || item.contextLabel }));
   if (item.waitingReason) meta.append(node('span', { text: `En attente : ${item.waitingReason}` }));
   main.append(title, meta);
 
   const aside = node('div', { className: 'cockpit-work-item-aside' });
   if (context === 'overdue') {
     const days = typeof item.daysOverdue === 'number' ? item.daysOverdue : undefined;
-    aside.append(badge(days === undefined ? 'En retard' : `${days} j de retard`, 'danger'));
+    aside.append(node('span', { className: 'cockpit-score-status is-danger', text: days === undefined ? 'En retard' : `${days} j de retard` }));
   } else if (item.priority) {
-    aside.append(badge(labelFor(PRIORITIES, item.priority), item.priority === 'urgent' ? 'danger' : item.priority === 'high' ? 'warning' : 'neutral'));
+    aside.append(node('span', {
+      className: `cockpit-score-status${item.priority === 'urgent' ? ' is-danger' : item.priority === 'high' ? ' is-attention' : ''}`,
+      text: labelFor(PRIORITIES, item.priority),
+    }));
   }
-  aside.append(linkButton('Ouvrir', itemHref(item)));
-  row.append(main, aside);
+  aside.append(node('span', { className: 'cockpit-score-action', text: item.timAgreementId ? 'Voir l’accord' : 'Ouvrir le dossier' }));
+  link.append(timing, main, aside);
+  row.append(link);
   return row;
 }
 
 function renderMissingItem(item: MissingAction): HTMLLIElement {
   const row = node('li', { className: 'cockpit-work-item is-warning' });
+  const link = node('a', { className: 'cockpit-score-link', attrs: { href: itemHref(item) } });
+  const timing = node('div', { className: 'cockpit-score-time' });
+  timing.append(node('strong', { text: '!' }), node('span', { text: 'À planifier' }));
   const main = node('div', { className: 'cockpit-work-item-main' });
   main.append(
-    node('a', { className: 'cockpit-work-item-title', text: item.label || 'Dossier actif', attrs: { href: itemHref(item) } }),
+    node('h3', { className: 'cockpit-work-item-title', text: item.label || 'Dossier actif' }),
     node('p', { className: 'cockpit-work-item-meta', text: item.kind === 'tim' || item.kind === 'tim_agreement' ? 'Accord TIM actif' : 'Projet actif' }),
   );
-  row.append(main, badge('Sans prochaine action', 'warning'), linkButton('Planifier', itemHref(item)));
+  const aside = node('div', { className: 'cockpit-work-item-aside' });
+  aside.append(node('span', { className: 'cockpit-score-status is-attention', text: 'Sans prochaine action' }), node('span', { className: 'cockpit-score-action', text: 'Planifier' }));
+  link.append(timing, main, aside);
+  row.append(link);
   return row;
 }
 
@@ -105,12 +126,12 @@ function workPanel(
 ): HTMLElement {
   const section = node('section', {
     className: `cockpit-work-panel${primary ? ' cockpit-work-panel-primary' : ''}`,
-    attrs: { 'aria-labelledby': id },
+    attrs: { 'aria-labelledby': id, 'data-work-panel': id },
   });
   const heading = node('div', { className: 'cockpit-panel-heading' });
   const copy = node('div');
-  copy.append(node('p', { text: kicker }), node('h2', { text: title, attrs: { id } }));
-  heading.append(copy, node('span', { className: 'cockpit-count', text: String(items.length), attrs: { 'aria-label': `${items.length} élément${items.length > 1 ? 's' : ''}` } }));
+  copy.append(node('h2', { text: title, attrs: { id } }), node('p', { className: 'cockpit-panel-context', text: kicker }));
+  heading.append(copy, node('span', { className: 'cockpit-count', text: `${items.length} élément${items.length > 1 ? 's' : ''}` }));
   section.append(heading);
   if (!items.length) {
     section.append(node('p', { className: 'cockpit-panel-empty', text: emptyText }));
@@ -132,6 +153,16 @@ async function loadToday(): Promise<void> {
     const promised = payload.promisedFollowUps ?? payload.promised_follow_ups ?? payload.promisedReturns ?? [];
     const newDossiers = payload.newDossiers ?? payload.new_dossiers ?? [];
 
+    const attentionCount = new Set(
+      [...actions, ...overdue, ...missing, ...promised, ...newDossiers]
+        .map((item, index) => item.id || `${item.projectId ?? item.timAgreementId ?? 'item'}-${index}`),
+    ).size;
+    const intro = node('div', { className: 'cockpit-attention-intro' });
+    intro.append(
+      node('h2', { text: attentionCount === 0 ? 'Rien ne réclame votre attention immédiate.' : `${attentionCount} chose${attentionCount > 1 ? 's' : ''} mérite${attentionCount > 1 ? 'nt' : ''} votre attention.` }),
+      node('p', { text: attentionCount === 0 ? 'Les dossiers actifs restent accessibles depuis la navigation.' : 'Commencez par la première ligne. Le reste peut attendre son tour.' }),
+    );
+
     const grid = node('div', { className: 'cockpit-work-grid' });
     grid.append(
       workPanel('actions-title', 'Priorité', 'Actions du jour', actions, 'Aucune action prévue aujourd’hui.', (item) => renderWorkItem(item, 'today'), true),
@@ -140,7 +171,7 @@ async function loadToday(): Promise<void> {
       workPanel('promises-title', 'Engagements', 'Retours promis', promised, 'Aucun retour promis en attente.', (item) => renderWorkItem(item, 'promised')),
       workPanel('new-title', 'À traiter', 'Nouveaux dossiers', newDossiers, 'Aucun nouveau dossier manuel à traiter.', (item) => renderWorkItem(item, 'today')),
     );
-    root.replaceChildren(grid);
+    root.replaceChildren(intro, grid);
     root.setAttribute('aria-busy', 'false');
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') return;

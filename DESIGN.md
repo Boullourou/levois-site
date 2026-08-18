@@ -307,6 +307,26 @@ Les preuves locales, conditions partenaires, crédits photographiques et limites
 
 Le mouvement explique une relation : élargir un monde, rapprocher une action, faire respirer une orbite ou guider un balayage. Avec prefers-reduced-motion, les transitions, pulsations, rotations et animations liées au défilement cessent ; les contenus, signaux et actions restent visibles dans leur état complet.
 
+### Prototype cockpit Phase 2.6 — Partition active (NON VALIDÉ)
+
+> **Frontière impérative.** Ce prototype cockpit n’a pas été validé par Mouaad. Il est limité à **Aujourd’hui**, à la **fiche client acquéreur** et à l’**Accord TIM**. Il ne remplace pas la charte publique décrite dans ce document et n’autorise aucune propagation au reste du cockpit ni au site public.
+
+**Direction :** Partition active. **Seed :** `bc058939`.
+
+Le prototype ordonne le travail selon **attention → décision → détail** : fond minéral, encre vert-noir, ultramarin réservé à l’action et à l’information active, règles fines, surfaces plates et Antonio pour les titres, temps et montants. Son activation reste explicite par page ; ses tokens demeurent dans la feuille cockpit scopée et ne sont pas promus dans le frontmatter normatif de la charte publique.
+
+**Key Characteristics:**
+
+- Une file continue remplace la grille de cartes sur Aujourd’hui.
+- La fiche acquéreur réunit situation, prochaine action et recherche lisible avant les métadonnées.
+- L’Accord TIM expose d’abord accord, opération, rémunération, prochaine action et solde utile.
+- Les détails, historiques et formulaires restent disponibles par divulgation progressive ou dialogue.
+- Le verdict final est **PASS WITH MINOR OPEN**, sans P0 ni P1 ; le seul P2 matériel encore ouvert est la restitution du focus après un rerender dynamique. La valeur brute `funds_received` dans le champ d’édition reste une dette mineure de microcopie.
+
+**The Prototype Boundary Rule.** Tant que Mouaad n’a pas validé cette direction et que le P2 focus n’est pas refermé sur un nouveau rendu clavier, aucun token, composant ou comportement de Partition active ne devient une règle globale LEVOIS.
+
+La spécification, les contrastes, les preuves et les conditions de propagation de ce prototype sont détaillés dans `docs/design/EXPERIENCE_SYSTEM.md`.
+
 ## Do's and Don'ts
 
 ### Do:

@@ -1,0 +1,36 @@
+---
+export interface Props {
+  name: 'today' | 'clients' | 'tim' | 'lab' | 'settings';
+}
+
+const { name } = Astro.props;
+---
+
+<svg class="cockpit-line-icon" viewBox="0 0 24 24" aria-hidden="true">
+  {name === 'today' && (
+    <>
+      <path d="M4 12h3l2.2-5 4 10 2.2-5H20" />
+      <path d="M5 4.5h14M5 19.5h14" />
+    </>
+  )}
+  {name === 'clients' && (
+    <>
+      <circle cx="12" cy="8" r="3.2" />
+      <path d="M5.5 20c.8-4.1 3-6.1 6.5-6.1s5.7 2 6.5 6.1" />
+    </>
+  )}
+  {name === 'tim' && <path d="M4 8h14l-3-3M20 16H6l3 3" />}
+  {name === 'lab' && (
+    <>
+      <path d="M9 3h6M10 3v6l-5 9.5A1.7 1.7 0 0 0 6.5 21h11a1.7 1.7 0 0 0 1.5-2.5L14 9V3" />
+      <path d="M7.8 15h8.4" />
+    </>
+  )}
+  {name === 'settings' && (
+    <>
+      <path d="M4 7h8M16 7h4M4 17h4M12 17h8" />
+      <circle cx="14" cy="7" r="2" />
+      <circle cx="10" cy="17" r="2" />
+    </>
+  )}
+</svg>

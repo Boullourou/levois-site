@@ -189,10 +189,16 @@ function currentCompensationOf(data: TimDetail): TimCompensation | undefined {
   return data.currentCompensation ?? data.compensations?.slice().sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)))[0];
 }
 
+function triggerLabel(value?: string): string {
+  if (!value || value === 'unknown') return 'À confirmer';
+  if (value === 'funds_received') return 'Réception des fonds';
+  return displayText(value).replaceAll('_', ' ');
+}
+
 function section(title: string, kicker: string, actions: HTMLElement[] = []): { shell: HTMLElement; body: HTMLElement } {
   const shell = node('section', { className: 'cockpit-detail-section' });
   const header = node('header', { className: 'cockpit-detail-section-header' });
-  const copy = node('div'); copy.append(node('p', { className: 'cockpit-kicker', text: kicker }), node('h2', { text: title })); header.append(copy);
+  const copy = node('div'); copy.append(node('h2', { text: title }), node('p', { className: 'cockpit-section-context', text: kicker })); header.append(copy);
   if (actions.length) { const group = node('div', { className: 'cockpit-actions' }); group.append(...actions); header.append(group); }
   const body = node('div', { className: 'cockpit-detail-section-body' }); shell.append(header, body); return { shell, body };
 }
@@ -206,9 +212,10 @@ function dialogButton(label: string, dialogId: string, kind: 'primary' | 'second
 function renderSummary(data: TimDetail): HTMLElement {
   const agreement = agreementOf(data);
   const statuses = statusesOf(data);
-  const { shell, body } = section('Synthèse', 'Accord TIM');
+  const { shell, body } = section('Où en est l’accord ?', agreement.reference || 'Sans référence');
+  shell.classList.add('cockpit-tim-summary');
   const intro = node('div', { className: 'cockpit-summary-intro' });
-  const copy = node('div'); copy.append(node('p', { className: 'cockpit-record-kicker', text: agreement.reference || 'Sans référence' }), node('h3', { text: agreement.label || 'Accord sans libellé' }), node('p', { text: agreement.notes || 'Aucune note.' }));
+  const copy = node('div'); copy.append(node('p', { className: 'cockpit-summary-copy', text: agreement.notes || 'Aucune note.' }));
   intro.append(copy, badge(labelFor(TIM_AGREEMENT_TYPES, agreement.agreementType), 'info'));
   const axes = node('div', { className: 'cockpit-tim-axes cockpit-tim-axes-large' });
   for (const [axis, value, options] of [
@@ -216,8 +223,32 @@ function renderSummary(data: TimDetail): HTMLElement {
     ['Opération', statuses.operation, TIM_OPERATION_STATUSES],
     ['Rémunération', statuses.compensation, TIM_COMPENSATION_STATUSES],
   ] as const) {
-    const card = node('div'); card.append(node('span', { text: axis }), node('strong', { text: labelFor(options, value) })); axes.append(card);
+    const card = node('div', { className: `cockpit-tim-axis is-${axis.toLowerCase()}` });
+    card.append(node('span', { text: axis }), node('strong', { text: labelFor(options, value) }));
+    axes.append(card);
   }
+  const openTasks = (data.tasks ?? []).filter((task) => !['completed', 'cancelled'].includes(task.state ?? task.status ?? 'open'));
+  const nextTask = openTasks.find((task) => task.isNextAction) ?? openTasks[0];
+  const compensation = currentCompensationOf(data);
+  const currency = compensation?.currency ?? currentTermsOf(data)?.currency ?? 'EUR';
+  const signals = node('div', { className: 'cockpit-tim-signals' });
+  const next = node('div', { className: `cockpit-next-action${nextTask ? '' : ' is-missing'}` });
+  const nextCopy = node('div');
+  nextCopy.append(node('span', { text: 'Prochaine action' }), node('strong', { text: nextTask?.title ?? 'Aucune action planifiée' }));
+  next.append(nextCopy, node('time', { text: nextTask ? formatDate(nextTask.dueAt, true) : 'À planifier' }));
+  const money = node('div', { className: 'cockpit-tim-money-signal' });
+  const paid = compensation?.paidMinor ?? 0;
+  const due = compensation?.dueMinor ?? 0;
+  const outstanding = Math.max(0, due - paid);
+  const dueNow = statuses.compensation === 'due' && outstanding > 0;
+  money.append(
+    node('span', { text: dueNow ? 'À recevoir maintenant' : 'Votre part estimée' }),
+    node('strong', { text: formatMoney(dueNow ? outstanding : compensation?.estimatedShareMinor, currency) }),
+    node('small', { text: dueNow
+      ? `${formatMoney(paid, currency)} payé · ${formatMoney(due, currency)} dû au total`
+      : `${formatMoney(compensation?.estimatedShareMinor, currency)} estimé` }),
+  );
+  signals.append(next, money);
   const facts = node('dl', { className: 'cockpit-data-grid' });
   const otherAdvisor = (data.parties ?? []).find((party) => party.role === 'handling_advisor') ?? data.parties?.[1];
   const values: Array<[string, string]> = [
@@ -232,13 +263,16 @@ function renderSummary(data: TimDetail): HTMLElement {
     ['Bien ou projet', displayText(agreement.assetLabel)],
   ];
   for (const [label, value] of values) { const group = node('div', { className: 'cockpit-data-item' }); group.append(node('dt', { text: label }), node('dd', { text: value })); facts.append(group); }
-  body.append(intro, axes, facts); return shell;
+  const details = node('details', { className: 'cockpit-facts-disclosure' });
+  details.append(node('summary', { text: 'Informations de l’accord' }), facts);
+  body.append(intro, axes, signals, details); return shell;
 }
 
 function renderTerms(data: TimDetail): HTMLElement {
   const edit = dialogButton('Réviser les termes', 'tim-terms-dialog');
   edit.addEventListener('click', prepareTermsForm);
-  const { shell, body } = section('Termes', 'Versions', [edit]);
+  const { shell, body } = section('Termes', 'Conditions versionnées', [edit]);
+  shell.classList.add('cockpit-tim-terms');
   const versions = data.terms?.slice().sort((a, b) => (b.version ?? 0) - (a.version ?? 0)) ?? (data.currentTerms ? [data.currentTerms] : []);
   if (!versions.length) { body.append(node('p', { className: 'cockpit-inline-empty is-warning', text: 'Aucun terme confirmé.' })); return shell; }
   const list = node('div', { className: 'cockpit-version-list' });
@@ -247,14 +281,15 @@ function renderTerms(data: TimDetail): HTMLElement {
     const heading = node('div', { className: 'cockpit-record-header' }); heading.append(node('h3', { text: `Version ${terms.version ?? '?'}` }), badge(terms.feeBasis === 'unknown' ? 'Assiette à confirmer' : String(terms.feeBasis).toUpperCase(), terms.feeBasis === 'unknown' ? 'warning' : 'neutral'));
     const allocations = node('div', { className: 'cockpit-allocation-row' });
     for (const allocation of terms.allocations ?? []) allocations.append(node('span', { text: `${allocation.role === 'referrer' ? 'Apporteur' : 'Traitant'} · ${typeof allocation.basisPoints === 'number' ? `${(allocation.basisPoints / 100).toLocaleString('fr-FR')} %` : 'à confirmer'}` }));
-    card.append(heading, allocations, node('p', { text: `Fait générateur : ${displayText(terms.triggerEvent)}` }), node('small', { text: `Créée le ${formatDate(terms.effectiveAt ?? terms.createdAt, true)} · ${terms.currency ?? 'EUR'}` }));
+    card.append(heading, allocations, node('p', { text: `Fait générateur : ${triggerLabel(terms.triggerEvent)}` }), node('small', { text: `Créée le ${formatDate(terms.effectiveAt ?? terms.createdAt, true)} · ${terms.currency ?? 'EUR'}` }));
     list.append(card);
   }
   body.append(list); return shell;
 }
 
 function renderCompensation(data: TimDetail): HTMLElement {
-  const { shell, body } = section('Rémunération', 'Montants en unités mineures', [dialogButton('Nouvelle estimation', 'tim-compensation-dialog'), dialogButton('Enregistrer un paiement', 'tim-payment-dialog', 'primary')]);
+  const { shell, body } = section('Rémunération', 'Estimation, dû et paiements', [dialogButton('Nouvelle estimation', 'tim-compensation-dialog'), dialogButton('Enregistrer un paiement', 'tim-payment-dialog', 'primary')]);
+  shell.classList.add('cockpit-tim-compensation');
   const current = currentCompensationOf(data);
   const currency = current?.currency ?? currentTermsOf(data)?.currency ?? 'EUR';
   const paid = current?.paidMinor ?? 0;
@@ -262,7 +297,7 @@ function renderCompensation(data: TimDetail): HTMLElement {
   const facts = node('dl', { className: 'cockpit-money-grid' });
   for (const [label, value, tone] of [
     ['Honoraires estimés', formatMoney(current?.estimatedFeesMinor, currency), 'neutral'],
-    ['Part Mouaad estimée', formatMoney(current?.estimatedShareMinor, currency), 'info'],
+    ['Votre part estimée', formatMoney(current?.estimatedShareMinor, currency), 'info'],
     ['Montant dû', formatMoney(current?.dueMinor, currency), current?.status === 'due' ? 'warning' : 'neutral'],
     ['Déjà payé', formatMoney(paid, currency), paid > 0 ? 'success' : 'neutral'],
     ['Solde indicatif', formatMoney(Math.max(0, due - paid), currency), due > paid ? 'warning' : 'success'],
@@ -270,7 +305,7 @@ function renderCompensation(data: TimDetail): HTMLElement {
     const item = node('div', { className: `cockpit-money-item is-${tone}` }); item.append(node('dt', { text: label }), node('dd', { text: value })); facts.append(item);
   }
   body.append(facts);
-  if (current) body.append(node('p', { className: 'cockpit-record-note', text: `État : ${labelFor(TIM_COMPENSATION_STATUSES, current.status)} · termes v${current.termsVersion ?? '?'} · exigibilité ${formatDate(current.dueAt)} · paiement attendu ${formatDate(current.expectedPaymentAt)}` }));
+  if (current) body.append(node('p', { className: 'cockpit-record-note', text: `Rémunération : ${labelFor(TIM_COMPENSATION_STATUSES, current.status)} · conditions version ${current.termsVersion ?? '?'} · exigible le ${current.dueAt ? formatDate(current.dueAt) : 'date à préciser'} · paiement attendu ${current.expectedPaymentAt ? formatDate(current.expectedPaymentAt) : 'à préciser'}` }));
   const payments = data.payments ?? [];
   if (payments.length) {
     const list = node('ul', { className: 'cockpit-payment-list' });
@@ -289,7 +324,8 @@ async function completeTask(task: TimTask, button: HTMLButtonElement): Promise<v
 }
 
 function renderTasks(data: TimDetail): HTMLElement {
-  const { shell, body } = section('Tâches et échéances', 'Suivi', [dialogButton('Nouvelle tâche', 'tim-task-dialog')]);
+  const { shell, body } = section('Tâches et échéances', 'Ce qui reste à faire');
+  shell.classList.add('cockpit-tim-tasks');
   const tasks = data.tasks ?? [];
   if (!tasks.length) { body.append(node('p', { className: 'cockpit-inline-empty is-warning', text: 'Aucune prochaine action : cet accord actif apparaîtra dans Aujourd’hui.' })); return shell; }
   const list = node('ul', { className: 'cockpit-task-list' });
@@ -305,11 +341,21 @@ function renderTasks(data: TimDetail): HTMLElement {
 }
 
 function renderHistory(data: TimDetail): HTMLElement {
-  const { shell, body } = section('Journal des états', 'Traçabilité');
+  const { shell, body } = section('Journal des états', 'Changements par axe');
+  shell.classList.add('cockpit-tim-history');
   const items = data.statusEvents?.slice().sort((a, b) => String(b.effectiveAt).localeCompare(String(a.effectiveAt))) ?? [];
   if (!items.length) { body.append(node('p', { className: 'cockpit-inline-empty', text: 'Aucun changement d’état dans le journal.' })); return shell; }
   const list = node('ol', { className: 'cockpit-timeline-list' });
-  for (const item of items) { const row = node('li'); row.append(node('span', { className: 'cockpit-timeline-dot', attrs: { 'aria-hidden': 'true' } })); const copy = node('div'); copy.append(node('p', { className: 'cockpit-record-kicker', text: `${displayText(item.axis)} · ${formatDate(item.effectiveAt, true)}` }), node('h3', { text: displayText(item.status).replaceAll('_', ' ') })); if (item.reason) copy.append(node('p', { text: item.reason })); row.append(copy); list.append(row); }
+  for (const item of items) {
+    const axisLabel = item.axis === 'agreement' ? 'Accord' : item.axis === 'operation' ? 'Opération' : 'Rémunération';
+    const statusOptions = item.axis === 'agreement' ? TIM_AGREEMENT_STATUSES : item.axis === 'operation' ? TIM_OPERATION_STATUSES : TIM_COMPENSATION_STATUSES;
+    const row = node('li', { className: `is-${item.axis ?? 'event'}` });
+    row.append(node('span', { className: 'cockpit-timeline-dot', attrs: { 'aria-hidden': 'true' } }));
+    const copy = node('div');
+    copy.append(node('p', { className: 'cockpit-record-kicker', text: `${axisLabel} · ${formatDate(item.effectiveAt, true)}` }), node('h3', { text: labelFor(statusOptions, item.status) }));
+    if (item.reason) copy.append(node('p', { text: item.reason }));
+    row.append(copy); list.append(row);
+  }
   body.append(list); return shell;
 }
 
@@ -317,7 +363,7 @@ function renderDetail(data: TimDetail): void {
   const agreement = agreementOf(data);
   const heading = document.querySelector<HTMLElement>('.cockpit-heading h1'); if (heading) heading.textContent = agreement.label || 'Accord TIM';
   document.title = `${agreement.reference || 'Accord TIM'} · Cockpit LEVOIS`;
-  const layout = node('div', { className: 'cockpit-detail-layout' }); layout.append(renderSummary(data), renderTerms(data), renderCompensation(data), renderTasks(data), renderHistory(data)); root.replaceChildren(layout); root.setAttribute('aria-busy', 'false');
+  const layout = node('div', { className: 'cockpit-detail-layout' }); layout.append(renderSummary(data), renderTasks(data), renderCompensation(data), renderTerms(data), renderHistory(data)); root.replaceChildren(layout); root.setAttribute('aria-busy', 'false');
   updateStatusOptions();
   document.querySelectorAll<HTMLButtonElement>('[data-requires-tim]').forEach((button) => { button.disabled = false; });
 }

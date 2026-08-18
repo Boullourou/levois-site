@@ -1,5 +1,6 @@
 ---
 import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import '../../../styles/cockpit-experience.css';
 import {
   CERTAINTY_LEVELS,
   CRITERION_TYPES,
@@ -18,12 +19,13 @@ import {
   eyebrow="Dossier accompagné"
   description="Synthèse, évolution et prochaine action dans une seule chronologie."
   pageId="client-detail"
+  experience="partition-active"
 >
   <a slot="actions" class="cockpit-button cockpit-button-quiet" href="/cockpit/clients">Tous les clients</a>
   <button slot="actions" class="cockpit-button cockpit-button-secondary" type="button" data-dialog-open="export-dialog" disabled data-requires-client>Exporter</button>
   <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-dialog-open="task-dialog" disabled data-requires-client>Nouvelle tâche</button>
 
-  <section class="cockpit-detail-root" data-client-detail aria-live="polite" aria-busy="true">
+  <section class="cockpit-detail-root" data-client-detail aria-busy="true">
     <div class="cockpit-screen-state is-loading" role="status">
       <span class="cockpit-spinner" aria-hidden="true"></span>
       <p>Chargement de la fiche…</p>
@@ -63,8 +65,8 @@ import {
     </form>
   </dialog>
 
-  <dialog class="cockpit-dialog" id="criterion-dialog" aria-labelledby="criterion-dialog-title">
-    <form method="dialog" class="cockpit-dialog-frame cockpit-dialog-wide" data-criterion-form>
+  <dialog class="cockpit-dialog cockpit-dialog-wide" id="criterion-dialog" aria-labelledby="criterion-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-criterion-form>
       <header><div><p class="cockpit-kicker">Recherche</p><h2 id="criterion-dialog-title">Ajouter ou réviser un critère</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
       <input name="supersedesCriterionEventId" type="hidden" />
       <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">

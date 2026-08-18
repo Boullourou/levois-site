@@ -1,5 +1,6 @@
 ---
 import CockpitLayout from '../../layouts/CockpitLayout.astro';
+import '../../styles/cockpit-experience.css';
 ---
 
 <CockpitLayout
@@ -7,6 +8,7 @@ import CockpitLayout from '../../layouts/CockpitLayout.astro';
   active="today"
   eyebrow="File de travail"
   description="Qui rappeler, quoi faire et ce qui risque d’être oublié."
+  experience="partition-active"
 >
   <a slot="actions" class="cockpit-button cockpit-button-secondary" href="/cockpit/tim/nouveau">Nouvel accord TIM</a>
   <a slot="actions" class="cockpit-button cockpit-button-primary" href="/cockpit/clients/nouveau">Nouveau dossier</a>
