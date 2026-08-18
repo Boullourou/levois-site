@@ -11,7 +11,7 @@ import {
 
 async function accessFixture(
   overrides: Record<string, unknown> = {},
-  options: { issuer?: string; audience?: string; expiration?: string | null } = {},
+  options: { issuer?: string; audience?: string; expiration?: string | null; notBefore?: string | null } = {},
 ) {
   const { publicKey, privateKey } = await generateKeyPair("RS256");
   const jwk = await exportJWK(publicKey);
@@ -34,6 +34,7 @@ async function accessFixture(
     .setAudience(options.audience ?? "cockpit-audience")
     .setSubject("operator-subject")
     .setIssuedAt();
+  if (options.notBefore !== null) tokenBuilder = tokenBuilder.setNotBefore(options.notBefore ?? "0s");
   if (options.expiration !== null) tokenBuilder = tokenBuilder.setExpirationTime(options.expiration ?? "5m");
   const token = await tokenBuilder.sign(privateKey);
   return { env, token, local };
@@ -61,6 +62,15 @@ describe("cockpit Access boundary", () => {
     }), env, local)).rejects.toMatchObject({ code: "IDENTITY_NOT_ALLOWED", status: 403 });
   });
 
+  it("refuses a simple Access email header without a signed JWT", async () => {
+    const { env, local } = await accessFixture();
+    const request = new Request("https://cockpit.levois.test/api/cockpit/session", {
+      headers: { "Cf-Access-Authenticated-User-Email": "operator@example.invalid" },
+    });
+    await expect(authenticateCockpit(request, env, local))
+      .rejects.toMatchObject({ code: "ACCESS_REQUIRED", status: 401 });
+  });
+
   it("refuses a wrong issuer, audience, missing expiration and expired assertion", async () => {
     for (const options of [
       { issuer: "https://wrong.cloudflareaccess.com" },
@@ -73,6 +83,31 @@ describe("cockpit Access boundary", () => {
         headers: { "Cf-Access-Jwt-Assertion": token },
       }), env, local)).rejects.toMatchObject({ code: "ACCESS_INVALID", status: 401 });
     }
+  });
+
+  it("requires nbf and refuses an assertion that is not valid yet", async () => {
+    for (const options of [
+      { notBefore: null },
+      { notBefore: "1h" },
+    ]) {
+      const { env, token, local } = await accessFixture({}, options);
+      await expect(authenticateCockpit(new Request("https://cockpit.levois.test/api/cockpit/session", {
+        headers: { "Cf-Access-Jwt-Assertion": token },
+      }), env, local)).rejects.toMatchObject({ code: "ACCESS_INVALID", status: 401 });
+    }
+  });
+
+  it("refuses a JWT whose signed payload has been falsified", async () => {
+    const { env, token, local } = await accessFixture();
+    const [header, payload, signature] = token.split(".");
+    const claims = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    const falsifiedPayload = Buffer.from(JSON.stringify({ ...claims, email: "attacker@example.invalid" })).toString("base64url");
+    const falsifiedToken = `${header}.${falsifiedPayload}.${signature}`;
+    const request = new Request("https://cockpit.levois.test/api/cockpit/session", {
+      headers: { "Cf-Access-Jwt-Assertion": falsifiedToken },
+    });
+    await expect(authenticateCockpit(request, env, local))
+      .rejects.toMatchObject({ code: "ACCESS_INVALID", status: 401 });
   });
 
   it("never enables the local bypass on a remote hostname", async () => {

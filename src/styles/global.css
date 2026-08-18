@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@config "../../tailwind.config.mjs";
+
 /* Typographie LEVOIS V2 : chargée une seule fois depuis Layout. */
 @font-face {
   font-family: 'Archivo Black';
@@ -30,10 +33,6 @@
   font-weight: 200 800;
   font-display: swap;
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer base {
   :root {

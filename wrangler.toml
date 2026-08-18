@@ -6,6 +6,22 @@ binding = "RECHERCHE_DB"
 database_name = "levois-recherche"
 database_id = "077d24f8-5efc-4787-a451-05b041ddd2f7"
 
+# Les clés D1 ne sont pas héritées entre environnements Pages. Les previews
+# utilisent donc deux bases dédiées et fictives : aucune D1 de production
+# n'est exposée, tout en conservant le fonctionnement de /api/recherche.
+[[env.preview.d1_databases]]
+binding = "RECHERCHE_DB"
+database_name = "levois-recherche-preview-phase2-5"
+database_id = "308c98e9-d484-4fdd-9892-539abb6b0ffd"
+preview_database_id = "308c98e9-d484-4fdd-9892-539abb6b0ffd"
+
+[[env.preview.d1_databases]]
+binding = "COCKPIT_DB"
+database_name = "levois-cockpit-preview-phase2-5"
+database_id = "88539c49-0d41-42df-a3b1-1a269e1acbe3"
+preview_database_id = "88539c49-0d41-42df-a3b1-1a269e1acbe3"
+migrations_dir = "db/migrations"
+
 # Le binding D1 est versionné ici afin que les déploiements Git et Wrangler
 # utilisent la même base. Le schéma distant vit dans db/schema.sql.
 # Développement local : wrangler pages dev dist --d1 RECHERCHE_DB

@@ -1,88 +1,122 @@
-# Rapport de sécurité — cockpit V1
+# Rapport de sécurité — cockpit Phase 2.5
 
-## Conclusion
+## Décision au 18 août 2026
 
-Le code est conçu pour refuser fermé et pour séparer le cockpit du site public et de sa D1 actuelle. Il est adapté à une démonstration locale ou preview avec fixtures fictives. Il ne doit recevoir aucune donnée réelle tant que Cloudflare Access, les secrets, l’allowlist de hostname et d’identité, ainsi qu’une D1 preview séparée n’ont pas été configurés et testés manuellement.
+**NO-GO données réelles.**
 
-## Contrôles implémentés
+La mise à niveau applicative retient Astro `7.2.3` ; les audits runtime et complet sont à 0. Deux D1 non-production sont prêtes dans Git, mais le Dashboard Pages n’utilise pas encore ces bindings : l’environnement Preview actuellement déployé expose toujours `RECHERCHE_DB → levois-recherche` jusqu’au prochain push. Fail closed est activé. L’onboarding Zero Trust est partiel, sans plan actif, application, politique, AUD, MFA ou DNS `cockpit.levois.fr` ; Access reste donc non opérationnel.
+
+Le refus fermé du code réduit le risque d’exposition accidentelle, mais ne constitue pas à lui seul la protection en bordure demandée. Aucun dossier client, Accord TIM réel, coordonnée, transcription ou montant réel ne doit être saisi avant la recette Access/MFA complète et la validation de [REAL_DATA_CHECKLIST.md](./REAL_DATA_CHECKLIST.md).
+
+## Supply chain et runtime
+
+| Élément | État Phase 2.5 |
+|---|---|
+| Astro | `7.2.3`, retenu après validation par paliers 4 → 5 → 6 → 7 |
+| Node | cible `22.23.2`, minimum `>=22.12.0` |
+| npm | lockfile reproductible avec npm `10.9.2` |
+| `npm audit --omit=dev --json` | 0 vulnérabilité observée après migration |
+| audits final runtime + complet | 0 vulnérabilité |
+| tests/build finaux post-`npm ci` | 96/96 ; cockpit 55/55 ; sécurité 16/16 ; market 6/6 ; build 33 pages |
+
+La liste exacte des advisories historiques, leurs chemins, leur applicabilité et leurs versions corrigées est conservée dans [`../security/ASTRO_AUDIT_2026-08.md`](../security/ASTRO_AUDIT_2026-08.md).
+
+## Contrôles applicatifs implémentés
 
 | Surface | Contrôle |
 |---|---|
 | Pages privées | middleware sur `/cockpit/*`, authentification avant livraison de la page |
 | API privée | authentification répétée dans le BFF `/api/cockpit/*` |
-| Access | validation cryptographique RS256 via JWKS, issuer, audience, expiration et contraintes temporelles |
-| Identité | `sub` et email issus du JWT signé, email obligatoire dans une allowlist, sujet optionnellement allowlisté |
+| JWT Access | validation RS256 via JWKS, issuer, audience ; `exp`, `nbf` et `sub` obligatoires |
+| Identité | `type=app`, `sub` et email issus du JWT signé ; email allowlisté, sujet facultativement allowlisté |
 | Hostname | allowlist distante obligatoire ; localhost traité séparément |
 | Développement | bypass uniquement avec `COCKPIT_LOCAL_BYPASS=1` et hostname exact `localhost`/`127.0.0.1` |
 | Mutations | même Origin, `application/json`, CSRF HMAC lié à l’acteur et à l’origine, expiration de 30 minutes |
 | Idempotence | clé requise, empreinte HMAC du payload, reçu d’audit ; paiement unique par compensation + clé |
-| Concurrence | versions d’agrégat et réponses `409` en cas d’écriture obsolète |
-| D1 | binding `COCKPIT_DB` dédié, absence de fallback vers `RECHERCHE_DB`, erreurs de base en `503` |
-| Cache/indexation | `Cache-Control: private, no-store`, `Pragma: no-cache`, `X-Robots-Tag: noindex, nofollow, noarchive` |
-| Navigateur | `nosniff`, `no-referrer`, `X-Frame-Options: DENY`, Permissions Policy restrictive |
-| HTML statique | coque sans donnée client, données chargées depuis le BFF après authentification |
+| Concurrence | versions d’agrégat et `409` en cas d’écriture obsolète |
+| D1 | binding `COCKPIT_DB` dédié, aucun fallback `RECHERCHE_DB`, erreurs de base en `503` |
+| Cache/indexation | `private, no-store`, `Pragma: no-cache`, `X-Robots-Tag: noindex, nofollow, noarchive` |
+| Navigateur | `nosniff`, `no-referrer`, `DENY`, CSP et Permissions Policy restrictives |
+| HTML statique | coque sans donnée client, chargement depuis le BFF après authentification |
 | Analytics | layout cockpit indépendant, sans composant Analytics/PostHog |
-| Hors ligne | manifeste installable, aucun service worker et aucune donnée privée mise en cache hors ligne |
-| Saisie/rendu | validation serveur, limites de longueur, enums fermées ; rendu dynamique par `textContent` |
-| Markdown | export à la demande, échappement des contenus, périmètre strict du dossier, mode sans coordonnées |
-| Historique | critères, statuts TIM et audit conservés sans réécriture silencieuse |
-| Données sensibles | aucune prise en charge d’audio, transcription brute, pièce jointe ou fichier en V1 |
+| Hors ligne | manifeste installable, aucun service worker ni cache de dossiers privés |
+| Saisie/rendu | validation serveur, limites de longueur, enums fermées, rendu dynamique par `textContent` |
+| Markdown | export à la demande, échappement, périmètre strict du dossier, mode sans coordonnées |
+| Historique | critères, statuts TIM, termes, paiements et audit sans réécriture silencieuse |
+| Données exclues | aucun audio, transcription brute, pièce jointe, banque ou document interne en V1 |
 
-## Séparation public/privé
+Le MFA n’est pas réimplémenté dans l’application : il doit être imposé par Cloudflare Independent MFA ou par un fournisseur d’identité équivalent. Les tests applicatifs refusent `nbf` absent ou futur ; la future recette doit confirmer que les JWT Access réels contiennent ce claim et que la politique exige effectivement le MFA.
 
-- Les parcours publics ne sont pas modifiés et ne sont pas reliés au cockpit.
-- Les routes cockpit utilisent un layout dédié et ne chargent pas les composants analytiques publics.
-- La D1 publique `RECHERCHE_DB` n’est jamais consultée par le BFF cockpit.
-- Le fichier local Wrangler contient des identifiants D1 nuls et ne peut pas désigner une base distante réelle.
-- La base preview doit être créée et bindée manuellement ; aucune D1 de production n’est configurée par cette phase.
+## Séparation public/privé et D1
+
+- Les parcours publics ne sont pas reliés au cockpit et leur comportement n’est pas modifié par cette phase.
+- Les routes cockpit utilisent un layout dédié sans analytics public.
+- Le BFF cockpit n’accède qu’à `COCKPIT_DB` et n’a aucun fallback vers `RECHERCHE_DB`.
+- La D1 cockpit créée est `levois-cockpit-preview-phase2-5` (`88539c49-0d41-42df-a3b1-1a269e1acbe3`).
+- La D1 recherche créée est `levois-recherche-preview-phase2-5` (`308c98e9-d484-4fdd-9892-539abb6b0ffd`) : schéma `lectures_recherche`, 0 ligne.
+- La configuration Git sous `env.preview.d1_databases` pointe `COCKPIT_DB` et `RECHERCHE_DB` vers ces deux bases non-production ; elle n’est pas encore l’état Pages déployé.
+- Le Dashboard Pages Preview montre actuellement seulement `RECHERCHE_DB → levois-recherche`, sans `COCKPIT_DB`. Le gate d’absence de D1 production est donc rouge jusqu’au prochain déploiement automatique et à une inspection distante.
+- Seules les migrations 0001–0006 et `db/fixtures/cockpit-v1.sql` ont été appliquées à la D1 preview.
+- `PRAGMA foreign_key_check` est vide ; les comptages fictifs sont `person=3`, `project=2`, `tim_agreement=2`, `lab_observation=1`.
+- Aucune D1 cockpit de production n’a été créée ou migrée.
+
+Les deux bases cibles sont séparées et sans donnée réelle ; **la séparation de l’environnement Pages n’est pas encore verte** tant que le push automatique et l’inspection du Dashboard n’ont pas remplacé l’ancien binding. La D1 recherche fictive maintient le schéma nécessaire à `/api/recherche` sans utiliser la production.
 
 ## Minimisation
 
-- Coordonnées facultatives lors de la création d’une personne.
-- Consentement initial `unknown` si aucune preuve n’existe.
+- Les coordonnées sont facultatives lors de la création d’une personne.
+- Le consentement reste `unknown` lorsqu’aucune preuve n’est enregistrée.
 - Les contacts uniquement associés à TIM restent hors de la liste Clients sans projet directement accompagné.
-- Le sujet d’un Accord TIM peut rester un simple libellé minimisé.
-- Les interactions stockent un résumé, jamais une transcription brute.
-- LEVOIS Lab impose une confirmation humaine d’anonymisation.
+- Le sujet d’un Accord TIM peut rester un libellé minimisé.
+- Les interactions stockent un résumé utile, jamais une transcription brute.
+- Les montants TIM sont limités aux unités mineures, devise, états, dates et références opérationnelles ; aucune coordonnée bancaire n’est prévue.
+- LEVOIS Lab exige une anonymisation et une validation humaines.
 - L’export permet d’omettre email et téléphone.
 
 ## Traçabilité
 
-`audit_event` enregistre les commandes métier réussies et les exports avec acteur, action, cible, clé d’idempotence et empreinte HMAC. Le contenu brut de la requête n’est pas copié dans l’audit. Les événements de critère, états TIM, paiements et versions de termes assurent leur propre historique.
+`audit_event` enregistre les commandes réussies et les exports avec acteur, action, cible, clé d’idempotence et empreinte HMAC. Le payload brut n’est pas copié dans l’audit. Les événements de critère, états TIM, paiements et versions de termes conservent leur propre historique.
 
-## Risques résiduels et actions manuelles
+Limite : les refus d’authentification restent dans les journaux Cloudflare/Access et ne sont pas enregistrés dans D1. Une politique de conservation et d’accès à ces journaux doit être validée avant exploitation réelle.
 
-| Risque/limite | État | Mesure requise |
+## Risques résiduels
+
+| Risque/limite | État | Mesure obligatoire |
 |---|---|---|
-| Politique Access non versionnée | manuel | suivre `ACCESS_SETUP.md`, limiter à Mouaad, tester négativement |
-| D1 preview non créée/bindée | manuel | créer une base séparée et vérifier le binding `COCKPIT_DB` |
-| Données réelles avant validation | interdit | conserver uniquement les fixtures fictives |
-| CSP dédiée | implémentée | valider la politique avec Cloudflare Access et les assets de preview avant toute donnée réelle |
-| Dépendances Astro 4 | `npm audit --omit=dev` signale 5 vulnérabilités hautes et 2 modérées | traiter dans une branche de mise à niveau dédiée ; `npm audit` propose Astro 7.2.3, une migration majeure trop risquée pour les parcours publics dans cette phase |
-| Rate limiting cockpit | non ajouté | Access et allowlist réduisent l’exposition ; ajouter une limite si l’audience s’élargit |
-| Journal des refus d’authentification | non persisté dans D1 | utiliser les logs Access/Cloudflare ; définir une politique de conservation |
-| Suppression complète d’un dossier | pas de commande/UI | concevoir un workflow d’effacement audité avant exploitation durable |
-| Conservation configurable | pas de commande/UI | définir durées et jobs de revue avant production de données réelles |
-| Sauvegardes | opération manuelle | exporter hors Git, chiffrer et tester une restauration |
-| Secrets | hors Git mais à créer | utiliser les secrets Cloudflare et organiser leur rotation |
-| Headers de transport (HSTS/TLS) | plateforme | vérifier la configuration de zone Cloudflare |
-| Recette Workerd Windows | validée localement | rejouer la même recette sur la D1 preview séparée après configuration Access |
+| Zero Trust/Access | **bloquant, onboarding partiel sans plan actif** | activer le plan, créer l’application deny-by-default, MFA et une seule identité ; exécuter tous les tests distants |
+| Preview Pages | Fail closed actif, mais preview publique | activer Restrict previews avant toute base réelle |
+| Binding Preview | **D1 production encore présente** | déployer automatiquement la config isolée, inspecter le Dashboard, tester l’absence de production |
+| Hostname cockpit sûr | DNS absent | raccorder `cockpit.levois.fr` à l’environnement attendu et vérifier qu’aucun `pages.dev` ne contourne Access |
+| Routes publiques preview | D1 recherche fictive créée, 0 ligne | revalider `/api/recherche` après push et confirmer le bon UUID |
+| Secrets Cloudflare | non configurés/vérifiés | créer, séparer et faire tourner les secrets ; aucun dans Git |
+| Audits de dépendances | runtime et complet à 0 | conserver le résultat et rejouer après toute modification du lockfile |
+| Sauvegarde/restauration | test fictif validé ; workflow manuel | conserver migrations + export données seules, chiffrer hors Git pour le réel, revalider après chaque migration |
+| D1 de première tentative | base partielle encore présente | supprimer `629bb438-21c7-45e3-8ebc-cf0ef101d80a` après validation explicite |
+| Rate limiting | absent | Access + identité unique limitent l’exposition ; ajouter avant élargissement d’audience |
+| Suppression complète d’un dossier | pas de commande/UI | définir un workflow d’effacement audité avant exploitation durable |
+| Conservation configurable | non implémentée | valider les durées et la revue périodique avant première saisie réelle |
+| Journal des refus | Cloudflare uniquement | limiter l’accès et fixer une conservation |
+| Headers HSTS/TLS | plateforme | vérifier la zone et le hostname après raccordement |
+| Recette mobile/fonctionnelle locale | validée avec fixtures fictives | la rejouer à distance seulement après Access et bindings sûrs |
 
-## Décision go/no-go
+## Go/no-go
 
 ### Autorisé maintenant
 
-- tests automatisés ;
-- build Astro ;
+- installation, audits, tests et build locaux ;
 - démonstration locale avec fixtures fictives ;
-- preview de branche fermée, sans binding de production, si Access et la D1 preview sont validés.
+- commandes directes sur la D1 cockpit preview séparée avec fixtures fictives ;
+- configuration manuelle de Cloudflare Access et tests négatifs/positifs avec les seules fixtures.
 
-### Non autorisé maintenant
+### Interdit maintenant
 
-- saisie des dossiers ou Accords TIM réels ;
-- connexion de `COCKPIT_DB` à une D1 de production ;
-- réutilisation de `RECHERCHE_DB` ;
+- toute saisie de donnée réelle, dont les dossiers et Accords TIM existants ;
+- connexion de la preview à une D1 de production ;
+- ajout d’une `RECHERCHE_DB` de production à l’environnement preview ;
 - déploiement manuel en production ;
-- copie de sauvegarde, export client ou secret dans Git ;
-- ouverture publique temporaire de la preview.
-- saisie de données réelles avant traitement ou acceptation formelle du risque de dépendances Astro 4 signalé par `npm audit`.
+- copie de sauvegarde, JWT, secret, export client ou donnée réelle dans Git ;
+- ouverture publique temporaire du cockpit ;
+- validation de l’environnement tant que le Dashboard expose `levois-recherche` ou que Restrict previews reste désactivé ;
+- démarrage de la Phase 3.
+
+Le passage au statut GO exige simultanément : audit final sans HIGH applicable au runtime, Access/MFA opérationnel, aucune D1 production dans la preview, restauration testée et checklist données réelles entièrement verte.

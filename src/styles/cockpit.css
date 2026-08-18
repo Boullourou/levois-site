@@ -33,9 +33,17 @@
 
 * { box-sizing: border-box; }
 
-html { min-width: 320px; background: var(--cockpit-paper); }
+html {
+  min-width: 320px;
+  background: var(--cockpit-paper);
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
 
-body { min-height: 100vh; margin: 0; background: var(--cockpit-paper); }
+body { min-height: 100vh; margin: 0; background: var(--cockpit-paper); line-height: inherit; }
+
+h1, h2, h3, h4, h5, h6 { margin: 0; font-size: inherit; font-weight: inherit; }
+p { margin: 0; }
 
 button, input, select, textarea { font: inherit; }
 

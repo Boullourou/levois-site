@@ -1,168 +1,205 @@
-# QA du cockpit V1
+# QA cockpit — Phase 2.5
 
-La validation combine tests automatisés, build statique, contrôle Git et recette manuelle dans un environnement fictif.
+La validation combine une installation propre, les tests domaine/BFF, les Pages Functions locales, une non-régression visuelle des parcours publics, la D1 preview fictive et la recette Access distante. **Les tests locaux ne remplacent jamais Cloudflare Access.**
 
-## Commandes automatisées
+## Environnement retenu
 
-Installation propre avec la version npm compatible Cloudflare :
+- Astro : `7.2.3` ;
+- Node cible : `22.23.2` via `.node-version`, moteur minimal `>=22.12.0` ;
+- npm de reproductibilité : `10.9.2` ;
+- Wrangler : `4.124.0` ;
+- D1 cockpit preview créée : `levois-cockpit-preview-phase2-5` (`88539c49-0d41-42df-a3b1-1a269e1acbe3`) ; binding Pages restant à déployer et vérifier ;
+- D1 recherche preview créée : `levois-recherche-preview-phase2-5` (`308c98e9-d484-4fdd-9892-539abb6b0ffd`), schéma présent et 0 ligne ;
+- données : fixtures fictives uniquement.
+
+## Commandes finales obligatoires
 
 ```bash
 npx --yes npm@10.9.2 ci
-```
-
-Suite ciblée cockpit :
-
-```bash
-npm run test:cockpit
-```
-
-Sécurité BFF seule :
-
-```bash
-npm run test:cockpit:security
-```
-
-Régressions du site existant et build :
-
-```bash
+npm audit --omit=dev --json
+npm audit --json
 npm test
+npm run test:cockpit
+npm run test:cockpit:security
 npm run test:market
 npm run build
 git diff --check
 ```
 
-## Couverture automatisée présente
+Résultats finaux observés sur Astro 7.2.3 après réinstallation propre :
 
-### Domaine et validation
+| Contrôle | Résultat final |
+|---|---|
+| `npx --yes npm@10.9.2 ci` | OK, 0 vulnérabilité annoncée |
+| `npm audit --omit=dev --json` | 0 vulnérabilité |
+| `npm audit --json` | 0 vulnérabilité |
+| `npm test` | 96/96, 13 fichiers |
+| `npm run test:cockpit` | 55/55, 6 fichiers |
+| `npm run test:cockpit:security` | 16/16, 2 fichiers |
+| `npm run test:market` | 6/6 |
+| `npm run build` | OK, 33 pages |
+| `git diff --check` | OK ; relancé avant le handoff final |
 
-- catalogue fermé des critères ;
-- cohérence des stades acheteur/vendeur ;
-- achat et vente liés modélisés en deux projets ;
-- règle complète de contrainte dure ;
-- `to_confirm` valide mais jamais bloquant ;
-- critère textuel contrôlé ;
-- rôles TIM et répartitions non codées comme automatisme ;
-- location sans allocation automatique ;
-- confirmation explicite et total des allocations ;
-- indépendance des axes TIM ;
-- unités mineures, points de base, paiement partiel, ajustement et remboursement traçable.
+Les détails et la classification des advisories historiques sont dans [`../security/ASTRO_AUDIT_2026-08.md`](../security/ASTRO_AUDIT_2026-08.md).
 
-### Base et services
+## Migration Astro par paliers
 
-- application des six migrations sur une base vide ;
+La mise à niveau n’a pas été réalisée en un saut aveugle :
+
+| Palier | Version | Tests/build | Décision |
+|---|---:|---|---|
+| baseline | Astro 4.16.19 | suites historiques, Pages Functions et captures établies | vulnérabilités applicables ; migration nécessaire |
+| palier 1 | Astro 5.18.2 | 93/93, cockpit 52/52, sécurité 13/13, market 6/6, build 33 pages | techniquement compatible mais vulnérabilités restantes |
+| palier 2 | Astro 6.4.8 | mêmes suites vertes ; migration Tailwind/Vite validée | branche Astro non maintenue et vulnérabilité `sharp` restante |
+| final | Astro 7.2.3 | 96/96, cockpit 55/55, sécurité 16/16, market 6/6, build 33 pages | version retenue, audits production et complet à 0 |
+
+Le passage Astro 6 a remplacé l’intégration Tailwind dépréciée par `@tailwindcss/vite`. La normalisation typographique explicite du cockpit a restauré la baseline sans modifier la direction artistique.
+
+## Couverture automatisée
+
+### Domaine, base et services
+
+- application des migrations 0001–0006 sur une base vide ;
 - exactement 22 tables métier et aucune erreur de clé étrangère ;
-- fixtures uniquement fictives ;
-- exclusion d’un contact uniquement TIM de la liste Clients ;
-- création atomique et idempotente personne + projet + recherche + tâche ;
-- projet actif sans tâche exposé comme anomalie, puis résolu ;
-- conflit de concurrence optimiste sans deuxième écriture ;
-- historique d’un critère conservé ;
-- compensation liée à l’ancienne version des termes ;
-- retry de paiement sans duplication.
+- création atomique/idempotente personne + projet + recherche + tâche ;
+- projet et Accord TIM actifs sans prochaine action visibles comme anomalies ;
+- interactions, critères append-only et révisions sans perte d’historique ;
+- `to_confirm` jamais bloquant ;
+- concurrence optimiste ;
+- exclusion Clients d’un contact uniquement TIM ;
+- vente 20/80 avec confirmation explicite ;
+- location sans allocation automatique ;
+- trois axes TIM indépendants ;
+- termes versionnés, compensation liée à sa version ;
+- paiements partiels/multiples et retry sans duplication.
 
-### Sécurité et BFF
+### Sécurité et export
 
 - refus fermé sans Access ;
-- bypass accepté uniquement en local avec variable explicite ;
-- JWT signé, issuer/audience et identité allowlistée ;
-- origine étrangère refusée avant D1 ;
-- jeton CSRF HMAC à durée courte ;
-- headers privés/no-store/noindex ;
-- erreur D1 distincte d’une file vide.
+- bypass seulement sur localhost avec variable explicite ;
+- JWT falsifié, mauvais issuer, mauvaise audience, `exp`/`nbf` absents ou invalides et identité non autorisée refusés ;
+- API protégée directement ;
+- Origin/CSRF/content type ;
+- headers `private`, `no-store`, `noindex` ;
+- erreur D1 distincte d’un état vide ;
+- export Markdown avec/sans coordonnées, périmètre d’un dossier, échappement et absence d’URL permanente.
 
-### Export Markdown
+## Pages Functions locales
 
-- front matter et identifiants stables ;
-- historique du dossier ;
-- deux modes de coordonnées ;
-- absence de données d’un autre dossier ;
-- échappement du HTML et des caractères Markdown dangereux ;
-- refus d’une date ou d’un identifiant invalide.
+Après build, lancer Wrangler avec l’état local fictif. Vérifier au minimum :
 
-## Recette manuelle
+- `/api/cockpit/session` : `200` uniquement avec le bypass local explicite ;
+- `/api/cockpit/today` : `200`, données fictives et headers privés ;
+- `/api/lead` et `/api/recherche` en `GET` : `405`, comportement public inchangé ;
+- aucun contenu fixture dans le HTML statique du cockpit ;
+- aucune analytics/PostHog dans le cockpit.
 
-Toujours utiliser la fixture ou des identités explicitement fictives.
+Résultat final Astro 7 / Wrangler 4.124.0 : **validé en local**. Session et file « Aujourd’hui » répondent avec les headers privés attendus ; les routes publiques conservent leur garde de méthode. Cette preuve locale ne remplace pas la revalidation des deux bindings après le push.
 
-### A — Dossier acquéreur
+## Non-régression visuelle
 
-1. Ouvrir `/cockpit/clients/nouveau`.
-2. Créer une personne fictive et un projet d’achat actif.
-3. Saisir une synthèse de recherche et ouvrir plusieurs scénarios.
-4. Ajouter une prochaine action.
-5. Vérifier sa présence dans « Aujourd’hui ».
-6. Ouvrir la fiche, ajouter un appel puis un critère `to_confirm`.
-7. Réviser le critère et vérifier que les deux événements restent dans l’historique.
-8. Exporter avec coordonnées, puis sans coordonnées ; comparer les fichiers.
+Routes capturées à chaque palier :
 
-### B — Absence de prochaine action
+- `/` ;
+- `/ma-recherche` ;
+- `/situer-ma-vente` ;
+- `/audit-annonce` ;
+- `/votre-rue` ;
+- `/recommander` ;
+- `/rejoindre` ;
+- `/cockpit/` avec fixtures fictives.
 
-1. Créer un projet actif sans tâche en cochant la confirmation explicite.
-2. Vérifier l’anomalie dans « Aujourd’hui ».
-3. Ajouter une tâche marquée prochaine action.
-4. Recharger « Aujourd’hui » et vérifier la disparition de l’anomalie.
+Viewports : desktop `1440 × 1000` et mobile `390 × 844`. Chaque capture vérifie aussi l’absence de débordement horizontal.
 
-### C — Accord TIM vente
+| Série | Répertoire | État |
+|---|---|---|
+| avant migration | `docs/security/screenshots/astro4-baseline/` | 16 captures présentes |
+| Astro 5 | `docs/security/screenshots/astro5/` | 16 captures présentes |
+| Astro 6 | `docs/security/screenshots/astro6/` | 16 captures présentes |
+| Astro 7 final | `docs/security/screenshots/astro7-final/` | 16 captures présentes |
 
-1. Charger les profils conseillers fictifs.
-2. Créer un accord vente « envoi d’information ».
-3. Cliquer volontairement sur la suggestion 20/80, puis confirmer les termes.
-4. Faire évoluer l’état de l’accord et l’état de l’opération séparément.
-5. Vérifier que l’état de rémunération n’a pas suivi automatiquement.
-6. Enregistrer une estimation puis une somme due.
-7. Enregistrer un paiement partiel, recharger et vérifier le solde.
-8. Réessayer la même requête avec la même clé d’idempotence et vérifier l’absence de doublon.
-9. Vérifier la prochaine action dans « Aujourd’hui ».
+Les écarts publics observés proviennent des animations continues ; aucun changement de layout ou débordement n’a été relevé. Deltas Astro 4 → Astro 7 avec seuil de différence par canal `> 30` :
 
-### D — Accord TIM location
+| Route | Desktop | Mobile |
+|---|---:|---:|
+| `/audit-annonce` | 0,387 % | 0,178 % |
+| `/cockpit/` | 0,018 % | 0 % |
+| `/` | 0,081 % | 0,123 % |
+| `/ma-recherche` | 0,271 % | 0,144 % |
+| `/recommander` | 0 % | 0 % |
+| `/rejoindre` | 0,186 % | 0 % |
+| `/situer-ma-vente` | 0 % | 0 % |
+| `/votre-rue` | 0,006 % | 0,023 % |
 
-1. Créer une opération `rental` de type `custom`.
-2. Vérifier que les deux champs de pourcentage sont vides et qu’aucune suggestion n’est affichée.
-3. Conserver le fait générateur à `unknown` ou saisir des termes manuels.
-4. Ne créer aucune rémunération due sans conditions confirmées.
-5. Faire évoluer uniquement l’opération et vérifier les deux autres axes.
+Ces valeurs faibles et localisées ont été inspectées ; aucune régression visuelle fonctionnelle n’a été retenue.
 
-### E — Mobile et accessibilité
+## Recette fonctionnelle fictive finale
 
-Tester A et C sur une viewport de `390 × 844` :
+Rejouer sur la base locale ou preview isolée :
 
-- sans zoom ni débordement horizontal ;
-- navigation basse utilisable à une main ;
-- cibles tactiles d’au moins 44 px ;
-- focus visible au clavier ;
-- dialogues et formulaires longs utilisables lorsque le clavier virtuel est ouvert ;
-- boutons Copier/Télécharger accessibles ;
-- préférence `prefers-reduced-motion` respectée.
+### Client
 
-Faire également un passage desktop représentatif.
+1. créer une personne et un projet fictifs ;
+2. ajouter une recherche, plusieurs critères et une prochaine action ;
+3. retrouver l’action dans « Aujourd’hui » ;
+4. ajouter une interaction ;
+5. réviser un critère et vérifier les deux événements ;
+6. exporter Markdown avec puis sans coordonnées.
 
-## États d’erreur
+### Accord TIM
 
-Vérifier séparément :
+1. créer une vente fictive 20/80 et confirmer les allocations ;
+2. faire évoluer l’opération sans changer les autres axes ;
+3. enregistrer estimation, montant dû et paiement partiel ;
+4. vérifier le solde et la prochaine action dans « Aujourd’hui » ;
+5. créer une location fictive custom et confirmer qu’aucune allocation/fait générateur n’est automatique.
 
-- résultat vide : message calme et action proposée ;
-- `COCKPIT_DB` absent : message « Données indisponibles », jamais une journée vide ;
-- session Access absente/expirée : refus, jamais le shell avec données ;
-- conflit de version : message de conflit et aucune écriture concurrente ;
-- problème réseau : bouton Réessayer.
+### Mobile `390 × 844`
 
-## Contrôles de confidentialité
+- navigation sans zoom/débordement ;
+- formulaires, création de tâche, mise à jour TIM et export accessibles ;
+- clavier affiché sans action principale masquée ;
+- cibles tactiles d’au moins 44 px, focus visible et reduced motion.
 
-Après `npm run build` :
+Résultat de la recette finale : **validée avec les seules données fictives**. Les parcours Client et TIM, la file « Aujourd’hui », l’historique, l’export Markdown et le viewport mobile `390 × 844` ont été rejoués sans action inaccessible ni débordement.
+
+## D1 preview, binding Pages et restauration
+
+Contrôles déjà validés sur la base D1 `levois-cockpit-preview-phase2-5` elle-même :
+
+- migrations exactes 0001–0006 ;
+- `PRAGMA foreign_key_check` sans résultat ;
+- `person=3`, `project=2`, `tim_agreement=2`, `lab_observation=1` ;
+- configuration Git préparée avec `COCKPIT_DB` fictive et `RECHERCHE_DB` preview vide, toutes deux non-production.
+
+La configuration Git cible maintenant aussi `RECHERCHE_DB → levois-recherche-preview-phase2-5` (`308c98e9-d484-4fdd-9892-539abb6b0ffd`). `lectures_recherche` y existe, contient 0 ligne et la vérification d’intégrité est vide.
+
+Constat du Dashboard Pages avant push : **la preview distante contient encore seulement `RECHERCHE_DB → levois-recherche`, sans `COCKPIT_DB`**. La séparation de l’environnement Pages n’est donc pas validée et le gate « aucune D1 production dans la preview » est rouge. Après le déploiement Git automatique, il faut inspecter les bindings distants et prouver l’absence de toute D1 de production.
+
+Le risque de retirer `RECHERCHE_DB` aux routes publiques est donc traité sans production. Il faut encore vérifier, après le déploiement automatique, que Pages utilise effectivement les deux UUID non-production et rejouer `/api/recherche`.
+
+Test d’export/restauration sur `levois-cockpit-restore-test-phase2-5-v2` : **validé**. Les deux bases présentent 6 migrations, 26 triggers, aucune erreur de clé étrangère et les mêmes comptages logiques (`3/2/1/11/2/2/2/0/1` pour personnes, projets, recherches, critères, conseillers, accords, allocations, paiements et observations Lab). Le snapshot complet n’étant pas directement importable à cause de l’ordre des triggers, la procédure validée reconstruit le schéma par migrations puis importe un export données seules entre dépose/recréation contrôlée des triggers. Voir [OPERATIONS.md](./OPERATIONS.md).
+
+## Recette Cloudflare Access — bloquante
+
+État : **NON OPÉRATIONNEL — onboarding Zero Trust partiel, aucun plan/app/policy/AUD/MFA/DNS ; previews encore publiques. Fail closed est activé.**
+
+Les cas cryptographiques, y compris JWT falsifié et `nbf` absent/futur, sont couverts par les 16 tests sécurité. Les sept cas Access distants restent impossibles sans application et identité MFA réelles. Restrict previews reste à activer. Voir [ACCESS_SETUP.md](./ACCESS_SETUP.md).
+
+## Contrôles de confidentialité après build
 
 ```bash
 rg -n "posthog|analytics" dist/cockpit
 rg -n "Cf-Access-Jwt-Assertion|COCKPIT_CSRF_SECRET|COCKPIT_AUDIT_SECRET" dist/cockpit
 ```
 
-Les deux commandes ne doivent révéler ni analytics actif ni secret dans le HTML/JavaScript statique. Inspecter aussi l’onglet Réseau : les données viennent uniquement de `/api/cockpit/*` après authentification.
+Ces recherches ne doivent révéler ni analytics actif, ni secret, ni donnée fictive ou réelle dans le HTML/JavaScript statique. Inspecter aussi l’onglet Réseau : les données doivent venir uniquement de `/api/cockpit/*` après authentification.
 
-## Validation locale Pages Functions
+## Gate final
 
-La procédure Windows a été exécutée avec succès : migrations Wrangler sur base vide, chargement des fixtures fictives, démarrage de `wrangler pages dev`, lecture du BFF et navigation réelle. `npm run test:cockpit` rejoue en parallèle le schéma et les services avec `node:sqlite` en mémoire. Cette double vérification ne remplace pas la recette Cloudflare Access de la future preview, qui reste obligatoire avant toute donnée réelle.
+Même si toutes les suites locales passent, le résultat reste **NO-GO données réelles** tant que :
 
-## Captures de la recette locale
-
-- [Aujourd’hui — desktop](./screenshots/cockpit-desktop.png)
-- [Accord TIM fictif — mobile 390 × 844](./screenshots/cockpit-mobile.png)
-
-Ces captures contiennent exclusivement les fixtures fictives de la base locale. Elles ne prouvent pas la configuration Cloudflare Access distante, qui demeure un contrôle séparé et bloquant avant toute donnée réelle.
+- Access/MFA n’est pas opérationnel et testé sur le hostname réel ;
+- le binding de production n’est pas encore retiré du Dashboard Pages déployé ;
+- la restauration fictive séparée n’est pas prouvée ;
+- [REAL_DATA_CHECKLIST.md](./REAL_DATA_CHECKLIST.md) n’est pas entièrement verte.

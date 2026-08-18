@@ -76,7 +76,7 @@ export async function verifyAccessToken(
     issuer,
     audience,
     algorithms: ["RS256"],
-    requiredClaims: ["exp", "sub"],
+    requiredClaims: ["exp", "nbf", "sub"],
     clockTolerance: 5,
   });
   return result.payload;
