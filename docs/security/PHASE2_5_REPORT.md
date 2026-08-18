@@ -8,7 +8,7 @@ Point de départ : `7b975733dbf63676858b7114269a8c2641e1d49b`
 
 **NO-GO données réelles.**
 
-La migration de dépendances et les deux D1 preview non-production sont prêtes. La séparation du binding Pages n’est toutefois pas encore effective : le Dashboard Preview montre toujours `RECHERCHE_DB → levois-recherche` jusqu’au prochain push. Fail closed est activé, mais les previews restent publiques. L’onboarding Zero Trust est partiel et aucun plan/app/policy/AUD/MFA/DNS cockpit n’est actif. Access demeure non opérationnel ; aucune preview ne peut être déclarée sûre pour des données réelles.
+La migration de dépendances est validée. Le déploiement automatique `8a8426a0-44c4-4fe4-9dda-4cb2cf3d8931` refuse les requêtes anonymes par redirect Access et Fail closed est actif. La configuration Pages téléchargée confirme les deux D1 non-production en Preview/default et seulement `RECHERCHE_DB` production sous `env.production` : la séparation D1 distante est verte. Policy exacte, allow Mouaad, MFA, login positif, AUD/issuer BFF, secrets et DNS cockpit restent non validés ; **NO-GO données réelles**.
 
 Aucune donnée réelle n’a été ajoutée pendant la Phase 2.5. Aucun déploiement manuel de production, migration de D1 production ou changement fonctionnel des parcours publics n’a été effectué.
 
@@ -97,7 +97,7 @@ Base créée :
 - nom : `levois-cockpit-preview-phase2-5` ;
 - UUID : `88539c49-0d41-42df-a3b1-1a269e1acbe3` ;
 - région : WEUR ;
-- binding cible préparé dans Git : `COCKPIT_DB` sous `env.preview`, non encore observé dans Pages.
+- binding Preview/default confirmé après push : `COCKPIT_DB`.
 
 Contrôles réalisés :
 
@@ -114,9 +114,7 @@ Une seconde D1 non-production maintient les routes publiques de preview :
 - binding cible : `RECHERCHE_DB` sous `env.preview` ;
 - état : schéma `lectures_recherche` présent, 0 ligne et aucune erreur d’intégrité.
 
-Constat Pages distant avant push : Preview contient encore uniquement `RECHERCHE_DB → levois-recherche`, sans `COCKPIT_DB`. Le gate d’isolation distante est donc **rouge**. Après le déploiement Git automatique, il faut inspecter le Dashboard et prouver qu’aucune D1 de production n’est accessible.
-
-La configuration Git cible donc les deux UUID non-production et préserve le schéma de `/api/recherche`. Elle doit encore être confirmée dans le Dashboard après le déploiement automatique ; l’ancien binding production interdit toujours le GO.
+La configuration Pages téléchargée à 22:48 confirme Preview/default avec `COCKPIT_DB` `88539c49…` et `RECHERCHE_DB` `308c98e9…`. `env.production` contient seulement `RECHERCHE_DB` `077d24f8…`. La séparation D1 est **verte**. `/api/recherche` après login reste à tester ; sans cookie, Access répond `302` avant la Function.
 
 ## 6. Cloudflare Access
 
@@ -125,18 +123,18 @@ La configuration Git cible donc les deux UUID non-production et préserve le sch
 Constats :
 
 - onboarding Cloudflare Zero Trust commencé, mais aucun plan actif ;
-- les previews Pages sont publiques et l’action « Restrict previews » n’est pas activée ;
+- la preview hash refuse bien l’accès anonyme par `302` vers le team domain ;
 - le mode Preview est **Fail closed** ;
 - le DNS `cockpit.levois.fr` est absent ;
 - aucune application Access self-hosted vérifiée pour `cockpit.levois.fr` ;
 - aucune audience dédiée ;
 - aucune politique Mouaad-only + MFA prouvée ;
 - variables/secrets Access distants non validés ;
-- sept tests distants non exécutables dans cet état.
+- policy exacte, allow Mouaad, MFA et login positif non testés.
 
 La procédure deny-by-default, MFA, audience/issuer, variables, hostname et tests se trouve dans [`../cockpit/ACCESS_SETUP.md`](../cockpit/ACCESS_SETUP.md).
 
-URL cockpit sûre : **aucune à ce stade**. Fail closed est vert, mais une URL de preview automatiquement créée ne doit pas être présentée comme sûre tant que Restrict previews, Access et les bindings distants ne sont pas tous validés.
+Preview protégée en bordure : `https://8a8426a0.levois-site.pages.dev` (HEAD déployé `4b78eed3…`). Elle n’est pas une URL cockpit utilisable ou autorisée pour des données réelles tant que la policy, Mouaad, le MFA, le login positif, l’AUD/issuer, les secrets BFF et le DNS ne sont pas validés.
 
 ## 7. Sauvegarde/restauration
 
@@ -170,7 +168,7 @@ La checklist se trouve dans [`../cockpit/REAL_DATA_CHECKLIST.md`](../cockpit/REA
 - la vérification Git/logs/captures ;
 - la décision GO signée par Mouaad.
 
-État actuel : **non verte**. La restauration fictive, les audits et la recette locale sont prouvés. Il faut encore retirer effectivement le binding production après push, activer Restrict previews et Access, créer une D1 destinée aux données réelles et définir la sauvegarde réelle, l’effacement et la conservation.
+État actuel : **non verte**. La restauration fictive, les audits, la recette locale, le refus anonyme et la séparation D1 distante sont prouvés. Il faut encore valider Access de bout en bout, créer une D1 destinée aux données réelles et définir la sauvegarde réelle, l’effacement et la conservation.
 
 ## 9. SHA et livraison
 
@@ -178,7 +176,7 @@ La checklist se trouve dans [`../cockpit/REAL_DATA_CHECKLIST.md`](../cockpit/REA
 |---|---|
 | SHA final | transmis dans le handoff final après commit/push, non figé dans ce document |
 | branche cible | `codex/levois-phase2-5-security-access` |
-| preview automatique | transmise dans le handoff final après push ; elle ne vaut pas URL cockpit sûre sans Access |
+| preview automatique | `https://8a8426a0.levois-site.pages.dev`, protégée anonymement mais non autorisée aux données réelles |
 | statut Git final | transmis dans le handoff final après commit/push |
 
 Aucun merge vers `main`, aucun force-push et aucun déploiement manuel de production ne sont autorisés.
@@ -186,9 +184,8 @@ Aucun merge vers `main`, aucun force-push et aucun déploiement manuel de produc
 ## 10. Limites restantes
 
 - Access/MFA et hostname privé non opérationnels ;
-- onboarding Zero Trust sans plan actif, previews publiques malgré Fail closed et DNS cockpit absent ;
-- binding Pages Preview encore relié à `levois-recherche` ;
-- bindings non-production préparés pour le cockpit et `/api/recherche`, mais non encore observés après déploiement ;
+- onboarding Zero Trust sans plan actif, policy exacte/MFA/login positif non validés et DNS cockpit absent ;
+- `/api/recherche` protégé anonymement mais non testé après login ;
 - aucune D1 cockpit de données réelles créée ;
 - restauration distante fictive validée mais workflow manuel à revalider après toute migration ;
 - première D1 de restauration partielle à supprimer après validation explicite ;
@@ -196,10 +193,10 @@ Aucun merge vers `main`, aucun force-push et aucun déploiement manuel de produc
 - conservation et durée des sauvegardes non validées ;
 - rate limiting cockpit non implémenté ;
 - logs d’échecs d’authentification gérés par Cloudflare uniquement ;
-- inspection des bindings et recette distante à effectuer après push.
+- recette Access authentifiée et configuration des secrets BFF encore à effectuer.
 
 ## Conclusion
 
-La base technique peut continuer à être testée localement et directement sur la D1 fictive. La migration Astro élimine les vulnérabilités observées et Fail closed est actif, mais la séparation Pages preview/production n’est pas encore démontrée. Sans retrait du binding de production, Restrict previews et Cloudflare Access opérationnel/testé, **STOP — ne pas autoriser les données réelles**.
+La migration Astro, Fail closed, le refus anonyme et la séparation Pages preview/production sont démontrés. Cloudflare Access n’est toutefois pas validé de bout en bout. Sans policy Mouaad-only, MFA, login positif, AUD/issuer, secrets BFF et DNS cockpit vérifiés, **STOP — ne pas autoriser les données réelles**.
 
 La Phase 3 n’est pas commencée.

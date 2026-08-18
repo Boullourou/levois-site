@@ -1,6 +1,6 @@
 # Checklist avant toute donnée réelle
 
-> **Statut au 18 août 2026 : NO-GO.** Cette checklist n’est pas entièrement verte. Fail closed est activé, les audits et la recette locale sont verts, mais Cloudflare Access, Restrict previews, le hostname privé, le retrait effectif du binding D1 de production dans Pages, la base destinée aux données réelles et les règles de conservation/effacement restent à valider. Aucun dossier réel et aucun Accord TIM réel ne doit être saisi dans le cockpit, la preview, les fixtures ou Git.
+> **Statut au 18 août 2026 : NO-GO.** Fail closed, le refus anonyme de la preview hash et la séparation D1 distante sont verts. La politique Access exacte, l’allowlist Mouaad, le MFA, le login positif, l’AUD/issuer, les secrets BFF, le DNS privé, la base destinée aux données réelles et les règles de conservation/effacement restent à valider. Aucun dossier réel et aucun Accord TIM réel ne doit être saisi.
 
 Chaque case doit être cochée avec une preuve datée, sans secret ni donnée personnelle. Une case « non applicable » exige une justification écrite approuvée par Mouaad ; elle ne doit pas être simplement ignorée.
 
@@ -54,25 +54,25 @@ Une fois tous les gates verts, la V1 pourra stocker uniquement ce qui est néces
 
 ## 3. Cloudflare Access et hostname
 
-- [ ] Organisation Cloudflare Zero Trust initialisée.
+- [ ] Plan Zero Trust actif et onboarding finalisé.
 - [ ] Cloudflare Independent MFA, ou fournisseur d’identité équivalent, configuré avec MFA obligatoire pour Mouaad.
 - [x] Pages Preview réglé sur **Fail closed**.
-- [ ] « Restrict previews » activé.
+- [x] Preview hash protégée en bordure : `302` Access sans cookie sur `/`, `/cockpit/`, `/api/cockpit/session` et `/api/recherche`.
 - [ ] Application self-hosted couvrant l’hôte entier `cockpit.levois.fr`.
 - [ ] Politique Allow limitée à l’unique identité de Mouaad avec condition MFA.
 - [ ] Aucune politique Bypass, Service Auth ou Everyone autorisante.
 - [ ] Audience dédiée et Team Domain relevés depuis Cloudflare, sans les placer dans Git.
 - [ ] `CF_ACCESS_TEAM_DOMAIN`, `CF_ACCESS_AUD`, `COCKPIT_ALLOWED_HOSTS`, `COCKPIT_ALLOWED_EMAIL`, `COCKPIT_ALLOWED_SUB`, `COCKPIT_CSRF_SECRET` et `COCKPIT_AUDIT_SECRET` configurés dans le bon environnement.
 - [ ] `COCKPIT_LOCAL_BYPASS` absent de tout environnement distant.
-- [ ] Sans Access : refus avant toute donnée.
-- [ ] JWT falsifié : refus.
-- [ ] Mauvaise audience : refus.
-- [ ] Mauvais issuer : refus.
+- [x] Sans cookie Access sur la preview hash : refus avant toute donnée.
+- [x] Tests applicatifs : JWT falsifié refusé.
+- [x] Tests applicatifs : mauvaise audience refusée.
+- [x] Tests applicatifs : mauvais issuer refusé.
 - [x] Tests applicatifs : `nbf` absent ou futur refusé.
 - [ ] JWT Access réel : présence de `nbf` confirmée après création de l’application.
 - [ ] Utilisateur non autorisé : refus.
 - [ ] Mouaad + MFA + JWT valide : accès.
-- [ ] API appelée directement sans JWT : refus.
+- [x] API appelée directement sans cookie sur la preview hash : redirect Access.
 - [ ] `/cockpit/*` et `/api/cockpit/*` appelés sur le domaine public LEVOIS : refus.
 - [ ] Aucun autre hostname, y compris une URL `pages.dev`, ne contourne la protection.
 
@@ -84,13 +84,14 @@ Une fois tous les gates verts, la V1 pourra stocker uniquement ce qui est néces
 - [x] Migrations 0001–0006 seules appliquées à la preview.
 - [x] Preview limitée aux fixtures fictives ; aucune donnée de production.
 - [x] `PRAGMA foreign_key_check` sans anomalie sur la preview.
-- [ ] Dashboard Pages après déploiement : `COCKPIT_DB` pointe sur l’UUID attendu.
-- [ ] Dashboard Pages après déploiement : aucun binding ne pointe sur `levois-recherche` ou une autre D1 de production. État actuel : **rouge**, `RECHERCHE_DB → levois-recherche` est encore présent.
+- [x] Configuration Pages téléchargée : Preview/default `COCKPIT_DB` pointe sur `88539c49-0d41-42df-a3b1-1a269e1acbe3`.
+- [x] Configuration Pages téléchargée : Preview/default `RECHERCHE_DB` pointe sur `308c98e9-d484-4fdd-9892-539abb6b0ffd`, aucune D1 production.
+- [x] Configuration Pages téléchargée : `env.production` contient seulement `RECHERCHE_DB` production et aucun `COCKPIT_DB`.
 - [x] `/api/recherche` conserve un binding de schéma via la D1 fictive séparée, sans accès production.
-- [ ] Après push, `/api/recherche` rejoué sur la preview et absence de donnée production confirmée.
+- [ ] `/api/recherche` rejoué après un login Access valide ; le test anonyme s’arrête au `302`.
 - [ ] Une D1 distincte destinée aux données réelles a été créée seulement après autorisation explicite, sans réutiliser la preview ni `RECHERCHE_DB`.
 - [ ] Le binding de cette D1 réelle est limité à l’environnement privé attendu et relu par deux contrôles indépendants.
-- [ ] Aucun binding de production n’est accessible depuis une preview.
+- [x] Aucun binding de production n’est exposé à Preview/default selon la configuration Pages téléchargée.
 
 La D1 preview de Phase 2.5 ne doit jamais devenir une base réelle par simple changement d’étiquette.
 
@@ -156,7 +157,7 @@ Décision encore requise : la Phase 2 ne possède ni commande de suppression com
 | Champ | Valeur |
 |---|---|
 | Décision actuelle | **NO-GO données réelles** |
-| Raisons bloquantes | plan/app/policy/AUD/MFA/DNS Access absents ; Preview publique malgré Fail closed ; ancien binding D1 production encore présent jusqu’au push ; D1 réelle non créée ; politique de sauvegarde réelle à valider ; conservation/effacement non validés |
+| Raisons bloquantes | plan/policy exacte/allow Mouaad/MFA/login positif/AUD/issuer/secrets/DNS non validés ; D1 réelle non créée ; politique de sauvegarde réelle à valider ; conservation/effacement non validés |
 | Décideur | Mouaad |
 | Date de future revue | non fixée tant qu’Access n’est pas activable |
 | Preuve de validation | à produire dans le handoff d’un futur GO, hors donnée personnelle et hors secret |

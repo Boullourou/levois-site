@@ -1,8 +1,8 @@
 # Exploitation du cockpit
 
-Ce runbook couvre le développement local et les D1 de preview **fictives**. Il n’autorise aucune opération sur une base de production ni aucune saisie réelle. Au 18 août 2026, Pages Preview est en Fail closed, mais Cloudflare Access n’est pas opérationnel et le Dashboard distant conserve encore l’ancien binding `RECHERCHE_DB` de production jusqu’au prochain push. Le cockpit reste **NO-GO données réelles**.
+Ce runbook couvre le développement local et les D1 de preview **fictives**. Il n’autorise aucune opération sur une base de production ni aucune saisie réelle. Au 18 août 2026, Fail closed, le refus anonyme Access et la séparation distante des D1 sont prouvés. La policy Mouaad-only, le MFA, le login positif, l’AUD/issuer BFF, les secrets et le DNS cockpit restent non validés : **NO-GO données réelles**.
 
-Les D1 `levois-cockpit-preview-phase2-5` et `levois-recherche-preview-phase2-5` sont isolées et sans donnée réelle, mais elles ne sont pas encore les bindings effectivement observés dans Pages. Les commandes de sauvegarde ci-dessous ciblent la base cockpit par son nom exact et ne valent pas validation de l’environnement Pages.
+Les D1 `levois-cockpit-preview-phase2-5` et `levois-recherche-preview-phase2-5` sont les bindings Preview/default confirmés par la configuration Pages téléchargée. Les commandes de sauvegarde ci-dessous ciblent la base cockpit par son nom exact.
 
 ## Démarrage quotidien local
 

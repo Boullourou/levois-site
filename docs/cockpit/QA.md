@@ -174,17 +174,17 @@ Contrôles déjà validés sur la base D1 `levois-cockpit-preview-phase2-5` elle
 
 La configuration Git cible maintenant aussi `RECHERCHE_DB → levois-recherche-preview-phase2-5` (`308c98e9-d484-4fdd-9892-539abb6b0ffd`). `lectures_recherche` y existe, contient 0 ligne et la vérification d’intégrité est vide.
 
-Constat du Dashboard Pages avant push : **la preview distante contient encore seulement `RECHERCHE_DB → levois-recherche`, sans `COCKPIT_DB`**. La séparation de l’environnement Pages n’est donc pas validée et le gate « aucune D1 production dans la preview » est rouge. Après le déploiement Git automatique, il faut inspecter les bindings distants et prouver l’absence de toute D1 de production.
+Après le déploiement automatique `8a8426a0-44c4-4fe4-9dda-4cb2cf3d8931`, la configuration Pages téléchargée confirme Preview/default avec les deux UUID non-production. `env.production` contient seulement `RECHERCHE_DB` production et aucun `COCKPIT_DB`. Le gate de séparation D1 distante est vert.
 
-Le risque de retirer `RECHERCHE_DB` aux routes publiques est donc traité sans production. Il faut encore vérifier, après le déploiement automatique, que Pages utilise effectivement les deux UUID non-production et rejouer `/api/recherche`.
+Le risque de retirer `RECHERCHE_DB` aux routes publiques est traité sans production. `/api/recherche` sans cookie retourne `302` Access ; son exécution après login reste à tester.
 
 Test d’export/restauration sur `levois-cockpit-restore-test-phase2-5-v2` : **validé**. Les deux bases présentent 6 migrations, 26 triggers, aucune erreur de clé étrangère et les mêmes comptages logiques (`3/2/1/11/2/2/2/0/1` pour personnes, projets, recherches, critères, conseillers, accords, allocations, paiements et observations Lab). Le snapshot complet n’étant pas directement importable à cause de l’ordre des triggers, la procédure validée reconstruit le schéma par migrations puis importe un export données seules entre dépose/recréation contrôlée des triggers. Voir [OPERATIONS.md](./OPERATIONS.md).
 
 ## Recette Cloudflare Access — bloquante
 
-État : **NON OPÉRATIONNEL — onboarding Zero Trust partiel, aucun plan/app/policy/AUD/MFA/DNS ; previews encore publiques. Fail closed est activé.**
+État : **REFUS ANONYME ACTIF, GO RÉEL BLOQUÉ.** Fail closed est actif et la preview hash retourne `302` Access sur les quatre routes contrôlées. Policy exacte, allow Mouaad, MFA, login positif, AUD/issuer BFF, secrets et DNS cockpit restent non validés.
 
-Les cas cryptographiques, y compris JWT falsifié et `nbf` absent/futur, sont couverts par les 16 tests sécurité. Les sept cas Access distants restent impossibles sans application et identité MFA réelles. Restrict previews reste à activer. Voir [ACCESS_SETUP.md](./ACCESS_SETUP.md).
+Les cas cryptographiques, y compris JWT falsifié et `nbf` absent/futur, sont couverts par les 16 tests sécurité. Le refus anonyme distant est prouvé ; les tests d’identité non autorisée et Mouaad + MFA restent impossibles sans politique et login positifs validés. Voir [ACCESS_SETUP.md](./ACCESS_SETUP.md).
 
 ## Contrôles de confidentialité après build
 
@@ -199,7 +199,6 @@ Ces recherches ne doivent révéler ni analytics actif, ni secret, ni donnée fi
 
 Même si toutes les suites locales passent, le résultat reste **NO-GO données réelles** tant que :
 
-- Access/MFA n’est pas opérationnel et testé sur le hostname réel ;
-- le binding de production n’est pas encore retiré du Dashboard Pages déployé ;
+- policy Access, allow Mouaad, MFA, login positif, AUD/issuer et secrets BFF ne sont pas validés ;
 - la restauration fictive séparée n’est pas prouvée ;
 - [REAL_DATA_CHECKLIST.md](./REAL_DATA_CHECKLIST.md) n’est pas entièrement verte.

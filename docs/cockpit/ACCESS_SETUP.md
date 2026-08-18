@@ -1,6 +1,6 @@
 # Cloudflare Access — configuration du cockpit
 
-> **État au 18 août 2026 : BLOQUANT.** Pages Preview est désormais réglé sur **Fail closed**, mais les previews restent publiques. L’onboarding Zero Trust est seulement partiel : aucun plan actif, aucune application/politique/AUD/MFA, et aucun DNS `cockpit.levois.fr`. **Aucune donnée réelle ne doit être saisie tant que toute la recette distante de ce document n’est pas verte.**
+> **État au 18 août 2026 : PROTECTION ANONYME PROUVÉE, GO RÉEL BLOQUÉ.** Pages Preview est en **Fail closed** et le déploiement hash `https://8a8426a0.levois-site.pages.dev` redirige toute requête sans cookie vers Cloudflare Access. La politique exacte, l’allowlist Mouaad, le MFA, le login positif, l’AUD/issuer applicatifs, les secrets BFF et le DNS `cockpit.levois.fr` ne sont pas validés. **Aucune donnée réelle ne doit être saisie.**
 
 La cible est une application Access self-hosted couvrant l’hôte entier `cockpit.levois.fr`, avec une seule identité autorisée au départ : Mouaad, authentifié avec MFA. Le domaine public et les previews `pages.dev` ne doivent jamais servir de chemin de contournement vers le cockpit.
 
@@ -24,14 +24,14 @@ Référence officielle : [validation du JWT Cloudflare Access](https://developer
 
 ## Constat distant actuel
 
-- **Pages → Preview access** affiche encore l’action « Restrict previews » : la preview est publique au niveau plateforme ;
+- le déploiement automatique `8a8426a0-44c4-4fe4-9dda-4cb2cf3d8931` est protégé en bordure : `/`, `/cockpit/`, `/api/cockpit/session` et `/api/recherche` répondent `302` vers le team domain sans cookie ;
 - **Pages → Preview fail mode** est maintenant sur **Fail closed** ;
-- **Pages → Preview bindings** contient seulement `RECHERCHE_DB → levois-recherche`, sans `COCKPIT_DB` ni variables cockpit ;
-- l’onboarding **Zero Trust** a été commencé, mais aucun plan n’est actif et aucune application/politique/AUD/MFA n’existe ;
+- la configuration Pages téléchargée après push associe Preview/default à `COCKPIT_DB` `88539c49-0d41-42df-a3b1-1a269e1acbe3` et `RECHERCHE_DB` `308c98e9-d484-4fdd-9892-539abb6b0ffd` ; Production conserve uniquement `RECHERCHE_DB` `077d24f8-5efc-4787-a451-05b041ddd2f7` ;
+- l’onboarding **Zero Trust** a été commencé, mais aucun plan actif ni application self-hosted/politique Mouaad-only/AUD cockpit/MFA n’a été vérifié ;
 - aucun enregistrement DNS `cockpit.levois.fr` n’existe ;
-- aucune application, audience ou politique Access n’a donc pu être testée.
+- l’application automatique de protection des previews est observable, mais sa politique, son audience utilisable par le BFF et son parcours positif n’ont pas pu être validés.
 
-Fail closed retire un risque de contournement par service statique lorsque les Functions sont indisponibles. Il ne rend pas la preview privée : Restrict previews et l’application Access restent indispensables.
+Fail closed retire un risque de contournement par service statique lorsque les Functions sont indisponibles. Le `302` prouve le refus anonyme en bordure, mais pas la qualité de la politique ni l’accès positif de Mouaad.
 
 ## Initialiser Zero Trust
 
@@ -52,11 +52,11 @@ Si l’organisation Zero Trust ou le MFA ne peuvent pas être initialisés, s’
 Dans les paramètres **Preview** du projet Pages :
 
 1. vérifier que **Fail closed** reste sélectionné — contrôle effectué le 18/08/2026 ;
-2. activer **Restrict previews** ;
-3. vérifier en fenêtre privée qu’une preview refuse l’accès avant toute donnée ;
+2. maintenir la protection de preview qui produit actuellement le redirect Access ;
+3. vérifier en fenêtre privée qu’une preview refuse l’accès avant toute donnée — contrôle vert sur le déploiement hash ;
 4. conserver uniquement des fixtures fictives même après restriction.
 
-Ne pas poursuivre tant que le Dashboard propose encore « Restrict previews » comme action non activée, même si Fail closed est déjà vert.
+Ne pas confondre cette protection de preview avec une application cockpit entièrement validée : la politique, le MFA et le login positif restent obligatoires.
 
 ## Créer l’application deny-by-default
 
@@ -100,19 +100,19 @@ Exécuter chaque test sur le hostname réellement protégé, d’abord avec uniq
 
 | Test | Résultat attendu | État au 18/08/2026 |
 |---|---|---|
-| navigateur privé, sans session Access | écran Access ou refus avant toute donnée | **bloqué : application Access absente** |
+| navigateur privé, sans session Access | redirect Access avant toute donnée | **vert : `302` sur `/` et `/cockpit/`** |
 | mode de panne Preview | Fail closed | **activé dans Pages** |
-| appel direct de `/api/cockpit/session` sans JWT | refus, aucune donnée | couvert en local ; à revalider après déploiement automatique |
+| appel direct de `/api/cockpit/session` sans cookie | redirect Access, aucune donnée | **vert : `302` distant** |
 | JWT falsifié | `401 ACCESS_INVALID` | couvert par la suite sécurité finale 16/16 |
 | mauvaise audience | `401 ACCESS_INVALID` | couvert par la suite sécurité finale 16/16 |
 | mauvais issuer | `401 ACCESS_INVALID` | couvert par la suite sécurité finale 16/16 |
 | `nbf` absent ou futur | `401 ACCESS_INVALID` | couvert par la suite sécurité finale 16/16 |
 | identité authentifiée mais non allowlistée | `403 IDENTITY_NOT_ALLOWED` | couvert par la suite sécurité finale 16/16 |
 | identité Mouaad + MFA + JWT valide | accès au shell puis aux fixtures | **bloqué : AUD/MFA/app absents** |
-| API privée appelée directement sans JWT | refus | couvert en local ; à revalider après déploiement automatique |
-| `/cockpit/*` et `/api/cockpit/*` sur le domaine public LEVOIS | refus, même avec un simple header email | couvert par les tests applicatifs ; à revalider à distance |
+| API privée appelée directement sans cookie | refus en bordure | **vert : `302` distant** |
+| `/api/recherche` sans cookie sur la preview hash | refus en bordure | **vert : `302` distant ; fonctionnement après login non testé** |
 | mutation depuis une autre Origin | `403 ORIGIN_INVALID` | couvert par la suite sécurité finale 16/16 |
-| réponse privée | `private, no-store` et `noindex, nofollow, noarchive` | couvert en local ; à revalider à distance |
+| réponse privée après login | `private, no-store` et `noindex, nofollow, noarchive` | couvert en local ; à revalider avec un login Access positif |
 | réseau navigateur | aucune requête PostHog/analytics | couvert en recette locale ; à revalider à distance |
 
 Après un test authentifié, vérifier également `exp`, puis attendre ou utiliser un jeton expiré de test pour confirmer le refus. Confirmer que le JWT Access réel contient `nbf`, désormais obligatoire. Ne pas copier un JWT réel dans les preuves.

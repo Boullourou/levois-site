@@ -9,7 +9,7 @@ Le BFF cockpit utilise exclusivement un binding `COCKPIT_DB` et n’a aucun fall
 | local | `levois-cockpit-local` | UUID nul dans `wrangler.cockpit.toml` | migrations 0001–0006 testées | fixtures fictives |
 | D1 cockpit preview | `levois-cockpit-preview-phase2-5` | `88539c49-0d41-42df-a3b1-1a269e1acbe3` | créée en WEUR, migrations 0001–0006 et fixtures fictives chargées | fixtures fictives uniquement |
 | D1 recherche preview | `levois-recherche-preview-phase2-5` | `308c98e9-d484-4fdd-9892-539abb6b0ffd` | schéma `lectures_recherche` présent, 0 ligne, intégrité vérifiée | aucune donnée réelle |
-| binding Pages Preview actuellement déployé | `RECHERCHE_DB` → `levois-recherche` | base publique/production | **STOP : `COCKPIT_DB` absent, binding de production encore visible dans le Dashboard** | aucune donnée cockpit réelle |
+| bindings Pages Preview déployés | `COCKPIT_DB` + `RECHERCHE_DB` preview | UUID `88539c49…` + `308c98e9…` | vérifiés par `wrangler pages download config` après push | fixtures cockpit + recherche vide uniquement |
 | restauration de test | `levois-cockpit-restore-test-phase2-5-v2` | `b1358142-fb12-4c80-a038-6ea099da4705` | restauration logique validée, 6 migrations, 26 triggers, clés étrangères saines | copie des fixtures fictives uniquement |
 | première tentative de restauration | `levois-cockpit-restore-test-phase2-5` | `629bb438-21c7-45e3-8ebc-cf0ef101d80a` | import complet échoué sur l’ordre des triggers ; base de test partielle, jamais liée à Pages | aucune donnée réelle ; à supprimer après validation explicite |
 | production cockpit | aucune | aucune | non créée/non bindée | aucune donnée |
@@ -18,7 +18,7 @@ L’identifiant D1 n’est pas un secret ; il est versionné dans `wrangler.toml
 
 Références officielles : [développement local D1](https://developers.cloudflare.com/d1/best-practices/local-development/), [bindings Pages Functions](https://developers.cloudflare.com/pages/functions/bindings/) et [développement local Pages Functions](https://developers.cloudflare.com/pages/functions/local-development/).
 
-## Séparation préparée dans Git, non encore effective dans Pages
+## Séparation distante vérifiée après push
 
 La configuration racine conserve le binding public de production :
 
@@ -29,7 +29,7 @@ database_name = "levois-recherche"
 database_id = "077d24f8-5efc-4787-a451-05b041ddd2f7"
 ```
 
-La configuration **à déployer automatiquement après push** redéfinit l’environnement `preview` avec deux bases non-production :
+La configuration déployée redéfinit l’environnement `preview` avec deux bases non-production :
 
 ```toml
 [[env.preview.d1_databases]]
@@ -46,18 +46,17 @@ preview_database_id = "88539c49-0d41-42df-a3b1-1a269e1acbe3"
 migrations_dir = "db/migrations"
 ```
 
-Les bindings D1 Wrangler ne sont pas hérités entre environnements. La cible versionnée donne donc à la preview `COCKPIT_DB` fictive et une `RECHERCHE_DB` séparée, vide de données, afin de préserver le schéma de `/api/recherche` sans exposer la production. **Cette cible n’est pas encore l’état distant** : le Dashboard Pages consulté avant le push montre toujours uniquement `RECHERCHE_DB → levois-recherche`, sans `COCKPIT_DB` ni variables cockpit. Conformément au gate Phase 2.5, le statut reste STOP jusqu’au déploiement et à l’inspection.
+Les bindings D1 Wrangler ne sont pas hérités entre environnements. `wrangler pages download config`, exécuté après le déploiement automatique, confirme que Preview/default expose uniquement `COCKPIT_DB` fictive et `RECHERCHE_DB` preview vide. `env.production` conserve seulement la D1 publique `RECHERCHE_DB` de production et ne reçoit aucun `COCKPIT_DB`. La séparation D1 distante est donc **verte**.
 
-Après le prochain déploiement Git automatique, vérifier dans **Pages → Settings → Bindings → Preview** :
+Preuves relevées après le déploiement Git automatique :
 
 1. `COCKPIT_DB` pointe vers `88539c49-0d41-42df-a3b1-1a269e1acbe3` ;
 2. `RECHERCHE_DB` pointe vers `308c98e9-d484-4fdd-9892-539abb6b0ffd` ;
 3. aucun binding ne pointe vers `levois-recherche` ni une autre D1 de production ;
-4. les variables cockpit existent uniquement dans l’environnement visé ;
-5. une requête de lecture via le cockpit retourne les fixtures fictives ;
-6. la base recherche preview possède `lectures_recherche` et reste à 0 ligne avant la recette publique.
+4. Production ne contient que `RECHERCHE_DB` `077d24f8-5efc-4787-a451-05b041ddd2f7` ;
+5. la base recherche preview possède `lectures_recherche` et reste à 0 ligne.
 
-Capturer le nom des bindings et UUID, sans secret ni donnée, comme preuve. Tant que cette inspection n’est pas faite, la séparation distante n’est pas verte.
+Le fonctionnement authentifié de `/api/recherche` reste à tester ; le `302` sans cookie prouve seulement la protection Access en bordure.
 
 Toute commande distante cockpit doit comporter à la fois le nom exact et `--env preview`. Un warning Wrangler indiquant que le binding racine n’est pas hérité est attendu. Il ne faut surtout pas « corriger » la preview en lui redonnant la D1 `levois-recherche`.
 
@@ -65,7 +64,7 @@ Toute commande distante cockpit doit comporter à la fois le nom exact et `--env
 
 Le risque de retirer `RECHERCHE_DB` du projet Pages partagé est traité dans Git par une seconde D1 de preview : `levois-recherche-preview-phase2-5`. `db/schema.sql` y a créé `lectures_recherche`; la vérification distante retourne 0 ligne et aucune erreur d’intégrité. Cette base ne contient ni copie ni fixture de production.
 
-Après le push, il reste obligatoire de vérifier le binding réellement déployé et de rejouer `/api/recherche` sur la preview. La présence des deux UUID dans `wrangler.toml` ne vaut pas preuve du Dashboard distant.
+Le binding réellement déployé est confirmé. Il reste à rejouer `/api/recherche` après un login Access valide ; la requête anonyme retourne actuellement `302` avant d’atteindre la Function.
 
 ## Migrations
 
