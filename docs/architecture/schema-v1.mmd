@@ -1,0 +1,555 @@
+%% Modèle conceptuel LEVOIS Phase 1 — aucune table n'est créée par ce fichier.
+%% Les deux types de matching restent séparés afin de conserver des clés étrangères réelles.
+erDiagram
+    INBOUND_SUBMISSION {
+        string id PK
+        string source
+        string source_submission_id
+        string schema_version
+        string status
+        datetime received_at
+    }
+
+    CONSENT_CAPTURE {
+        string id PK
+        string submission_id FK
+        string purpose
+        string action
+        string form_code
+        string notice_version
+        string evidence_quality
+        datetime received_at
+    }
+
+    IMPORT_BATCH {
+        string id PK
+        string source
+        string mapper_version
+        string status
+        datetime started_at
+        datetime completed_at
+    }
+
+    INGESTION_RESULT {
+        string id PK
+        string import_batch_id FK
+        string submission_id FK
+        string source
+        string source_id
+        string status
+        string error_code
+        datetime processed_at
+    }
+
+    INGESTION_MAPPING {
+        string id PK
+        string ingestion_result_id FK
+        string person_id FK
+        string project_id FK
+        string buyer_search_id FK
+        string interaction_id FK
+    }
+
+    NOTIFICATION_DELIVERY {
+        string id PK
+        string submission_id FK
+        string channel
+        string provider
+        string status
+        datetime last_attempt_at
+    }
+
+    PERSON {
+        string id PK
+        string status
+        string origin
+        datetime created_at
+        datetime last_contact_at
+    }
+
+    CONTACT_METHOD {
+        string id PK
+        string person_id FK
+        string type
+        string normalized_value
+        boolean is_primary
+        string verification_status
+    }
+
+    CONSENT_EVENT {
+        string id PK
+        string person_id FK
+        string project_id FK
+        string consent_capture_id FK
+        string purpose
+        string action
+        string supersedes_event_id FK
+        string notice_version
+        datetime occurred_at
+    }
+
+    PERSON_MERGE_EVENT {
+        string id PK
+        string survivor_person_id FK
+        string merged_person_id FK
+        string reason
+        datetime occurred_at
+    }
+
+    PROJECT {
+        string id PK
+        string type
+        string status
+        string stage_key
+        string next_task_id FK
+        int version
+        datetime created_at
+    }
+
+    PROJECT_PARTY {
+        string id PK
+        string project_id FK
+        string person_id FK
+        string role
+    }
+
+    PROJECT_RELATIONSHIP {
+        string id PK
+        string source_project_id FK
+        string target_project_id FK
+        string type
+    }
+
+    BUYER_SEARCH {
+        string id PK
+        string project_id FK
+        string status
+        string current_revision_id FK
+    }
+
+    SEARCH_SCENARIO {
+        string id PK
+        string buyer_search_id FK
+        string lineage_key
+        int version_number
+        string kind
+        string condition_text
+        int priority
+        string supersedes_scenario_id FK
+    }
+
+    SEARCH_REVISION {
+        string id PK
+        string buyer_search_id FK
+        int revision_number
+        string fingerprint
+        datetime created_at
+    }
+
+    SEARCH_REVISION_ITEM {
+        string id PK
+        string search_revision_id FK
+        string scenario_id FK
+        string criterion_event_id FK
+    }
+
+    CRITERION_DEFINITION {
+        string id PK
+        string key
+        string value_type
+        string unit
+        string schema_version
+    }
+
+    CRITERION_EVENT {
+        string id PK
+        string buyer_search_id FK
+        string scenario_id FK
+        string criterion_definition_id FK
+        string operation
+        string typed_value_json
+        string value_schema_version
+        string importance
+        string flexibility
+        string certainty
+        string matching_role
+        datetime effective_at
+        datetime recorded_at
+        string source_kind
+        string source_ref
+        string supersedes_event_id FK
+        string decision_id FK
+    }
+
+    CRITERION_CURRENT {
+        string id PK
+        string buyer_search_id FK
+        string scenario_id FK
+        string criterion_definition_id FK
+        string event_id FK
+    }
+
+    PROPERTY {
+        string id PK
+        string property_type
+        string commune
+        string address_precision
+        datetime created_at
+    }
+
+    LISTING {
+        string id PK
+        string property_id FK
+        string source
+        string canonical_url
+        string external_id
+        string status
+    }
+
+    LISTING_SNAPSHOT {
+        string id PK
+        string listing_id FK
+        int price
+        int surface
+        string dpe
+        datetime observed_at
+    }
+
+    PROJECT_PROPERTY {
+        string id PK
+        string project_id FK
+        string property_id FK
+        string role
+    }
+
+    SELLER_CASE {
+        string id PK
+        string project_id FK
+        string situation
+        string workflow_status
+    }
+
+    COMMERCIALIZATION_EPISODE {
+        string id PK
+        string seller_case_id FK
+        string status
+        int asking_price
+        datetime started_at
+        datetime ended_at
+    }
+
+    MANDATE_EVENT {
+        string id PK
+        string seller_case_id FK
+        string status
+        string certainty
+        datetime occurred_at
+    }
+
+    DIAGNOSTIC_RECORD {
+        string id PK
+        string property_id FK
+        string diagnostic_type
+        string status
+        datetime observed_at
+    }
+
+    SELLER_SIGNAL {
+        string id PK
+        string seller_case_id FK
+        string signal_type
+        string certainty
+        datetime observed_at
+    }
+
+    OFFER {
+        string id PK
+        string seller_case_id FK
+        string property_id FK
+        int amount
+        string status
+        datetime received_at
+    }
+
+    PROPERTY_EVALUATION {
+        string id PK
+        string buyer_search_id FK
+        string search_revision_id FK
+        string property_id FK
+        string listing_snapshot_id FK
+        string verdict
+        string status
+        string supersedes_evaluation_id FK
+        datetime evaluated_at
+    }
+
+    EVALUATION_FACTOR {
+        string id PK
+        string evaluation_id FK
+        string criterion_definition_id FK
+        string result
+        string matching_role
+        boolean is_blocking
+    }
+
+    VISIT {
+        string id PK
+        string project_id FK
+        string property_id FK
+        string buyer_search_id FK
+        string status
+        datetime scheduled_at
+    }
+
+    VISIT_PARTICIPANT {
+        string id PK
+        string visit_id FK
+        string person_id FK
+        string role
+    }
+
+    VISIT_OBSERVATION {
+        string id PK
+        string visit_id FK
+        string type
+        string source_kind
+        datetime recorded_at
+    }
+
+    INTERACTION {
+        string id PK
+        string project_id FK
+        string type
+        string direction
+        datetime occurred_at
+    }
+
+    INTERACTION_PARTICIPANT {
+        string id PK
+        string interaction_id FK
+        string person_id FK
+        string role
+    }
+
+    ATTACHMENT_REFERENCE {
+        string id PK
+        string interaction_id FK
+        string kind
+        string classification
+    }
+
+    TASK {
+        string id PK
+        string project_id FK
+        string status
+        string priority
+        datetime due_at
+    }
+
+    DECISION {
+        string id PK
+        string project_id FK
+        string type
+        string source_kind
+        datetime effective_at
+    }
+
+    PROPERTY_MATCH {
+        string id PK
+        string buyer_search_id FK
+        string search_revision_id FK
+        string property_id FK
+        string listing_snapshot_id FK
+        string human_status
+    }
+
+    PROPERTY_MATCH_FACTOR {
+        string id PK
+        string match_id FK
+        string criterion_definition_id FK
+        string result
+        boolean is_blocking
+    }
+
+    SELLER_PROJECT_MATCH {
+        string id PK
+        string buyer_search_id FK
+        string search_revision_id FK
+        string seller_project_id FK
+        string seller_state_fingerprint
+        string property_id FK
+        string listing_snapshot_id FK
+        string human_status
+    }
+
+    SELLER_MATCH_FACTOR {
+        string id PK
+        string match_id FK
+        string criterion_definition_id FK
+        string result
+        boolean is_blocking
+    }
+
+    AI_RUN {
+        string id PK
+        string task_type
+        string model_version
+        string status
+        datetime created_at
+    }
+
+    INFORMATION_PROPOSAL {
+        string id PK
+        string ai_run_id FK
+        string operation
+        string target_kind
+        string target_id
+        string status
+        float confidence_score
+    }
+
+    PROPOSAL_EVIDENCE {
+        string id PK
+        string proposal_id FK
+        string source_kind
+        string source_ref
+    }
+
+    PROPOSAL_REVIEW {
+        string id PK
+        string proposal_id FK
+        string decision
+        string reviewer_actor_id
+        datetime reviewed_at
+    }
+
+    AUDIT_EVENT {
+        string id PK
+        string actor_id
+        string action
+        string target_kind
+        string target_id
+        datetime occurred_at
+    }
+
+    EXPORT_MANIFEST {
+        string id PK
+        string export_type
+        string scope_kind
+        string scope_id
+        string redaction_mode
+        datetime created_at
+    }
+
+    RETENTION_POLICY {
+        string id PK
+        string category
+        string action
+        int duration_days
+        string version
+    }
+
+    ERASURE_REQUEST {
+        string id PK
+        string person_id FK
+        string status
+        datetime requested_at
+        datetime completed_at
+    }
+
+    LAB_OBSERVATION {
+        string id PK
+        string status
+        string category
+        datetime created_at
+    }
+
+    IMPORT_BATCH o|--o{ INGESTION_RESULT : contains
+    INBOUND_SUBMISSION o|--o{ INGESTION_RESULT : processes
+    INGESTION_RESULT ||--o{ INGESTION_MAPPING : creates
+    PERSON o|--o{ INGESTION_MAPPING : maps_to
+    PROJECT o|--o{ INGESTION_MAPPING : maps_to
+    BUYER_SEARCH o|--o{ INGESTION_MAPPING : maps_to
+    INTERACTION o|--o{ INGESTION_MAPPING : maps_to
+    INBOUND_SUBMISSION ||--o{ NOTIFICATION_DELIVERY : notifies
+    INBOUND_SUBMISSION ||--o{ CONSENT_CAPTURE : captures
+    CONSENT_CAPTURE o|--o| CONSENT_EVENT : substantiates
+
+    PERSON ||--o{ CONTACT_METHOD : has
+    PERSON ||--o{ CONSENT_EVENT : grants
+    PERSON ||--o{ PROJECT_PARTY : participates
+    PERSON ||--o{ INTERACTION_PARTICIPANT : joins
+    PERSON ||--o{ VISIT_PARTICIPANT : attends
+    PERSON ||--o{ ERASURE_REQUEST : requests
+    PERSON ||--o{ PERSON_MERGE_EVENT : survives
+    PERSON ||--o{ PERSON_MERGE_EVENT : merged_from
+
+    PROJECT ||--o{ PROJECT_PARTY : includes
+    PROJECT ||--o{ PROJECT_RELATIONSHIP : source
+    PROJECT ||--o{ PROJECT_RELATIONSHIP : target
+    PROJECT ||--o| BUYER_SEARCH : owns
+    PROJECT ||--o| SELLER_CASE : specializes
+    PROJECT ||--o{ PROJECT_PROPERTY : concerns
+    PROJECT ||--o{ INTERACTION : records
+    PROJECT ||--o{ TASK : plans
+    PROJECT ||--o{ DECISION : decides
+    PROJECT ||--o{ VISIT : schedules
+    PROJECT o|--o{ CONSENT_EVENT : scopes
+
+    BUYER_SEARCH ||--o{ SEARCH_SCENARIO : models
+    BUYER_SEARCH ||--o{ SEARCH_REVISION : versions
+    BUYER_SEARCH ||--o{ CRITERION_EVENT : evolves
+    BUYER_SEARCH ||--o{ CRITERION_CURRENT : projects
+    SEARCH_SCENARIO ||--o{ CRITERION_EVENT : groups
+    SEARCH_SCENARIO ||--o{ CRITERION_CURRENT : groups
+    SEARCH_REVISION ||--|{ SEARCH_REVISION_ITEM : freezes
+    SEARCH_SCENARIO ||--o{ SEARCH_REVISION_ITEM : freezes
+    CRITERION_EVENT ||--o{ SEARCH_REVISION_ITEM : freezes
+    CRITERION_DEFINITION ||--o{ CRITERION_EVENT : defines
+    CRITERION_DEFINITION ||--o{ CRITERION_CURRENT : defines
+    CRITERION_EVENT ||--o| CRITERION_CURRENT : materializes
+
+    PROPERTY o|--o{ LISTING : advertised_as
+    LISTING ||--o{ LISTING_SNAPSHOT : observed_as
+    PROPERTY ||--o{ PROJECT_PROPERTY : linked_to
+    PROPERTY ||--o{ DIAGNOSTIC_RECORD : diagnosed_by
+    PROPERTY ||--o{ OFFER : receives
+
+    SELLER_CASE ||--o{ COMMERCIALIZATION_EPISODE : runs
+    SELLER_CASE ||--o{ MANDATE_EVENT : tracks
+    SELLER_CASE ||--o{ SELLER_SIGNAL : observes
+    SELLER_CASE ||--o{ OFFER : receives
+
+    BUYER_SEARCH ||--o{ PROPERTY_EVALUATION : evaluates
+    SEARCH_REVISION ||--o{ PROPERTY_EVALUATION : freezes
+    PROPERTY ||--o{ PROPERTY_EVALUATION : subject
+    LISTING_SNAPSHOT o|--o{ PROPERTY_EVALUATION : evidence
+    PROPERTY_EVALUATION ||--o{ EVALUATION_FACTOR : explains
+    CRITERION_DEFINITION ||--o{ EVALUATION_FACTOR : tests
+
+    PROPERTY ||--o{ VISIT : visited
+    BUYER_SEARCH o|--o{ VISIT : prepares
+    VISIT ||--o{ VISIT_PARTICIPANT : includes
+    VISIT ||--o{ VISIT_OBSERVATION : produces
+
+    INTERACTION ||--o{ INTERACTION_PARTICIPANT : includes
+    INTERACTION ||--o{ ATTACHMENT_REFERENCE : references
+
+    BUYER_SEARCH ||--o{ PROPERTY_MATCH : proposes
+    SEARCH_REVISION ||--o{ PROPERTY_MATCH : freezes
+    PROPERTY ||--o{ PROPERTY_MATCH : candidate
+    LISTING_SNAPSHOT o|--o{ PROPERTY_MATCH : evidence
+    PROPERTY_MATCH ||--o{ PROPERTY_MATCH_FACTOR : explains
+    CRITERION_DEFINITION ||--o{ PROPERTY_MATCH_FACTOR : evaluates
+
+    BUYER_SEARCH ||--o{ SELLER_PROJECT_MATCH : proposes
+    SEARCH_REVISION ||--o{ SELLER_PROJECT_MATCH : freezes
+    PROJECT ||--o{ SELLER_PROJECT_MATCH : seller_candidate
+    PROPERTY o|--o{ SELLER_PROJECT_MATCH : seller_property
+    LISTING_SNAPSHOT o|--o{ SELLER_PROJECT_MATCH : seller_evidence
+    SELLER_PROJECT_MATCH ||--o{ SELLER_MATCH_FACTOR : explains
+    CRITERION_DEFINITION ||--o{ SELLER_MATCH_FACTOR : evaluates
+
+    AI_RUN ||--o{ INFORMATION_PROPOSAL : produces
+    INFORMATION_PROPOSAL ||--o{ PROPOSAL_EVIDENCE : cites
+    INFORMATION_PROPOSAL ||--o{ PROPOSAL_REVIEW : reviewed_by
