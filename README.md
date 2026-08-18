@@ -18,12 +18,32 @@ archive de cadrage supersédée.
 ## Démarrer
 
 ```bash
-npm install
+npx --yes npm@10.9.2 ci
 npm run dev        # http://localhost:4321
 npm test           # moteur de signaux + formulaires Cloudflare
 npm run test:market # calculs et filtres du résumé DVF
 npm run build      # production dans dist/
 ```
+
+## Cockpit privé V1
+
+Le cockpit est une tranche privée séparée des parcours publics : Astro sans donnée
+métier dans le HTML, Pages Functions, services métier et binding D1 `COCKPIT_DB`.
+La configuration locale ne contient aucun identifiant D1 distant et la preview
+reste fermée tant que Cloudflare Access et une D1 preview séparée ne sont pas
+configurés.
+
+```bash
+npm run test:cockpit          # domaine, D1/SQLite, BFF, sécurité et export
+npm run test:cockpit:security # frontière Access + CSRF + erreurs BFF
+
+npm run db:cockpit:migrate:local
+npm run db:cockpit:seed:local # fixtures exclusivement fictives
+npm run dev:cockpit           # build puis Pages Functions local
+```
+
+La documentation d’installation, de sécurité, de sauvegarde/restauration et de
+recette est dans [`docs/cockpit/README.md`](docs/cockpit/README.md).
 
 ## Architecture du contenu (administrable sans toucher aux composants)
 

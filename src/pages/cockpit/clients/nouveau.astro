@@ -1,0 +1,123 @@
+---
+import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import {
+  BUYER_STAGES,
+  CONTACT_ORIGINS,
+  PRIORITIES,
+  PROJECT_STATUSES,
+  PROJECT_TYPES,
+} from '../../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="Nouveau dossier"
+  active="clients"
+  eyebrow="Saisie manuelle"
+  description="Créez la personne, son projet et la première action dans un même parcours."
+  pageId="new-client"
+>
+  <a slot="actions" class="cockpit-button cockpit-button-quiet" href="/cockpit/clients">Annuler</a>
+
+  <form class="cockpit-form-flow" data-new-client-form novalidate>
+    <section class="cockpit-form-section" aria-labelledby="person-title">
+      <div class="cockpit-section-number" aria-hidden="true">01</div>
+      <div class="cockpit-section-copy">
+        <h2 id="person-title">Personne</h2>
+        <p>Les coordonnées sont facultatives. Ne saisissez que ce qui est utile au suivi.</p>
+      </div>
+      <div class="cockpit-fields cockpit-fields-two">
+        <label><span>Prénom <b aria-hidden="true">*</b></span><input name="firstName" autocomplete="given-name" required /></label>
+        <label><span>Nom <b aria-hidden="true">*</b></span><input name="lastName" autocomplete="family-name" required /></label>
+        <label><span>Nom d’usage</span><input name="preferredName" autocomplete="nickname" /></label>
+        <label>
+          <span>Origine <b aria-hidden="true">*</b></span>
+          <select name="origin" required>
+            {CONTACT_ORIGINS.map((option) => <option value={option.value} selected={option.value === 'unknown'}>{option.label}</option>)}
+          </select>
+        </label>
+        <label><span>Email</span><input name="email" type="email" autocomplete="email" inputmode="email" /></label>
+        <label><span>Téléphone</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" /></label>
+        <label class="cockpit-field-wide"><span>Synthèse courte</span><textarea name="summary" rows="3" maxlength="600" placeholder="Contexte utile, sans transcription brute"></textarea></label>
+      </div>
+    </section>
+
+    <section class="cockpit-form-section" aria-labelledby="project-title">
+      <div class="cockpit-section-number" aria-hidden="true">02</div>
+      <div class="cockpit-section-copy">
+        <h2 id="project-title">Projet</h2>
+        <p>Un achat et une vente liés seront créés comme deux projets distincts reliés.</p>
+      </div>
+      <div class="cockpit-fields cockpit-fields-two">
+        <label>
+          <span>Type <b aria-hidden="true">*</b></span>
+          <select name="projectType" data-project-type required>
+            {PROJECT_TYPES.map((option) => <option value={option.value}>{option.label}</option>)}
+          </select>
+        </label>
+        <label>
+          <span>Statut <b aria-hidden="true">*</b></span>
+          <select name="projectStatus" data-project-status required>
+            {PROJECT_STATUSES.map((option) => <option value={option.value} selected={option.value === 'active'}>{option.label}</option>)}
+          </select>
+        </label>
+        <label>
+          <span>Stade <b aria-hidden="true">*</b></span>
+          <select name="projectStage" data-project-stage required>
+            {BUYER_STAGES.map((option) => <option value={option.value}>{option.label}</option>)}
+          </select>
+        </label>
+        <label><span>Calendrier</span><input name="timeline" maxlength="160" placeholder="Ex. décision avant l’automne" /></label>
+        <label class="cockpit-field-wide"><span>Objectif</span><textarea name="objective" rows="3" maxlength="600" placeholder="Ce que la personne cherche à accomplir"></textarea></label>
+      </div>
+    </section>
+
+    <section class="cockpit-form-section" data-buyer-search-section aria-labelledby="search-title">
+      <div class="cockpit-section-number" aria-hidden="true">03</div>
+      <div class="cockpit-section-copy">
+        <h2 id="search-title">Recherche acquéreur</h2>
+        <p>Une première synthèse suffit. Les critères détaillés seront ajoutés sur la fiche.</p>
+      </div>
+      <div class="cockpit-fields">
+        <label><span>Résumé de recherche</span><textarea name="searchSummary" rows="3" maxlength="800" placeholder="Secteur, type de bien, enveloppe et contraintes principales"></textarea></label>
+        <fieldset class="cockpit-check-group">
+          <legend>Scénarios à ouvrir</legend>
+          <label><input type="checkbox" name="scenarioPreferred" checked /> Préféré</label>
+          <label><input type="checkbox" name="scenarioAcceptable" /> Acceptable</label>
+          <label><input type="checkbox" name="scenarioConditional" /> Conditionnel</label>
+        </fieldset>
+      </div>
+    </section>
+
+    <section class="cockpit-form-section" aria-labelledby="action-title">
+      <div class="cockpit-section-number" aria-hidden="true">04</div>
+      <div class="cockpit-section-copy">
+        <h2 id="action-title">Première prochaine action</h2>
+        <p>Un projet actif sans action restera visible comme anomalie dans Aujourd’hui.</p>
+      </div>
+      <div class="cockpit-fields cockpit-fields-two" data-first-task-fields>
+        <label class="cockpit-field-wide"><span>Action</span><input name="taskTitle" maxlength="240" placeholder="Ex. rappeler pour confirmer le calendrier" /></label>
+        <label><span>Date et heure</span><input name="taskDueAt" type="datetime-local" /></label>
+        <label>
+          <span>Priorité</span>
+          <select name="taskPriority">
+            {PRIORITIES.map((option) => <option value={option.value} selected={option.value === 'normal'}>{option.label}</option>)}
+          </select>
+        </label>
+      </div>
+      <label class="cockpit-confirm-risk" data-missing-action-confirm hidden>
+        <input name="allowMissingNextAction" type="checkbox" />
+        <span>Je confirme créer ce projet actif sans prochaine action. Il apparaîtra dans les anomalies.</span>
+      </label>
+    </section>
+
+    <div class="cockpit-form-error" data-form-error role="alert" hidden></div>
+    <footer class="cockpit-form-submit">
+      <p>Le consentement reste <strong>inconnu</strong> tant qu’aucune preuve n’est enregistrée.</p>
+      <button class="cockpit-button cockpit-button-primary" type="submit" data-submit>Créer le dossier</button>
+    </footer>
+  </form>
+</CockpitLayout>
+
+<script>
+  import '../../../scripts/cockpit/new-client';
+</script>

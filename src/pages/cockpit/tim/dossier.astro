@@ -1,0 +1,108 @@
+---
+import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import {
+  PRIORITIES,
+  TIM_COMPENSATION_STATUSES,
+} from '../../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="Accord TIM"
+  active="tim"
+  eyebrow="Suivi indépendant"
+  description="Accord, opération et rémunération évoluent sans effet automatique entre les axes."
+  pageId="tim-detail"
+>
+  <a slot="actions" class="cockpit-button cockpit-button-quiet" href="/cockpit/tim">Tous les accords</a>
+  <button slot="actions" class="cockpit-button cockpit-button-secondary" type="button" data-dialog-open="tim-status-dialog" disabled data-requires-tim>Changer un état</button>
+  <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-dialog-open="tim-task-dialog" disabled data-requires-tim>Nouvelle tâche</button>
+
+  <section class="cockpit-detail-root" data-tim-detail aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status"><span class="cockpit-spinner" aria-hidden="true"></span><p>Chargement de l’accord…</p></div>
+  </section>
+
+  <dialog class="cockpit-dialog" id="tim-status-dialog" aria-labelledby="tim-status-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-tim-status-form>
+      <header><div><p class="cockpit-kicker">Axes indépendants</p><h2 id="tim-status-title">Changer un état</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields">
+        <label><span>Axe</span><select name="axis" data-status-axis><option value="agreement">Accord</option><option value="operation">Opération</option><option value="compensation">Rémunération</option></select></label>
+        <label><span>Nouvel état</span><select name="status" data-status-options required></select></label>
+        <label><span>Date effective</span><input name="effectiveAt" type="datetime-local" required /></label>
+        <label><span>Raison ou contexte</span><textarea name="reason" rows="3" maxlength="600"></textarea></label>
+        <p class="cockpit-form-hint">Seul l’axe choisi sera modifié.</p>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Enregistrer l’état</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="tim-terms-dialog" aria-labelledby="tim-terms-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-tim-terms-form>
+      <header><div><p class="cockpit-kicker">Nouvelle version</p><h2 id="tim-terms-title">Réviser les termes</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label><span>Assiette</span><select name="feeBasis"><option value="unknown">À confirmer</option><option value="ht">HT</option><option value="ttc">TTC</option><option value="other">Autre</option></select></label>
+        <label><span>Devise</span><input name="currency" value="EUR" pattern="[A-Z]{3}" maxlength="3" required /></label>
+        <label class="cockpit-field-wide"><span>Fait générateur</span><input name="triggerEvent" maxlength="300" value="unknown" /></label>
+        <label><span>Part apporteur (%)</span><input name="referrerPercent" type="number" min="0" max="100" step="0.01" inputmode="decimal" /></label>
+        <label><span>Part traitant (%)</span><input name="handlerPercent" type="number" min="0" max="100" step="0.01" inputmode="decimal" /></label>
+        <label class="cockpit-check-field cockpit-field-wide"><input name="confirmed" type="checkbox" required /><span>Je confirme explicitement cette nouvelle répartition.</span></label>
+        <label class="cockpit-field-wide"><span>Motif de la révision</span><textarea name="reason" rows="3" maxlength="600" required></textarea></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Créer une nouvelle version</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="tim-compensation-dialog" aria-labelledby="tim-compensation-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-tim-compensation-form>
+      <header><div><p class="cockpit-kicker">Rémunération</p><h2 id="tim-compensation-title">Enregistrer une estimation ou une somme due</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label><span>Honoraires estimés (€)</span><input name="estimatedFees" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+        <label><span>Part Mouaad estimée (€)</span><input name="estimatedShare" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+        <label><span>Montant réellement dû (€)</span><input name="dueAmount" type="number" min="0" step="0.01" inputmode="decimal" /></label>
+        <label><span>Devise</span><input name="currency" value="EUR" pattern="[A-Z]{3}" maxlength="3" required /></label>
+        <label><span>État</span><select name="status">{TIM_COMPENSATION_STATUSES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Date d’exigibilité</span><input name="dueAt" type="date" /></label>
+        <label><span>Date de paiement attendue</span><input name="expectedPaymentAt" type="date" /></label>
+        <label class="cockpit-field-wide"><span>Note</span><textarea name="note" rows="3" maxlength="600"></textarea></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Enregistrer</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="tim-payment-dialog" aria-labelledby="tim-payment-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-tim-payment-form>
+      <header><div><p class="cockpit-kicker">Paiement idempotent</p><h2 id="tim-payment-title">Enregistrer un paiement ou ajustement</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label><span>Nature</span><select name="kind"><option value="payment">Paiement</option><option value="adjustment">Ajustement</option><option value="refund">Remboursement</option></select></label>
+        <label><span>Montant (€)</span><input name="amount" type="number" min="0.01" step="0.01" inputmode="decimal" required /></label>
+        <label><span>Date</span><input name="paidAt" type="date" required /></label>
+        <label><span>Devise</span><input name="currency" value="EUR" pattern="[A-Z]{3}" maxlength="3" required /></label>
+        <label class="cockpit-field-wide"><span>Référence facultative</span><input name="reference" maxlength="160" /></label>
+        <label class="cockpit-field-wide"><span>Note d’ajustement</span><textarea name="note" rows="3" maxlength="600"></textarea></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Enregistrer sans doublon</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="tim-task-dialog" aria-labelledby="tim-task-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-tim-task-form>
+      <header><div><p class="cockpit-kicker">Suivi</p><h2 id="tim-task-title">Nouvelle tâche TIM</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label class="cockpit-field-wide"><span>Action</span><input name="title" maxlength="240" required /></label>
+        <label><span>Échéance</span><input name="dueAt" type="datetime-local" required /></label>
+        <label><span>Priorité</span><select name="priority">{PRIORITIES.map((option) => <option value={option.value} selected={option.value === 'normal'}>{option.label}</option>)}</select></label>
+        <label class="cockpit-field-wide"><span>Raison d’attente</span><input name="waitingReason" maxlength="300" /></label>
+        <label class="cockpit-check-field cockpit-field-wide"><input name="isNextAction" type="checkbox" checked /><span>Désigner comme prochaine action de l’accord</span></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Créer la tâche</button></footer>
+    </form>
+  </dialog>
+</CockpitLayout>
+
+<script>
+  import '../../../scripts/cockpit/tim-detail';
+</script>

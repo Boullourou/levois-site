@@ -1,0 +1,26 @@
+{
+  "name": "Cockpit LEVOIS",
+  "short_name": "LEVOIS",
+  "description": "File de travail privée LEVOIS",
+  "start_url": "/cockpit/",
+  "id": "/cockpit/",
+  "scope": "/cockpit/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#f4f3ed",
+  "theme_color": "#101827",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    { "name": "Aujourd’hui", "url": "/cockpit" },
+    { "name": "Clients", "url": "/cockpit/clients" },
+    { "name": "Accords TIM", "url": "/cockpit/tim" }
+  ]
+}

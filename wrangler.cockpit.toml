@@ -1,0 +1,16 @@
+name = "levois-cockpit-local"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-03-02"
+
+# Configuration volontairement locale et incapable de viser la D1 existante.
+# La preview Cloudflare devra recevoir un vrai binding COCKPIT_DB séparé après
+# validation humaine ; aucun identifiant distant cockpit n'est versionné ici.
+[[d1_databases]]
+binding = "COCKPIT_DB"
+database_name = "levois-cockpit-local"
+database_id = "00000000-0000-0000-0000-000000000000"
+preview_database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "db/migrations"
+
+[vars]
+COCKPIT_LOCAL_BYPASS = "1"

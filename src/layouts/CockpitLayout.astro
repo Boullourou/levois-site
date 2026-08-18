@@ -1,0 +1,100 @@
+---
+import '../styles/cockpit.css';
+
+export interface Props {
+  title: string;
+  active: 'today' | 'clients' | 'tim' | 'lab' | 'settings';
+  eyebrow?: string;
+  description?: string;
+  pageId?: string;
+}
+
+const {
+  title,
+  active,
+  eyebrow = 'Cockpit privé',
+  description,
+  pageId = active,
+} = Astro.props;
+
+const navigation = [
+  { id: 'today', label: 'Aujourd’hui', shortLabel: 'Aujourd’hui', href: '/cockpit', icon: '⌂' },
+  { id: 'clients', label: 'Clients', shortLabel: 'Clients', href: '/cockpit/clients', icon: '○' },
+  { id: 'tim', label: 'Accords TIM', shortLabel: 'TIM', href: '/cockpit/tim', icon: '⇄' },
+  { id: 'lab', label: 'LEVOIS Lab', shortLabel: 'Lab', href: '/cockpit/lab', icon: '◇' },
+  { id: 'settings', label: 'Réglages', shortLabel: 'Réglages', href: '/cockpit/reglages', icon: '⚙' },
+] as const;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="theme-color" content="#101827" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/cockpit.webmanifest" />
+    <title>{title} · Cockpit LEVOIS</title>
+  </head>
+  <body data-cockpit-page={pageId}>
+    <a class="cockpit-skip" href="#cockpit-main">Aller au contenu</a>
+
+    <div class="cockpit-shell">
+      <aside class="cockpit-sidebar" aria-label="Navigation du cockpit">
+        <a class="cockpit-brand" href="/cockpit" aria-label="LEVOIS, aujourd’hui">
+          <strong>LEVOIS</strong>
+          <span>Cockpit privé</span>
+        </a>
+
+        <nav class="cockpit-nav">
+          {navigation.map((item) => (
+            <a
+              class:list={['cockpit-nav-link', { 'is-current': item.id === active }]}
+              href={item.href}
+              aria-current={item.id === active ? 'page' : undefined}
+            >
+              <span class="cockpit-nav-icon" aria-hidden="true">{item.icon}</span>
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </nav>
+
+        <div class="cockpit-sidebar-foot">
+          <span class="cockpit-lock" aria-hidden="true">●</span>
+          <p><strong>Session privée</strong><br />Aucune donnée hors ligne</p>
+        </div>
+      </aside>
+
+      <main class="cockpit-main" id="cockpit-main">
+        <header class="cockpit-topbar">
+          <div class="cockpit-heading">
+            <p class="cockpit-kicker">{eyebrow}</p>
+            <h1>{title}</h1>
+            {description && <p class="cockpit-description">{description}</p>}
+          </div>
+          <div class="cockpit-actions"><slot name="actions" /></div>
+        </header>
+
+        <slot />
+      </main>
+
+      <nav class="cockpit-mobile-nav" aria-label="Navigation mobile du cockpit">
+        {navigation.map((item) => (
+          <a
+            class:list={['cockpit-mobile-link', { 'is-current': item.id === active }]}
+            href={item.href}
+            aria-current={item.id === active ? 'page' : undefined}
+          >
+            <span class="cockpit-mobile-icon" aria-hidden="true">{item.icon}</span>
+            <span>{item.shortLabel}</span>
+          </a>
+        ))}
+      </nav>
+    </div>
+
+    <div class="cockpit-toast-region" aria-live="polite" aria-atomic="true" data-toast-region></div>
+  </body>
+</html>

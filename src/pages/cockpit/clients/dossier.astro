@@ -1,0 +1,115 @@
+---
+import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import {
+  CERTAINTY_LEVELS,
+  CRITERION_TYPES,
+  FLEXIBILITY_LEVELS,
+  IMPORTANCE_LEVELS,
+  INTERACTION_CHANNELS,
+  MATCHING_ROLES,
+  PRIORITIES,
+  SCENARIO_TYPES,
+} from '../../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="Fiche client"
+  active="clients"
+  eyebrow="Dossier accompagné"
+  description="Synthèse, évolution et prochaine action dans une seule chronologie."
+  pageId="client-detail"
+>
+  <a slot="actions" class="cockpit-button cockpit-button-quiet" href="/cockpit/clients">Tous les clients</a>
+  <button slot="actions" class="cockpit-button cockpit-button-secondary" type="button" data-dialog-open="export-dialog" disabled data-requires-client>Exporter</button>
+  <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-dialog-open="task-dialog" disabled data-requires-client>Nouvelle tâche</button>
+
+  <section class="cockpit-detail-root" data-client-detail aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status">
+      <span class="cockpit-spinner" aria-hidden="true"></span>
+      <p>Chargement de la fiche…</p>
+    </div>
+  </section>
+
+  <dialog class="cockpit-dialog" id="interaction-dialog" aria-labelledby="interaction-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-interaction-form>
+      <header><div><p class="cockpit-kicker">Journal</p><h2 id="interaction-dialog-title">Ajouter une interaction</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label><span>Canal</span><select name="channel" required>{INTERACTION_CHANNELS.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Sens</span><select name="direction" required><option value="outgoing">Sortant</option><option value="incoming">Entrant</option></select></label>
+        <label><span>Date réelle</span><input name="occurredAt" type="datetime-local" required /></label>
+        <label><span>Source éventuelle</span><input name="source" maxlength="200" placeholder="Ex. appel direct" /></label>
+        <label class="cockpit-field-wide"><span>Résumé</span><textarea name="summary" rows="4" maxlength="1600" required placeholder="Résumé utile, sans transcription brute"></textarea></label>
+        <label class="cockpit-field-wide"><span>Résultat</span><textarea name="outcome" rows="2" maxlength="800"></textarea></label>
+        <label class="cockpit-field-wide"><span>Prochaine action promise</span><input name="promisedAction" maxlength="240" /></label>
+        <label><span>Date promise</span><input name="promisedDueAt" type="datetime-local" /></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Enregistrer l’interaction</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="task-dialog" aria-labelledby="task-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-task-form>
+      <header><div><p class="cockpit-kicker">Action</p><h2 id="task-dialog-title">Créer une tâche</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label class="cockpit-field-wide"><span>Action</span><input name="title" maxlength="240" required /></label>
+        <label><span>Échéance</span><input name="dueAt" type="datetime-local" required /></label>
+        <label><span>Priorité</span><select name="priority">{PRIORITIES.map((option) => <option value={option.value} selected={option.value === 'normal'}>{option.label}</option>)}</select></label>
+        <label class="cockpit-field-wide"><span>Raison d’attente</span><input name="waitingReason" maxlength="300" /></label>
+        <label class="cockpit-check-field cockpit-field-wide"><input name="isNextAction" type="checkbox" checked /><span>Désigner comme prochaine action du projet</span></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Créer la tâche</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="criterion-dialog" aria-labelledby="criterion-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame cockpit-dialog-wide" data-criterion-form>
+      <header><div><p class="cockpit-kicker">Recherche</p><h2 id="criterion-dialog-title">Ajouter ou réviser un critère</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <input name="supersedesCriterionEventId" type="hidden" />
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label><span>Critère</span><select name="criterionType" required data-criterion-type>{CRITERION_TYPES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Scénario</span><select name="scenario" required>{SCENARIO_TYPES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label class="cockpit-field-wide" data-custom-criterion hidden><span>Libellé contrôlé</span><input name="customLabel" maxlength="100" placeholder="Ex. proximité d’un marché couvert" /></label>
+        <label class="cockpit-field-wide"><span>Valeur</span><textarea name="value" rows="3" maxlength="1000" required></textarea></label>
+        <label><span>Importance</span><select name="importance">{IMPORTANCE_LEVELS.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Flexibilité</span><select name="flexibility">{FLEXIBILITY_LEVELS.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Certitude</span><select name="certainty">{CERTAINTY_LEVELS.map((option) => <option value={option.value} selected={option.value === 'to_confirm'}>{option.label}</option>)}</select></label>
+        <label><span>Rôle futur</span><select name="matchingRole">{MATCHING_ROLES.map((option) => <option value={option.value} selected={option.value === 'unknown'}>{option.label}</option>)}</select></label>
+        <label><span>Date effective</span><input name="effectiveAt" type="date" required /></label>
+        <label><span>Source</span><input name="source" maxlength="240" required placeholder="Ex. confirmé pendant l’appel" /></label>
+        <label class="cockpit-field-wide"><span>Raison de l’évolution</span><input name="reason" maxlength="500" /></label>
+        <label class="cockpit-check-field cockpit-field-wide"><input name="hardValidated" type="checkbox" /><span>Validation humaine explicite comme contrainte dure</span></label>
+        <p class="cockpit-form-hint cockpit-field-wide">Une contrainte n’est dure que si elle est confirmée, essentielle, sans flexibilité, marquée « dur » et validée ici.</p>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Conserver ce nouvel événement</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="stage-dialog" aria-labelledby="stage-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-stage-form>
+      <header><div><p class="cockpit-kicker">Projet</p><h2 id="stage-dialog-title">Changer le stade</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <input name="projectId" type="hidden" /><input name="version" type="hidden" /><input name="projectType" type="hidden" />
+      <div class="cockpit-dialog-body cockpit-fields"><label><span>Nouveau stade</span><select name="stage" required data-stage-options></select></label><label><span>Note de contexte</span><textarea name="reason" rows="3" maxlength="500"></textarea></label></div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Changer le stade</button></footer>
+    </form>
+  </dialog>
+
+  <dialog class="cockpit-dialog" id="export-dialog" aria-labelledby="export-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-export-form>
+      <header><div><p class="cockpit-kicker">Obsidian</p><h2 id="export-dialog-title">Exporter en Markdown</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields">
+        <fieldset class="cockpit-radio-group"><legend>Mode d’identité</legend><label><input type="radio" name="mode" value="with_contacts" checked /><span><strong>Avec coordonnées</strong><small>Pour la mémoire privée locale.</small></span></label><label><input type="radio" name="mode" value="without_contacts" /><span><strong>Sans coordonnées</strong><small>Pour partager un dossier minimisé.</small></span></label></fieldset>
+        <p class="cockpit-form-hint">Le fichier est généré à la demande. Aucun accès direct au vault et aucune URL permanente.</p>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer class="cockpit-export-actions"><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-secondary" type="button" data-export-copy>Copier</button><button class="cockpit-button cockpit-button-primary" type="button" data-export-download>Télécharger .md</button></footer>
+    </form>
+  </dialog>
+</CockpitLayout>
+
+<script>
+  import '../../../scripts/cockpit/client-detail';
+</script>
