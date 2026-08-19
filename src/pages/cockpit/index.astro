@@ -11,6 +11,44 @@ import CockpitLayout from '../../layouts/CockpitLayout.astro';
   <a slot="actions" class="cockpit-button cockpit-button-secondary" href="/cockpit/tim/nouveau">Nouvel accord TIM</a>
   <a slot="actions" class="cockpit-button cockpit-button-primary" href="/cockpit/clients/nouveau">Nouveau dossier</a>
 
+  <section
+    class="cockpit-agentic-briefing"
+    aria-labelledby="agentic-briefing-title"
+    aria-busy="true"
+    data-agentic-briefing
+  >
+    <header class="cockpit-agentic-header">
+      <div class="cockpit-agentic-heading">
+        <div class="cockpit-agentic-status-row">
+          <span class="cockpit-shadow-badge">SHADOW MODE</span>
+          <span class="cockpit-agentic-status" data-agentic-status>Chargement</span>
+        </div>
+        <h2 id="agentic-briefing-title">Briefing LEVOIS</h2>
+        <p class="cockpit-agentic-meta" data-agentic-meta>Lecture de la dernière photographie disponible…</p>
+      </div>
+      <button
+        class="cockpit-button cockpit-button-secondary cockpit-agentic-refresh"
+        type="button"
+        aria-describedby="agentic-briefing-limit"
+        data-agentic-refresh
+        disabled
+      >
+        Actualiser le briefing
+      </button>
+    </header>
+
+    <p class="cockpit-agentic-limit" id="agentic-briefing-limit">
+      Ce briefing observe uniquement des fixtures fictives. Il n’effectue aucune action automatiquement.
+    </p>
+
+    <div class="cockpit-agentic-content" aria-live="polite" aria-atomic="false" data-agentic-content>
+      <div class="cockpit-agentic-state is-loading">
+        <span class="cockpit-spinner" aria-hidden="true"></span>
+        <p>Chargement du briefing Shadow…</p>
+      </div>
+    </div>
+  </section>
+
   <section class="cockpit-workspace" aria-label="File de travail du jour" data-today-root aria-busy="true">
     <div class="cockpit-screen-state is-loading" role="status">
       <span class="cockpit-spinner" aria-hidden="true"></span>

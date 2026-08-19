@@ -514,3 +514,251 @@ a { color: inherit; }
     transition: none !important;
   }
 }
+
+/* Deterministic agentic briefing — fixture-only shadow surface */
+.cockpit-agentic-briefing {
+  min-width: 0;
+  margin-top: 34px;
+  border: 1px solid var(--cockpit-line);
+  border-top: 3px solid var(--cockpit-blue);
+  background: var(--cockpit-white);
+}
+
+.cockpit-agentic-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+}
+
+.cockpit-agentic-heading { min-width: 0; }
+
+.cockpit-agentic-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.cockpit-shadow-badge {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--cockpit-ink);
+  color: var(--cockpit-lime);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.cockpit-agentic-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--cockpit-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cockpit-agentic-status::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cockpit-agentic-status.is-available,
+.cockpit-agentic-status.is-empty { color: #315d19; }
+.cockpit-agentic-status.is-stale,
+.cockpit-agentic-status.is-incomplete { color: #785b00; }
+.cockpit-agentic-status.is-stopped,
+.cockpit-agentic-status.is-failed { color: var(--cockpit-danger); }
+
+.cockpit-agentic-header h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 720;
+  line-height: 1.1;
+  letter-spacing: -.035em;
+}
+
+.cockpit-agentic-meta {
+  margin-top: 8px;
+  color: var(--cockpit-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cockpit-agentic-refresh { flex: 0 0 auto; }
+
+.cockpit-agentic-limit {
+  padding: 14px 24px;
+  border-top: 1px solid var(--cockpit-line);
+  border-bottom: 1px solid var(--cockpit-line);
+  background: var(--cockpit-paper);
+  color: var(--cockpit-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.cockpit-agentic-content { min-width: 0; padding: 0 24px 24px; }
+
+.cockpit-agentic-summary {
+  padding: 20px 0 18px;
+  color: var(--cockpit-ink);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cockpit-agentic-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cockpit-agentic-item {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 14px;
+  padding: 20px 0;
+  border-top: 1px solid var(--cockpit-line);
+}
+
+.cockpit-agentic-rank {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cockpit-ink);
+  color: var(--cockpit-lime);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.cockpit-agentic-item-body { min-width: 0; }
+
+.cockpit-agentic-item-heading {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cockpit-agentic-item-heading h3 {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 17px;
+  font-weight: 740;
+  line-height: 1.35;
+}
+
+.cockpit-agentic-item-heading .cockpit-badge { flex: 0 0 auto; }
+
+.cockpit-agentic-explanation {
+  max-width: 72ch;
+  margin-top: 8px;
+  color: var(--cockpit-ink);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.cockpit-agentic-action {
+  display: grid;
+  gap: 3px;
+  margin-top: 12px;
+  padding: 11px 12px;
+  background: var(--cockpit-paper);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cockpit-agentic-action strong { font-size: 11px; }
+
+.cockpit-agentic-source {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 14px;
+  margin-top: 10px;
+  color: var(--cockpit-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.cockpit-agentic-source span { overflow-wrap: anywhere; }
+.cockpit-agentic-source span + span::before { content: '·'; margin-right: 14px; }
+
+.cockpit-agentic-item > .cockpit-button {
+  align-self: center;
+  min-height: 44px;
+}
+
+.cockpit-agentic-omitted {
+  padding: 14px 0 0;
+  border-top: 1px solid var(--cockpit-line);
+  color: var(--cockpit-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cockpit-agentic-state {
+  min-height: 112px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0 0;
+  color: var(--cockpit-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.cockpit-agentic-state.is-stale,
+.cockpit-agentic-state.is-incomplete { color: #6c531b; }
+.cockpit-agentic-state.is-stopped,
+.cockpit-agentic-state.is-failed { color: var(--cockpit-danger); }
+.cockpit-agentic-state.is-empty { color: #315d19; }
+
+@media (max-width: 900px) {
+  .cockpit-agentic-refresh { flex: 0 0 auto; }
+}
+
+@media (max-width: 620px) {
+  .cockpit-agentic-header {
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 16px;
+  }
+
+  .cockpit-agentic-refresh { width: 100%; }
+  .cockpit-agentic-limit { padding: 13px 16px; }
+  .cockpit-agentic-content { padding: 0 16px 20px; }
+  .cockpit-agentic-summary { padding-top: 18px; }
+
+  .cockpit-agentic-item {
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .cockpit-agentic-item-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .cockpit-agentic-item > .cockpit-button {
+    grid-column: 2;
+    width: 100%;
+  }
+
+  .cockpit-agentic-source { display: grid; }
+  .cockpit-agentic-source span + span::before { content: none; }
+}

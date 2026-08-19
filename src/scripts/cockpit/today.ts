@@ -1,4 +1,10 @@
-import { requestJson } from './api';
+import { CockpitApiError, requestJson } from './api';
+import {
+  presentBriefing,
+  presentBriefingFailure,
+  type BriefingItemPresentation,
+  type BriefingPresentation,
+} from './agentic-briefing-presenter';
 import { PRIORITIES, labelFor } from './options';
 import { badge, formatDate, linkButton, node, renderError, renderLoading, requiredElement } from './ui';
 
@@ -46,6 +52,138 @@ type TodayPayload = {
 };
 
 const root = requiredElement<HTMLElement>('[data-today-root]');
+const agenticRoot = requiredElement<HTMLElement>('[data-agentic-briefing]');
+const agenticContent = requiredElement<HTMLElement>('[data-agentic-content]', agenticRoot);
+const agenticStatus = requiredElement<HTMLElement>('[data-agentic-status]', agenticRoot);
+const agenticMeta = requiredElement<HTMLElement>('[data-agentic-meta]', agenticRoot);
+const agenticRefresh = requiredElement<HTMLButtonElement>('[data-agentic-refresh]', agenticRoot);
+let pendingBriefingRun = false;
+let pendingBriefingRunKey: string | undefined;
+let lastBriefing: BriefingPresentation | undefined;
+
+function newIdempotencyKey(): string {
+  if (typeof crypto.randomUUID === 'function') return crypto.randomUUID();
+  return `agentic-briefing-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function setAgenticBusy(label: string): void {
+  agenticRoot.setAttribute('aria-busy', 'true');
+  agenticStatus.className = 'cockpit-agentic-status is-loading';
+  agenticStatus.textContent = label;
+  agenticMeta.textContent = 'Exécution manuelle et déterministe sur fixtures fictives.';
+  agenticRefresh.disabled = true;
+  agenticRefresh.textContent = pendingBriefingRun ? 'Actualisation…' : 'Actualiser le briefing';
+  const state = node('div', { className: 'cockpit-agentic-state is-loading' });
+  state.append(
+    node('span', { className: 'cockpit-spinner', attrs: { 'aria-hidden': 'true' } }),
+    node('p', { text: pendingBriefingRun ? 'Calcul du briefing Shadow…' : 'Chargement du briefing Shadow…' }),
+  );
+  agenticContent.replaceChildren(state);
+}
+
+function priorityTone(priority: BriefingItemPresentation['priority']): 'neutral' | 'info' | 'warning' | 'danger' {
+  if (priority === 'urgent') return 'danger';
+  if (priority === 'high') return 'warning';
+  if (priority === 'normal') return 'info';
+  return 'neutral';
+}
+
+function renderBriefingItem(item: BriefingItemPresentation): HTMLLIElement {
+  const row = node('li', { className: 'cockpit-agentic-item' });
+  const rank = node('span', { className: 'cockpit-agentic-rank', text: String(item.rank), attrs: { 'aria-hidden': 'true' } });
+  const body = node('div', { className: 'cockpit-agentic-item-body' });
+  const heading = node('div', { className: 'cockpit-agentic-item-heading' });
+  heading.append(node('h3', { text: item.referenceLabel }), badge(item.priorityLabel, priorityTone(item.priority)));
+  body.append(
+    heading,
+    node('p', { className: 'cockpit-agentic-explanation', text: item.explanation }),
+  );
+
+  const action = node('p', { className: 'cockpit-agentic-action' });
+  action.append(
+    node('strong', { text: 'Action humaine proposée' }),
+    node('span', { text: item.suggestedHumanAction }),
+  );
+  body.append(action);
+
+  const source = node('p', { className: 'cockpit-agentic-source' });
+  source.append(node('span', { text: item.sourceLabel }));
+  if (item.signalCount > 1) source.append(node('span', { text: `${item.signalCount} signaux regroupés` }));
+  body.append(source);
+
+  row.append(rank, body);
+  if (item.href) row.append(linkButton('Ouvrir', item.href));
+  return row;
+}
+
+function renderBriefing(presentation: BriefingPresentation): void {
+  lastBriefing = presentation;
+  agenticRoot.dataset.state = presentation.state;
+  agenticRoot.setAttribute('aria-busy', 'false');
+  agenticStatus.className = `cockpit-agentic-status is-${presentation.state}`;
+  agenticStatus.textContent = presentation.statusLabel;
+  agenticMeta.textContent = presentation.generatedAt
+    ? `Photographie au ${formatDate(presentation.generatedAt, true)}`
+    : 'Exécution manuelle uniquement.';
+  agenticRefresh.textContent = 'Actualiser le briefing';
+  agenticRefresh.disabled = pendingBriefingRun || presentation.state === 'stopped';
+
+  if (presentation.state !== 'available') {
+    const state = node('div', { className: `cockpit-agentic-state is-${presentation.state}` });
+    state.append(node('p', { text: presentation.summary }));
+    agenticContent.replaceChildren(state);
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  fragment.append(node('p', { className: 'cockpit-agentic-summary', text: presentation.summary }));
+  const list = node('ol', { className: 'cockpit-agentic-list' });
+  for (const item of presentation.items) list.append(renderBriefingItem(item));
+  fragment.append(list);
+  if (presentation.omittedCount > 0) {
+    fragment.append(node('p', {
+      className: 'cockpit-agentic-omitted',
+      text: `${presentation.omittedCount} autre${presentation.omittedCount > 1 ? 's' : ''} anomalie${presentation.omittedCount > 1 ? 's' : ''} reste${presentation.omittedCount > 1 ? 'nt' : ''} dans la file détaillée.`,
+    }));
+  }
+  agenticContent.replaceChildren(fragment);
+}
+
+async function loadBriefing(showLoading = true): Promise<void> {
+  if (showLoading) setAgenticBusy('Chargement');
+  try {
+    const payload = await requestJson<unknown>('/api/cockpit/agentic/briefing/current');
+    renderBriefing(presentBriefing(payload));
+  } catch (error) {
+    const code = error instanceof CockpitApiError ? error.code : undefined;
+    renderBriefing(presentBriefingFailure(code));
+  }
+}
+
+async function runBriefing(): Promise<void> {
+  if (pendingBriefingRun) return;
+  pendingBriefingRun = true;
+  pendingBriefingRunKey ??= newIdempotencyKey();
+  setAgenticBusy('Actualisation');
+  try {
+    await requestJson('/api/cockpit/agentic/briefing/run', {
+      method: 'POST',
+      idempotencyKey: pendingBriefingRunKey,
+      body: { fixtureOnly: true, fixtureId: 'agentic-a1-v1' },
+    });
+    pendingBriefingRunKey = undefined;
+    await loadBriefing(false);
+  } catch (error) {
+    const code = error instanceof CockpitApiError ? error.code : undefined;
+    renderBriefing(presentBriefingFailure(code));
+  } finally {
+    pendingBriefingRun = false;
+    agenticRefresh.textContent = 'Actualiser le briefing';
+    agenticRefresh.disabled = lastBriefing?.state === 'stopped';
+  }
+}
+
+agenticRefresh.addEventListener('click', () => void runBriefing());
 
 function itemHref(item: WorkItem | MissingAction): string {
   if (item.timAgreementId) return `/cockpit/tim/dossier?id=${encodeURIComponent(item.timAgreementId)}`;
@@ -148,4 +286,5 @@ async function loadToday(): Promise<void> {
   }
 }
 
+void loadBriefing();
 void loadToday();
