@@ -200,6 +200,21 @@ const ACTION_TEMPLATES: Record<string, string> = {
   REVIEW_TERMINAL_NEXT_ACTION: "Vérifier puis clôturer ou réaffecter manuellement la tâche.",
 };
 
+export function renderBriefingTemplates(
+  reasonCode: string,
+  suggestedActionCode: string,
+): { explanation: string; suggestedHumanAction: string } {
+  const definition = Object.values(RULES).find((rule) => (
+    rule.reasonCodes.includes(reasonCode) && rule.actions.includes(suggestedActionCode)
+  ));
+  const explanation = EXPLANATION_TEMPLATES[reasonCode];
+  const suggestedHumanAction = ACTION_TEMPLATES[suggestedActionCode];
+  if (!definition || !explanation || !suggestedHumanAction) {
+    fail("CP_RESULT_INVALID", "briefing template codes do not form an allowlisted A1 pair");
+  }
+  return { explanation, suggestedHumanAction };
+}
+
 function fail(code: ErrorCode, message: string): never {
   throw new AgenticContractError(code, message);
 }
@@ -254,6 +269,10 @@ function clone<T>(value: T): T {
 
 function validateLogicalBudget(value: unknown): Record<(typeof REQUIRED_BUDGET_KEYS)[number], number> {
   const budget = requireRecord(value, "logicalBudget");
+  const unknownKey = Object.keys(budget).find((key) => !REQUIRED_BUDGET_KEYS.includes(key as (typeof REQUIRED_BUDGET_KEYS)[number]));
+  if (unknownKey || Object.keys(budget).length !== REQUIRED_BUDGET_KEYS.length) {
+    fail("CP_CONTRACT_INVALID", "logicalBudget must use exactly the closed A1 counters");
+  }
   const result = {} as Record<(typeof REQUIRED_BUDGET_KEYS)[number], number>;
   for (const key of REQUIRED_BUDGET_KEYS) {
     const amount = budget[key];
@@ -330,8 +349,9 @@ const FORBIDDEN_PII_KEYS = new Set([
 
 function scanForPii(value: unknown, seen: Set<object>): boolean {
   if (typeof value === "string") {
-    return /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(value)
-      || /(?:\+33|0)[1-9](?:[ .-]?\d{2}){4}/.test(value);
+    if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(value)) return true;
+    if (/^sha256:[0-9a-f]{64}$/i.test(value)) return false;
+    return /(?<![A-Za-z0-9])(?:\+33|0)[1-9](?:[ .-]?\d{2}){4}(?![A-Za-z0-9])/.test(value);
   }
   if (typeof value !== "object" || value === null) return false;
   if (seen.has(value)) return false;
@@ -545,17 +565,19 @@ export function evaluateSwitches(inputValue: UnknownRecord): { allowed: boolean;
     ...capabilities.map((capability) => ["capability", capability]),
   ] as Array<[string, string]>;
 
+  const applicable: Switch[] = [];
   for (const [scopeKind, scopeKey] of required) {
     const entry = switches.find((candidate) => candidate.scopeKind === scopeKind && candidate.scopeKey === scopeKey);
+    if (entry) applicable.push(entry);
     if (!entry || entry.state !== "enabled") {
       return {
         allowed: false,
         blockingScope: `${scopeKind}:${scopeKey}`,
-        fingerprint: switchFingerprint(switches),
+        fingerprint: switchFingerprint(applicable),
       };
     }
   }
-  return { allowed: true, fingerprint: switchFingerprint(switches) };
+  return { allowed: true, fingerprint: switchFingerprint(applicable) };
 }
 
 export function checkpointMission(missionValue: UnknownRecord, checkpointValue: UnknownRecord): Mission {
@@ -1011,7 +1033,12 @@ function findingComparator(left: Finding, right: Finding): number {
   const priorityRank = { urgent: 0, high: 1, normal: 2, low: 3 } as const;
   const priority = priorityRank[left.proposedPriority] - priorityRank[right.proposedPriority];
   if (priority !== 0) return priority;
-  const signal = RULES[left.ruleId].signalClass - RULES[right.ruleId].signalClass;
+  const signalClass = (finding: Finding): number => (
+    finding.reasonCode === "TIM_DEADLINE_OVERDUE"
+      ? 2
+      : RULES[finding.ruleId].signalClass
+  );
+  const signal = signalClass(left) - signalClass(right);
   if (signal !== 0) return signal;
   const leftDue = left.dueAt === null ? Number.POSITIVE_INFINITY : Date.parse(left.dueAt);
   const rightDue = right.dueAt === null ? Number.POSITIVE_INFINITY : Date.parse(right.dueAt);
@@ -1108,6 +1135,7 @@ export function composeBriefing(inputValue: UnknownRecord): UnknownRecord {
   const items = selected.map((entries, index) => {
     const primary = entries[0];
     const findingRefs = [...new Set(entries.map((finding) => finding.findingId))].sort();
+    const copy = renderBriefingTemplates(primary.reasonCode, primary.suggestedActionCode);
     return {
       briefingItemId: `BRI-${stableHash(`${missionId}:${primary.scopeKind}:${primary.scopeId}`)}`,
       rank: index + 1,
@@ -1115,9 +1143,9 @@ export function composeBriefing(inputValue: UnknownRecord): UnknownRecord {
       scopeId: primary.scopeId,
       primaryRuleId: primary.ruleId,
       reasonCode: primary.reasonCode,
-      explanation: EXPLANATION_TEMPLATES[primary.reasonCode],
+      explanation: copy.explanation,
       suggestedActionCode: primary.suggestedActionCode,
-      suggestedHumanAction: ACTION_TEMPLATES[primary.suggestedActionCode],
+      suggestedHumanAction: copy.suggestedHumanAction,
       signalCount: entries.length,
       findingRefs,
       source: {

@@ -41,13 +41,19 @@ class SqliteStatement {
 
 export class SqliteD1 {
   readonly raw = new DatabaseSync(":memory:");
+  readonly preparedSql: string[] = [];
 
   constructor() {
     this.raw.exec("PRAGMA foreign_keys = ON;");
   }
 
   prepare(sql: string): SqliteStatement {
+    this.preparedSql.push(sql);
     return new SqliteStatement(this, sql);
+  }
+
+  clearPreparedSql(): void {
+    this.preparedSql.length = 0;
   }
 
   async batch(statements: D1PreparedStatement[]) {

@@ -37,6 +37,7 @@ import {
   listTimAgreements,
 } from "../../../src/lib/cockpit/server/queries";
 import { generateClientMarkdown } from "../../../src/lib/cockpit/markdown-export";
+import { dispatchAgenticRequest } from "../../_lib/cockpit/agentic";
 
 interface Params extends Record<string, unknown> {
   path?: string | string[];
@@ -202,6 +203,15 @@ async function dispatch(
   }
 
   const database = requireDatabase(env.COCKPIT_DB);
+  if (path === "agentic" || path.startsWith("agentic/")) {
+    return dispatchAgenticRequest({
+      request,
+      env,
+      actor,
+      database,
+      path: path === "agentic" ? "" : path.slice("agentic/".length),
+    });
+  }
   if (method === "GET" && path === "today") return json({ ok: true, data: await getToday(database) });
   if (method === "GET" && path === "clients") {
     const url = new URL(request.url);

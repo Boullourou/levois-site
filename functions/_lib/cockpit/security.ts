@@ -9,6 +9,7 @@ export interface CockpitEnv {
   COCKPIT_ALLOWED_SUB?: string;
   COCKPIT_CSRF_SECRET?: string;
   COCKPIT_AUDIT_SECRET?: string;
+  COCKPIT_AGENTIC_FIXTURE_ONLY?: string;
   CF_ACCESS_TEAM_DOMAIN?: string;
   CF_ACCESS_AUD?: string;
 }

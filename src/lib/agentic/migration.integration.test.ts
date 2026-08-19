@@ -262,7 +262,7 @@ describe("agentic A1 migration 0007", () => {
       `).run(
         "TRACE-FX-001", "mission", "MSN-FX-OPS-001", 1, "MSN-FX-OPS-001",
         "2030-01-15T08:00:04.000Z", "CORRELATION-MSN-FX-OPS-001",
-        "control_plane", "CONTROL-PLANE-A1", "OPS-01", "mission_closed",
+        "control_plane", "CONTROL-PLANE-A1", "OPS-01", "mission_completed",
         1, 1, 1, "TRACE-IDEMPOTENCY-FX-001", "sha256:trace-payload-001",
         "policy-a1.v1", "redaction-a1.v1",
       );
@@ -271,6 +271,44 @@ describe("agentic A1 migration 0007", () => {
         .run("TRACE-FX-001")).toThrow();
       expect(() => database.raw.prepare("DELETE FROM agent_trace WHERE id = ?")
         .run("TRACE-FX-001")).toThrow();
+    } finally {
+      database.close();
+    }
+  });
+
+  it("rejects mission and switch trace streams without their required parent", () => {
+    const database = new SqliteD1();
+    try {
+      applyMigrations(database, migrations);
+      expect(() => database.raw.prepare(`
+        INSERT INTO agent_trace (
+          id, stream_kind, stream_id, sequence_no, mission_id,
+          occurred_at, correlation_id, actor_kind, actor_id, agent_id,
+          entry_kind, attempt_no, execution_epoch, restore_epoch,
+          idempotency_key, payload_hash, policy_version, redaction_version
+        ) VALUES (?, 'mission', ?, 1, NULL, ?, ?, 'control_plane', ?, 'OPS-01',
+                  'mission_created', 1, 1, 1, ?, ?, ?, ?)
+      `).run(
+        "TRACE-FX-ORPHAN-MISSION", "MSN-FX-MISSING",
+        "2030-01-15T08:00:00.000Z", "CORRELATION-ORPHAN-MISSION",
+        "CONTROL-PLANE-A1", "TRACE-IDEMPOTENCY-ORPHAN-MISSION",
+        "sha256:trace-orphan-mission", "policy-a1.v1", "redaction-a1.v1",
+      )).toThrow();
+
+      expect(() => database.raw.prepare(`
+        INSERT INTO agent_trace (
+          id, stream_kind, stream_id, sequence_no, switch_id,
+          occurred_at, correlation_id, actor_kind, actor_id,
+          entry_kind, restore_epoch, idempotency_key, payload_hash,
+          policy_version, redaction_version
+        ) VALUES (?, 'control_switch', ?, 1, NULL, ?, ?, 'human', ?,
+                  'switch_applied', 1, ?, ?, ?, ?)
+      `).run(
+        "TRACE-FX-ORPHAN-SWITCH", "SWITCH-FX-MISSING",
+        "2030-01-15T08:00:00.000Z", "CORRELATION-ORPHAN-SWITCH",
+        "ACTOR-FX-MOUAAD", "TRACE-IDEMPOTENCY-ORPHAN-SWITCH",
+        "sha256:trace-orphan-switch", "policy-a1.v1", "redaction-a1.v1",
+      )).toThrow();
     } finally {
       database.close();
     }

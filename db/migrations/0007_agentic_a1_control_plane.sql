@@ -108,10 +108,22 @@ CREATE TABLE agent_mission (
   ),
   CHECK (timeout_at > created_at),
   CHECK (status NOT IN ('waiting_input', 'waiting_approval')),
-  CHECK (status = 'draft' OR control_fingerprint IS NOT NULL),
-  CHECK (status = 'draft' OR planned_at IS NOT NULL),
-  CHECK (status IN ('draft', 'planned') OR assigned_at IS NOT NULL),
-  CHECK (status IN ('draft', 'planned', 'assigned') OR started_at IS NOT NULL),
+  CHECK (
+    status NOT IN ('planned', 'assigned', 'running', 'completed')
+    OR control_fingerprint IS NOT NULL
+  ),
+  CHECK (
+    status NOT IN ('planned', 'assigned', 'running', 'completed')
+    OR planned_at IS NOT NULL
+  ),
+  CHECK (
+    status NOT IN ('assigned', 'running', 'completed')
+    OR assigned_at IS NOT NULL
+  ),
+  CHECK (
+    status NOT IN ('running', 'completed')
+    OR started_at IS NOT NULL
+  ),
   CHECK (
     (
       status IN ('completed', 'failed', 'cancelled')
@@ -233,18 +245,21 @@ CREATE TABLE agent_trace (
   agent_id TEXT CHECK (agent_id IS NULL OR agent_id IN ('OPS-01', 'COS-01')),
 
   entry_kind TEXT NOT NULL CHECK (entry_kind IN (
-    'source_observed',
     'mission_created',
-    'mission_transitioned',
-    'attempt_started',
-    'rule_coverage_recorded',
-    'finding_recorded',
+    'mission_started',
+    'snapshot_read',
+    'rule_evaluated',
+    'finding_produced',
     'briefing_composed',
-    'logical_cost_recorded',
-    'approval_referenced',
+    'mission_completed',
     'error_recorded',
+    'kill_switch_encountered',
+    'mission_cancelled',
+    -- Administrative switch changes use the same ledger without a sixth table.
     'switch_applied',
-    'mission_closed'
+    -- Kept for explicit lifecycle inspection without storing free-form payloads.
+    'mission_transitioned',
+    'logical_cost_recorded'
   )),
 
   attempt_no INTEGER CHECK (attempt_no IS NULL OR attempt_no = 1),
@@ -291,11 +306,17 @@ CREATE TABLE agent_trace (
     CHECK (length(trim(redaction_version)) BETWEEN 1 AND 80),
 
   CHECK (
-    (stream_kind = 'mission' AND mission_id = stream_id)
+    (
+      stream_kind = 'mission'
+      AND mission_id IS NOT NULL
+      AND mission_id = stream_id
+      AND switch_id IS NULL
+    )
     OR
     (
       stream_kind = 'control_switch'
       AND mission_id IS NULL
+      AND switch_id IS NOT NULL
       AND switch_id = stream_id
     )
   ),

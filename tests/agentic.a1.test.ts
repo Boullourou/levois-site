@@ -259,6 +259,21 @@ describe("Phase A1 — closed authority and switches", () => {
     });
   });
 
+  it("does not invalidate OPS when only a COS capability switch changes", async () => {
+    const api = await implementation();
+    const running = advanceToRunning(api);
+    const switches = ENABLED_SWITCHES.map((entry) => entry.scopeKey === "cos.rank"
+      ? { ...entry, state: "stopped", version: 2 }
+      : entry);
+    expect(api.checkpointMission(running, {
+      now: "2026-08-19T08:00:05.000Z",
+      expectedVersion: 4,
+      capabilities: ["ops.read_snapshot", "ops.evaluate_rules"],
+      switches,
+      checkpoint: "before_result_write",
+    })).toEqual(running);
+  });
+
   it("rejects an unknown logical agent", async () => {
     const api = await implementation();
     expectCode(() => api.createMission(missionInputFixture({ logicalAgent: "BUY-01" })), "CP_SCOPE_VIOLATION");
@@ -308,6 +323,9 @@ describe("Phase A1 — closed authority and switches", () => {
     const api = await implementation();
     expectCode(() => api.createMission(missionInputFixture({ logicalBudget: undefined })), "CP_CONTRACT_INVALID");
     expectCode(() => api.createMission(missionInputFixture({ logicalBudget: { findings: 0 } })), "CP_CONTRACT_INVALID");
+    expectCode(() => api.createMission(missionInputFixture({
+      logicalBudget: { ...missionInputFixture().logicalBudget, inventedUnlimitedCounter: 1 },
+    })), "CP_CONTRACT_INVALID");
   });
 
   it("rejects an excessive free payload before admission", async () => {
@@ -484,6 +502,61 @@ describe("Phase A1 — COS-01 deterministic briefing", () => {
     expect(forward.slice(0, 3)).toEqual(["PRJ-FX-I-01", "PRJ-FX-I-02", "PRJ-FX-I-03"]);
   });
 
+  it("ranks an overdue TIM deadline with overdue work before an inconsistency, while a future deadline remains last", async () => {
+    const api = await implementation();
+    const overdueTim = findingFixture({
+      findingId: "FND-FX-ORDER-TIM-OVERDUE",
+      observationFingerprint: "fp:order:tim-overdue",
+      scopeKind: "tim_agreement",
+      scopeId: "TIM-FX-ORDER-OVERDUE",
+      subjectId: "DEADLINE-FX-ORDER-OVERDUE",
+      sourceRef: "DEADLINE-FX-ORDER-OVERDUE",
+      ruleId: "OPS-TIM-DEADLINE-NEAR-006",
+      reasonCode: "TIM_DEADLINE_OVERDUE",
+      proposedPriority: "high",
+      suggestedActionCode: "REVIEW_TIM_DEADLINE",
+      dueAt: OVERDUE,
+    });
+    const inconsistency = findingFixture({
+      findingId: "FND-FX-ORDER-INCONSISTENCY",
+      observationFingerprint: "fp:order:inconsistency",
+      scopeId: "PRJ-FX-ORDER-INCONSISTENCY",
+      subjectId: "TSK-FX-ORDER-INCONSISTENCY",
+      sourceRef: "TSK-FX-ORDER-INCONSISTENCY",
+      ruleId: "OPS-INCONSISTENCY-007",
+      reasonCode: "TERMINAL_SCOPE_WITH_OPEN_NEXT_ACTION",
+      proposedPriority: "high",
+      suggestedActionCode: "REVIEW_TERMINAL_NEXT_ACTION",
+    });
+    const withoutNextAction = findingFixture({
+      findingId: "FND-FX-ORDER-NEXT-ACTION",
+      observationFingerprint: "fp:order:next-action",
+      scopeId: "PRJ-FX-ORDER-NEXT-ACTION",
+      sourceRef: "PRJ-FX-ORDER-NEXT-ACTION",
+    });
+    const nearTim = findingFixture({
+      findingId: "FND-FX-ORDER-TIM-NEAR",
+      observationFingerprint: "fp:order:tim-near",
+      scopeKind: "tim_agreement",
+      scopeId: "TIM-FX-ORDER-NEAR",
+      subjectId: "DEADLINE-FX-ORDER-NEAR",
+      sourceRef: "DEADLINE-FX-ORDER-NEAR",
+      ruleId: "OPS-TIM-DEADLINE-NEAR-006",
+      reasonCode: "TIM_DEADLINE_NEAR",
+      proposedPriority: "normal",
+      suggestedActionCode: "REVIEW_TIM_DEADLINE",
+      dueAt: FUTURE,
+    });
+
+    expect(compose(api, [nearTim, inconsistency, withoutNextAction, overdueTim]).items
+      .map((entry: Record<string, any>) => entry.scopeId)).toEqual([
+      "TIM-FX-ORDER-OVERDUE",
+      "PRJ-FX-ORDER-INCONSISTENCY",
+      "PRJ-FX-ORDER-NEXT-ACTION",
+      "TIM-FX-ORDER-NEAR",
+    ]);
+  });
+
   it("selects at most seven items and records omitted groups", async () => {
     const api = await implementation();
     const briefing = compose(api, CASE_I_TEN_FINDINGS);
@@ -563,6 +636,17 @@ describe("Phase A1 — security, privacy and threat cases", () => {
     poisoned.projects[0].email = "fixture-canary@example.invalid";
     expectCode(() => runOpsSnapshot(api, poisoned), "CP_PII_POLICY_VIOLATION");
     expectCode(() => api.assertNoPii(poisoned), "CP_PII_POLICY_VIOLATION");
+  });
+
+  it("distinguishes technical digest substrings from standalone phone numbers", async () => {
+    const api = await implementation();
+    expect(() => api.assertNoPii({
+      sourceHash: "sha256:aa0612345678bb",
+      exactTechnicalHash: `sha256:0612345678${"a".repeat(54)}`,
+      opaqueId: "AMISSIONa0612345678bFIXTURE",
+    })).not.toThrow();
+    expectCode(() => api.assertNoPii({ value: "0612345678" }), "CP_PII_POLICY_VIOLATION");
+    expectCode(() => api.assertNoPii({ value: "06 12 34 56 78" }), "CP_PII_POLICY_VIOLATION");
   });
 
   it("emits no PII, free client text or address in findings and briefing", async () => {
