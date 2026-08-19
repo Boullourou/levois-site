@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:cockpit": "vitest run src/lib/cockpit functions/_lib/cockpit/security.test.ts tests/cockpit-api.test.ts",
     "test:cockpit:security": "vitest run functions/_lib/cockpit/security.test.ts tests/cockpit-api.test.ts",
-    "test:agentic": "vitest run tests/agentic.a1.test.ts",
+    "test:agentic": "vitest run tests/agentic.a1.test.ts src/lib/cockpit/server/agentic-snapshot.test.ts",
     "dev:cockpit": "npm run build && wrangler pages dev dist --local --persist-to .wrangler/state/cockpit --ip 127.0.0.1 --port 8788 --compatibility-date 2026-03-02 --d1 COCKPIT_DB=00000000-0000-0000-0000-000000000000 --binding COCKPIT_LOCAL_BYPASS=1",
     "db:cockpit:migrate:local": "wrangler d1 migrations apply levois-cockpit-local --local --config wrangler.cockpit.toml --persist-to .wrangler/state/cockpit",
     "db:cockpit:seed:local": "wrangler d1 execute levois-cockpit-local --local --config wrangler.cockpit.toml --persist-to .wrangler/state/cockpit --file db/fixtures/cockpit-v1.sql",
