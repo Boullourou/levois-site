@@ -1,0 +1,98 @@
+flowchart TB
+    People[Acquéreurs, vendeurs, relations, TIM, candidats]
+    Mouaad[Mouaad\nDirigeant et décideur]
+
+    subgraph Channels[Canaux]
+        Content[Contenus et bouche-à-oreille]
+        Public[Site public et parcours]
+        Manual[Email, téléphone et saisie manuelle]
+    end
+
+    subgraph Core[Autorité opérationnelle]
+        Contracts[Contrats d'entrée versionnés]
+        D1[D1 canonique\nfaits, projets, tâches, décisions, TIM]
+        Events[Événements métier\nversion, causalité, idempotence]
+        Cockpit[Cockpit privé\nlecture, commandes, approbations]
+        CommandGate[Command gateway déterministe\nautorité, version et idempotence]
+    end
+
+    subgraph Plane[Control plane]
+        Goals[Objectifs et missions]
+        Policy[Permissions et politiques]
+        Budget[Budgets, timeouts et kill switches]
+        Trace[Journal causal et coûts]
+        Approval[File d'approbation]
+    end
+
+    subgraph Agents[Neuf rôles logiques — tranche 1 : COS-01 et OPS-01]
+        COS[COS-01 Chief of Staff\nactif minimal]
+        OPS[OPS-01 Opérations\npremier spécialiste actif]
+        BUY[BUY-01 Acquéreur\ndifféré]
+        SEL[SEL-01 Vendeur\ndifféré]
+        MKT[MKT-01 Marché\ndifféré]
+        GROW[GROW-01 Croissance\ndifféré]
+        PROD[PROD-01 Produit et QA\ndifféré]
+        FIN[FIN-01 Finance et TIM\ndifféré]
+        TRUST[TRUST-01 Conformité\ndifféré]
+    end
+
+    subgraph Runtime[Exécution bornée]
+        Cloud[Cloud léger\ncontrôles et tâches courtes]
+        Isolated[Runtime local ou isolé\nmissions lourdes et fichiers]
+        Tools[Connecteurs allowlistés]
+    end
+
+    subgraph Memory[Mémoires non concurrentes]
+        Obsidian[Obsidian\nstratégie validée]
+        GitHub[GitHub\nproduit et architecture]
+        Market[Mémoire marché\nsources et fraîcheur]
+        Media[Mémoire média\ndroits et usages]
+    end
+
+    People --> Channels
+    Channels --> Contracts
+    Contracts --> D1
+    D1 --> Events
+    Events -->|déclencheurs autorisés de missions| Goals
+    Mouaad -->|objectifs explicites| Goals
+    D1 --> Cockpit
+    Cockpit --> Mouaad
+    Mouaad --> Cockpit
+
+    Goals --> COS
+    COS --> OPS
+    COS --> BUY
+    COS --> SEL
+    COS --> MKT
+    COS --> GROW
+    COS --> PROD
+    COS --> FIN
+    COS --> TRUST
+
+    Policy --> Agents
+    Budget --> Runtime
+    Agents --> Runtime
+    Runtime --> Trace
+    Runtime --> Approval
+    Approval --> Cockpit
+    Cockpit -->|approbation explicite| Approval
+    Approval -->|preuve scellée| CommandGate
+    Cockpit -->|déclenchement séparé par Mouaad| CommandGate
+    CommandGate -->|commande métier nommée revalidée| D1
+
+    Obsidian -. doctrine et snapshots .-> Agents
+    GitHub -. prompts, docs et tests .-> Agents
+    Market -. sources autorisées .-> MKT
+    Media -. assets autorisés .-> GROW
+
+    TRUST -. contrôle et mise en attente .-> Approval
+    Trace -. audit sans PII .-> Mouaad
+
+    classDef human fill:#f5e9d6,stroke:#715b3e,color:#241b11
+    classDef authority fill:#dfeee8,stroke:#315f50,color:#17352c
+    classDef agent fill:#e7e6f5,stroke:#504b7a,color:#25223f
+    classDef control fill:#e8eef5,stroke:#49657c,color:#1d3445
+    class People,Mouaad human
+    class Contracts,D1,Events,Cockpit authority
+    class COS,OPS,BUY,SEL,MKT,GROW,PROD,FIN,TRUST agent
+    class Goals,Policy,Budget,Trace,Approval control

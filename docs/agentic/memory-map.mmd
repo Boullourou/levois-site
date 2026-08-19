@@ -1,0 +1,66 @@
+flowchart TB
+    Source[Source autorisée et figée]
+    Fact[Déclaration source ou fait observé\nprovenance, date et portée]
+    Proposal[Proposition agentique]
+    Decision[Décision humaine]
+    Command[Commande déterministe validée\nautorité, version et idempotence]
+    Event[Événement métier]
+    Current[Projection courante reconstruisible]
+
+    subgraph Operational[D1 opérationnelle, autorité métier]
+        People[Personnes et consentements]
+        Projects[Projets et critères]
+        Work[Tâches, interactions et décisions]
+        Tim[Accords TIM et états]
+    end
+
+    subgraph Strategic[Obsidian stratégique]
+        Doctrine[Doctrine et méthodes]
+        Durable[Décisions durables et plans]
+        Learning[Apprentissages validés]
+    end
+
+    subgraph Product[GitHub produit]
+        Docs[Architecture et ADR]
+        Prompts[Prompts et politiques versionnés]
+        Tests[Code, tests et migrations]
+    end
+
+    subgraph Specialized[Mémoires spécialisées]
+        Market[Marché\nDVF, exports, snapshots, fraîcheur]
+        Media[Média\noriginaux, droits, usages]
+    end
+
+    subgraph Trace[Journal des agents, non souverain]
+        Mission[Mission, agent et sources]
+        Execution[Outils, durée, coût et erreurs]
+        Approval[Approbation et résultat]
+    end
+
+    Source --> Fact
+    Mission --> Execution
+    Fact --> Execution
+    Execution --> Proposal
+    Proposal --> Decision
+    Decision --> Command
+    Command --> Event
+    Event --> Current
+    Current --> Operational
+
+    Operational -. snapshot validé .-> Strategic
+    Strategic -. doctrine versionnée .-> Proposal
+    Product -. contrats et tests .-> Proposal
+    Market -. preuves sourcées .-> Fact
+    Media -. droits et restrictions .-> Proposal
+
+    Decision --> Approval
+    Execution --> Approval
+
+    Restore[Restauration]
+    Reconcile[Réconciliation avant reprise]
+    Restore --> Reconcile
+    Reconcile --> Operational
+    Reconcile -. aucun rejeu externe automatique .-> Trace
+
+    Stale[Version ou fraîcheur dépassée]
+    Stale -->|bloque| Proposal

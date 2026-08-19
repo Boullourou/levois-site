@@ -1,0 +1,66 @@
+flowchart LR
+    Signal[Signal faible ou entrée volontaire]
+    Intake[Collecte minimale et provenance]
+    Value[Première valeur et limites]
+    Activate{Activation volontaire ?}
+    Triage[Qualification et triage]
+    Prepare[Préparation par agent]
+    Review{Validation Mouaad requise ?}
+    Human[Conversation ou décision humaine]
+    Artifact[Artefact interne ou work item agentique\njamais task_created]
+    Command[Commande métier nommée]
+    Follow[Suivi, tâche et échéance]
+    Outcome[Résultat observé]
+    Learn[LEVOIS Lab anonymisé]
+    Improve[Contenu, produit ou méthode amélioré]
+    Close[Clôture sans relance]
+    Wait[Attente d'information]
+    Fail[Échec visible et fallback manuel]
+
+    Signal --> Intake --> Value --> Activate
+    Activate -->|non| Close
+    Activate -->|oui| Triage --> Prepare --> Review
+    Review -->|oui| Human
+    Review -->|non, action interne bornée| Artifact --> Outcome
+    Human --> Command --> Follow --> Outcome --> Learn --> Improve
+    Prepare -->|source absente ou périmée| Wait
+    Wait -->|information reçue| Prepare
+    Wait -->|expiration| Close
+    Prepare -->|outil ou politique en échec| Fail
+    Fail --> Human
+    Review -->|rejet| Close
+
+    subgraph Buyer[Acquéreur]
+        B1[Critères proposés]
+        B2[Scénarios confirmés]
+        B3[Annonce analysée]
+        B4[Visite et retour]
+        B1 --> B2 --> B3 --> B4
+    end
+
+    subgraph Seller[Vendeur]
+        S1[Situation ou audit]
+        S2[Rendez-vous préparé]
+        S3[Décision commerciale humaine]
+        S4[Suivi]
+        S1 --> S2 --> S3 --> S4
+    end
+
+    subgraph TIM[Accord TIM : trois axes indépendants]
+        T0[Agrégat Accord TIM]
+        T1[Axe accord]
+        T2[Axe opération]
+        T3[Axe rémunération]
+        T4[Paiement confirmé]
+        T0 --> T1
+        T0 --> T2
+        T0 --> T3
+        T3 -->|montant dû confirmé| T4
+    end
+
+    Human -. selon cible .-> B1
+    Human -. selon cible .-> S1
+    Human -. selon opération .-> T0
+    B4 --> Outcome
+    S4 --> Outcome
+    T4 --> Outcome
