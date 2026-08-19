@@ -27,6 +27,7 @@ pnpm-debug.log*
 .gstack/
 .wrangler/
 .impeccable/
+.local/asset-audit/
 .astro/content-assets.mjs
 .astro/content-modules.mjs
 .astro/content.d.ts
