@@ -335,6 +335,68 @@ describe("Agentic A1 server orchestration", () => {
     });
   });
 
+  it("invalidates a completed briefing when a restore drill bumps switch fencing epochs", async () => {
+    await enableAll(sqlite);
+    const run = await runAgenticBriefing(sqlite.asD1(), {
+      fixtureOnly: true,
+      fixtureId: AGENTIC_A1_FIXTURE_ID,
+    }, context("run-before-restore-drill"));
+    expect(run.briefing.state).toBe("available");
+
+    sqlite.raw.exec(`
+      UPDATE agent_control_switch
+      SET restore_epoch = restore_epoch + 1,
+          version = version + 1,
+          reason_code = 'A2_RESTORE_DRILL',
+          decided_at = '2026-08-19T08:10:00.000Z'
+    `);
+
+    await expect(getCurrentAgenticBriefing(sqlite.asD1())).resolves.toMatchObject({
+      state: "stale",
+      reasonCode: "CP_CONTROL_CHANGED",
+      items: [],
+    });
+    expect(sqlite.raw.prepare(`
+      SELECT status, close_reason FROM agent_mission WHERE id = ?
+    `).get(run.cosMission!.missionId)).toEqual({ status: "completed", close_reason: "completed" });
+  });
+
+  it("simulates J0, J+1, J+3 and J+7 shadow briefings without changing business data", async () => {
+    await enableAll(sqlite);
+    const before = businessSnapshot(sqlite);
+    const days = [
+      "2026-08-19T08:00:00.000Z",
+      "2026-08-20T08:00:00.000Z",
+      "2026-08-22T08:00:00.000Z",
+      "2026-08-26T08:00:00.000Z",
+    ];
+    const selections: string[][] = [];
+
+    for (const [index, day] of days.entries()) {
+      const result = await runAgenticBriefing(sqlite.asD1(), {
+        fixtureOnly: true,
+        fixtureId: AGENTIC_A1_FIXTURE_ID,
+      }, {
+        ...context(`run-a2-multiday-${index}`),
+        now: day,
+        clock: () => day,
+      });
+      expect(result.briefing.state).toBe("available");
+      expect(result.briefing.items.length).toBeGreaterThan(0);
+      expect(result.briefing.items.length).toBeLessThanOrEqual(7);
+      expect(result.briefing.items.every((item) => item.explanation && item.source.snapshotId)).toBe(true);
+      selections.push(result.briefing.items.map((item) => `${item.scopeKind}:${item.scopeId}:${item.primaryRuleId}`));
+    }
+
+    expect(selections[1]).toEqual(selections[0]);
+    expect(selections[2]).toContain("project:PRJ-FX-B:OPS-TASK-OVERDUE-002");
+    expect(selections[2]).not.toEqual(selections[0]);
+    expect(selections[3]).toContain("tim_agreement:TIM-FX-T:OPS-TASK-OVERDUE-002");
+    expect(selections[3]).not.toEqual(selections[2]);
+    expect(businessSnapshot(sqlite)).toEqual(before);
+    expect(sqlite.raw.prepare("SELECT count(*) AS count FROM agent_mission").get()).toEqual({ count: 8 });
+  });
+
   it("collapses a light concurrent double click onto one OPS/COS mission pair", async () => {
     await enableAll(sqlite);
     const input = { fixtureOnly: true as const, fixtureId: AGENTIC_A1_FIXTURE_ID };

@@ -113,7 +113,7 @@ async function readClosedBody(
 
 function requiredIdempotencyKey(request: Request): string {
   const key = request.headers.get("Idempotency-Key")?.trim() ?? "";
-  if (!SAFE_CODE.test(key)) {
+  if (!SAFE_CODE.test(key) || key.length < 8) {
     throw new DomainError(400, "CP_CONTRACT_INVALID", "Une clé d'idempotence opaque est requise.");
   }
   if (PHONE_SHAPED_PII.test(key)) {
@@ -125,6 +125,28 @@ function requiredIdempotencyKey(request: Request): string {
 function assertFixtureReadActivation(env: CockpitEnv): void {
   if (env.COCKPIT_AGENTIC_FIXTURE_ONLY !== "1") {
     throw new DomainError(403, "CP_SCOPE_VIOLATION", "Les artefacts fixture A1 sont indisponibles dans cet environnement.");
+  }
+}
+
+function assertPreviewCanary(env: CockpitEnv): void {
+  if (env.COCKPIT_AGENTIC_PREVIEW_ENFORCED !== "1") return;
+
+  if (env.COCKPIT_ENVIRONMENT?.trim().toLowerCase() !== "preview") {
+    throw new DomainError(403, "CP_SCOPE_VIOLATION", "Le mode A2 exige un environnement preview.");
+  }
+
+  const previewD1Id = env.COCKPIT_AGENTIC_PREVIEW_D1_ID?.trim().toLowerCase();
+  if (!previewD1Id) {
+    throw new DomainError(503, "CP_CONFIG_INCOMPLETE", "L'identifiant D1 preview n'est pas configuré.");
+  }
+
+  const allowlist = csv(env.COCKPIT_AGENTIC_PREVIEW_D1_ALLOWLIST).map((value) => value.toLowerCase());
+  if (allowlist.length && !allowlist.includes(previewD1Id)) {
+    throw new DomainError(403, "CP_SCOPE_VIOLATION", "L'identifiant D1 preview n'est pas autorisé.");
+  }
+
+  if (!/^[a-f0-9-]{8,64}$/.test(previewD1Id)) {
+    throw new DomainError(400, "CP_CONTRACT_INVALID", "L'identifiant D1 preview est malformé.");
   }
 }
 
@@ -313,6 +335,7 @@ export async function dispatchAgenticRequest(input: AgenticDispatchInput): Promi
   const { request, env, actor, database, path } = input;
   const method = request.method.toUpperCase();
   assertAgenticOwner(actor, env);
+  assertPreviewCanary(env);
 
   if (method === "GET" && path === "briefing/current") {
     assertNoQuery(request);
@@ -369,6 +392,14 @@ export async function dispatchAgenticRequest(input: AgenticDispatchInput): Promi
     return json({
       ok: true,
       data: {
+        system: switches.every((entry) => entry.effectiveState === "enabled") ? "active" : "stopped",
+        environment: env.COCKPIT_ENVIRONMENT?.trim().toLowerCase() || "local",
+        mode: "SHADOW",
+        previewD1: env.COCKPIT_AGENTIC_PREVIEW_D1_ID ? "allowlisted" : "not_configured",
+        fixtureOnly: true,
+        shadowMode: true,
+        monetaryCostMinor: 0,
+        externalActionsEnabled: false,
         items: switches,
       },
     });

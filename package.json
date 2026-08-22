@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:cockpit": "vitest run src/lib/cockpit functions/_lib/cockpit/security.test.ts tests/cockpit-api.test.ts",
     "test:cockpit:security": "vitest run functions/_lib/cockpit/security.test.ts tests/cockpit-api.test.ts",
-    "test:agentic": "vitest run tests/agentic.a1.test.ts tests/agentic-api.test.ts src/lib/agentic/migration.integration.test.ts src/lib/cockpit/server/agentic-snapshot.test.ts src/lib/cockpit/server/agentic-service.integration.test.ts src/scripts/cockpit/agentic-briefing-presenter.test.ts",
+    "test:agentic": "vitest run tests/agentic.a1.test.ts tests/agentic-api.test.ts tests/agentic-a2-gate.test.ts src/lib/agentic/migration.integration.test.ts src/lib/cockpit/server/agentic-snapshot.test.ts src/lib/cockpit/server/agentic-service.integration.test.ts src/scripts/cockpit/agentic-briefing-presenter.test.ts",
     "dev:cockpit": "npm run build && wrangler pages dev dist --local --persist-to .wrangler/state/cockpit --ip 127.0.0.1 --port 8788 --compatibility-date 2026-03-02 --d1 COCKPIT_DB=00000000-0000-0000-0000-000000000000 --binding COCKPIT_LOCAL_BYPASS=1",
     "dev:agentic": "npm run build && wrangler pages dev dist --local --persist-to .wrangler/state/agentic-a1 --ip 127.0.0.1 --port 8789 --compatibility-date 2026-03-02 --d1 COCKPIT_DB=00000000-0000-0000-0000-000000000000 --binding COCKPIT_LOCAL_BYPASS=1 --binding COCKPIT_AGENTIC_FIXTURE_ONLY=1",
     "db:cockpit:migrate:local": "wrangler d1 migrations apply levois-cockpit-local --local --config wrangler.cockpit.toml --persist-to .wrangler/state/cockpit",

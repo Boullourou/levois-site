@@ -23,8 +23,34 @@ type Advisor = {
 };
 
 type AdvisorPayload = { items?: Advisor[] } | Advisor[];
+type AgenticSwitch = {
+  scopeKind?: string;
+  scopeKey?: string;
+  effectiveState?: 'enabled' | 'stopped';
+  present?: boolean;
+};
+type AgenticSwitchPayload = {
+  system?: string;
+  environment?: string;
+  mode?: string;
+  previewD1?: string;
+  fixtureOnly?: boolean;
+  shadowMode?: boolean;
+  monetaryCostMinor?: number;
+  externalActionsEnabled?: boolean;
+  items?: AgenticSwitch[];
+};
+type AgenticBriefingPayload = {
+  state?: string;
+  missionId?: string | null;
+  generatedAt?: string | null;
+  reasonCode?: string | null;
+  fixtureOnly?: boolean;
+  shadowMode?: boolean;
+};
 
 const root = requiredElement<HTMLElement>('[data-advisor-list]');
+const agenticHealthRoot = requiredElement<HTMLElement>('[data-agentic-health]');
 const form = requiredElement<HTMLFormElement>('[data-advisor-form]');
 let pendingIdempotencyKey: string | undefined;
 
@@ -75,6 +101,63 @@ async function loadAdvisors(): Promise<void> {
   }
 }
 
+function switchState(switches: AgenticSwitch[], kind: string, key: string): string {
+  const current = switches.find((entry) => entry.scopeKind === kind && entry.scopeKey === key);
+  if (!current?.present) return 'Arrêté';
+  return current.effectiveState === 'enabled' ? 'Actif' : 'Arrêté';
+}
+
+async function loadAgenticHealth(): Promise<void> {
+  renderLoading(agenticHealthRoot, 'Lecture de l’état Agentic OS…');
+  try {
+    const [switchPayload, briefing] = await Promise.all([
+      requestJson<AgenticSwitchPayload>('/api/cockpit/agentic/switches'),
+      requestJson<AgenticBriefingPayload>('/api/cockpit/agentic/briefing/current'),
+    ]);
+    const switches = switchPayload.items ?? [];
+    const card = node('article', { className: 'cockpit-record-card cockpit-agentic-health-card' });
+    const header = node('div', { className: 'cockpit-record-header' });
+    const copy = node('div');
+    copy.append(
+      node('p', { className: 'cockpit-record-kicker', text: 'Agentic OS' }),
+      node('h2', { text: 'Pilot readiness Shadow' }),
+    );
+    header.append(copy, badge(switchPayload.system === 'active' ? 'Actif' : 'Arrêté', switchPayload.system === 'active' ? 'success' : 'neutral'));
+
+    const details = node('dl', { className: 'cockpit-record-details' });
+    addLabeledValue(details, 'Environnement', switchPayload.environment || 'Non renseigné');
+    addLabeledValue(details, 'Mode', switchPayload.mode === 'SHADOW' ? 'SHADOW' : 'Indisponible');
+    addLabeledValue(details, 'D1 preview', switchPayload.previewD1 === 'allowlisted' ? 'Allowlistée' : 'Non configurée');
+    addLabeledValue(details, 'Dernière mission', briefing.missionId || 'Aucune');
+    addLabeledValue(details, 'Dernier état', briefing.state || 'Indisponible');
+    addLabeledValue(details, 'Dernière erreur', briefing.reasonCode || 'Aucune');
+    addLabeledValue(details, 'Global', switchState(switches, 'global', 'global'));
+    addLabeledValue(details, 'OPS-01', switchState(switches, 'agent', 'OPS-01'));
+    addLabeledValue(details, 'COS-01', switchState(switches, 'agent', 'COS-01'));
+    addLabeledValue(details, 'Coût actuel', `${(switchPayload.monetaryCostMinor ?? 0) / 100} €`);
+    addLabeledValue(details, 'Actions externes', switchPayload.externalActionsEnabled ? 'Actives' : 'Aucune');
+    card.append(header, details);
+    agenticHealthRoot.replaceChildren(card);
+    agenticHealthRoot.setAttribute('aria-busy', 'false');
+  } catch (error) {
+    const card = node('article', { className: 'cockpit-record-card cockpit-agentic-health-card' });
+    const header = node('div', { className: 'cockpit-record-header' });
+    const copy = node('div');
+    copy.append(
+      node('p', { className: 'cockpit-record-kicker', text: 'Agentic OS' }),
+      node('h2', { text: 'Pilot readiness Shadow' }),
+    );
+    header.append(copy, badge('Arrêté', 'neutral'));
+    const details = node('dl', { className: 'cockpit-record-details' });
+    addLabeledValue(details, 'État', error instanceof Error ? error.message : 'Indisponible');
+    addLabeledValue(details, 'Coût actuel', '0 €');
+    addLabeledValue(details, 'Actions externes', 'Aucune');
+    card.append(header, details);
+    agenticHealthRoot.replaceChildren(card);
+    agenticHealthRoot.setAttribute('aria-busy', 'false');
+  }
+}
+
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
   if (!form.reportValidity()) return;
@@ -116,3 +199,4 @@ document.querySelectorAll<HTMLDialogElement>('dialog').forEach((dialog) => {
   dialog.addEventListener('click', handleDialogBackdrop);
 });
 void loadAdvisors();
+void loadAgenticHealth();

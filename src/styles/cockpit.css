@@ -727,6 +727,15 @@ a { color: inherit; }
 .cockpit-agentic-state.is-failed { color: var(--cockpit-danger); }
 .cockpit-agentic-state.is-empty { color: #315d19; }
 
+.cockpit-agentic-health {
+  margin: 0 0 24px;
+  min-width: 0;
+}
+
+.cockpit-agentic-health-card {
+  border-style: dashed;
+}
+
 @media (max-width: 900px) {
   .cockpit-agentic-refresh { flex: 0 0 auto; }
 }

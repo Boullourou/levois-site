@@ -20,6 +20,13 @@ import CockpitLayout from '../../layouts/CockpitLayout.astro';
     </div>
   </aside>
 
+  <section class="cockpit-agentic-health" data-agentic-health aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status">
+      <span class="cockpit-spinner" aria-hidden="true"></span>
+      <p>Lecture de l’état Agentic OS…</p>
+    </div>
+  </section>
+
   <section class="cockpit-list-root" data-advisor-list aria-live="polite" aria-busy="true">
     <div class="cockpit-screen-state is-loading" role="status">
       <span class="cockpit-spinner" aria-hidden="true"></span>

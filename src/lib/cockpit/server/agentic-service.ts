@@ -389,6 +389,7 @@ function pureSwitches(switches: StoredSwitch[]): Array<Record<string, unknown>> 
     scopeKey: entry.scopeKey,
     state: entry.state,
     version: entry.version,
+    restoreEpoch: entry.restoreEpoch,
   }));
 }
 

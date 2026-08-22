@@ -529,12 +529,13 @@ type Switch = {
   scopeKey: string;
   state: string;
   version: number;
+  restoreEpoch: number;
 };
 
 function switchFingerprint(switches: Switch[]): string {
   const material = [...switches]
     .sort((left, right) => `${left.scopeKind}:${left.scopeKey}`.localeCompare(`${right.scopeKind}:${right.scopeKey}`))
-    .map((entry) => `${entry.scopeKind}:${entry.scopeKey}:${entry.state}:${entry.version}`)
+    .map((entry) => `${entry.scopeKind}:${entry.scopeKey}:${entry.state}:${entry.version}:${entry.restoreEpoch}`)
     .join("|");
   return `ctrl:${stableHash(material)}`;
 }
@@ -556,6 +557,7 @@ export function evaluateSwitches(inputValue: UnknownRecord): { allowed: boolean;
       scopeKey: requireString(entry.scopeKey, "switch.scopeKey", 128),
       state,
       version: requireVersion(entry.version, "switch.version"),
+      restoreEpoch: entry.restoreEpoch === undefined ? 1 : requireVersion(entry.restoreEpoch, "switch.restoreEpoch"),
     };
   }) : [];
 
