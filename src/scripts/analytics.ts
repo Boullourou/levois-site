@@ -1,53 +1,103 @@
 import posthog from 'posthog-js/dist/module.slim';
 import {
-  cleanAnalyticsUrl,
   cleanPath,
   isAuditEvent,
+  isFormResultEvent,
   journeyForPath,
   linkPlacement,
   safeAuditProperties,
+  safeFormResultProperties,
+  sanitizeAutomaticProperties,
 } from '../lib/analytics';
+import {
+  ATTRIBUTION_STORAGE_KEY,
+  attributionFromVisit,
+  mergeAttribution,
+  parseStoredAttribution,
+} from '../lib/attribution';
 
 const config = document.querySelector<HTMLElement>('[data-levois-analytics]');
 const token = config?.dataset.token?.trim();
 const apiHost = config?.dataset.host?.trim() || 'https://eu.i.posthog.com';
-const optOutKey = 'levois_analytics_opt_out';
+const consentKey = 'levois_analytics_consent_v1';
+const legacyOptOutKey = 'levois_analytics_opt_out';
+const globalPrivacyControl = (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
+
+type AnalyticsConsent = 'accepted' | 'refused' | 'unset';
+
+function readConsent(): AnalyticsConsent {
+  if (globalPrivacyControl) return 'refused';
+  try {
+    if (localStorage.getItem(legacyOptOutKey) === '1') return 'refused';
+    const value = localStorage.getItem(consentKey);
+    return value === 'accepted' || value === 'refused' ? value : 'unset';
+  } catch {
+    return 'refused';
+  }
+}
+
+function writeConsent(value: Exclude<AnalyticsConsent, 'unset'>) {
+  try {
+    localStorage.setItem(consentKey, value);
+    if (value === 'refused') localStorage.setItem(legacyOptOutKey, '1');
+    else localStorage.removeItem(legacyOptOutKey);
+  } catch {
+    // Sans stockage de la préférence, la mesure reste désactivée.
+  }
+}
+
+try {
+  const current = attributionFromVisit(window.location.href, document.referrer);
+  const first = parseStoredAttribution(sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY));
+  sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(mergeAttribution(first, current)));
+} catch {
+  // L'attribution bornée est facultative et n'empêche jamais la navigation.
+}
 
 function setPreferenceStatus() {
-  const refused = localStorage.getItem(optOutKey) === '1';
+  const preference = readConsent();
   document.querySelectorAll<HTMLElement>('[data-analytics-status]').forEach((node) => {
     node.textContent = !token
-      ? 'La mesure d’audience n’est pas encore active.'
-      : refused
-      ? 'La mesure d’audience est désactivée sur cet appareil.'
-      : 'La mesure d’audience anonyme est active sur cet appareil.';
+      ? 'La mesure d’audience n’est pas active sur ce site.'
+      : globalPrivacyControl
+      ? 'La mesure d’audience est désactivée par votre signal de confidentialité.'
+      : preference === 'accepted'
+      ? 'La mesure d’audience est activée avec votre accord sur cet appareil.'
+      : preference === 'refused'
+      ? 'La mesure d’audience est refusée sur cet appareil.'
+      : 'La mesure d’audience reste désactivée tant que vous ne l’acceptez pas.';
   });
-  document.querySelectorAll<HTMLButtonElement>('[data-analytics-optout]').forEach((button) => {
-    button.disabled = !token;
-    button.textContent = refused ? 'Réactiver la mesure d’audience' : 'Refuser la mesure d’audience';
+  document.querySelectorAll<HTMLButtonElement>('[data-analytics-accept]').forEach((button) => {
+    button.disabled = !token || globalPrivacyControl || preference === 'accepted';
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-analytics-refuse]').forEach((button) => {
+    button.disabled = globalPrivacyControl || preference === 'refused';
   });
 }
 
 document.addEventListener('click', (event) => {
-  const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-analytics-optout]');
+  const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-analytics-accept], [data-analytics-refuse]');
   if (!button) return;
-  const refused = localStorage.getItem(optOutKey) === '1';
-  if (refused) {
-    localStorage.removeItem(optOutKey);
+  if (button.matches('[data-analytics-accept]')) {
+    writeConsent('accepted');
     window.location.reload();
   } else {
-    localStorage.setItem(optOutKey, '1');
-    if (token) posthog.opt_out_capturing();
+    const wasActive = readConsent() === 'accepted';
+    writeConsent('refused');
+    // En mode cookieless "always", PostHog ignore opt_out_capturing(). Le
+    // rechargement détruit donc l'instance après que le garde de capture a été
+    // fermé ; aucun événement de sortie n'est émis pendant ce rechargement.
+    if (token && wasActive) {
+      window.location.reload();
+      return;
+    }
     setPreferenceStatus();
   }
 });
 
 setPreferenceStatus();
 
-const privacyOptOut = localStorage.getItem(optOutKey) === '1';
-const globalPrivacyControl = (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
-
-if (token && !privacyOptOut && !globalPrivacyControl) {
+if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
   posthog.init(token, {
     api_host: apiHost,
     ui_host: 'https://eu.posthog.com',
@@ -56,11 +106,11 @@ if (token && !privacyOptOut && !globalPrivacyControl) {
     person_profiles: 'never',
     autocapture: false,
     capture_pageview: true,
-    capture_pageleave: true,
+    capture_pageleave: false,
     capture_dead_clicks: false,
     capture_exceptions: false,
     capture_heatmaps: false,
-    capture_performance: true,
+    capture_performance: false,
     disable_session_recording: true,
     disable_surveys: true,
     respect_dnt: true,
@@ -68,20 +118,13 @@ if (token && !privacyOptOut && !globalPrivacyControl) {
     mask_all_element_attributes: true,
     before_send(event) {
       if (!event?.properties) return event;
-      const currentUrl = cleanAnalyticsUrl(event.properties.$current_url);
-      const referrer = cleanAnalyticsUrl(event.properties.$referrer);
-      if (currentUrl) event.properties.$current_url = currentUrl;
-      else delete event.properties.$current_url;
-      if (referrer) event.properties.$referrer = referrer;
-      else delete event.properties.$referrer;
-      delete event.properties.$referring_domain;
-      event.properties.page_path = cleanPath(window.location.pathname);
-      event.properties.journey = journeyForPath(window.location.pathname);
+      event.properties = sanitizeAutomaticProperties(event.properties, window.location.pathname);
       return event;
     },
   });
 
   const capture = (event: string, properties: Record<string, unknown> = {}) => {
+    if (readConsent() !== 'accepted' || globalPrivacyControl) return;
     posthog.capture(event, {
       ...properties,
       page_path: cleanPath(window.location.pathname),
@@ -93,6 +136,12 @@ if (token && !privacyOptOut && !globalPrivacyControl) {
     const detail = (rawEvent as CustomEvent<Record<string, unknown>>).detail ?? {};
     if (!isAuditEvent(detail.event)) return;
     capture(detail.event, safeAuditProperties(detail.event, detail));
+  });
+
+  window.addEventListener('levois:form-result', (rawEvent) => {
+    const detail = (rawEvent as CustomEvent<Record<string, unknown>>).detail ?? {};
+    if (!isFormResultEvent(detail.event)) return;
+    capture(detail.event, safeFormResultProperties(detail));
   });
 
   document.addEventListener('click', (event) => {
@@ -124,7 +173,7 @@ if (token && !privacyOptOut && !globalPrivacyControl) {
   document.addEventListener('submit', (event) => {
     const form = event.target as HTMLFormElement | null;
     if (!form?.matches('form')) return;
-    capture('levois_form_submitted', { form_name: form.dataset.analyticsForm || cleanPath(window.location.pathname) });
+    capture('levois_form_attempted', { form_name: form.dataset.analyticsForm || cleanPath(window.location.pathname) });
   });
 
   let activeMilliseconds = 0;
