@@ -8,10 +8,11 @@ const legalPagePath = fileURLToPath(
 const legalPage = readFileSync(legalPagePath, 'utf8');
 
 describe('mentions légales', () => {
-  it('identifie l’éditeur avec le seul SIREN vérifié', () => {
+  it('distingue le SIREN / RSAC du SIRET encore provisoire', () => {
     expect(legalPage).toContain('SIREN : 824 194 419');
     expect(legalPage).not.toMatch(/\bSIRET\b/i);
     expect(legalPage.replace(/\s/g, '')).not.toContain('82419441900027');
+    expect(legalPage.replace(/\s/g, '')).not.toContain('82419441900043');
   });
 
   it('ne publie pas le bloc factuel SAFTI retiré', () => {
@@ -23,9 +24,12 @@ describe('mentions légales', () => {
     expect(legalPage).not.toContain('ne reçoit ni fonds, ni effets, ni valeurs');
   });
 
-  it('reste sur la seule formulation professionnelle autorisée', () => {
+  it('publie la formulation juridique validée sans employer agent immobilier', () => {
+    expect(legalPage.replace(/\s+/g, ' ')).toContain(
+      'Mouaad Boullourou, entrepreneur individuel, agent commercial immatriculé au RSAC de Chartres sous le numéro 824 194 419.',
+    );
     expect(legalPage).toContain('conseiller immobilier SAFTI à Lèves et alentours');
-    expect(legalPage).not.toMatch(/indépendant|sous mandat|agent commercial|entrepreneur individuel/i);
+    expect(legalPage).not.toMatch(/agent immobilier|indépendant|sous mandat/i);
     expect(legalPage.replace(/\s+/g, ' ')).toContain(
       'ni une agence immobilière autonome, ni un réseau, ni un produit officiellement édité par SAFTI',
     );

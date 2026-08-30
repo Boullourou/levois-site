@@ -79,8 +79,13 @@ describe('public privacy contract', () => {
 
   it('keeps /audit-annonce in questionnaire-only mode', () => {
     const audit = source('src/pages/audit-annonce.astro');
+    const privacy = source('src/pages/confidentialite.astro');
+    const normalizedPrivacy = privacy.replace(/\s+/g, ' ');
     expect(audit).not.toContain("fetch('/api/audit-url/'");
     expect(audit).toContain('La lecture automatique est désactivée');
+    expect(privacy).toContain('actuellement limité à un questionnaire');
+    expect(normalizedPrivacy).toContain('ne l’ouvre pas et ne lit pas automatiquement la page côté serveur');
+    expect(privacy).not.toContain('envoie ponctuellement le lien fourni à notre serveur');
   });
 
   it('preserves real /votre-rue attribution and removes unconfirmed contact promises', () => {
