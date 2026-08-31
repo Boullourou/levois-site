@@ -1,6 +1,6 @@
 # LEVOIS — Phase 2 — Plateforme éditoriale et accueil
 
-**Statut :** livrable éditorial prêt à validation, sans code et sans publication.  
+**Statut :** **VALIDÉE ET CLÔTURÉE** le 31 août 2026, sans code et sans publication.
 **Base de décision :** `docs/strategy/phase-1-validation-direction-generale.md`.  
 **Hors périmètre :** direction artistique, campagne, CRM, BUY OS, script complet de `/ma-recherche`, production massive d’articles, développement et déploiement.
 
@@ -8,19 +8,25 @@
 
 ### Définition publique
 
-> **LEVOIS est une démarche d’aide à la compréhension et à la décision immobilière, appuyée par un ensemble d’outils. Elle est portée par Mouaad Boullourou dans le cadre de son activité de conseiller immobilier SAFTI, auprès des acheteurs comme des vendeurs. LEVOIS n’est ni une agence autonome, ni un réseau, ni un produit officiel SAFTI. Sa définition et ses outils peuvent évoluer avec les usages réels et les preuves disponibles.**
+> **LEVOIS aide les acheteurs et les vendeurs à comprendre leur situation immobilière, à comparer leurs options et à savoir quoi vérifier avant de décider.**
+>
+> **LEVOIS est porté par Mouaad Boullourou dans le cadre de son activité de conseiller immobilier SAFTI à Lèves et alentours.**
+
+Sur les surfaces institutionnelles, juridiques ou destinées à clarifier l’identité, ajouter : **« LEVOIS n’est ni une agence immobilière autonome, ni un réseau, ni un produit officiellement édité par SAFTI. »** Cette précision n’alourdit pas systématiquement la présentation courte destinée au public. La définition et les outils de LEVOIS peuvent évoluer avec les usages réels et les preuves disponibles.
 
 ### Positionnement
 
-> **LEVOIS transforme une situation immobilière difficile à formuler en une lecture claire, nuancée et utilisable pour décider.**
+> **LEVOIS transforme les questions, contraintes et hésitations d’un projet immobilier en une lecture claire, nuancée et utilisable pour décider.**
 
 ### Promesse
 
-> **Vous partez de ce que vous vivez. LEVOIS vous aide à comprendre ce que cela signifie pour votre projet immobilier, ce qui reste incertain et ce qu’il faut vérifier ensuite.**
+> **Vous nous dites ce que vous vivez. LEVOIS vous aide à comprendre ce que cela change pour votre projet immobilier, ce qui reste incertain et ce qu’il faut vérifier avant de décider.**
 
 ### Contrat de valeur
 
-> **Une première lecture utile avant toute demande de coordonnées, puis la possibilité de la corriger, de la conserver ou d’en parler avec Mouaad. Aucun appel automatique.**
+> **Une première lecture utile avant toute demande de coordonnées, avec la possibilité de la consulter, de la corriger et, si vous le souhaitez, d’en parler avec Mouaad. Aucun appel automatique.**
+
+L’enregistrement ou l’envoi autonome n’est annoncé que sur une route où la fonction existe réellement.
 
 ## 1. Registre des champs provisoires
 
@@ -29,8 +35,8 @@ Ces champs peuvent être utilisés dans les brouillons, mais bloquent la publica
 | Code | Champ | Valeur de travail autorisée | Porte de publication |
 |---|---|---|---|
 | **P-LEVOIS** | Statut de LEVOIS | Nom du site, de la démarche et des outils de Mouaad ; aucun nom commercial ou enseigne déclaré revendiqué. | RNE et règles d’usage SAFTI si une qualification juridique plus forte est ajoutée. |
-| **P-STATUT** | Statut court | « Mouaad Boullourou, conseiller immobilier SAFTI ». | Omettre « indépendant », « sous mandat », « agent commercial » et RSAC avant justificatifs. |
-| **P-ZONE** | Zone publique principale | « Lèves, Chartres et alentours », formulation de travail validée par la DG. Le noyau officiellement étayé reste « Lèves et alentours ». | Confirmation des communes réellement accompagnées avant publication finale. |
+| **P-STATUT** | Statut court | « Mouaad Boullourou, conseiller immobilier SAFTI ». La qualité d’entrepreneur individuel, d’agent commercial et le RSAC sont réservés aux mentions légales. | Omettre « indépendant » et « sous mandat » tant que ces formulations ne sont pas autorisées. |
+| **ZONE VALIDÉE** | Zone publique principale | « Mouaad Boullourou · Conseiller immobilier SAFTI à Lèves, à Chartres et aux alentours ». Lèves reste l’ancrage principal et Chartres devient immédiatement visible. | Accompagnement effectif des acheteurs et des vendeurs à Chartres confirmé par Mouaad. Cette confirmation ne vaut ni liste exhaustive de communes ni zone de service illimitée. |
 | **P-SIRET** | SIRET | `824 194 419 00043`, provisoire. | Attestation RNE récente ; ne pas publier le numéro fermé. |
 | **P-CANAUX** | Contact | Appel, SMS, email et formulaire proposés, à confirmer. | Confirmation du téléphone/SMS et test de l’email ; ne pas ajouter WhatsApp. |
 | **P-DURÉE** | Premier échange | Environ 15 minutes. | Confirmation opérationnelle avant affichage. |
@@ -84,7 +90,7 @@ Cette ambition ne devient pas une auto-proclamation publique. La preuve se const
 Après une page-réponse ou une expérience, la personne doit pouvoir distinguer :
 
 1. ce qu’elle a déclaré ou ce qui a été observé ;
-2. ce que cela pourrait signifier ;
+2. ce que cela change, semble indiquer ou pourrait signifier, selon le niveau de preuve ;
 3. les autres explications possibles ;
 4. ce qu’il est impossible de conclure ;
 5. l’information encore manquante ;
@@ -103,7 +109,7 @@ Mouaad intervient seulement sur demande explicite. Une demande d’envoi de synt
 | **Relais humain explicite** | Mouaad intervient sur demande ; la page précise ce qu’il reçoit et ce qu’il fait. Aucun appel automatique. |
 | **Évolution traçable** | Contenus et outils évoluent par versions documentées, jamais par prétendu apprentissage invisible sur les utilisateurs. |
 
-Ne constituent pas encore des preuves publiques : « indépendant », « agent commercial », « sous mandat », un RSAC, sept communes desservies, une adresse professionnelle, des horaires, des avis ou un délai de réponse non confirmé.
+Ne constituent pas encore des preuves publiques : « indépendant », « sous mandat », sept communes desservies, une adresse professionnelle, des horaires, des avis ou un délai de réponse non confirmé. La qualité d’entrepreneur individuel, d’agent commercial et le RSAC validés restent réservés aux mentions légales et ne remplacent pas la formulation éditoriale courte.
 
 ## 5. Ton et règles d’énonciation
 
@@ -123,7 +129,7 @@ Ne constituent pas encore des preuves publiques : « indépendant », « agent c
 - **Mouaad** accompagne, relit, répond et échange.
 - **Les données** montrent des observations limitées.
 - **SAFTI** qualifie l’activité professionnelle de Mouaad ; LEVOIS ne parle jamais comme un produit officiel du réseau.
-- Un sujet explicite remplace tout « nous » ambigu.
+- Le « nous » est admis lorsque le contexte identifie sans ambiguïté LEVOIS et Mouaad, notamment dans la promesse centrale ; ailleurs, un sujet explicite reste préférable.
 
 ### 5.3. Structure d’une réponse LEVOIS
 
@@ -140,13 +146,14 @@ Ne constituent pas encore des preuves publiques : « indépendant », « agent c
 - impossible à conclure pour l’instant, information manquante ;
 - ventes enregistrées, échantillon, période, médiane, dispersion, source, limite ;
 - première lecture, synthèse personnelle, prochaine vérification ;
-- modifier ma réponse, conserver ma synthèse, échanger avec Mouaad.
+- modifier ma réponse, consulter ma synthèse, échanger avec Mouaad.
 
 ### 6.2. Vocabulaire interdit ou suspendu
 
 - agence LEVOIS, réseau LEVOIS, produit SAFTI, outil officiel SAFTI ;
 - « méthode éditoriale » comme définition complète de LEVOIS ;
-- indépendant, sous mandat, agent commercial, RSAC ou sept communes tant que non prouvés ;
+- indépendant, sous mandat ou sept communes tant que non prouvés ;
+- entrepreneur individuel, agent commercial et RSAC hors des surfaces juridiques appropriées ;
 - diagnostic certain, vraie valeur, juste prix, estimation automatique, budget validé ;
 - « le marché offre typiquement », « votre prix est trop élevé », « cela prouve que » ;
 - stratégie personnalisée lorsque les réponses ne modifient pas réellement le résultat ;
@@ -162,6 +169,18 @@ Les mots « écart », « signal », « quartile » ou « médiane » sont utili
 ### 7.1. Gabarit
 
 > Vous avez indiqué **[fait déclaré]**. Cela semble rendre **[enjeu]** important dans votre projet. Une conséquence possible serait **[conséquence concrète]**. Mais **[autre explication]** reste possible, et il manque encore **[information]**. La prochaine vérification utile est **[action]**.
+
+La prudence est proportionnée au niveau de preuve :
+
+| Niveau | Formulation de référence |
+|---|---|
+| **Fait déclaré** | « Vous avez indiqué que… » |
+| **Conséquence directement établie** | « Cela change… » |
+| **Interprétation probable** | « Cela semble indiquer… » |
+| **Hypothèse fragile** | « Cela pourrait signifier… » |
+| **Absence de conclusion** | « Impossible à conclure pour l’instant. » |
+
+« Cela pourrait signifier » reste disponible pour une hypothèse fragile ; cette expression n’est ni une formule obligatoire ni le centre de la promesse.
 
 ### 7.2. Règles obligatoires
 
@@ -249,18 +268,63 @@ Tant que ces observations ne sont pas disponibles, les emplacements de cas reste
 
 Les données et explications de l’accueil ainsi que la pédagogie et la restitution de `/situer-ma-vente` font explicitement partie du capital à préserver.
 
+### 9.4. `/ressources` universel dès sa refonte
+
+La version cible de `/ressources` est organisée immédiatement autour de trois familles :
+
+1. **acheter** ;
+2. **vendre** ;
+3. **comprendre l’immobilier local**.
+
+Aucune famille vide n’est affichée et aucun contenu futur n’est promis comme s’il existait déjà. Une famille peut commencer avec peu de destinations, à condition qu’elles soient réelles, utiles et accessibles. Les six ressources vendeuses existantes restent conservées et accessibles.
+
+### 9.5. Déploiement éditorial par deux pilotes
+
+1. Définir le modèle éditorial commun et réécrire les couches structurantes indispensables : accueil, `/ressources`, `/methode` et pédagogie des outils existants.
+2. Réécrire puis prototyper éditorialement deux ressources pilotes :
+   - `/ressources/annonce-vue-peu-de-contacts` ;
+   - `/ressources/retours-de-visite`.
+3. Vérifier avec des utilisateurs réels si la réponse est comprise, si l’activité apporte une information personnelle utile et si la prochaine vérification est claire.
+4. Corriger le modèle à partir de ces observations.
+5. Appliquer ensuite le modèle validé aux quatre autres ressources.
+
+Les six ressources ne sont donc pas réécrites intégralement avant l’apprentissage produit issu des deux pilotes.
+
+### 9.6. Absence de dérive CRM
+
+Les mini-expériences éditoriales ne deviennent pas implicitement un CRM, un gestionnaire de tâches, un espace client, une base de visiteurs ou un outil permanent de suivi d’une commercialisation.
+
+Dans leur première version, grilles, frises et plans personnalisés fonctionnent :
+
+- sans compte ;
+- sans identité de visiteur ;
+- sans stockage distant de données personnelles.
+
+Toute conservation, tout envoi ou toute reprise ultérieure exige une décision produit distincte, un besoin réel et un examen spécifique des données personnelles. La grille des retours de visite n’enregistre aucune identité de visiteur. Le plan de lancement ne comporte ni notifications ni fonctions de gestion de projet.
+
+### 9.7. Conservation, restructuration et suppressions
+
+Toutes les connaissances utiles sont préservées sans sanctuariser définitivement chaque URL. Les six ressources existantes restent sur leurs URL pendant les pilotes et leur transformation. Une fusion ultérieure n’est autorisée que si aucune connaissance n’est perdue, si la destination répond mieux à la situation et si le maillage ainsi que les redirections sont explicites.
+
+Peuvent être supprimés ou réécrits :
+
+- les affirmations non prouvées ou trop absolues ;
+- les seuils présentés comme universels ;
+- les répétitions sans valeur supplémentaire ;
+- les promesses de « test », « grille », « diagnostic » ou « plan » que le format ne délivre pas réellement ;
+- les mentions de mécanismes techniques ou de services désactivés.
+
+La connaissance utile, les sources et les limites ne sont jamais supprimées.
+
 ## 10. Architecture de l’accueil
 
 ### 10.1. Proposition recommandée — premier écran exact
 
-> **Mouaad Boullourou · Conseiller immobilier SAFTI**  
-> **À Lèves, Chartres et alentours¹**
+> **Mouaad Boullourou · Conseiller immobilier SAFTI à Lèves, à Chartres et aux alentours**
 >
 > # Mettre votre projet immobilier au clair avant de décider
 >
-> Acheter, vendre ou comprendre les ventes locales : commencez par la question qui correspond à votre situation.
->
-> LEVOIS est la démarche et les outils portés par Mouaad dans son activité de conseiller immobilier SAFTI pour vous aider à comprendre avant de décider.
+> Acheter, vendre ou comprendre les ventes locales : LEVOIS vous aide à comparer vos options et à savoir quoi vérifier avant de décider.
 >
 > **[Mettre ma recherche au clair]**
 >
@@ -268,9 +332,9 @@ Les données et explications de l’accueil ainsi que la pédagogie et la restit
 > [Voir les ventes autour de moi]  
 > [Contacter Mouaad]
 >
-> Dans les outils, la première lecture est accessible avant vos coordonnées. Aucun appel automatique.
+> Vous consultez votre première lecture avant de laisser vos coordonnées et pouvez corriger vos réponses. Aucun appel automatique.
 
-¹ **P-ZONE :** formulation DG provisoire à confirmer avant publication finale.
+**Zone :** l’accompagnement effectif des acheteurs et des vendeurs à Chartres est confirmé. Cette formulation ne constitue ni une liste exhaustive de communes ni la revendication d’une zone de service illimitée.
 
 ### 10.2. Destinations du premier écran
 
@@ -311,12 +375,12 @@ Cette variante est plus distinctive, mais moins explicite sur le service dans le
 
 | Ordre | Titre et réponse directe | Preuves à afficher | CTA |
 |---|---|---|---|
-| **1** | **Premier écran universel.** Identité, zone, définition courte de LEVOIS et quatre sorties. | Statut SAFTI ; P-ZONE ; valeur avant coordonnées ; aucun appel automatique. | Les quatre actions du §10.1. |
+| **1** | **Premier écran universel.** Identité, zone, définition courte de LEVOIS et quatre sorties. | Statut SAFTI ; zone validée pour Lèves et Chartres sans liste exhaustive ; valeur avant coordonnées ; aucun appel automatique. | Les quatre actions du §10.1. |
 | **2** | **Ce que montrent les ventes observées — et ce qu’elles ne disent pas.** « Les ventes enregistrées donnent un repère local. Elles ne suffisent ni à estimer un bien ni à confirmer un projet. » | DVF 2021–2025, extraction, période, N, maisons/appartements, dispersion, source, licence et limites. | **Voir Lèves** · **Voir Chartres** · **Comprendre la méthode DVF** |
 | **3** | **Une recherche utile commence par ce qu’elle doit changer.** « Plus grand, plus proche ou autrement organisé : le bon critère dépend d’abord de ce que votre logement actuel ne permet plus. » | Cas fait/interprétation ; incertitude explicite ; aucune conclusion automatique. | **Mettre ma recherche au clair** · **Lire la question qui me concerne** |
 | **4** | **Une vente n’appelle pas toujours la même vérification.** « Préparer, relire une annonce ou comprendre des visites sans offre ne demande pas le même point de départ. » | Stades de R05, ressources reliées, résultat avant contact. | **Faire le point sur ma vente** · **Auditer une annonce publiée**, après B02 |
 | **5** | **Partir d’une adresse, sans en faire une estimation.** « Une mutation voisine peut donner un repère. Elle ne dit pas, à elle seule, ce que vaut un bien aujourd’hui. » | Adresse confirmée, type, période, rayon, N, date, géocodeur et limites après B01. | **Voir les ventes autour de moi** · **Lire la méthode** |
-| **6** | **Du vécu à la prochaine vérification.** « LEVOIS sépare ce qui est observé, ce que cela pourrait signifier et ce qu’il faut encore vérifier. » | Un cas acheteur et un cas vendeur réels et anonymisables ; à défaut, module différé. Fait/interprétation/hypothèse/alternative/manque. | **Voir la méthode LEVOIS** |
+| **6** | **Du vécu à la prochaine vérification.** « LEVOIS sépare ce qui est établi, ce qui semble probable, ce qui reste une hypothèse et ce qu’il faut encore vérifier. » | Un cas acheteur et un cas vendeur réels et anonymisables ; à défaut, module différé. Fait/interprétation/hypothèse/alternative/manque. | **Voir la méthode LEVOIS** |
 | **7** | **Qui vous accompagne — et dans quel cadre ?** « Mouaad accompagne acheteurs et vendeurs dans son activité de conseiller immobilier SAFTI. LEVOIS désigne la démarche et les outils qu’il porte. » | Profil SAFTI, identité légale validée et cohérence des surfaces. | **Vérifier qui est Mouaad** |
 | **8** | **Un accompagnement pour l’achat ou pour la vente.** « Choisissez le cadre qui correspond à votre situation ; aucune offre générique ne remplace l’explication du service réel. » | Accompagnement des deux publics confirmé ; détails sous P-STATUT/P-CANAUX. | **Comprendre l’accompagnement à l’achat** · **Comprendre l’accompagnement à la vente** |
 | **9** | **Vous préférez poser directement votre question ?** « Aucun outil n’est obligatoire pour parler avec Mouaad. » | P-CANAUX, P-DURÉE et P-DÉLAI restent non publiés jusqu’à confirmation. | **Contacter Mouaad** |
@@ -349,7 +413,7 @@ La spécification est définie, mais aucune action GBP n’est autorisée tant q
 
 Il s’agit d’un ordre éditorial, pas d’une prescription de direction artistique :
 
-1. nom, statut et P-ZONE ;
+1. nom, statut et zone validée ;
 2. H1 ;
 3. phrase d’orientation ;
 4. définition courte de LEVOIS ;
@@ -400,7 +464,7 @@ La landing poursuit l’idée exacte de la vidéo ; elle ne recommence pas par u
 |---|---|---|---|
 | Recherche « Mouaad Boullourou » | « Mouaad Boullourou, conseiller immobilier SAFTI. Vérifiez son rôle, sa zone, sa démarche et les moyens de le joindre. » | `/mouaad` | **Contacter Mouaad** |
 | Bouton Site GBP | « Acheter, vendre ou comprendre les ventes locales : choisissez ce qui correspond à votre situation, ou contactez directement Mouaad. » | `/` avec UTM GBP | **Choisir ma situation** |
-| Conseiller local | « Mouaad accompagne acheteurs et vendeurs à [P-ZONE]. Découvrez comment commencer et les repères locaux disponibles. » | Accueil ou page exacte | **Acheter** · **Vendre** |
+| Conseiller local | « Mouaad accompagne acheteurs et vendeurs à Lèves, à Chartres et aux alentours. Découvrez comment commencer et les repères locaux disponibles. » | Accueil ou page exacte | **Acheter** · **Vendre** |
 | Prix/ventes locales | « Consultez les ventes observées à [COMMUNE], séparées par type, avec leur période, leur échantillon et leurs limites. » | Lèves/Chartres ; R04 pour l’adresse | **Lire la réponse locale** |
 | Problème vendeur | « [QUESTION DE LA REQUÊTE] : voici ce que ce signal permet de comprendre, ce qu’il ne prouve pas et la prochaine vérification utile. » | Ressource exacte | **Utiliser le format proposé** |
 
@@ -429,7 +493,7 @@ Aucune campagne n’est produite ou lancée dans cette phase.
 
 | Avant | Après |
 |---|---|
-| « LEVOIS, votre agence immobilière nouvelle génération. » | « LEVOIS est une démarche et un ensemble d’outils d’aide à la compréhension et à la décision, portés par Mouaad dans son activité de conseiller immobilier SAFTI. » |
+| « LEVOIS, votre agence immobilière nouvelle génération. » | « LEVOIS aide les acheteurs et les vendeurs à comprendre leur situation immobilière, à comparer leurs options et à savoir quoi vérifier avant de décider. LEVOIS est porté par Mouaad dans le cadre de son activité de conseiller immobilier SAFTI à Lèves et alentours. » |
 | « Quel type de bien et quelle surface recherchez-vous ? » | « Qu’est-ce que votre prochain logement doit rendre plus simple dans votre quotidien ? LEVOIS reliera ensuite ce besoin au type de bien et à la surface. » |
 | « Votre budget est cohérent avec le marché. » | « Votre ratio se situe dans la moitié centrale des ventes historiques retenues. Cela ne suffit pas à confirmer la faisabilité de votre projet. » |
 | « Peu de contacts : votre prix est probablement trop haut. » | « L’intérêt semble se perdre avant le contact. Le prix est une hypothèse parmi d’autres ; il manque encore les données d’ouverture et la comparaison utile. » |
@@ -485,6 +549,8 @@ Publication refusée en présence :
 - d’une restitution identique malgré des réponses différentes ;
 - d’un CTA trompeur ou d’une relance automatique implicite ;
 - d’une confusion LEVOIS/Mouaad/SAFTI ;
+- d’une catégorie vide ou d’un contenu futur présenté comme disponible dans `/ressources` ;
+- d’une mini-expérience imposant un compte, une identité ou un stockage distant de données personnelles sans décision produit distincte ;
 - d’une page locale clonée, d’un jargon décoratif ou d’une promesse non démontrable.
 
 ## 14. Porte de publication
@@ -497,3 +563,159 @@ Ce document autorise la rédaction, pas la mise en ligne. Une surface ne peut ê
 4. ses traitements de données correspondent à la politique affichée ;
 5. ses résultats personnels restent privés ;
 6. sa copy passe le contrôle qualité du §13.
+
+## 15. Décisions acquises pour la future direction artistique
+
+### 15.1. Le site actuel n’est pas une référence visuelle
+
+La future direction artistique n’a aucune obligation de conserver :
+
+- les couleurs actuelles ;
+- les typographies ;
+- les grilles ;
+- les cartes ;
+- les chevrons ;
+- les photographies ;
+- les compositions ;
+- les composants ;
+- les animations ;
+- les codes graphiques actuels.
+
+Le site existant conserve uniquement cinq actifs de fond :
+
+1. une valeur concrète avant les coordonnées ;
+2. une donnée locale reliée à son territoire et à ses limites ;
+3. une incertitude assumée ;
+4. Mouaad comme relais humain lorsque le numérique ne suffit plus ;
+5. une hiérarchie franche avec une action immédiatement compréhensible.
+
+La forme portant ces actifs peut être entièrement reconstruite.
+
+### 15.2. Niveau d’ambition
+
+Les six références visuelles fournies représentent le niveau minimal attendu en matière de :
+
+- qualité perçue ;
+- richesse de composition ;
+- précision typographique ;
+- profondeur visuelle ;
+- qualité des assets ;
+- cohérence des composants ;
+- finition desktop et mobile ;
+- maîtrise du mouvement et des interactions.
+
+Elles ne constituent ni une palette imposée, ni un style à copier, ni une direction déjà choisie.
+
+LEVOIS ne doit pas recevoir une version simplifiée de cette ambition sous prétexte qu’il s’agit d’un site immobilier local.
+
+### 15.3. Phase créative expansive
+
+La première exploration devra produire trois territoires visuels radicalement différents dans :
+
+- leur idée centrale ;
+- leur matière ;
+- leur composition ;
+- leur typographie ;
+- leur iconographie ;
+- leur usage des images ;
+- leur comportement et leur mouvement.
+
+Trois variations de couleurs d’une même interface ne constituent pas trois territoires.
+
+Ces territoires ne doivent pas être fusionnés spontanément. Mouaad doit pouvoir en choisir un avant toute convergence.
+
+La première exploration ne doit pas être limitée prématurément par :
+
+- la facilité de développement ;
+- les composants déjà présents ;
+- les conventions habituelles des sites immobiliers ;
+- une recherche immédiate de prudence ;
+- la volonté de produire trois solutions raisonnables.
+
+Une piste ambitieuse peut ensuite être disciplinée. Elle ne doit pas être affadie avant d’avoir été réellement explorée.
+
+### 15.4. Ce que la DA doit éviter
+
+Ne pas reproduire :
+
+- une esthétique générique de site généré par IA ;
+- une interface froide, mécanique ou excessivement abstraite ;
+- un site d’architecte ou un portfolio créatif déguisé ;
+- des métaphores visuelles que l’utilisateur doit décoder ;
+- une accumulation décorative sans utilité ;
+- une expérience cinématographique qui masque l’information ;
+- des cartes uniformes répétées sur toute la page ;
+- une gamification fondée sur des badges, points ou confettis.
+
+### 15.5. Caractère humain, intuitif et ludique
+
+Le caractère ludique doit provenir principalement :
+
+- de la découverte progressive ;
+- de comparaisons concrètes ;
+- de transformations visibles après une réponse ;
+- du plaisir de voir une situation confuse devenir claire ;
+- de données locales rendues compréhensibles ;
+- de micro-interactions qui montrent ce qui change réellement.
+
+L’interface doit rester immédiatement compréhensible, humaine et utilisable, même lorsque sa réalisation visuelle est exceptionnelle.
+
+### 15.6. Pages informatives
+
+La direction artistique ne doit pas être réservée à l’accueil et aux outils.
+
+Les pages informatives doivent également recevoir :
+
+- une véritable mise en scène éditoriale ;
+- des visualisations utiles ;
+- des comparaisons ;
+- des exemples ;
+- des révélations progressives ;
+- des mini-expériences lorsqu’elles produisent une valeur personnelle ;
+- une composition propre à la question traitée.
+
+Elles ne doivent pas devenir une succession d’articles SEO présentés dans un gabarit uniforme.
+
+### 15.7. Assets propriétaires
+
+La génération d’images et la création d’assets propriétaires peuvent être utilisées généreusement lorsqu’elles renforcent réellement un territoire visuel.
+
+Les images ne doivent être ni décoratives par défaut, ni utilisées pour remplacer une information importante qui doit rester accessible en HTML.
+
+### 15.8. Ordre de travail corrigé
+
+La Phase 3 doit d’abord stabiliser :
+
+- les parcours ;
+- les questions ;
+- les embranchements ;
+- les restitutions ;
+- les états ;
+- les contenus fonctionnels ;
+- les contraintes d’accessibilité et de confidentialité.
+
+Elle ne doit pas imposer prématurément une direction visuelle finale.
+
+Une fois cette spécification fonctionnelle suffisamment stable :
+
+1. ouvrir la phase créative expansive ;
+2. produire les trois territoires ;
+3. fournir trois prévisualisations distinctes ;
+4. choisir un territoire ;
+5. le discipliner sans perdre son idée forte ;
+6. seulement ensuite engager l’implémentation visuelle complète.
+
+Les correctifs de sécurité P0 restent naturellement indépendants de cet ordre.
+
+Aucun développement complet de l’interface ne doit enfermer la future DA avant le choix du territoire.
+
+### 15.9. Autorité et limites
+
+La direction artistique peut reconstruire entièrement la forme, mais elle ne peut pas :
+
+- modifier une promesse validée ;
+- masquer une limite ;
+- rendre une hypothèse certaine ;
+- inverser la hiérarchie des intentions ;
+- bloquer la valeur derrière les coordonnées ;
+- rendre une information critique inaccessible sans animation ou JavaScript.
