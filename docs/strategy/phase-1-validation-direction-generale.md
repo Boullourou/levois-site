@@ -69,17 +69,17 @@ Règle d’application : l’absence de page locale n’interdit jamais de citer
 | **Q03** | Conserver seulement « Mouaad Boullourou, conseiller immobilier SAFTI à Lèves et alentours » jusqu’à autorisation des qualités supplémentaires. | **VALIDÉ** |
 | **Q04** | Agent commercial et RSAC publiés seulement si les justificatifs les portent exactement. | **INFORMATION/PIÈCE À FOURNIR** |
 | **Q05** | Aucun bloc SAFTI détaillé avant validation de la formulation et de la nature exacte des assurances/garanties. | **INFORMATION À FOURNIR** |
-| **Q06** | Réception de clients à une adresse permanente. | **INFORMATION À FOURNIR PAR MOUAAD** |
-| **Q07** | Sans objet si Q06 = non ; sinon adresse et preuves avant publication. | **CONDITIONNEL** |
-| **Q08** | Existence, propriété, lien et état du Google Business Profile. | **INFORMATION À FOURNIR PAR MOUAAD** |
+| **Q06** | Aucun lieu d’accueil physique ouvert au public. | **VALIDÉ PAR MOUAAD** |
+| **Q07** | Sans objet : aucune adresse d’accueil n’est publiée. Aucun horaire ni disponibilité permanente ne sont déduits. | **VALIDÉ / SANS OBJET** |
+| **Q08** | La fiche Google Business Profile existe et Mouaad peut l’administrer. Son lien et sa configuration exacte restent à inspecter avant toute modification distante. | **VALIDÉ POUR EXISTENCE ET ADMINISTRATION** |
 | **Q09** | Liste de travail à confirmer : Lèves, Chartres, Mainvilliers, Lucé, Champhol, Le Coudray et Luisant. | **À CONFIRMER** |
-| **Q10** | Proposition à confirmer : appel, SMS, email et formulaire ; aucun autre canal sans suivi réel. | **À CONFIRMER** |
-| **Q11** | Disponibilité du `07 81 38 01 21` pour appels et SMS. | **À CONFIRMER** |
-| **Q12** | Suivi et test effectif de `mouaad@levois.fr`. | **À CONFIRMER** |
-| **Q13** | Premier échange proposé : environ 15 minutes. | **À CONFIRMER** |
+| **Q10** | Canaux publics confirmés : appel et SMS au `07 81 38 01 21`, email à `mouaad@levois.fr`. Le formulaire reste soumis à sa validation technique ; aucune modalité supplémentaire n’est déduite. | **VALIDÉ POUR APPEL, SMS ET EMAIL** |
+| **Q11** | Le `07 81 38 01 21` peut être publié pour les appels et les SMS. | **VALIDÉ** |
+| **Q12** | `mouaad@levois.fr` est fonctionnel et consulté régulièrement. | **VALIDÉ** |
+| **Q13** | Plusieurs modalités de premier échange sont possibles et convenues avec Mouaad selon la situation et ce qui convient aux personnes concernées. Aucune durée fixe n’est publiée. | **VALIDÉ** |
 | **Q14** | Aucun appel automatique ; un appel suit uniquement une demande explicite ou le choix clair de ce canal. | **VALIDÉ** |
 | **Q15** | Une synthèse peut être demandée/reçue sans appel sur les trois outils lorsqu’elle est techniquement disponible ; aucune promesse prématurée. | **VALIDÉ COMME POLITIQUE CIBLE** |
-| **Q16** | Délai de réponse réellement tenable. | **INFORMATION À FOURNIR** |
+| **Q16** | Aucun délai de réponse n’est publié ou déduit. | **VALIDÉ COMME RÈGLE ÉDITORIALE** |
 | **Q17** | Mouaad accompagne réellement acheteurs et vendeurs. | **VALIDÉ** |
 | **Q18** | Intersession après consentement valable ; session sans consentement ; durée minimale utile après revue. | **VALIDÉ, DURÉE À FIXER** |
 | **Q19** | Aucun cas/témoignage inventé ; aucun module d’expertise terrain avant deux ou trois observations réelles et anonymisables. | **VALIDÉ** |

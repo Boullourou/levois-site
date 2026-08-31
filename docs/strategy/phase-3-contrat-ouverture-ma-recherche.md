@@ -129,10 +129,12 @@ La V1 ne transforme ni budget, surface, zone ni typologie en verdict de faisabil
 Trois sorties restent distinctes :
 
 1. **Consulter ma synthèse** : aucune coordonnée, aucun envoi.
-2. **Recevoir ma synthèse** : transmet la synthèse à l’adresse choisie par la personne et ne crée pas automatiquement une demande adressée à Mouaad.
+2. **Recevoir ma synthèse** : transmet la synthèse à l’adresse email choisie par la personne et ne crée pas automatiquement une demande adressée à Mouaad.
 3. **Demander un échange** : affiche avant confirmation la liste exacte des informations qui seront envoyées à Mouaad.
 
 Aucune information n’est transmise silencieusement d’une finalité à l’autre.
+
+Les canaux publics confirmés sont l’appel et le SMS au `07 81 38 01 21`, ainsi que l’email à `mouaad@levois.fr`. Plusieurs modalités de premier échange sont possibles et sont convenues avec Mouaad selon la situation et ce qui convient aux personnes concernées. Aucune durée fixe, aucun délai de réponse, aucune adresse d’accueil, aucun horaire et aucune disponibilité permanente ne sont annoncés.
 
 La sortie « Recevoir ma synthèse » fait partie de la spécification fonctionnelle. Son activation dans la première version publiée reste conditionnée à :
 
@@ -187,8 +189,7 @@ Si ces conditions ne sont pas satisfaites, consultation et correction restent ac
 1. destination exacte de l’entrée investissement ;
 2. champs exacts transmis lors d’une demande d’échange ;
 3. durée de conservation et procédure de suppression des données volontairement transmises ;
-4. canaux réellement proposés après la restitution ;
-5. architecture exacte entre couche publique indexable et résultat privé.
+4. architecture exacte entre couche publique indexable et résultat privé.
 
 Ces sujets doivent être tranchés avant implémentation ou publication. Ils ne bloquent pas la validation du présent contrat.
 
