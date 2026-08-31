@@ -28,21 +28,22 @@ Sur les surfaces institutionnelles, juridiques ou destinées à clarifier l’id
 
 L’enregistrement ou l’envoi autonome n’est annoncé que sur une route où la fonction existe réellement.
 
-## 1. Registre des champs provisoires
+## 1. Registre des champs factuels et provisoires
 
-Ces champs peuvent être utilisés dans les brouillons, mais bloquent la publication de la surface concernée tant qu’ils ne sont pas confirmés.
+Ce registre distingue les faits validés des champs qui restent provisoires ou conditionnels pour une publication.
 
-| Code | Champ | Valeur de travail autorisée | Porte de publication |
+| Code | Champ | Valeur autorisée | Statut ou porte de publication |
 |---|---|---|---|
 | **P-LEVOIS** | Statut de LEVOIS | Nom du site, de la démarche et des outils de Mouaad ; aucun nom commercial ou enseigne déclaré revendiqué. | RNE et règles d’usage SAFTI si une qualification juridique plus forte est ajoutée. |
 | **P-STATUT** | Statut court | « Mouaad Boullourou, conseiller immobilier SAFTI ». La qualité d’entrepreneur individuel, d’agent commercial et le RSAC sont réservés aux mentions légales. | Omettre « indépendant » et « sous mandat » tant que ces formulations ne sont pas autorisées. |
 | **ZONE VALIDÉE** | Zone publique principale | « Mouaad Boullourou · Conseiller immobilier SAFTI à Lèves, à Chartres et aux alentours ». Lèves reste l’ancrage principal et Chartres devient immédiatement visible. | Accompagnement effectif des acheteurs et des vendeurs à Chartres confirmé par Mouaad. Cette confirmation ne vaut ni liste exhaustive de communes ni zone de service illimitée. |
 | **P-SIRET** | SIRET | `824 194 419 00043`, provisoire. | Attestation RNE récente ; ne pas publier le numéro fermé. |
-| **P-CANAUX** | Contact | Appel, SMS, email et formulaire proposés, à confirmer. | Confirmation du téléphone/SMS et test de l’email ; ne pas ajouter WhatsApp. |
-| **P-DURÉE** | Premier échange | Environ 15 minutes. | Confirmation opérationnelle avant affichage. |
-| **P-DÉLAI** | Réponse | Aucun délai utilisable à ce stade. | Réponse de Mouaad avant toute promesse. |
+| **CANAUX VALIDÉS** | Contact | Appels et SMS au `07 81 38 01 21` ; email à `mouaad@levois.fr`, fonctionnel et consulté régulièrement. | Validé par Mouaad. Le formulaire reste soumis à son test technique. Ne pas ajouter de canal ou de modalité. |
+| **PREMIER ÉCHANGE VALIDÉ** | Modalités et durée | Plusieurs modalités sont possibles et convenues avec Mouaad selon la situation et ce qui convient aux personnes concernées. Aucune durée fixe n’est publiée. | Ne déduire aucune disponibilité permanente ni modalité supplémentaire. |
+| **RÈGLE DÉLAI VALIDÉE** | Réponse | Mouaad répond personnellement ; aucun délai de réponse n’est publié ou déduit. | Aucune promesse temporelle. |
+| **ACCUEIL PHYSIQUE VALIDÉ** | Adresse et accueil | Aucun lieu d’accueil physique ouvert au public. | Ne publier aucune adresse d’accueil, aucun horaire ni disponibilité permanente. |
 | **P-SYNTHÈSE** | Envoi sans appel | Politique cible validée. | N’afficher le CTA que sur une route où l’envoi séparé fonctionne réellement. |
-| **P-GBP** | Google Business Profile | État inconnu. | Aucune création, modification ou copy définitive sans lien, propriété et configuration. |
+| **GBP VALIDÉ** | Google Business Profile | La fiche existe et Mouaad peut l’administrer. | Aucun changement distant sans inventaire préalable de la configuration ; ne déduire ni adresse, ni horaires, ni disponibilité permanente. |
 | **P-MESURE** | Persistance | Intersession après consentement ; session sans consentement. | Durée minimale utile à fixer après revue de confidentialité. |
 | **P-ROUTES** | Promotion des outils | R03, R04, R07 et contact comportent des portes P0. | Ne promouvoir chaque route qu’après sa correction propre. |
 
@@ -382,8 +383,8 @@ Cette variante est plus distinctive, mais moins explicite sur le service dans le
 | **5** | **Partir d’une adresse, sans en faire une estimation.** « Une mutation voisine peut donner un repère. Elle ne dit pas, à elle seule, ce que vaut un bien aujourd’hui. » | Adresse confirmée, type, période, rayon, N, date, géocodeur et limites après B01. | **Voir les ventes autour de moi** · **Lire la méthode** |
 | **6** | **Du vécu à la prochaine vérification.** « LEVOIS sépare ce qui est établi, ce qui semble probable, ce qui reste une hypothèse et ce qu’il faut encore vérifier. » | Un cas acheteur et un cas vendeur réels et anonymisables ; à défaut, module différé. Fait/interprétation/hypothèse/alternative/manque. | **Voir la méthode LEVOIS** |
 | **7** | **Qui vous accompagne — et dans quel cadre ?** « Mouaad accompagne acheteurs et vendeurs dans son activité de conseiller immobilier SAFTI. LEVOIS désigne la démarche et les outils qu’il porte. » | Profil SAFTI, identité légale validée et cohérence des surfaces. | **Vérifier qui est Mouaad** |
-| **8** | **Un accompagnement pour l’achat ou pour la vente.** « Choisissez le cadre qui correspond à votre situation ; aucune offre générique ne remplace l’explication du service réel. » | Accompagnement des deux publics confirmé ; détails sous P-STATUT/P-CANAUX. | **Comprendre l’accompagnement à l’achat** · **Comprendre l’accompagnement à la vente** |
-| **9** | **Vous préférez poser directement votre question ?** « Aucun outil n’est obligatoire pour parler avec Mouaad. » | P-CANAUX, P-DURÉE et P-DÉLAI restent non publiés jusqu’à confirmation. | **Contacter Mouaad** |
+| **8** | **Un accompagnement pour l’achat ou pour la vente.** « Choisissez le cadre qui correspond à votre situation ; aucune offre générique ne remplace l’explication du service réel. » | Accompagnement des deux publics, appels, SMS et email confirmés ; aucune durée fixe. | **Comprendre l’accompagnement à l’achat** · **Comprendre l’accompagnement à la vente** |
+| **9** | **Vous préférez poser directement votre question ?** « Aucun outil n’est obligatoire pour parler avec Mouaad. » | Téléphone, SMS et email validés ; modalités convenues selon la situation ; aucun délai de réponse publié. | **Contacter Mouaad** |
 | **10** | **Sources, limites et questions pratiques.** Origine des données, rôle de LEVOIS, différence repère/estimation et règles de contact. | Auteur, date de vérification, sources primaires et version des données. | Profil, méthode ou contact selon la question. |
 
 ### 10.6. Embranchements
@@ -395,16 +396,16 @@ Cette variante est plus distinctive, mais moins explicite sur le service dans le
 | Vente avec URL | R07 après B02. | Faits extraits validés, réponses guidées et deux actions. | Ressource ou demande de lecture. |
 | Curiosité locale | Page Lèves/Chartres ou méthode → R04 après B01. | Données, période, échantillon et limites. | Acheter, vendre, observer ou contacter : choix explicite. |
 | Vérification de Mouaad | `/mouaad`. | Identité, cadre, zone et démarche. | Contact ou l’une des trois portes. |
-| Question directe | `/contact` après B03/A04. | Aucun outil obligatoire. | Réponse selon P-CANAUX et P-DÉLAI. |
+| Question directe | `/contact` après B03/A04. | Aucun outil obligatoire. | Appel, SMS ou email ; les modalités de l’échange sont convenues avec Mouaad, sans durée ni délai promis. |
 
 ### 10.7. Continuité Google Business Profile
 
-La spécification est définie, mais aucune action GBP n’est autorisée tant que P-GBP reste inconnu.
+La fiche existe et Mouaad peut l’administrer. Aucune action GBP n’est autorisée dans cette phase ; sa configuration exacte doit être inventoriée avant toute future modification.
 
 - Même nom, statut, zone, téléphone, site et services entre GBP, accueil, `/mouaad` et `/contact`.
 - Si la fiche annonce achat et vente, les deux restent immédiatement accessibles.
 - Le CTA acquéreur peut être principal, mais un visiteur GBP n’est jamais forcé dans R03.
-- L’adresse reste masquée sauf confirmation d’un accueil professionnel permanent et autorisé.
+- L’adresse reste masquée : Mouaad a confirmé qu’aucun lieu d’accueil physique n’est ouvert au public.
 - Aucun horaire, avis ou catégorie n’est inventé.
 - URL cible proposée : `/` avec `utm_source=google&utm_medium=organic&utm_campaign=gbp&utm_content=website`.
 - Un choix de porte ou une consultation n’est pas un lead ; seuls appel, message ou demande réussie deviennent une conversion humaine.
