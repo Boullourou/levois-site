@@ -1660,9 +1660,9 @@ import Layout from '../layouts/Layout.astro';
       panneau.innerHTML = `
         <div class="vr-panneau">
           <div class="vr-q-progress">${dots}</div>
-          <p class="vr-q-label">Où vous envoyer votre analyse personnalisée ?</p>
+          <p class="vr-q-label">Souhaitez-vous en parler avec Mouaad&nbsp;?</p>
           <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
-            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
+            Vous pouvez lui transmettre une demande pour qu’il reprenne ce résultat avec vous. Aucun appel automatique.
           </p>
           <form id="vr-lead" method="post" action="/api/lead">
             <input type="hidden" name="type" value="votre-rue" />
@@ -1672,12 +1672,12 @@ import Layout from '../layouts/Layout.astro';
             <input type="hidden" name="periodeDu" value="${esc(model.periodFrom)}" />
             <input type="hidden" name="periodeAu" value="${esc(model.periodTo)}" />
             <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
-            <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
+            <div class="vr-champ"><label for="vr-email">À quelle adresse Mouaad peut-il vous répondre&nbsp;?</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
             <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#58615B">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
-            <label class="vr-consent"><input type="checkbox" id="vr-consent" name="consentement" required /><span>J'accepte que mon adresse confirmée, ce résultat, mes réponses et mes coordonnées soient transmis à Mouaad via Cloudflare et Resend pour traiter ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+            <label class="vr-consent"><input type="checkbox" id="vr-consent" name="consentement" required /><span>J'accepte que les informations renseignées dans ce parcours et mes coordonnées soient transmises à Mouaad via Cloudflare et Resend pour traiter ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
             <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
-            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
+            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Transmettre ma demande à Mouaad</button>
             <button type="button" class="vr-q-back">← Revenir</button>
           </form>
         </div>`;
@@ -1730,8 +1730,8 @@ import Layout from '../layouts/Layout.astro';
         if (rep.ok && data?.ok === true && data?.delivered === true) {
           panneau.innerHTML = `
             <div class="vr-panneau">
-              <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">Votre demande a bien été transmise. Mouaad vous répondra personnellement. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+              <p class="vr-q-label">Votre demande a bien été transmise à Mouaad.</p>
+              <p class="font-sans text-[15px] text-brun leading-relaxed">Aucun appel automatique.</p>
             </div>`;
         } else {
           err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
@@ -1741,7 +1741,7 @@ import Layout from '../layouts/Layout.astro';
         err.textContent = "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
         err.classList.remove('hidden');
       } finally {
-        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir mon analyse personnalisée';
+        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Transmettre ma demande à Mouaad';
       }
     });
   }

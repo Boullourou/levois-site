@@ -58,7 +58,7 @@ describe('public privacy contract', () => {
     expect(privacy).toContain('après votre action explicite');
     expect(privacy).toContain('choisir et confirmer l’adresse proposée');
     expect(privacy).toContain('l’adresse confirmée, le type de bien, la période, le rayon et la taille de l’échantillon');
-    expect(votreRue).toContain("mon adresse confirmée, ce résultat, mes réponses et mes coordonnées");
+    expect(votreRue).toContain("les informations renseignées dans ce parcours et mes coordonnées");
   });
 
   it('never falls back to a GET containing SSR form data when JavaScript is unavailable', () => {
@@ -110,5 +110,10 @@ describe('public privacy contract', () => {
     expect(contact).not.toMatch(/24\s+(?:à|a|–|-)\s+48\s*h/i);
     expect(votreRue).not.toMatch(/24\s+(?:à|a|–|-)\s+48\s*h/i);
     expect(votreRue).toContain('adresse ne peut pas être utilisée dans cet outil');
+    expect(votreRue).toContain('Souhaitez-vous en parler avec Mouaad&nbsp;?');
+    expect(votreRue).toContain('À quelle adresse Mouaad peut-il vous répondre&nbsp;?');
+    expect(votreRue).toContain('Transmettre ma demande à Mouaad');
+    expect(votreRue).toContain('Votre demande a bien été transmise à Mouaad.');
+    expect(votreRue).not.toMatch(/recevoir mon analyse|où vous envoyer votre analyse/i);
   });
 });

@@ -61,6 +61,12 @@ const CHEMINS_ATTRIBUTION = new Set([
   '/ressources/reprendre-commercialisation', '/situer-ma-vente',
   '/situer-ma-vente/resultat', '/votre-rue',
 ]);
+const CHEMINS_RETOUR_FORMULAIRE: Record<string, string> = {
+  contact: '/contact',
+  parcours: '/situer-ma-vente',
+  'votre-rue': '/votre-rue',
+  'audit-annonce': '/audit-annonce',
+};
 
 function json(data: unknown, status = 200, headers?: HeadersInit): Response {
   return new Response(JSON.stringify(data), {
@@ -72,6 +78,84 @@ function json(data: unknown, status = 200, headers?: HeadersInit): Response {
       ...headers,
     },
   });
+}
+
+function estFormulaireNatif(request: Request): boolean {
+  const typeContenu = request.headers.get('content-type')?.split(';', 1)[0]?.trim().toLowerCase() ?? '';
+  return typeContenu === 'application/x-www-form-urlencoded';
+}
+
+function echapperHtml(v: string): string {
+  return v.replace(/[&<>"']/g, (caractere) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  })[caractere] ?? caractere);
+}
+
+function cheminRetourFormulaire(type: unknown): string {
+  const clef = typeof type === 'string' ? type.trim() : '';
+  return CHEMINS_RETOUR_FORMULAIRE[clef] ?? '/';
+}
+
+function htmlFormulaire(
+  data: { ok: boolean; delivered?: boolean; message?: string },
+  status: number,
+  cheminRetour: string,
+): Response {
+  const livraisonConfirmee = data.ok === true && data.delivered === true;
+  const titre = livraisonConfirmee
+    ? 'Votre demande a bien été transmise à Mouaad.'
+    : status >= 400
+      ? 'La transmission n’a pas abouti.'
+      : 'La transmission ne peut pas être confirmée.';
+  const message = livraisonConfirmee
+    ? 'Vous pouvez revenir au site.'
+    : status >= 500
+      ? 'Votre demande n’a pas été transmise. Revenez au formulaire pour réessayer ou contactez Mouaad directement.'
+      : data.message || 'Merci de revenir au formulaire et de réessayer.';
+  const retourAutorise = Object.values(CHEMINS_RETOUR_FORMULAIRE).includes(cheminRetour)
+    ? cheminRetour
+    : '/';
+  const corps = `<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>${echapperHtml(titre)} · LEVOIS</title>
+  </head>
+  <body>
+    <main>
+      <h1>${echapperHtml(titre)}</h1>
+      <p>${echapperHtml(message)}</p>
+      <p><a href="${retourAutorise}">Revenir à la page d’origine</a></p>
+    </main>
+  </body>
+</html>`;
+  return new Response(corps, {
+    status,
+    headers: {
+      'content-type': 'text/html; charset=utf-8',
+      'cache-control': 'no-store',
+      'content-security-policy': "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+      'referrer-policy': 'no-referrer',
+      'x-content-type-options': 'nosniff',
+    },
+  });
+}
+
+function repondre(
+  request: Request,
+  data: { ok: boolean; delivered?: boolean; message?: string },
+  status = 200,
+  cheminRetour = '/',
+  headers?: HeadersInit,
+): Response {
+  return estFormulaireNatif(request)
+    ? htmlFormulaire(data, status, cheminRetour)
+    : json(data, status, headers);
 }
 
 function texte(v: unknown, max: number): string {
@@ -344,13 +428,13 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   // évite les soumissions cross-site ; la vérification bloque aussi les POST
   // no-cors dont la réponse serait autrement opaque pour le site appelant.
   if (!estOrigineAutorisee(ctx.request)) {
-    return json({ ok: false, message: 'Origine non autorisée.' }, 403);
+    return repondre(ctx.request, { ok: false, message: 'Origine non autorisée.' }, 403);
   }
 
   // Limitation avant analyse du corps, comme sur l'endpoint Netlify historique.
   const empreinteIp = await cleRateLimit(ctx.request);
   if (await estRateLimited(empreinteIp, ctx.env)) {
-    return json({ ok: false, message: 'Trop de tentatives. Merci de réessayer dans quelques minutes.' }, 429);
+    return repondre(ctx.request, { ok: false, message: 'Trop de tentatives. Merci de réessayer dans quelques minutes.' }, 429);
   }
 
   let body: Record<string, any>;
@@ -358,20 +442,22 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     body = await lireCorpsNormalise(ctx.request);
   } catch (error) {
     if (error instanceof PayloadTooLargeError) {
-      return json({ ok: false, message: 'Requête trop volumineuse.' }, 413);
+      return repondre(ctx.request, { ok: false, message: 'Requête trop volumineuse.' }, 413);
     }
     if (error instanceof TypeContenuNonAutoriseError) {
-      return json({ ok: false, message: 'Type de contenu non autorisé.' }, 415);
+      return repondre(ctx.request, { ok: false, message: 'Type de contenu non autorisé.' }, 415);
     }
     if (error instanceof ChampAmbiguError) {
-      return json({ ok: false, message: 'Requête ambiguë.' }, 400);
+      return repondre(ctx.request, { ok: false, message: 'Requête ambiguë.' }, 400);
     }
-    return json({ ok: false, message: 'Requête invalide.' }, 400);
+    return repondre(ctx.request, { ok: false, message: 'Requête invalide.' }, 400);
   }
+
+  const cheminRetour = cheminRetourFormulaire(body.type);
 
   // Honeypot : réponse volontairement neutre, sans appel à Resend.
   if (typeof body.site_web === 'string' && body.site_web.trim() !== '') {
-    return json({ ok: true, delivered: false });
+    return repondre(ctx.request, { ok: true, delivered: false }, 200, cheminRetour);
   }
 
   const erreurs: string[] = [];
@@ -403,7 +489,12 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   if (estContact && !objet) erreurs.push('objet');
   if (estContact && !message) erreurs.push('message');
   if (erreurs.length) {
-    return json({ ok: false, message: `Champs à vérifier : ${erreurs.join(', ')}.` }, 400);
+    return repondre(
+      ctx.request,
+      { ok: false, message: `Champs à vérifier : ${erreurs.join(', ')}.` },
+      400,
+      cheminRetour,
+    );
   }
 
   const telephone = texteLigne(body.telephone, 40);
@@ -502,13 +593,15 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
 
   if (!apiKey) {
     console.error('[lead] RESEND_API_KEY absente — transmission suspendue.');
-    return json(
+    return repondre(
+      ctx.request,
       {
         ok: false,
         message:
           'La transmission est momentanément indisponible. Vos réponses restent affichées — vous pouvez contacter Mouaad directement : mouaad@levois.fr · 07 81 38 01 21.',
       },
       503,
+      cheminRetour,
     );
   }
 
@@ -530,26 +623,30 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
 
     if (!rep.ok) {
       console.error('[lead] Échec Resend :', rep.status);
-      return json(
+      return repondre(
+        ctx.request,
         {
           ok: false,
           message:
             'La transmission n’a pas abouti. Vos réponses restent affichées — vous pouvez réessayer ou contacter Mouaad directement.',
         },
         502,
+        cheminRetour,
       );
     }
 
-    return json({ ok: true, delivered: true });
+    return repondre(ctx.request, { ok: true, delivered: true }, 200, cheminRetour);
   } catch {
     console.error('[lead] Erreur d’envoi Resend.');
-    return json(
+    return repondre(
+      ctx.request,
       {
         ok: false,
         message:
           'La transmission n’a pas abouti. Vos réponses restent affichées — vous pouvez réessayer ou contacter Mouaad directement.',
       },
       502,
+      cheminRetour,
     );
   }
 };

@@ -57,6 +57,20 @@ async function donnees(response: Response): Promise<Record<string, unknown>> {
   return response.json() as Promise<Record<string, unknown>>;
 }
 
+async function verifierConfirmationHtml(response: Response, cheminRetour: string): Promise<string> {
+  const html = await response.text();
+  expect(response.headers.get('content-type')).toBe('text/html; charset=utf-8');
+  expect(response.headers.get('cache-control')).toBe('no-store');
+  expect(response.headers.get('content-security-policy')).toContain("default-src 'none'");
+  expect(response.headers.get('location')).toBeNull();
+  expect(html).toContain('<html lang="fr">');
+  expect(html).toContain('Votre demande a bien été transmise à Mouaad.');
+  expect(html).toContain(`href="${cheminRetour}"`);
+  expect(html).not.toContain('mouaad@example.test');
+  expect(html).not.toMatch(/href="[^"]*\?/);
+  return html;
+}
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -105,7 +119,7 @@ describe.sequential('Cloudflare /api/lead', () => {
   it('accepte le POST natif encodé et applique la même normalisation', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_form"}', { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
-    const formulaire = formulaireContact();
+    const formulaire = formulaireContact({ retour: 'https://evil.example/collecte?email=mouaad@example.test' });
 
     const response = await onRequest(contexte(null, { RESEND_API_KEY: 'test-key' }, {
       brut: formulaire.toString(),
@@ -113,7 +127,8 @@ describe.sequential('Cloudflare /api/lead', () => {
     }));
 
     expect(response.status).toBe(200);
-    expect(await donnees(response)).toEqual({ ok: true, delivered: true });
+    const html = await verifierConfirmationHtml(response, '/contact');
+    expect(html).not.toContain('evil.example');
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     const email = JSON.parse(String(init.body));
     expect(email.reply_to).toBe('mouaad@example.test');
@@ -121,20 +136,20 @@ describe.sequential('Cloudflare /api/lead', () => {
   });
 
   it.each([
-    ['situer-ma-vente/resultat', new URLSearchParams({
+    ['situer-ma-vente/resultat', '/situer-ma-vente', new URLSearchParams({
       type: 'parcours', consentement: 'on', prenom: 'Camille', nom: 'Martin',
       email: 'camille@example.test', commune: 'Lèves', telephone: '', annonce: '', detail: '', site_web: '',
     })],
-    ['audit-annonce', new URLSearchParams({
+    ['audit-annonce', '/audit-annonce', new URLSearchParams({
       type: 'audit-annonce', consentement: 'on', prenom: 'Camille', nom: 'Martin',
       email: 'camille@example.test', telephone: '', annonce: 'https://example.test/annonce', detail: '', site_web: '',
     })],
-    ['votre-rue', new URLSearchParams({
+    ['votre-rue', '/votre-rue', new URLSearchParams({
       type: 'votre-rue', consentement: 'on', prenom: 'Camille', email: 'camille@example.test',
       telephone: '', adresseRecherchee: '8 rue de la République, 28300 Lèves', commune: 'Lèves',
       typeBien: 'Maison', periodeDu: '2021-01-04', periodeAu: '2025-12-31', site_web: '',
     })],
-  ])('accepte le POST natif réellement produit par %s', async (_surface, formulaire) => {
+  ])('accepte le POST natif réellement produit par %s', async (_surface, cheminRetour, formulaire) => {
     const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_form"}', { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
 
@@ -144,7 +159,7 @@ describe.sequential('Cloudflare /api/lead', () => {
     }));
 
     expect(response.status).toBe(200);
-    expect(await donnees(response)).toEqual({ ok: true, delivered: true });
+    await verifierConfirmationHtml(response, cheminRetour);
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 
@@ -160,7 +175,12 @@ describe.sequential('Cloudflare /api/lead', () => {
     }));
 
     expect(response.status).toBe(400);
-    expect(await donnees(response)).toEqual({ ok: false, message: 'Champs à vérifier : consentement.' });
+    const html = await response.text();
+    expect(response.headers.get('content-type')).toBe('text/html; charset=utf-8');
+    expect(html).toContain('La transmission n’a pas abouti.');
+    expect(html).toContain('Champs à vérifier : consentement.');
+    expect(html).toContain('href="/contact"');
+    expect(html).not.toContain('Votre demande a bien été transmise à Mouaad.');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -186,7 +206,10 @@ describe.sequential('Cloudflare /api/lead', () => {
     }));
 
     expect(response.status).toBe(400);
-    expect(await donnees(response)).toEqual({ ok: false, message: 'Requête ambiguë.' });
+    const html = await response.text();
+    expect(html).toContain('Requête ambiguë.');
+    expect(html).toContain('href="/"');
+    expect(html).not.toContain('Votre demande a bien été transmise à Mouaad.');
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -208,7 +231,10 @@ describe.sequential('Cloudflare /api/lead', () => {
     }));
 
     expect(response.status).toBe(413);
-    expect(await donnees(response)).toEqual({ ok: false, message: 'Requête trop volumineuse.' });
+    const html = await response.text();
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(html).toContain('Requête trop volumineuse.');
+    expect(html).not.toContain('Votre demande a bien été transmise à Mouaad.');
   });
 
   it('neutralise le honeypot sans contacter Resend', async () => {
@@ -529,6 +555,27 @@ describe.sequential('Cloudflare /api/lead', () => {
       message: 'La transmission n’a pas abouti. Vos réponses restent affichées — vous pouvez réessayer ou contacter Mouaad directement.',
     });
     expect(consoleMock).toHaveBeenCalledWith('[lead] Échec Resend :', 422);
+  });
+
+  it('renvoie une erreur HTML sans faux succès quand Resend refuse un formulaire natif', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('refus', { status: 422 })));
+    const formulaire = formulaireContact();
+
+    const response = await onRequest(contexte(null, { RESEND_API_KEY: 'test-key' }, {
+      brut: formulaire.toString(),
+      contentType: 'application/x-www-form-urlencoded',
+    }));
+
+    expect(response.status).toBe(502);
+    const html = await response.text();
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(html).toContain('La transmission n’a pas abouti.');
+    expect(html).toContain('Votre demande n’a pas été transmise.');
+    expect(html).toContain('href="/contact"');
+    expect(html).not.toContain('Votre demande a bien été transmise à Mouaad.');
+    expect(html).not.toContain('mouaad@example.test');
+    expect(html).not.toContain('Vos réponses restent affichées');
   });
 
   it('bloque la sixième tentative de la fenêtre de dix minutes', async () => {
