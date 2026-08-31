@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 function source(path: string): string {
-  return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
+  return readFileSync(new URL(`../${path}`, import.meta.url), 'utf8').replace(/\r\n?/g, '\n');
 }
 
 function openingForm(page: string, marker: string): string {
@@ -75,6 +75,16 @@ describe('public privacy contract', () => {
       expect(form).toContain(action);
       expect(form).not.toContain('novalidate');
     }
+
+    const resultat = source('src/pages/situer-ma-vente/resultat.astro');
+    const audit = source('src/pages/audit-annonce.astro');
+    const votreRue = source('src/pages/votre-rue.astro');
+    expect(resultat).toContain('name="type" value="parcours"');
+    expect(audit).toContain('name="type" value="audit-annonce"');
+    expect(audit).toContain('name="consentement" required');
+    expect(votreRue).toContain('name="type" value="votre-rue"');
+    expect(votreRue).toContain('name="adresseRecherchee"');
+    expect(votreRue).toContain('name="consentement" required');
   });
 
   it('keeps /audit-annonce in questionnaire-only mode', () => {

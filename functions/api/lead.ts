@@ -1,4 +1,4 @@
-import { PayloadTooLargeError, readBoundedJson } from '../lib/bounded-json';
+import { PayloadTooLargeError, readBoundedJson, readBoundedText } from '../lib/bounded-json';
 
 /**
  * POST /api/lead — Cloudflare Pages Function.
@@ -42,6 +42,16 @@ const rate = new Map<string, RateEntry>();
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_TTL_SECONDS = Math.ceil(RATE_WINDOW_MS / 1000);
+const TYPES_CONTENU_AUTORISES = new Set([
+  'application/json',
+  'application/x-www-form-urlencoded',
+]);
+const CHAMPS_AUTORISES = new Set([
+  'type', 'consentement', 'prenom', 'nom', 'email', 'commune', 'objet', 'message',
+  'adresseRecherchee', 'typeBien', 'periodeDu', 'periodeAu', 'telephone', 'annonce',
+  'detail', 'contexte', 'attribution', 'source', 'intention', 'intentionKey', 'profil',
+  'qualification', 'contexteInfographie', 'audit', 'site_web',
+]);
 const CHEMINS_ATTRIBUTION = new Set([
   '/', '/other', '/404', '/accompagnement', '/audit-annonce', '/carte', '/composants',
   '/confidentialite', '/contact', '/ma-recherche', '/mentions-legales', '/methode', '/mouaad',
@@ -251,6 +261,43 @@ function estObjet(v: unknown): v is Record<string, any> {
   return Boolean(v) && typeof v === 'object' && !Array.isArray(v);
 }
 
+class TypeContenuNonAutoriseError extends Error {}
+class ChampAmbiguError extends Error {}
+
+function normaliserObjet(body: Record<string, any>): Record<string, any> {
+  const normalise: Record<string, any> = Object.create(null);
+  for (const [clef, valeur] of Object.entries(body)) {
+    if (!CHAMPS_AUTORISES.has(clef)) continue;
+    normalise[clef] = valeur;
+  }
+  return normalise;
+}
+
+function normaliserFormulaire(raw: string): Record<string, any> {
+  const normalise: Record<string, any> = Object.create(null);
+  const dejaVus = new Set<string>();
+  for (const [clef, valeur] of new URLSearchParams(raw)) {
+    if (dejaVus.has(clef)) throw new ChampAmbiguError();
+    dejaVus.add(clef);
+    if (!CHAMPS_AUTORISES.has(clef)) continue;
+    normalise[clef] = clef === 'consentement' && valeur === 'on' ? true : valeur;
+  }
+  return normalise;
+}
+
+async function lireCorpsNormalise(request: Request): Promise<Record<string, any>> {
+  const typeContenu = request.headers.get('content-type')?.split(';', 1)[0]?.trim().toLowerCase() ?? '';
+  if (!TYPES_CONTENU_AUTORISES.has(typeContenu)) throw new TypeContenuNonAutoriseError();
+
+  if (typeContenu === 'application/json') {
+    const inconnu = await readBoundedJson(request);
+    if (!estObjet(inconnu)) throw new SyntaxError('INVALID_BODY');
+    return normaliserObjet(inconnu);
+  }
+
+  return normaliserFormulaire(await readBoundedText(request));
+}
+
 function jetonAttribution(v: unknown): string {
   const valeur = texteLigne(v, 80).toLowerCase();
   return /^[a-z0-9][a-z0-9._/-]{0,79}$/.test(valeur) && !/\d{7,}/.test(valeur) ? valeur : '';
@@ -306,19 +353,21 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     return json({ ok: false, message: 'Trop de tentatives. Merci de réessayer dans quelques minutes.' }, 429);
   }
 
-  let inconnu: unknown;
+  let body: Record<string, any>;
   try {
-    inconnu = await readBoundedJson(ctx.request);
+    body = await lireCorpsNormalise(ctx.request);
   } catch (error) {
     if (error instanceof PayloadTooLargeError) {
       return json({ ok: false, message: 'Requête trop volumineuse.' }, 413);
     }
+    if (error instanceof TypeContenuNonAutoriseError) {
+      return json({ ok: false, message: 'Type de contenu non autorisé.' }, 415);
+    }
+    if (error instanceof ChampAmbiguError) {
+      return json({ ok: false, message: 'Requête ambiguë.' }, 400);
+    }
     return json({ ok: false, message: 'Requête invalide.' }, 400);
   }
-  if (!estObjet(inconnu)) {
-    return json({ ok: false, message: 'Requête invalide.' }, 400);
-  }
-  const body = inconnu;
 
   // Honeypot : réponse volontairement neutre, sans appel à Resend.
   if (typeof body.site_web === 'string' && body.site_web.trim() !== '') {
@@ -480,8 +529,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     });
 
     if (!rep.ok) {
-      const erreur = await rep.text().catch(() => '');
-      console.error('[lead] Échec Resend :', rep.status, erreur.slice(0, 200));
+      console.error('[lead] Échec Resend :', rep.status);
       return json(
         {
           ok: false,
@@ -493,8 +541,8 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     }
 
     return json({ ok: true, delivered: true });
-  } catch (error) {
-    console.error('[lead] Erreur d’envoi :', error);
+  } catch {
+    console.error('[lead] Erreur d’envoi Resend.');
     return json(
       {
         ok: false,

@@ -7,16 +7,20 @@ export class PayloadTooLargeError extends Error {
   }
 }
 
-export async function readBoundedJson(
+export async function readBoundedText(
   request: Request,
   maxBytes = MAX_JSON_BODY_BYTES,
-): Promise<unknown> {
+): Promise<string> {
   const declared = request.headers.get('content-length');
   if (declared && /^\d+$/.test(declared) && Number(declared) > maxBytes) {
     throw new PayloadTooLargeError();
   }
 
-  if (!request.body) return JSON.parse(await request.text());
+  if (!request.body) {
+    const raw = await request.text();
+    if (new TextEncoder().encode(raw).byteLength > maxBytes) throw new PayloadTooLargeError();
+    return raw;
+  }
 
   const reader = request.body.getReader();
   const decoder = new TextDecoder();
@@ -37,5 +41,12 @@ export async function readBoundedJson(
   } finally {
     reader.releaseLock();
   }
-  return JSON.parse(raw);
+  return raw;
+}
+
+export async function readBoundedJson(
+  request: Request,
+  maxBytes = MAX_JSON_BODY_BYTES,
+): Promise<unknown> {
+  return JSON.parse(await readBoundedText(request, maxBytes));
 }

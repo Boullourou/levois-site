@@ -1665,11 +1665,17 @@ import Layout from '../layouts/Layout.astro';
             Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
           </p>
           <form id="vr-lead" method="post" action="/api/lead">
+            <input type="hidden" name="type" value="votre-rue" />
+            <input type="hidden" name="adresseRecherchee" value="${esc(selection?.label || '')}" />
+            <input type="hidden" name="commune" value="${esc(selection?.city || '')}" />
+            <input type="hidden" name="typeBien" value="${esc(model.dom)}" />
+            <input type="hidden" name="periodeDu" value="${esc(model.periodFrom)}" />
+            <input type="hidden" name="periodeAu" value="${esc(model.periodTo)}" />
             <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
             <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
             <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#58615B">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
-            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte que mon adresse confirmée, ce résultat, mes réponses et mes coordonnées soient transmis à Mouaad via Cloudflare et Resend pour traiter ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+            <label class="vr-consent"><input type="checkbox" id="vr-consent" name="consentement" required /><span>J'accepte que mon adresse confirmée, ce résultat, mes réponses et mes coordonnées soient transmis à Mouaad via Cloudflare et Resend pour traiter ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
             <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
             <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
             <button type="button" class="vr-q-back">← Revenir</button>

@@ -22,11 +22,11 @@ function contact(overrides: Record<string, unknown> = {}): Record<string, unknow
 function contexte(
   body: unknown,
   env: Record<string, unknown> = {},
-  options: { method?: string; ip?: string; brut?: string; contentLength?: string } = {},
+  options: { method?: string; ip?: string; brut?: string; contentLength?: string; contentType?: string } = {},
 ): LeadContext {
   const ip = options.ip ?? `203.0.113.${numeroIp++}`;
   const headers: Record<string, string> = {
-    'content-type': 'application/json',
+    'content-type': options.contentType ?? 'application/json',
     'cf-connecting-ip': ip,
   };
   if (options.contentLength) headers['content-length'] = options.contentLength;
@@ -36,6 +36,21 @@ function contexte(
     ...(options.method === 'GET' ? {} : { body: options.brut ?? JSON.stringify(body) }),
   });
   return { request, env } as LeadContext;
+}
+
+function formulaireContact(overrides: Record<string, string> = {}): URLSearchParams {
+  return new URLSearchParams({
+    type: 'contact',
+    consentement: 'on',
+    prenom: 'Mouaad',
+    nom: 'Boullourou',
+    email: 'mouaad@example.test',
+    telephone: '',
+    objet: 'Question',
+    message: 'Bonjour',
+    site_web: '',
+    ...overrides,
+  });
 }
 
 async function donnees(response: Response): Promise<Record<string, unknown>> {
@@ -76,6 +91,105 @@ describe.sequential('Cloudflare /api/lead', () => {
     expect(await donnees(response)).toEqual({ ok: false, message: 'Requête invalide.' });
   });
 
+  it('accepte le POST JSON valide et confirme seulement la livraison Resend', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_json"}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const response = await onRequest(contexte(contact(), { RESEND_API_KEY: 'test-key' }));
+
+    expect(response.status).toBe(200);
+    expect(await donnees(response)).toEqual({ ok: true, delivered: true });
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it('accepte le POST natif encodé et applique la même normalisation', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_form"}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    const formulaire = formulaireContact();
+
+    const response = await onRequest(contexte(null, { RESEND_API_KEY: 'test-key' }, {
+      brut: formulaire.toString(),
+      contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    }));
+
+    expect(response.status).toBe(200);
+    expect(await donnees(response)).toEqual({ ok: true, delivered: true });
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const email = JSON.parse(String(init.body));
+    expect(email.reply_to).toBe('mouaad@example.test');
+    expect(email.subject).toBe('LEVOIS · Message de Mouaad Boullourou — Question');
+  });
+
+  it.each([
+    ['situer-ma-vente/resultat', new URLSearchParams({
+      type: 'parcours', consentement: 'on', prenom: 'Camille', nom: 'Martin',
+      email: 'camille@example.test', commune: 'Lèves', telephone: '', annonce: '', detail: '', site_web: '',
+    })],
+    ['audit-annonce', new URLSearchParams({
+      type: 'audit-annonce', consentement: 'on', prenom: 'Camille', nom: 'Martin',
+      email: 'camille@example.test', telephone: '', annonce: 'https://example.test/annonce', detail: '', site_web: '',
+    })],
+    ['votre-rue', new URLSearchParams({
+      type: 'votre-rue', consentement: 'on', prenom: 'Camille', email: 'camille@example.test',
+      telephone: '', adresseRecherchee: '8 rue de la République, 28300 Lèves', commune: 'Lèves',
+      typeBien: 'Maison', periodeDu: '2021-01-04', periodeAu: '2025-12-31', site_web: '',
+    })],
+  ])('accepte le POST natif réellement produit par %s', async (_surface, formulaire) => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_form"}', { status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const response = await onRequest(contexte(null, { RESEND_API_KEY: 'test-key' }, {
+      brut: formulaire.toString(),
+      contentType: 'application/x-www-form-urlencoded',
+    }));
+
+    expect(response.status).toBe(200);
+    expect(await donnees(response)).toEqual({ ok: true, delivered: true });
+    expect(fetchMock).toHaveBeenCalledOnce();
+  });
+
+  it('refuse un consentement absent dans le POST natif', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    const formulaire = formulaireContact();
+    formulaire.delete('consentement');
+
+    const response = await onRequest(contexte(null, { RESEND_API_KEY: 'test-key' }, {
+      brut: formulaire.toString(),
+      contentType: 'application/x-www-form-urlencoded',
+    }));
+
+    expect(response.status).toBe(400);
+    expect(await donnees(response)).toEqual({ ok: false, message: 'Champs à vérifier : consentement.' });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('refuse un type de contenu non autorisé', async () => {
+    const response = await onRequest(contexte(null, {}, {
+      brut: 'type=contact',
+      contentType: 'text/plain',
+    }));
+
+    expect(response.status).toBe(415);
+    expect(await donnees(response)).toEqual({ ok: false, message: 'Type de contenu non autorisé.' });
+  });
+
+  it('refuse les champs dupliqués du POST natif comme ambigus', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    const formulaire = formulaireContact();
+    formulaire.append('consentement', 'on');
+
+    const response = await onRequest(contexte(null, { RESEND_API_KEY: 'test-key' }, {
+      brut: formulaire.toString(),
+      contentType: 'application/x-www-form-urlencoded',
+    }));
+
+    expect(response.status).toBe(400);
+    expect(await donnees(response)).toEqual({ ok: false, message: 'Requête ambiguë.' });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it('refuse un corps JSON trop volumineux avec ou sans Content-Length fiable', async () => {
     const streamed = await onRequest(contexte(null, {}, {
       brut: JSON.stringify({ ...contact(), padding: 'x'.repeat(70_000) }),
@@ -84,6 +198,17 @@ describe.sequential('Cloudflare /api/lead', () => {
 
     const declared = await onRequest(contexte(contact(), {}, { contentLength: '70000' }));
     expect(declared.status).toBe(413);
+  });
+
+  it('refuse aussi un corps natif trop volumineux', async () => {
+    const formulaire = formulaireContact({ message: 'x'.repeat(70_000) });
+    const response = await onRequest(contexte(null, {}, {
+      brut: formulaire.toString(),
+      contentType: 'application/x-www-form-urlencoded',
+    }));
+
+    expect(response.status).toBe(413);
+    expect(await donnees(response)).toEqual({ ok: false, message: 'Requête trop volumineuse.' });
   });
 
   it('neutralise le honeypot sans contacter Resend', async () => {
@@ -388,6 +513,7 @@ describe.sequential('Cloudflare /api/lead', () => {
   });
 
   it('renvoie 502 quand Resend refuse le message', async () => {
+    const consoleMock = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('refus', { status: 422 })));
 
     const response = await onRequest(
@@ -398,7 +524,11 @@ describe.sequential('Cloudflare /api/lead', () => {
     );
 
     expect(response.status).toBe(502);
-    expect(await donnees(response)).toMatchObject({ ok: false });
+    expect(await donnees(response)).toEqual({
+      ok: false,
+      message: 'La transmission n’a pas abouti. Vos réponses restent affichées — vous pouvez réessayer ou contacter Mouaad directement.',
+    });
+    expect(consoleMock).toHaveBeenCalledWith('[lead] Échec Resend :', 422);
   });
 
   it('bloque la sixième tentative de la fenêtre de dix minutes', async () => {

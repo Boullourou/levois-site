@@ -222,6 +222,8 @@ const faq = [
         <section class="human-next">
           <div><h2>Vous voulez savoir ce que cela change dans votre cas&nbsp;?</h2><p>Transmettez cette première lecture à Mouaad. Il reprendra à partir de l’annonce, de votre situation et du marché — sans engagement et sans vous demander de modifier votre prix à l’aveugle.</p></div>
           <form data-lead-form method="post" action="/api/lead">
+            <input type="hidden" name="type" value="audit-annonce">
+            <input type="hidden" name="annonce" value="${escapeHtml(snapshot.url)}">
             <div class="lead-grid">
               <label>Prénom<input name="prenom" autocomplete="given-name" required maxlength="80"></label>
               <label>Nom<input name="nom" autocomplete="family-name" required maxlength="80"></label>
@@ -229,7 +231,7 @@ const faq = [
               <label>Téléphone <small>facultatif</small><input name="telephone" type="tel" autocomplete="tel" maxlength="40"></label>
             </div>
             <label class="lead-note">Ce que vous voulez préciser <small>facultatif</small><textarea name="detail" rows="3" maxlength="2000" placeholder="Depuis quand l’annonce est en ligne, retours reçus, difficulté principale…"></textarea></label>
-            <label class="lead-consent"><input type="checkbox" required><span>J’accepte que ces informations et le lien de l’annonce soient transmis à Mouaad pour qu’il puisse me répondre.</span></label>
+            <label class="lead-consent"><input type="checkbox" name="consentement" required><span>J’accepte que ces informations et le lien de l’annonce soient transmis à Mouaad pour qu’il puisse me répondre.</span></label>
             <label class="honeypot" aria-hidden="true">Site web<input name="site_web" tabindex="-1" autocomplete="off"></label>
             <button type="submit">Demander la lecture de Mouaad</button>
             <p class="form-status" data-lead-status role="status" aria-live="polite"></p>
