@@ -1,6 +1,6 @@
 # LEVOIS — Phase 3 — Spécification fonctionnelle de `/ma-recherche`
 
-**Statut :** spécification révisée après revue contradictoire, prête à validation finale de Direction générale.
+**Statut : PHASE 3 : VALIDÉE ET CLÔTURÉE.**
 
 **Date de révision :** 1er septembre 2026.
 
@@ -1026,16 +1026,14 @@ Dans les six simulations, les réponses, la lecture et les corrections restent l
 | T43 | Injection HTML/email | Contenu encodé, en-têtes nettoyés. |
 | T44 | Service externe indisponible | Échec fermé, aucun faux succès. |
 
-## 23. Portes restantes avant la phase créative
+## 23. Clôture de la Phase 3 et transmission
 
-La spécification est fonctionnellement cohérente et plafonnée. Avant ouverture de la direction artistique, il reste à :
+La spécification fonctionnelle est validée et la Phase 3 est clôturée.
 
-1. valider définitivement la présente révision ;
-2. fixer les durées et procédures de suppression lors de la revue de confidentialité ;
-3. vérifier sur prototype les objectifs de 3–5, 6–8 et 10–12 minutes ;
-4. démontrer T01 à T44 sur le futur prototype fonctionnel ;
-5. confirmer que le contenu public indexable et les états privés sont techniquement séparables.
+- Les objectifs de 3–5, 6–8 et 10–12 minutes restent des **objectifs de conception à vérifier sur prototype avec de vraies personnes** ; ils ne constituent pas encore des durées démontrées.
+- Aucun code fonctionnel de `/ma-recherche` n'est encore validé.
+- Aucune direction artistique n'est encore choisie.
+- Les durées et procédures de suppression devront être fixées lors de la revue de confidentialité avant publication.
+- Les cas T01 à T44 et la séparation technique entre couche publique indexable et états privés devront être démontrés sur le futur prototype fonctionnel.
 
-Ordre inchangé : spécification fonctionnelle validée → trois territoires de direction artistique → choix d’un territoire → implémentation.
-
-**Arrêt actuel :** aucun code, aucune maquette, aucune direction artistique et aucune modification distante.
+Ordre inchangé : spécification fonctionnelle validée → trois territoires de direction artistique → choix d'un territoire → implémentation.
