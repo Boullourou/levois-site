@@ -1,9 +1,7 @@
 ---
-// Cette clé d’ingestion est publique par conception (écriture seule) et peut être embarquée côté navigateur.
-const token = import.meta.env.PROD
-  ? (import.meta.env.PUBLIC_POSTHOG_KEY ?? 'phc_xSxvsMoZ4TEp6hpEGrWJfqEdSCNroQtpQp5JEQdYqqym')
-  : '';
-const host = import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com';
+// Aucun prestataire n'est activé par défaut : la clé doit être configurée explicitement.
+const token = import.meta.env.PROD ? (import.meta.env.PUBLIC_POSTHOG_KEY ?? '') : '';
+const host = 'https://eu.i.posthog.com';
 ---
 
 <span hidden data-levois-analytics data-token={token} data-host={host} aria-hidden="true"></span>

@@ -107,7 +107,8 @@ import Layout from '../../layouts/Layout.astro';
           L’échange sert à comparer les scénarios, leurs conséquences et la stratégie la plus cohérente. Vous gardez la décision.
         </p>
 
-        <form id="form-lead" novalidate class="grid gap-4 font-sans">
+        <form id="form-lead" method="post" action="/api/lead" class="grid gap-4 font-sans">
+          <input type="hidden" name="type" value="parcours" />
           <div class="grid sm:grid-cols-2 gap-4">
             <div>
               <label for="f-prenom" class="block text-sm text-papier/80 mb-1.5">Prénom <span aria-hidden="true">*</span></label>
@@ -319,6 +320,7 @@ import Layout from '../../layouts/Layout.astro';
         telephone: donnees.get('telephone') || null,
         annonce: donnees.get('annonce') || null,
         detail: donnees.get('detail') || null,
+        consentement: donnees.get('consentement') === 'on',
         site_web: donnees.get('site_web') || '',
         contexte: {
           situation: situation.titre,
@@ -340,11 +342,11 @@ import Layout from '../../layouts/Layout.astro';
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(corps),
         });
-        if (rep.ok) {
+        const data = await rep.json().catch(() => null);
+        if (rep.ok && data?.ok === true && data?.delivered === true) {
           form.classList.add('hidden');
           $('form-succes').classList.remove('hidden');
         } else {
-          const data = await rep.json().catch(() => null);
           afficherErreur(data?.message);
         }
       } catch {

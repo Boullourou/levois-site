@@ -5,7 +5,7 @@ import { site } from '../config/site';
 
 <Layout
   title="Contact"
-  description="Écrire directement à Mouaad Boullourou — email, téléphone, ou message via le formulaire."
+  description="Écrire directement à Mouaad Boullourou au sujet d’un achat, d’une vente ou des ventes locales."
 >
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
@@ -13,10 +13,8 @@ import { site } from '../config/site';
       <p class="eyebrow mb-4">Contact</p>
       <h1 class="text-display text-encre mb-4">Écrire à Mouaad</h1>
       <p class="font-sans text-body-lg text-brun max-w-prose">
-        Le chemin le plus utile reste le parcours
-        <a href="/situer-ma-vente" class="text-argile underline underline-offset-2 hover:text-encre">« Situer ma vente »</a> —
-        Mouaad reçoit alors tout votre contexte. Mais cette page est là pour tout le reste :
-        une question, une précision, un autre sujet.
+        Vous pouvez écrire à Mouaad au sujet d’un achat, d’une vente ou d’une question sur les ventes locales.
+        Aucun parcours préalable n’est nécessaire pour transmettre votre demande.
       </p>
     </header>
 
@@ -31,7 +29,8 @@ import { site } from '../config/site';
       </a>
     </div>
 
-    <form id="form-contact" novalidate class="grid gap-4 font-sans carte p-6 md:p-8">
+    <form id="form-contact" method="post" action="/api/lead" data-analytics-form="contact" class="grid gap-4 font-sans carte p-6 md:p-8">
+      <input type="hidden" name="type" value="contact" />
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
           <label for="c-prenom" class="block text-sm text-brun mb-1.5">Prénom <span aria-hidden="true">*</span></label>
@@ -86,17 +85,42 @@ import { site } from '../config/site';
 
       <div id="c-succes" class="hidden pt-2" role="status">
         <p class="font-display text-xl text-encre mb-1.5">Message bien envoyé.</p>
-        <p class="text-[15px] text-brun">Mouaad vous répondra personnellement, en général sous 24 à 48 h ouvrées.</p>
+        <p class="text-[15px] text-brun">Mouaad vous répondra personnellement.</p>
       </div>
     </form>
   </div>
 </Layout>
 
 <script>
+  import {
+    ATTRIBUTION_STORAGE_KEY,
+    attributionFromVisit,
+    mergeAttribution,
+    parseStoredAttribution,
+  } from '../lib/attribution';
+
   const form = document.getElementById('form-contact') as HTMLFormElement;
   const btn = document.getElementById('c-envoyer') as HTMLButtonElement;
   const erreur = document.getElementById('c-erreur')!;
   let enCours = false;
+
+  function attributionBornee() {
+    const current = attributionFromVisit(window.location.href, document.referrer);
+    try {
+      return mergeAttribution(
+        parseStoredAttribution(sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)),
+        current,
+      );
+    } catch {
+      return current;
+    }
+  }
+
+  function signalerResultat(event: 'levois_form_succeeded' | 'levois_form_failed') {
+    window.dispatchEvent(new CustomEvent('levois:form-result', {
+      detail: { event, form_name: 'contact' },
+    }));
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -122,18 +146,23 @@ import { site } from '../config/site';
           telephone: d.get('telephone') || null,
           objet: d.get('objet'),
           message: d.get('message'),
+          consentement: d.get('consentement') === 'on',
+          attribution: attributionBornee(),
           site_web: d.get('site_web') || '',
         }),
       });
-      if (rep.ok) {
+      const data = await rep.json().catch(() => null);
+      if (rep.ok && data?.ok === true && data?.delivered === true) {
+        signalerResultat('levois_form_succeeded');
         form.querySelectorAll('input, textarea, button[type="submit"], label').forEach((el) => el.classList.add('hidden'));
         document.getElementById('c-succes')!.classList.remove('hidden');
       } else {
-        const data = await rep.json().catch(() => null);
+        signalerResultat('levois_form_failed');
         erreur.textContent = data?.message ?? 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
         erreur.classList.remove('hidden');
       }
     } catch {
+      signalerResultat('levois_form_failed');
       erreur.textContent = 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
       erreur.classList.remove('hidden');
     } finally {

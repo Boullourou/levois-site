@@ -12,8 +12,8 @@ FINISH: contenu complet sur mobile, états chargement/erreur/secours/résultat, 
 
 const faq = [
   {
-    q: 'Que se passe-t-il si le portail bloque la lecture ?',
-    a: 'Ce n’est pas une erreur de votre lien. Certains sites refusent qu’un autre service lise leurs pages. Le même questionnaire de trois réponses prend alors le relais et vous dirige vers la ressource la plus utile.',
+    q: 'Pourquoi la page de l’annonce n’est-elle pas lue automatiquement ?',
+    a: 'La lecture automatique reste désactivée tant que son environnement technique et ses règles de sécurité ne sont pas entièrement validés. Le lien sert de repère et le questionnaire de trois réponses produit la première lecture.',
   },
   {
     q: 'L’outil juge-t-il le prix de mon bien ?',
@@ -63,7 +63,7 @@ const faq = [
     <section class="url-hero" aria-labelledby="audit-title">
       <div class="url-hero__copy">
         <h1 id="audit-title">Collez votre annonce.<br /><span>3 réponses. 2 actions.</span></h1>
-        <p>Le lien apporte le contexte. Vos réponses montrent ce qui se passe réellement entre les vues, les contacts, les visites et les offres.</p>
+        <p>Le lien identifie l’annonce. Vos réponses montrent ce qui se passe réellement entre les vues, les contacts, les visites et les offres.</p>
         <ul aria-label="Engagements de l’audit">
           <li>Gratuit</li>
           <li>Sans coordonnées</li>
@@ -77,11 +77,11 @@ const faq = [
           <span>3 réponses</span>
           <span>2 actions</span>
         </div>
-        <form data-url-form novalidate>
+        <form data-url-form method="post" action="/audit-annonce/">
           <label for="listing-url">Lien public de l’annonce</label>
           <input id="listing-url" name="url" type="url" inputmode="url" autocomplete="url" required placeholder="https://www…" />
-          <button type="submit">Analyser mon annonce</button>
-          <p class="url-entry__privacy">Lecture ponctuelle. Aucun suivi automatique de l’annonce.</p>
+          <button type="submit">Commencer les 3 questions</button>
+          <p class="url-entry__privacy">La lecture automatique est désactivée. Aucun suivi de l’annonce.</p>
           <p class="form-status" data-url-status role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -104,7 +104,7 @@ const faq = [
     <section class="url-boundary" aria-labelledby="boundary-title">
       <h2 id="boundary-title">Deux conseils automatiques.<br />Une situation qui reste humaine.</h2>
       <div>
-        <p>L’outil peut relire la présentation. Il ne peut pas visiter le bien, entendre les objections, mesurer la qualité des contacts ni connaître votre calendrier.</p>
+        <p>L’outil organise vos réponses. Il ne lit pas automatiquement la page, ne visite pas le bien, n’entend pas les objections et ne connaît pas votre calendrier.</p>
         <p>C’est précisément là que l’analyse de Mouaad devient utile&nbsp;: confronter l’annonce, le marché et votre projet sans vous imposer une décision.</p>
       </div>
     </section>
@@ -128,7 +128,6 @@ const faq = [
 
     const urlForm = document.querySelector<HTMLFormElement>('[data-url-form]');
     const urlInput = document.querySelector<HTMLInputElement>('#listing-url');
-    const urlStatus = document.querySelector<HTMLElement>('[data-url-status]');
     const output = document.querySelector<HTMLElement>('[data-output]');
     let currentUrl = '';
 
@@ -142,13 +141,6 @@ const faq = [
       if (Array.isArray(dataLayer)) dataLayer.push({ event, ...detail });
     }
 
-    function setLoading(loading: boolean) {
-      const button = urlForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
-      if (!button) return;
-      button.disabled = loading;
-      button.textContent = loading ? 'Lecture de la page…' : 'Analyser mon annonce';
-    }
-
     function choices(name: string, options: ContextOption[]) {
       return options.map((option) => `<label><input type="radio" name="${escapeHtml(name)}" value="${escapeHtml(option.value)}"><span>${escapeHtml(option.label)}</span></label>`).join('');
     }
@@ -160,7 +152,7 @@ const faq = [
       output.hidden = false;
       output.innerHTML = `<div class="fallback-shell guided-shell" tabindex="-1">
         <div class="fallback-copy">
-          <h2>${readable ? 'Le lien apporte le contexte.' : 'Votre lien n’est pas en cause.'}<br><span>Vos réponses donnent le sens.</span></h2>
+          <h2>${readable ? 'Le lien apporte le contexte.' : 'La lecture automatique s’arrête ici.'}<br><span>Vos réponses donnent le sens.</span></h2>
           <p>${escapeHtml(message)}</p>
           <p>Trois sélections suffisent. Aucune coordonnée n’est demandée pour voir les deux actions.</p>
           <p class="fallback-url">Lien conservé&nbsp;: ${escapeHtml(currentUrl)}</p>
@@ -189,7 +181,7 @@ const faq = [
           : step === 2
             ? { question: 'Que se passe-t-il aujourd’hui ?', options: signals, name: 'signal' }
             : { ...getContextQuestion(signal!), name: 'context' };
-        screen.innerHTML = `<form data-guided-form>
+        screen.innerHTML = `<form data-guided-form method="post" action="/audit-annonce/">
           <p>Question ${step} sur 3</p>
           <div class="guided-progress" aria-hidden="true"><i style="transform:scaleX(${step / 3})"></i></div>
           <fieldset><legend tabindex="-1">${escapeHtml(question.question)}</legend>${choices(question.name, question.options)}</fieldset>
@@ -229,7 +221,9 @@ const faq = [
         ${resource ? `<a class="resource-next" href="${escapeHtml(resource.href)}"><span>La ressource adaptée à cette étape</span><b>${escapeHtml(resource.label)}</b><p>${escapeHtml(resource.description)}</p></a>` : ''}
         <section class="human-next">
           <div><h2>Vous voulez savoir ce que cela change dans votre cas&nbsp;?</h2><p>Transmettez cette première lecture à Mouaad. Il reprendra à partir de l’annonce, de votre situation et du marché — sans engagement et sans vous demander de modifier votre prix à l’aveugle.</p></div>
-          <form data-lead-form novalidate>
+          <form data-lead-form method="post" action="/api/lead">
+            <input type="hidden" name="type" value="audit-annonce">
+            <input type="hidden" name="annonce" value="${escapeHtml(snapshot.url)}">
             <div class="lead-grid">
               <label>Prénom<input name="prenom" autocomplete="given-name" required maxlength="80"></label>
               <label>Nom<input name="nom" autocomplete="family-name" required maxlength="80"></label>
@@ -237,7 +231,7 @@ const faq = [
               <label>Téléphone <small>facultatif</small><input name="telephone" type="tel" autocomplete="tel" maxlength="40"></label>
             </div>
             <label class="lead-note">Ce que vous voulez préciser <small>facultatif</small><textarea name="detail" rows="3" maxlength="2000" placeholder="Depuis quand l’annonce est en ligne, retours reçus, difficulté principale…"></textarea></label>
-            <label class="lead-consent"><input type="checkbox" required><span>J’accepte que ces informations et le lien de l’annonce soient transmis à Mouaad pour qu’il puisse me répondre.</span></label>
+            <label class="lead-consent"><input type="checkbox" name="consentement" required><span>J’accepte que ces informations et le lien de l’annonce soient transmis à Mouaad pour qu’il puisse me répondre.</span></label>
             <label class="honeypot" aria-hidden="true">Site web<input name="site_web" tabindex="-1" autocomplete="off"></label>
             <button type="submit">Demander la lecture de Mouaad</button>
             <p class="form-status" data-lead-status role="status" aria-live="polite"></p>
@@ -289,7 +283,9 @@ const faq = [
             }),
           });
           const payload = await response.json().catch(() => ({}));
-          if (!response.ok) throw new Error(payload.message || 'La transmission n’a pas abouti.');
+          if (!response.ok || payload.ok !== true || payload.delivered !== true) {
+            throw new Error(payload.message || 'La transmission n’a pas abouti.');
+          }
           form.innerHTML = `<div class="lead-success" tabindex="-1" role="status"><b>Votre demande est transmise.</b><p>Mouaad dispose du lien, des deux premiers conseils et de votre précision. Il pourra reprendre exactement là où l’automatisation s’arrête.</p></div>`;
           trackAudit('audit_human_requested', { result: analysis.title });
           form.querySelector<HTMLElement>('.lead-success')?.focus();
@@ -300,32 +296,16 @@ const faq = [
       });
     }
 
-    urlForm?.addEventListener('submit', async (event) => {
+    urlForm?.addEventListener('submit', (event) => {
       event.preventDefault();
       if (!urlForm.reportValidity() || !urlInput) return;
       currentUrl = urlInput.value.trim();
       trackAudit('audit_started');
-      if (urlStatus) urlStatus.textContent = '';
-      setLoading(true);
-      try {
-        const response = await fetch('/api/audit-url/', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ url: currentUrl }),
-        });
-        const payload = await response.json().catch(() => ({}));
-        if (response.ok && payload.snapshot && payload.analysis) {
-          startQuestionnaire(payload.snapshot as ListingSnapshot, true, 'La page a fourni quelques éléments de présentation. Ils seront croisés avec les réactions que vous avez réellement reçues.');
-        } else if (payload.fallback) {
-          startQuestionnaire({ url: currentUrl, source: 'Portail non lisible', title: '', description: '' }, false, payload.message || 'La page ne peut pas être lue automatiquement.');
-        } else {
-          throw new Error(payload.message || 'Ce lien ne peut pas être analysé.');
-        }
-      } catch (error) {
-        if (urlStatus) urlStatus.textContent = error instanceof Error ? error.message : 'La lecture n’a pas abouti.';
-      } finally {
-        setLoading(false);
-      }
+      startQuestionnaire(
+        { url: currentUrl, source: 'Questionnaire uniquement', title: '', description: '' },
+        false,
+        'La lecture automatique est désactivée. Le lien sert seulement de repère ; vos trois réponses fondent la première lecture.',
+      );
     });
   </script>
 

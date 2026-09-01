@@ -11,7 +11,7 @@ export const site = {
   communes: ['Lèves', 'Chartres', 'Mainvilliers', 'Lucé', 'Champhol', 'Le Coudray', 'Luisant'],
   mouaad: {
     nom: 'Mouaad Boullourou',
-    titre: 'Conseiller immobilier indépendant SAFTI sur le bassin chartrain',
+    titre: 'Conseiller immobilier SAFTI à Lèves et alentours',
     signature: 'Une lecture avant toute proposition. Aucun engagement. Aucune pression.',
   },
 } as const;
