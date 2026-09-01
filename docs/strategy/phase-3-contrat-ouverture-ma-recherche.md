@@ -2,9 +2,9 @@
 
 **Statut du contrat :** **VALIDÉ** le 31 août 2026.
 
-**Statut de la Phase 3 :** **NON COMMENCÉE**.
+**Statut de la Phase 3 :** **OUVERTE LE 1er SEPTEMBRE 2026 — SPÉCIFICATION FONCTIONNELLE EN COURS**.
 
-**Portes restantes :** validation de la Preview P0 et du socle Git exact avant toute ouverture effective.
+**Portes franchies :** P0 déployé en Production au SHA `01a561fb955df75d4c9cf1bd5d2239f27344745a` avec smoke tests réussis ; socle Git Phase 3 créé depuis ce SHA et limité aux documents stratégiques validés.
 
 Ce contrat définit le premier périmètre fonctionnel pressenti de la Phase 3. Il n’autorise ni code, ni maquette visuelle, ni direction artistique, ni modification distante, ni travail BUY OS ou CRM.
 
@@ -211,7 +211,7 @@ Les correctifs P0 restent indépendants. La priorité future des deux ressources
 ## État de la porte
 
 - **CONTRAT D’OUVERTURE DE PHASE 3 : VALIDÉ**
-- **PHASE 3 : NON COMMENCÉE**
-- **PREVIEW P0 : EN ATTENTE DE VALIDATION**
-- **SOCLE GIT PHASE 3 : EN ATTENTE DE VALIDATION**
+- **PHASE 3 : OUVERTE — SPÉCIFICATION FONCTIONNELLE DE `/MA-RECHERCHE`**
+- **P0 PRODUCTION : DÉPLOYÉ ET VALIDÉ — `01a561fb955df75d4c9cf1bd5d2239f27344745a`**
+- **SOCLE GIT PHASE 3 : VALIDÉ — BRANCHE DOCUMENTAIRE DÉDIÉE**
 - **DIRECTION ARTISTIQUE : NON COMMENCÉE**

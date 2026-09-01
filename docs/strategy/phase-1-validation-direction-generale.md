@@ -67,7 +67,7 @@ Règle d’application : l’absence de page locale n’interdit jamais de citer
 | **Q01** | SIRET attendu : `824 194 419 00043`, provisoire jusqu’à attestation RNE récente. | **PIÈCE À FOURNIR** |
 | **Q02** | LEVOIS est utilisé comme nom du site, de la démarche et des outils de Mouaad. Aucun nom commercial ou enseigne déclaré n’est revendiqué à ce stade. | **VALIDÉ** |
 | **Q03** | Conserver seulement « Mouaad Boullourou, conseiller immobilier SAFTI à Lèves et alentours » jusqu’à autorisation des qualités supplémentaires. | **VALIDÉ** |
-| **Q04** | Agent commercial et RSAC publiés seulement si les justificatifs les portent exactement. | **INFORMATION/PIÈCE À FOURNIR** |
+| **Q04** | Le profil officiel SAFTI, consulté le 30 août 2026, publie « EI - Agent commercial - 824 194 419 RSAC CHARTRES ». Formulation juridique autorisée : « Mouaad Boullourou, entrepreneur individuel, agent commercial immatriculé au RSAC de Chartres sous le numéro 824 194 419. » Ne jamais employer « agent immobilier ». | **VALIDÉ POUR LES MENTIONS JURIDIQUES** |
 | **Q05** | Aucun bloc SAFTI détaillé avant validation de la formulation et de la nature exacte des assurances/garanties. | **INFORMATION À FOURNIR** |
 | **Q06** | Aucun lieu d’accueil physique ouvert au public. | **VALIDÉ PAR MOUAAD** |
 | **Q07** | Sans objet : aucune adresse d’accueil n’est publiée. Aucun horaire ni disponibilité permanente ne sont déduits. | **VALIDÉ / SANS OBJET** |
