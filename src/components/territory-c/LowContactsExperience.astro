@@ -1,0 +1,220 @@
+---
+import { getResourceContent } from '../../data/resourceContent';
+const content = getResourceContent('annonce-vue-peu-de-contacts');
+---
+
+<article class="mh-resource">
+  <header class="mh-frame mh-frame--cream mh-resource-hero">
+    <div class="mh-stage">
+      <p class="mh-resource-meta">Ressource pilote · 6 min de lecture · activité sans envoi</p>
+      <h1 class="mh-display">Annonce vue, mais peu de contacts</h1>
+      <p class="mh-resource-question">Pourquoi une annonce consultée ne génère-t-elle pas de demandes&nbsp;?</p>
+      <div class="mh-resource-answer">
+        <span>La réponse directe</span>
+        <p>{content.reponseCourte}</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="mh-frame mh-frame--night mh-resource-funnel" aria-labelledby="funnel-title">
+    <div class="mh-stage mh-section-pad">
+      <div class="mh-resource-funnel-head">
+        <h2 class="mh-title" id="funnel-title">Repérez l’endroit où le mouvement se réduit.</h2>
+        <p>Choisissez le signal que vous observez. La réponse distingue immédiatement ce qu’il montre de ce qu’il ne permet pas encore de conclure.</p>
+      </div>
+
+      <div class="mh-funnel-layout">
+        <form class="mh-funnel-control" data-mh-funnel-form>
+          <fieldset>
+            <legend>Quel signal ressemble le plus à votre situation&nbsp;?</legend>
+            <label class="mh-funnel-step" style="--width:100%">
+              <input type="radio" name="funnel" value="views" />
+              <span><b>Peu de vues</b><i>Diffusion</i></span>
+            </label>
+            <label class="mh-funnel-step" style="--width:78%">
+              <input type="radio" name="funnel" value="opens" />
+              <span><b>Des vues, peu d’ouvertures</b><i>Première impression</i></span>
+            </label>
+            <label class="mh-funnel-step" style="--width:56%">
+              <input type="radio" name="funnel" value="contacts" checked />
+              <span><b>Des ouvertures, peu de contacts</b><i>Comparaison</i></span>
+            </label>
+          </fieldset>
+          <p>Schéma de lecture : les largeurs ne représentent aucune donnée de votre annonce.</p>
+        </form>
+
+        <div class="mh-funnel-result" aria-live="polite">
+          <dl>
+            <div><dt>Ce qui est observé</dt><dd data-funnel-field="observed">L’annonce est ouverte, puis l’action s’arrête avant le contact.</dd></div>
+            <div><dt>Ce que cela semble indiquer</dt><dd data-funnel-field="meaning">La promesse visible dans la liste ne tient peut-être pas entièrement une fois l’annonce parcourue.</dd></div>
+            <div><dt>Autres explications possibles</dt><dd data-funnel-field="alternatives">Prix comparé aux alternatives, photos suivantes, description, localisation ou informations pratiques insuffisantes.</dd></div>
+            <div><dt>Information manquante</dt><dd data-funnel-field="missing">Les chiffres par étape et la comparaison avec les annonces voisines présentées au même public.</dd></div>
+            <div><dt>Prochaine vérification</dt><dd data-funnel-field="next">Relire l’annonce ouverte comme un acheteur et vérifier à quel moment la promesse s’affaiblit.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mh-frame mh-frame--cream mh-resource-explanation" aria-labelledby="explanation-title">
+    <div class="mh-stage mh-section-pad">
+      <h2 class="mh-title" id="explanation-title">Même silence. Trois causes différentes.</h2>
+      <div class="mh-resource-sequences">
+        {content.explication.map((paragraph, index) => (
+          <section>
+            <span>{['Lire les étapes', 'Localiser la rupture', 'Changer un seul levier'][index]}</span>
+            <p>{paragraph}</p>
+          </section>
+        ))}
+      </div>
+      <blockquote>
+        <p>{content.exemple.texte}</p>
+        <cite>{content.exemple.titre}</cite>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="mh-frame mh-frame--plum mh-resource-check" aria-labelledby="check-title">
+    <div class="mh-stage mh-section-pad">
+      <div class="mh-resource-check-head">
+        <h2 class="mh-title" id="check-title">La prochaine vérification tient sur une seule période.</h2>
+        <p class="mh-lead">{content.action}</p>
+      </div>
+      <ol>
+        {content.checklist.items.map((item) => <li>{item}</li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="mh-frame mh-frame--coral mh-resource-limit" aria-labelledby="limit-title">
+    <div class="mh-stage mh-section-pad">
+      <h2 class="mh-subtitle" id="limit-title">Ce que cette lecture ne peut pas conclure</h2>
+      <p class="mh-lead">{content.limite}</p>
+      <dl>
+        <div><dt>Responsable éditorial</dt><dd>Mouaad Boullourou</dd></div>
+        <div><dt>Nature</dt><dd>Repère de méthode, pas diagnostic</dd></div>
+        <div><dt>Prochaine action</dt><dd>Identifier l’étape avant de modifier</dd></div>
+      </dl>
+      <div class="mh-resource-actions">
+        <a class="mh-button mh-button--dark" href="/situer-ma-vente?s=peu-contacts">Faire le point sur ma vente</a>
+        <a class="mh-text-link" href="/contact?objet=vente">Poser ma question à Mouaad</a>
+      </div>
+    </div>
+  </section>
+</article>
+
+<style>
+  .mh-resource-hero { padding: clamp(66px, 8vw, 118px) 0 clamp(74px, 10vw, 150px); }
+  .mh-resource-meta { margin: 0 0 clamp(48px, 8vw, 110px); color: var(--mh-coral-dark); font-size: 12px; font-weight: 700; }
+  .mh-resource-hero .mh-display { max-width: 10ch; }
+  .mh-resource-question { max-width: 28ch; margin: 34px 0 0; font-family: var(--mh-serif); font-size: clamp(28px, 3.6vw, 50px); line-height: 1.05; }
+  .mh-resource-answer { display: grid; grid-template-columns: .35fr 1.65fr; gap: 40px; margin-top: clamp(64px, 9vw, 130px); padding-top: 24px; border-top: 1px solid var(--mh-line-dark); }
+  .mh-resource-answer span { color: var(--mh-coral-dark); font-size: 12px; font-weight: 700; }
+  .mh-resource-answer p { max-width: 52ch; margin: 0; font-family: var(--mh-serif); font-size: clamp(28px, 3.3vw, 46px); line-height: 1.08; }
+
+  .mh-resource-funnel-head { display: grid; grid-template-columns: 1.1fr .9fr; align-items: end; gap: clamp(40px, 8vw, 120px); margin-bottom: 70px; }
+  .mh-resource-funnel-head > p { max-width: 54ch; margin: 0; color: var(--mh-cream-soft); line-height: 1.65; }
+  .mh-funnel-layout { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(54px, 8vw, 120px); align-items: start; }
+  .mh-funnel-control fieldset { margin: 0; padding: 0; border: 0; }
+  .mh-funnel-control legend { max-width: 30ch; margin-bottom: 30px; padding: 0; font-size: 14px; line-height: 1.5; }
+  .mh-funnel-step { position: relative; width: var(--width); min-height: 82px; display: block; margin-bottom: 6px; cursor: pointer; }
+  .mh-funnel-step input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .mh-funnel-step span { min-height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 18px; border: 1px solid var(--mh-line-light); color: var(--mh-cream); }
+  .mh-funnel-step b { max-width: 17ch; font: 400 clamp(20px, 2.2vw, 29px)/1 var(--mh-serif); }
+  .mh-funnel-step i { color: var(--mh-cream-soft); font-size: 11px; font-style: normal; }
+  .mh-funnel-step input:checked + span { color: var(--mh-night); background: var(--mh-cyan); }
+  .mh-funnel-step input:checked + span i { color: var(--mh-night); }
+  .mh-funnel-control > p { max-width: 48ch; margin: 16px 0 0; color: var(--mh-cream-soft); font-size: 11px; line-height: 1.55; }
+
+  .mh-funnel-result { color: var(--mh-night); background: var(--mh-cream); }
+  .mh-funnel-result dl { margin: 0; }
+  .mh-funnel-result dl > div { display: grid; grid-template-columns: .65fr 1.35fr; gap: 30px; padding: 24px 26px; border-bottom: 1px solid var(--mh-line-dark); }
+  .mh-funnel-result dl > div:last-child { border-bottom: 0; background: var(--mh-coral); }
+  .mh-funnel-result dt { font-size: 11px; font-weight: 700; }
+  .mh-funnel-result dd { margin: 0; font-family: var(--mh-serif); font-size: clamp(21px, 2.2vw, 31px); line-height: 1.08; }
+
+  .mh-resource-explanation > .mh-stage > .mh-title { margin-bottom: 72px; }
+  .mh-resource-sequences { border-top: 1px solid var(--mh-line-dark); }
+  .mh-resource-sequences section { display: grid; grid-template-columns: .35fr 1.65fr; gap: 40px; padding: 32px 0; border-bottom: 1px solid var(--mh-line-dark); }
+  .mh-resource-sequences span { color: var(--mh-coral-dark); font-size: 12px; font-weight: 700; }
+  .mh-resource-sequences p { max-width: 74ch; margin: 0; font-size: clamp(16px, 1.4vw, 19px); line-height: 1.7; }
+  .mh-resource-explanation blockquote { max-width: 920px; margin: 100px 0 0 auto; padding: 44px 0 0 60px; border-top: 1px solid var(--mh-line-dark); }
+  .mh-resource-explanation blockquote p { margin: 0; font-family: var(--mh-serif); font-size: clamp(32px, 4vw, 58px); line-height: 1.02; }
+  .mh-resource-explanation cite { display: block; margin-top: 26px; color: var(--mh-coral-dark); font-size: 12px; font-style: normal; }
+
+  .mh-resource-check-head { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(42px, 8vw, 120px); align-items: end; margin-bottom: 70px; }
+  .mh-resource-check-head .mh-lead { color: var(--mh-cream-soft); }
+  .mh-resource-check ol { margin: 0; padding: 0; list-style: none; counter-reset: steps; border-top: 1px solid var(--mh-line-light); }
+  .mh-resource-check li { min-height: 94px; display: grid; grid-template-columns: 64px 1fr; align-items: center; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--mh-line-light); font-size: clamp(17px, 1.8vw, 24px); line-height: 1.35; counter-increment: steps; }
+  .mh-resource-check li::before { color: var(--mh-cyan); font-family: var(--mh-serif); font-size: 34px; content: counter(steps, decimal-leading-zero); }
+
+  .mh-resource-limit .mh-stage { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(50px, 9vw, 140px); }
+  .mh-resource-limit .mh-lead { align-self: end; }
+  .mh-resource-limit dl { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); margin: 20px 0 0; border-top: 1px solid var(--mh-line-dark); border-bottom: 1px solid var(--mh-line-dark); }
+  .mh-resource-limit dl > div { padding: 22px; border-right: 1px solid var(--mh-line-dark); }
+  .mh-resource-limit dl > div:last-child { border-right: 0; }
+  .mh-resource-limit dt { margin-bottom: 14px; font-size: 11px; }
+  .mh-resource-limit dd { margin: 0; font-family: var(--mh-serif); font-size: 25px; line-height: 1.05; }
+  .mh-resource-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 14px; }
+
+  @media (max-width: 850px) {
+    .mh-resource-answer,
+    .mh-resource-funnel-head,
+    .mh-funnel-layout,
+    .mh-resource-check-head,
+    .mh-resource-limit .mh-stage { grid-template-columns: 1fr; }
+    .mh-resource-sequences section { grid-template-columns: 1fr; gap: 14px; }
+    .mh-resource-explanation blockquote { margin-top: 70px; padding-left: 0; }
+    .mh-resource-limit dl,
+    .mh-resource-actions { grid-column: auto; }
+  }
+
+  @media (max-width: 620px) {
+    .mh-resource-hero .mh-stage,
+    .mh-resource .mh-stage { padding-inline: 20px; }
+    .mh-funnel-step { width: 100%; }
+    .mh-funnel-result dl > div { grid-template-columns: 1fr; gap: 11px; padding: 22px 20px; }
+    .mh-resource-limit dl { grid-template-columns: 1fr; }
+    .mh-resource-limit dl > div { border-right: 0; border-bottom: 1px solid var(--mh-line-dark); }
+    .mh-resource-limit dl > div:last-child { border-bottom: 0; }
+  }
+</style>
+
+<script>
+  const funnelInputs = Array.from(document.querySelectorAll<HTMLInputElement>('input[name="funnel"]'));
+  const contentByState: Record<string, Record<string, string>> = {
+    views: {
+      observed: 'L’annonce apparaît peu dans les résultats ou les listes consultées.',
+      meaning: 'Le premier point à examiner est la diffusion : support, position ou fourchette de recherche.',
+      alternatives: 'Saison, niveau d’offre locale, filtres choisis par les acheteurs ou publication trop récente.',
+      missing: 'Le nombre d’apparitions et la position réelle dans une recherche comparable.',
+      next: 'Reproduire la recherche type d’un acheteur et noter où l’annonce apparaît.',
+    },
+    opens: {
+      observed: 'L’annonce est vue dans une liste, mais elle est peu ouverte.',
+      meaning: 'La vignette, le titre ou le prix affiché soutiennent peut-être mal la première comparaison.',
+      alternatives: 'Concurrence plus visible, information essentielle absente ou mauvais recadrage sur le support.',
+      missing: 'La comparaison côte à côte avec les annonces voisines présentées au même public.',
+      next: 'Comparer vignette et prix à la liste réelle, puis ne modifier qu’un seul levier.',
+    },
+    contacts: {
+      observed: 'L’annonce est ouverte, puis l’action s’arrête avant le contact.',
+      meaning: 'La promesse visible dans la liste ne tient peut-être pas entièrement une fois l’annonce parcourue.',
+      alternatives: 'Prix comparé aux alternatives, photos suivantes, description, localisation ou informations pratiques insuffisantes.',
+      missing: 'Les chiffres par étape et la comparaison avec les annonces voisines présentées au même public.',
+      next: 'Relire l’annonce ouverte comme un acheteur et vérifier à quel moment la promesse s’affaiblit.',
+    },
+  };
+
+  const renderFunnel = () => {
+    const state = funnelInputs.find((input) => input.checked)?.value ?? 'contacts';
+    const values = contentByState[state] ?? contentByState.contacts;
+    Object.entries(values).forEach(([key, value]) => {
+      const node = document.querySelector<HTMLElement>('[data-funnel-field="' + key + '"]');
+      if (node) node.textContent = value;
+    });
+  };
+
+  funnelInputs.forEach((input) => input.addEventListener('change', renderFunnel));
+  renderFunnel();
+</script>

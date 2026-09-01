@@ -1,8 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import LowContactsExperience from '../../components/territory-c/LowContactsExperience.astro';
 import { resources } from '../../data/resources';
 import { getResourceContent } from '../../data/resourceContent';
 import { getSituation } from '../../data/situations';
+import { montageContract } from '../../data/territoryC';
 
 export function getStaticPaths() {
   return resources.map((r) => ({ params: { slug: r.slug }, props: { resource: r } }));
@@ -11,6 +13,7 @@ export function getStaticPaths() {
 const { resource } = Astro.props;
 const contenu = getResourceContent(resource.id);
 const situationLiee = getSituation(contenu.situationLiee);
+const isMontagePilot = resource.slug === 'annonce-vue-peu-de-contacts';
 const articleUrl = `https://levois.fr/ressources/${resource.slug}`;
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -21,95 +24,95 @@ const articleSchema = {
   mainEntityOfPage: articleUrl,
   inLanguage: 'fr-FR',
   author: { '@id': 'https://levois.fr/#mouaad-boullourou' },
-  publisher: { '@id': 'https://levois.fr/#organization' },
+  publisher: { '@id': 'https://levois.fr/#mouaad-boullourou' },
   about: ['vente immobilière', 'décision immobilière', 'bassin chartrain'],
   spatialCoverage: { '@type': 'Place', name: 'Bassin chartrain, Eure-et-Loir, France' },
 };
 ---
 
-<Layout title={resource.titre} description={`${resource.question} ${resource.benefice}`}>
+<Layout
+  title={resource.titre}
+  description={`${resource.question} ${resource.benefice}`}
+  territoryC={isMontagePilot}
+  designContract={isMontagePilot ? montageContract : undefined}
+>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
-    <header class="mb-10">
-      <p class="eyebrow mb-4">Ressource · {resource.duree}</p>
-      <h1 class="text-display text-encre mb-5">{resource.titre}</h1>
-      <p class="font-display text-xl md:text-2xl text-brun italic" style="font-variation-settings: 'opsz' 30;">
-        {resource.question}
-      </p>
-    </header>
+  {isMontagePilot ? (
+    <LowContactsExperience />
+  ) : (
+    <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+      <header class="mb-10">
+        <p class="eyebrow mb-4">Ressource · {resource.duree}</p>
+        <h1 class="text-display text-encre mb-5">{resource.titre}</h1>
+        <p class="font-display text-xl md:text-2xl text-brun italic" style="font-variation-settings: 'opsz' 30;">
+          {resource.question}
+        </p>
+      </header>
 
-    <!-- Réponse courte immédiatement visible -->
-    <div class="carte bg-argile-pale/40 p-6 md:p-7 mb-12">
-      <p class="font-sans text-sm uppercase tracking-widest text-argile mb-3">La réponse courte</p>
-      <p class="font-sans text-body-lg text-encre leading-relaxed">{contenu.reponseCourte}</p>
-    </div>
+      <div class="carte bg-argile-pale/40 p-6 md:p-7 mb-12">
+        <p class="font-sans text-sm uppercase tracking-widest text-argile mb-3">La réponse courte</p>
+        <p class="font-sans text-body-lg text-encre leading-relaxed">{contenu.reponseCourte}</p>
+      </div>
 
-    <!-- Explication -->
-    <section class="space-y-5 mb-12" aria-label="Explication">
-      {contenu.explication.map((p) => (
-        <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{p}</p>
-      ))}
-    </section>
-
-    <!-- Exemple -->
-    <section class="mb-12 border-l-2 border-beige pl-6" aria-labelledby="exemple-titre">
-      <h2 id="exemple-titre" class="font-sans text-sm uppercase tracking-widest text-brun mb-3">Exemple · {contenu.exemple.titre}</h2>
-      <p class="font-sans text-[15px] text-encre/80 leading-relaxed">{contenu.exemple.texte}</p>
-    </section>
-
-    <!-- Erreurs fréquentes -->
-    <section class="mb-12" aria-labelledby="erreurs-titre">
-      <h2 id="erreurs-titre" class="text-h3 text-encre mb-5">Les erreurs les plus fréquentes</h2>
-      <ul class="space-y-3">
-        {contenu.erreurs.map((e) => (
-          <li class="flex gap-3 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <span class="text-argile mt-0.5" aria-hidden="true">✕</span>
-            <span>{e}</span>
-          </li>
+      <section class="space-y-5 mb-12" aria-label="Explication">
+        {contenu.explication.map((paragraph) => (
+          <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{paragraph}</p>
         ))}
-      </ul>
-    </section>
+      </section>
 
-    <!-- Checklist -->
-    <section class="mb-12 carte p-6 md:p-8" aria-labelledby="checklist-titre">
-      <h2 id="checklist-titre" class="text-h3 text-encre mb-5">{contenu.checklist.titre}</h2>
-      <ol class="space-y-3.5 list-none counter-reset-item">
-        {contenu.checklist.items.map((item, i) => (
-          <li class="flex gap-4 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <span class="font-sans text-sm text-argile font-medium pt-0.5 tracking-widest">{String(i + 1).padStart(2, '0')}</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ol>
-    </section>
+      <section class="mb-12 border-l-2 border-beige pl-6" aria-labelledby="exemple-titre">
+        <h2 id="exemple-titre" class="font-sans text-sm uppercase tracking-widest text-brun mb-3">Exemple · {contenu.exemple.titre}</h2>
+        <p class="font-sans text-[15px] text-encre/80 leading-relaxed">{contenu.exemple.texte}</p>
+      </section>
 
-    <!-- Ce que l'on ne peut pas conclure -->
-    <section class="mb-12 encart-limite py-1" aria-labelledby="limite-titre">
-      <h2 id="limite-titre" class="font-sans text-sm uppercase tracking-widest text-argile mb-2 pt-1">Ce que cette ressource ne peut pas conclure</h2>
-      <p class="font-sans text-[15px] leading-relaxed">{contenu.limite}</p>
-    </section>
+      <section class="mb-12" aria-labelledby="erreurs-titre">
+        <h2 id="erreurs-titre" class="text-h3 text-encre mb-5">Les erreurs les plus fréquentes</h2>
+        <ul class="space-y-3">
+          {contenu.erreurs.map((error) => (
+            <li class="flex gap-3 font-sans text-[15px] text-encre/85 leading-relaxed">
+              <span class="text-argile mt-0.5" aria-hidden="true">×</span><span>{error}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-    <!-- Prochaine action -->
-    <section class="mb-14" aria-labelledby="action-titre">
-      <h2 id="action-titre" class="text-h3 text-encre mb-3">Votre prochaine action</h2>
-      <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{contenu.action}</p>
-    </section>
+      <section class="mb-12 carte p-6 md:p-8" aria-labelledby="checklist-titre">
+        <h2 id="checklist-titre" class="text-h3 text-encre mb-5">{contenu.checklist.titre}</h2>
+        <ol class="space-y-3.5 list-none counter-reset-item">
+          {contenu.checklist.items.map((item, index) => (
+            <li class="flex gap-4 font-sans text-[15px] text-encre/85 leading-relaxed">
+              <span class="font-sans text-sm text-argile font-medium pt-0.5 tracking-widest">{String(index + 1).padStart(2, '0')}</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-    <!-- Parcours lié + continuité humaine -->
-    <div class="grid sm:grid-cols-2 gap-4">
-      {situationLiee && (
-        <a href={`/situer-ma-vente?s=${situationLiee.id}`} class="group carte p-6 transition-all duration-200 hover:border-argile">
-          <p class="font-sans text-sm text-argile mb-2">Situer ma vente</p>
-          <p class="font-display text-lg text-encre mb-1">Parcours lié · {situationLiee.titre}</p>
-          <p class="font-sans text-sm text-brun">Trois minutes pour relier cette ressource à votre situation précise.</p>
+      <section class="mb-12 encart-limite py-1" aria-labelledby="limite-titre">
+        <h2 id="limite-titre" class="font-sans text-sm uppercase tracking-widest text-argile mb-2 pt-1">Ce que cette ressource ne peut pas conclure</h2>
+        <p class="font-sans text-[15px] leading-relaxed">{contenu.limite}</p>
+      </section>
+
+      <section class="mb-14" aria-labelledby="action-titre">
+        <h2 id="action-titre" class="text-h3 text-encre mb-3">Votre prochaine action</h2>
+        <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{contenu.action}</p>
+      </section>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        {situationLiee && (
+          <a href={`/situer-ma-vente?s=${situationLiee.id}`} class="group carte p-6 transition-all duration-200 hover:border-argile">
+            <p class="font-sans text-sm text-argile mb-2">Situer ma vente</p>
+            <p class="font-display text-lg text-encre mb-1">Parcours lié · {situationLiee.titre}</p>
+            <p class="font-sans text-sm text-brun">Reliez cette ressource à votre situation précise.</p>
+          </a>
+        )}
+        <a href="/accompagnement" class="group carte p-6 transition-all duration-200 hover:border-argile">
+          <p class="font-sans text-sm text-argile mb-2">Aller plus loin</p>
+          <p class="font-display text-lg text-encre mb-1">Un regard humain sur votre cas ?</p>
+          <p class="font-sans text-sm text-brun">Mouaad applique cette lecture à votre bien et à votre situation.</p>
         </a>
-      )}
-      <a href="/accompagnement" class="group carte p-6 transition-all duration-200 hover:border-argile">
-        <p class="font-sans text-sm text-argile mb-2">Aller plus loin</p>
-        <p class="font-display text-lg text-encre mb-1">Un regard humain sur votre cas ?</p>
-        <p class="font-sans text-sm text-brun">Mouaad applique cette lecture à votre bien et à votre situation.</p>
-      </a>
-    </div>
-  </article>
+      </div>
+    </article>
+  )}
 </Layout>

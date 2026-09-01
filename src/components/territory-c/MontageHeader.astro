@@ -1,0 +1,59 @@
+---
+const pathname = Astro.url.pathname;
+const links = [
+  { href: '/', label: 'Accueil' },
+  { href: '/ma-recherche', label: 'Ma recherche' },
+  { href: '/votre-rue', label: 'Votre rue' },
+  { href: '/ressources/annonce-vue-peu-de-contacts', label: 'Ressource pilote' },
+];
+---
+
+<header class="mh-header" data-mh-header>
+  <a class="mh-wordmark" href="/" aria-label="LEVOIS, retour à l’accueil">LEVOIS</a>
+  <button
+    class="mh-menu-button"
+    type="button"
+    aria-expanded="false"
+    aria-controls="mh-navigation"
+    data-mh-menu-button
+  >
+    <span>Menu</span>
+    <span class="mh-menu-glyph" aria-hidden="true"><i></i><i></i></span>
+  </button>
+  <nav class="mh-nav" id="mh-navigation" aria-label="Navigation principale" data-mh-navigation>
+    {links.map((link) => (
+      <a href={link.href} aria-current={pathname === link.href ? 'page' : undefined}>{link.label}</a>
+    ))}
+  </nav>
+  <a class="mh-header-contact" href="/contact">Contacter Mouaad</a>
+</header>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-mh-menu-button]');
+  const navigation = document.querySelector<HTMLElement>('[data-mh-navigation]');
+
+  const closeMenu = () => {
+    button?.setAttribute('aria-expanded', 'false');
+    button?.setAttribute('aria-label', 'Ouvrir le menu');
+    navigation?.removeAttribute('data-open');
+  };
+
+  button?.setAttribute('aria-label', 'Ouvrir le menu');
+  button?.addEventListener('click', () => {
+    const open = button.getAttribute('aria-expanded') !== 'true';
+    button.setAttribute('aria-expanded', String(open));
+    button.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+    if (open) navigation?.setAttribute('data-open', 'true');
+    else navigation?.removeAttribute('data-open');
+  });
+
+  navigation?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || button?.getAttribute('aria-expanded') !== 'true') return;
+    closeMenu();
+    button?.focus();
+  });
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 940) closeMenu();
+  });
+</script>

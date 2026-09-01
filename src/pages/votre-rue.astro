@@ -20,13 +20,20 @@
  * /api/lead uniquement après consentement explicite.
  */
 import Layout from '../layouts/Layout.astro';
+import MontageRueResult from '../components/territory-c/MontageRueResult.astro';
+import { montageContract } from '../data/territoryC';
 ---
 
 <Layout
   title="Les prix réels de votre secteur"
   description="Consultez un échantillon de ventes du même type de bien autour d'une adresse confirmée, à partir des données publiques DVF."
   noindex={true}
+  territoryC={true}
+  designContract={montageContract}
 >
+  <MontageRueResult />
+  <details class="mh-rue-explorer" id="vr-explorer">
+    <summary>Explorer une autre adresse avec l’outil existant</summary>
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
 
     <!-- ① Promesse + saisie -->
@@ -118,6 +125,7 @@ import Layout from '../layouts/Layout.astro';
     </details>
 
   </div>
+  </details>
 </Layout>
 
 <!-- is:global OBLIGATOIRE : l'infographie est injectée en JS (innerHTML), donc
