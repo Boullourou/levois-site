@@ -17,14 +17,14 @@
  *
  * Géocodage : Géoplateforme (BAN) — service actuel de l'État.
  * Conversion : les réponses de qualification + le contexte sont destinés à
- * /api/lead (backend migré à l'itération suivante — cf. commentaire d'envoi).
+ * /api/lead uniquement après consentement explicite.
  */
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout
   title="Les prix réels de votre secteur"
-  description="Combien s'est vendue la dernière maison de votre quartier ? Les ventes réelles de votre secteur, à partir des données publiques DVF. Sans inscription."
+  description="Consultez un échantillon de ventes du même type de bien autour d'une adresse confirmée, à partir des données publiques DVF."
   noindex={true}
 >
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
@@ -33,34 +33,52 @@ import Layout from '../layouts/Layout.astro';
     <header class="mb-8 md:mb-10">
       <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
       <h1 class="vr-page-title text-encre mb-4">
-        Combien s'est vendue la dernière maison de votre quartier&nbsp;?
+        Quelles ventes comparer autour de votre adresse&nbsp;?
       </h1>
       <p class="font-sans text-body-lg text-brun max-w-prose">
-        Les ventes réellement enregistrées autour de chez vous.
-        Sans inscription, sans qu'on vous rappelle. La réponse en 30&nbsp;secondes.
+        Un échantillon de ventes réellement enregistrées, pour le type de bien que vous choisissez.
+        Sans inscription et sans coordonnées de contact.
       </p>
       <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
     </header>
 
-    <form id="vr-form" class="vr-search carte p-5 md:p-6" autocomplete="off" novalidate>
+    <form id="vr-form" method="post" action="/votre-rue/" class="vr-search carte p-5 md:p-6" autocomplete="off">
       <label for="vr-adresse" class="block font-sans text-sm text-brun mb-2">
-        Votre rue ou votre adresse
+        Votre adresse avec numéro
       </label>
       <div class="vr-field">
         <div class="vr-combo">
           <input
             id="vr-adresse" type="text" name="adresse" inputmode="text"
+            maxlength="240" required
             autocomplete="off" spellcheck="false"
-            placeholder="Ex : rue de la République, Lèves"
+            placeholder="Ex : 8 rue de la Ravaudière, Lèves"
             class="vr-input" role="combobox" aria-expanded="false"
             aria-controls="vr-suggestions" aria-autocomplete="list"
           />
           <ul id="vr-suggestions" class="vr-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>
         </div>
-        <button type="submit" id="vr-submit" class="btn-primaire vr-submit">Voir les ventes</button>
+        <button type="submit" id="vr-submit" class="btn-primaire vr-submit">Rechercher l'adresse</button>
       </div>
+      <p class="vr-geocodage-info">
+        Votre saisie reste dans votre navigateur jusqu'à l'appui sur «&nbsp;Rechercher l'adresse&nbsp;».
+        Elle est alors envoyée à <strong>Géoplateforme (IGN)</strong> uniquement pour proposer des
+        correspondances géographiques. <a href="/confidentialite">En savoir plus</a>.
+      </p>
+      <p id="vr-adresse-confirmee" class="vr-adresse-confirmee" role="status" hidden>
+        <strong>Adresse confirmée&nbsp;:</strong> <span id="vr-adresse-confirmee-label"></span>
+        <span id="vr-adresse-confirmee-type"></span>
+      </p>
+      <label for="vr-type-bien" class="block font-sans text-sm text-brun mt-4 mb-2">
+        Type de bien à analyser
+      </label>
+      <select id="vr-type-bien" name="typeBien" class="vr-input vr-type-bien" required>
+        <option value="">Choisissez un type</option>
+        <option value="Maison">Maison</option>
+        <option value="Appartement">Appartement</option>
+      </select>
       <p class="font-sans text-[13px] text-brun/70 mt-3">
-        Aucune création de compte. Aucun e-mail ni téléphone demandé pour obtenir le résultat.
+        Le résultat ne mélange pas les types de biens. Aucun e-mail ni téléphone n'est demandé pour l'obtenir.
       </p>
       <p id="vr-geo-erreur" class="font-sans text-sm text-argile mt-2 hidden" role="alert"></p>
     </form>
@@ -78,8 +96,11 @@ import Layout from '../layouts/Layout.astro';
           enregistrée.
         </p>
         <p>
-          Les prix « médians » et les fourchettes sont calculés sur les ventes du même type de
-          bien (maison ou appartement) dans un rayon autour de l'adresse. L'évolution est estimée
+          Les prix « médians » et les fourchettes sont calculés sur un échantillon d'au moins
+          20 ventes du type de bien choisi, avec surface connue et hors mutations multi-lots.
+          Le plus petit rayon atteignant ce seuil est retenu parmi 250&nbsp;m, 500&nbsp;m,
+          700&nbsp;m, 1&nbsp;km, 1,5&nbsp;km, 2&nbsp;km et 3&nbsp;km.
+          En dessous du seuil à 3&nbsp;km, aucun résultat de marché n'est affiché. L'évolution est estimée
           par une droite de tendance (régression) sur les médianes annuelles du prix au m²
           (2021 à 2025), pour éviter qu'une seule année atypique ne fausse la lecture.
           Le pourcentage affiché compare la valeur de cette droite en 2025 à sa valeur en 2021
@@ -126,6 +147,18 @@ import Layout from '../layouts/Layout.astro';
   .vr-input:focus { outline: 2px solid #243CFF; outline-offset: 2px; border-color: #243CFF; }
   .vr-submit { min-height: 52px; white-space: nowrap; }
   @media (max-width: 559px) { .vr-submit { width: 100%; } }
+  .vr-type-bien { max-width: 22rem; min-height: 52px; }
+  .vr-geocodage-info {
+    margin-top: 0.75rem; font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 0.82rem; line-height: 1.55; color: #58615B;
+  }
+  .vr-geocodage-info a { color: #243CFF; text-decoration: underline; }
+  .vr-adresse-confirmee {
+    margin-top: 0.9rem; padding: 0.75rem 0.85rem; border-left: 4px solid #243CFF;
+    background: #F2F5EF; font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 0.9rem; line-height: 1.5; color: #111522;
+  }
+  .vr-adresse-confirmee > span:last-child { color: #58615B; }
 
   .vr-suggestions {
     position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px);
@@ -168,6 +201,19 @@ import Layout from '../layouts/Layout.astro';
   .vr-head { margin: 0.25rem 0 0.1rem; }
   .vr-head-eyebrow { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #243CFF; }
   .vr-head-adr { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.95rem; color: #58615B; margin-top: 0.25rem; }
+
+  .vr-result-scope {
+    margin: 1.5rem 0 0; padding: 1.15rem 1.25rem; border: 2px solid #111522;
+    background: #FFFFFF; font-family: 'Public Sans', system-ui, sans-serif;
+  }
+  .vr-result-scope h2 { margin: 0 0 0.8rem; color: #111522; font-size: 1.05rem; font-weight: 700; }
+  .vr-result-scope dl { display: grid; grid-template-columns: minmax(8rem, auto) 1fr; gap: 0.45rem 1rem; }
+  .vr-result-scope dt { color: #58615B; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .vr-result-scope dd { margin: 0; color: #111522; font-size: 0.9rem; font-weight: 600; }
+  @media (max-width: 559px) {
+    .vr-result-scope dl { grid-template-columns: 1fr; gap: 0.15rem; }
+    .vr-result-scope dd { margin-bottom: 0.55rem; }
+  }
 
   .vr-block { opacity: 0; transform: translateY(14px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
   .vr-block.is-in { opacity: 1; transform: none; }
@@ -601,18 +647,40 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
-  type Tx = {
-    id: string; d: string; v: number; t: string; lat: number; lon: number;
-    no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
+  import {
+    boundedGeocodingQuery,
+    geocodingCandidates,
+    selectMarketScope,
+    type GeocodingCandidate,
+    type MarketTransaction,
+    type PropertyType,
+  } from '../lib/votre-rue';
+  import {
+    ATTRIBUTION_STORAGE_KEY,
+    attributionFromVisit,
+    mergeAttribution,
+    parseStoredAttribution,
+  } from '../lib/attribution';
+
+  type Tx = MarketTransaction;
+  type Meta = {
+    status: string;
+    generatedAt: string | null;
+    dateVenteLaPlusRecente: string | null;
+    dateVenteLaPlusAncienne?: string | null;
   };
-  type Meta = { status: string; generatedAt: string | null; dateVenteLaPlusRecente: string | null };
 
   const form = document.getElementById('vr-form') as HTMLFormElement;
   const input = document.getElementById('vr-adresse') as HTMLInputElement;
+  const typeBien = document.getElementById('vr-type-bien') as HTMLSelectElement;
+  const submit = document.getElementById('vr-submit') as HTMLButtonElement;
   const sugList = document.getElementById('vr-suggestions') as HTMLUListElement;
   const scene = document.getElementById('vr-scene') as HTMLElement;
   const geoErreur = document.getElementById('vr-geo-erreur') as HTMLElement;
   const fraicheurEl = document.getElementById('vr-fraicheur') as HTMLElement;
+  const adresseConfirmee = document.getElementById('vr-adresse-confirmee') as HTMLElement;
+  const adresseConfirmeeLabel = document.getElementById('vr-adresse-confirmee-label') as HTMLElement;
+  const adresseConfirmeeType = document.getElementById('vr-adresse-confirmee-type') as HTMLElement;
 
   const BIAIS = { lon: 1.4890, lat: 48.4470 };
   const GEOCODE = 'https://data.geopf.fr/geocodage/search';
@@ -626,9 +694,21 @@ import Layout from '../layouts/Layout.astro';
   const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] as string));
   const wait = (ms: number) => new Promise((r) => setTimeout(r, reduced ? 0 : ms));
 
+  function attributionBornee() {
+    const current = attributionFromVisit(window.location.href, document.referrer);
+    try {
+      return mergeAttribution(
+        parseStoredAttribution(sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY)),
+        current,
+      );
+    } catch {
+      return current;
+    }
+  }
+
   let dataset: Tx[] | null = null;
   let meta: Meta | null = null;
-  let selection: { lon: number; lat: number; label: string } | null = null;
+  let selection: GeocodingCandidate | null = null;
   let lastModel: any = null;
 
   // ——— Fraîcheur affichée d'emblée ———
@@ -650,26 +730,17 @@ import Layout from '../layouts/Layout.astro';
     meta = (await m.json()) as Meta;
   }
 
-  async function geocoder(q: string, autocomplete: boolean, limit: number) {
+  async function geocoder(q: string, limit: number) {
     const url = new URL(GEOCODE);
-    url.searchParams.set('q', q);
+    url.searchParams.set('q', boundedGeocodingQuery(q));
     url.searchParams.set('limit', String(limit));
     url.searchParams.set('lon', String(BIAIS.lon));
     url.searchParams.set('lat', String(BIAIS.lat));
-    if (autocomplete) url.searchParams.set('autocomplete', '1');
     const rep = await fetch(url.toString());
     if (!rep.ok) throw new Error(`geocode ${rep.status}`);
     const json = await rep.json();
     const feats = Array.isArray(json.features) ? json.features : [];
-    return feats.filter((f: any) => String(f?.properties?.citycode || '').startsWith('28'));
-  }
-
-  function distance(aLat: number, aLon: number, bLat: number, bLon: number) {
-    const R = 6371000;
-    const dLat = ((bLat - aLat) * Math.PI) / 180, dLon = ((bLon - aLon) * Math.PI) / 180;
-    const la1 = (aLat * Math.PI) / 180, la2 = (bLat * Math.PI) / 180;
-    const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
-    return 2 * R * Math.asin(Math.sqrt(h));
+    return geocodingCandidates(feats);
   }
   const distLisible = (m: number) => (m < 1000 ? `à environ ${Math.round(m / 50) * 50} m` : `à environ ${(m / 1000).toFixed(1).replace('.', ',')} km`);
   const median = (a: number[]) => { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
@@ -694,22 +765,17 @@ import Layout from '../layouts/Layout.astro';
   // (2021→2025), amortit le bruit d'une année atypique, et reflète la tendance
   // de fond. Une comparaison de deux fenêtres pouvait afficher une « baisse »
   // là où le marché est en réalité stable (retour après un pic ponctuel).
-  function computeTrend(all: any[], dom: string, minR: number) {
-    // Échelle « secteur » : rayon d'au moins 1500 m pour des médianes annuelles
-    // stables (les petits rayons font osciller la tendance d'année en année).
-    const radii = minR >= 3000 ? [3000] : [minR, 3000];
-    let arr: any[] = [];
-    for (const r of radii) {
-      const s = all.filter((t) => t._dist <= r && t.t === dom && !t.lots && t.sb);
-      arr = s;
-      if (s.length >= 150) break;
-    }
+  function computeTrend(sample: any[]) {
+    // La tendance emploie exactement l'échantillon, le type et le rayon affichés.
+    // Si chaque année 2021–2025 n'apporte pas assez d'observations, elle est
+    // suspendue au lieu d'élargir silencieusement le périmètre.
+    const arr = sample;
     const xs: number[] = [], ys: number[] = [];
     for (let y = 2021; y <= 2025; y++) {
       const g = arr.filter((t) => t.d.startsWith(String(y))).map((t) => t.v / t.sb);
       if (g.length >= 20) { xs.push(y); ys.push(median(g) as number); } // année fiable seulement
     }
-    if (xs.length < 3) return null; // pas assez de recul → pas de tendance affichée
+    if (xs.length !== 5) return null; // période complète absente → pas de tendance affichée
 
     // Droite de régression (moindres carrés) sur les médianes annuelles.
     const ANNEE_REF = 2021, ANNEE_FIN = 2025; // bornes FIXES, identiques pour toute adresse
@@ -738,21 +804,13 @@ import Layout from '../layouts/Layout.astro';
   }
 
   // ——— Modèle : tous les indicateurs, calculés sur les vraies données ———
-  function computeModel(lat: number, lon: number) {
-    const all = (dataset as Tx[]).map((t) => ({ ...t, _dist: distance(lat, lon, t.lat, t.lon) })).sort((a, b) => a._dist - b._dist);
+  function computeModel(lat: number, lon: number, dom: PropertyType) {
+    const scope = selectMarketScope(dataset as Tx[], lat, lon, dom);
+    if (!scope) return null;
 
-    const hab = (arr: any[]) => arr.filter((t) => (t.t === 'Maison' || t.t === 'Appartement') && !t.lots);
-    let Rw = 3000, near = hab(all.filter((t) => t._dist <= 3000));
-    for (const r of [700, 1500, 3000]) {
-      const s = hab(all.filter((t) => t._dist <= r));
-      if (s.length >= 150) { Rw = r; near = s; break; }
-      if (r === 3000) { Rw = 3000; near = s; }
-    }
-    if (!near.length) return null;
-
-    const nM = near.filter((t) => t.t === 'Maison').length;
-    const nA = near.filter((t) => t.t === 'Appartement').length;
-    const dom = nM >= nA ? 'Maison' : 'Appartement';
+    const { sample: near, context, radius: Rw, periodFrom, periodTo } = scope;
+    const nM = context.filter((t) => t.t === 'Maison').length;
+    const nA = context.filter((t) => t.t === 'Appartement').length;
     const nbVentes = near.length;
 
     const ppmStats = (arr: any[]) => {
@@ -760,19 +818,18 @@ import Layout from '../layouts/Layout.astro';
       if (vals.length < 20) return null;
       return { median: median(vals)!, q1: quantile(vals, 0.25)!, q3: quantile(vals, 0.75)!, n: vals.length };
     };
-    const ppmM = ppmStats(near.filter((t) => t.t === 'Maison'));
-    const ppmA = ppmStats(near.filter((t) => t.t === 'Appartement'));
+    const ppmM = ppmStats(context.filter((t) => t.t === 'Maison'));
+    const ppmA = ppmStats(context.filter((t) => t.t === 'Appartement'));
 
-    const D = computeTrend(all, dom, Math.max(Rw, 1500));
+    const D = computeTrend(near);
 
-    let aSet: any[] = [];
-    for (const r of [700, 1500, 3000]) { aSet = all.filter((t) => t._dist <= r); if (aSet.length) break; }
-    const derniere = [...aSet].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist))[0];
-    const activite = near.filter((t) => t.t === dom && t.d >= '2025').length >= 5;
-    const autres = [...aSet].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere?.id).slice(0, 4);
+    const derniere = [...near].sort((a, b) => (a.d < b.d ? 1 : a.d > b.d ? -1 : a._dist - b._dist))[0];
+    const activite = near.filter((t) => t.d >= '2025').length >= 5;
+    const autres = [...near].sort((a, b) => (a.d < b.d ? 1 : -1)).filter((t) => t.id !== derniere?.id).slice(0, 4);
 
     const surfaceEffect = (() => {
-      const appts = near.filter((t) => t.t === 'Appartement' && t.sb > 0);
+      if (dom !== 'Appartement') return null;
+      const appts = near.filter((t) => t.sb && t.sb > 0);
       if (appts.length < 40) return null;
       const small = appts.filter((t) => t.sb < 50);
       const large = appts.filter((t) => t.sb >= 80);
@@ -791,7 +848,10 @@ import Layout from '../layouts/Layout.astro';
     const sampleArr = (arr: number[], n: number) => arr.length <= n ? arr : Array.from({ length: n }, (_: any, i: number) => arr[Math.floor(i * arr.length / n)]);
     const ppmDotsM = sampleArr(ppmArr2(near.filter((t) => t.t === 'Maison')), 60);
     const ppmDotsA = sampleArr(ppmArr2(near.filter((t) => t.t === 'Appartement')), 60);
-    return { nbVentes, Rw, dom, nM, nA, ppmM, ppmA, ppmDotsM, ppmDotsA, D, derniere, activite, autres, surfaceEffect, n2024, n2025 };
+    return {
+      nbVentes, Rw, dom, nM, nA, ppmM, ppmA, ppmDotsM, ppmDotsA, D,
+      derniere, activite, autres, surfaceEffect, n2024, n2025, periodFrom, periodTo,
+    };
   }
 
   // ——— « En clair » : phrases par règles fixes ———
@@ -855,6 +915,22 @@ import Layout from '../layouts/Layout.astro';
 
   // ——— Rendu de l'infographie ———
   const rayonTxt = (r: number) => (r < 1000 ? `${r} m` : `${(r / 1000).toLocaleString('fr-FR')} km`);
+  function construirePerimetre(model: any) {
+    const typeLabel = model.dom === 'Maison' ? 'Maisons' : 'Appartements';
+    const adresseLabel = selection?.label || '';
+    const adresseType = selection?.kindLabel || '';
+    return `
+      <section class="vr-result-scope" aria-label="Périmètre du résultat">
+        <h2>Périmètre vérifiable du résultat</h2>
+        <dl>
+          <dt>Adresse confirmée</dt><dd>${esc(adresseLabel)}${adresseType ? ` · ${esc(adresseType)}` : ''}</dd>
+          <dt>Type de résultat</dt><dd>${typeLabel}</dd>
+          <dt>Période</dt><dd>Du ${esc(dateComplete(model.periodFrom))} au ${esc(dateComplete(model.periodTo))}</dd>
+          <dt>Rayon</dt><dd>${esc(rayonTxt(model.Rw))}</dd>
+          <dt>Échantillon</dt><dd>${model.nbVentes} ventes ${typeLabel.toLocaleLowerCase('fr-FR')} retenues</dd>
+        </dl>
+      </section>`;
+  }
   // Position du curseur sur la jauge baisse/stable/hausse : domaine [-10 %, +10 %].
   const gaugePos = (delta: number) => Math.max(4, Math.min(96, ((delta + 10) / 20) * 100));
 
@@ -876,6 +952,7 @@ import Layout from '../layouts/Layout.astro';
     const altType = model.dom === 'Maison' ? 'Appartement' : 'Maison';
     const parts: string[] = [];
 
+    parts.push(construirePerimetre(model));
     parts.push(`
       <div class="vr-head">
         <p class="vr-head-eyebrow">Autour de cette adresse</p>
@@ -887,8 +964,8 @@ import Layout from '../layouts/Layout.astro';
       <div class="vr-block" data-anim="count">
         <div class="vr-card">
           <p class="vr-num vr-b-num"><span data-count="${model.nbVentes}">0</span></p>
-          <p class="vr-b-l">ventes réalisées depuis 2021</p>
-          <p class="vr-sub vr-b-sub">dans un rayon d'environ ${rayonTxt(model.Rw)}</p>
+          <p class="vr-b-l">ventes de ${esc(typePlurielNu(model.dom))} retenues</p>
+          <p class="vr-sub vr-b-sub">du ${esc(dateComplete(model.periodFrom))} au ${esc(dateComplete(model.periodTo))}, dans un rayon de ${rayonTxt(model.Rw)}</p>
         </div>
       </div>`);
 
@@ -1220,17 +1297,18 @@ import Layout from '../layouts/Layout.astro';
       ${heroBadge}` : '';
 
     // ——— Conclusion dynamique ———
-    const concP1 = `Nous sommes partis de ${model.nbVentes} ventes. Nous avons déjà écarté celles qui ne correspondent pas au même type de bien. Mais même parmi les ${esc(typePlurielNu(model.dom))}, les écarts restent importants.`;
+    const concP1 = `Ce résultat repose sur ${model.nbVentes} ventes de ${esc(typePlurielNu(model.dom))}, avec surface connue et hors mutations multi-lots. Même dans cet échantillon homogène, les écarts restent importants.`;
     const concP2 = `Une adresse permet de comprendre votre marché. Pas encore de savoir où votre bien se place dedans.`;
     const concP3 = `Pour aller plus loin, il faut maintenant identifier les ventes qui ressemblent réellement à votre bien.`;
 
     // ——— Assemblage HTML ———
     scene.innerHTML = `
+      ${construirePerimetre(model)}
       <div class="vr-cine-wrap">
         <div class="vr-bloc vr-bloc--hero" id="vr-b-hero">
           <p class="vr-kicker vr-kicker--light">Analyse locale</p>
           <div class="vr-hero-counter" id="vr-hc" data-count="${model.nbVentes}">0</div>
-          <p class="vr-hero-count-lbl">ventes analysées autour de cette adresse</p>
+          <p class="vr-hero-count-lbl">ventes de ${esc(typePlurielNu(model.dom))} analysées</p>
           ${heroBars}
         </div>
         <div class="vr-bloc vr-bloc--b1 vr-bloc-anim" id="vr-b-dots">
@@ -1245,8 +1323,8 @@ import Layout from '../layouts/Layout.astro';
             <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--M">${model.nM}</span> maisons</div>
             <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--A">${model.nA}</span> appartements</div>
           </div>
-          <p class="vr-phase-txt vr-pt1" id="vr-pt1">${model.nbVentes} ventes autour de cette adresse. Mais toutes ne sont pas comparables entre elles.</p>
-          <p class="vr-phase-txt vr-pt2" id="vr-pt2" style="opacity:0">Pour comprendre le marché ${model.dom === 'Maison' ? "d'une maison" : "d'un appartement"}, les ventes de l'autre type doivent déjà être écartées.</p>
+          <p class="vr-phase-txt vr-pt1" id="vr-pt1">${model.nM + model.nA} ventes de logements figurent dans ce rayon. Elles ne sont pas toutes comparables entre elles.</p>
+          <p class="vr-phase-txt vr-pt2" id="vr-pt2" style="opacity:0">Pour le résultat ${model.dom === 'Maison' ? 'maisons' : 'appartements'}, ${model.nbVentes} ventes du type choisi, avec surface connue et hors mutations multi-lots, sont retenues.</p>
         </div>
         ${distHtml}
         ${surfHtml}
@@ -1520,7 +1598,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="vr-contact-liens">
           <a href="tel:+33781380121" class="btn-primaire">Appeler Mouaad</a>
           <a href="mailto:mouaad@levois.fr" class="btn-secondaire">Écrire un e-mail</a>
-          <a href="/contact?src=votre-rue" class="btn-secondaire">Être rappelé</a>
+          <a href="/contact?src=votre-rue" class="btn-secondaire">Poser ma question</a>
         </div>
       </div>`;
   }
@@ -1582,18 +1660,24 @@ import Layout from '../layouts/Layout.astro';
       panneau.innerHTML = `
         <div class="vr-panneau">
           <div class="vr-q-progress">${dots}</div>
-          <p class="vr-q-label">Où vous envoyer votre analyse personnalisée ?</p>
+          <p class="vr-q-label">Souhaitez-vous en parler avec Mouaad&nbsp;?</p>
           <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
-            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
+            Vous pouvez lui transmettre une demande pour qu’il reprenne ce résultat avec vous. Aucun appel automatique.
           </p>
-          <form id="vr-lead" novalidate>
+          <form id="vr-lead" method="post" action="/api/lead">
+            <input type="hidden" name="type" value="votre-rue" />
+            <input type="hidden" name="adresseRecherchee" value="${esc(selection?.label || '')}" />
+            <input type="hidden" name="commune" value="${esc(selection?.city || '')}" />
+            <input type="hidden" name="typeBien" value="${esc(model.dom)}" />
+            <input type="hidden" name="periodeDu" value="${esc(model.periodFrom)}" />
+            <input type="hidden" name="periodeAu" value="${esc(model.periodTo)}" />
             <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
-            <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
+            <div class="vr-champ"><label for="vr-email">À quelle adresse Mouaad peut-il vous répondre&nbsp;?</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
             <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#58615B">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
             <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
-            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
+            <label class="vr-consent"><input type="checkbox" id="vr-consent" name="consentement" required /><span>J'accepte que les informations renseignées dans ce parcours et mes coordonnées soient transmises à Mouaad via Cloudflare et Resend pour traiter ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
             <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
-            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
+            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Transmettre ma demande à Mouaad</button>
             <button type="button" class="vr-q-back">← Revenir</button>
           </form>
         </div>`;
@@ -1608,25 +1692,29 @@ import Layout from '../layouts/Layout.astro';
     const f = panneau.querySelector<HTMLFormElement>('#vr-lead')!;
     const err = panneau.querySelector<HTMLElement>('#vr-lead-err')!;
     const btn = panneau.querySelector<HTMLButtonElement>('#vr-lead-envoi')!;
+    const consent = panneau.querySelector<HTMLInputElement>('#vr-consent')!;
     let envoiEnCours = false;
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (envoiEnCours) return;
       err.classList.add('hidden');
       if (!f.checkValidity()) { f.reportValidity(); return; }
+      if (!consent.checked) { consent.reportValidity(); return; }
       envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
       const fd = new FormData(f);
-      const d = model.derniere;
-      // Charge utile destinée à /api/lead. Le backend est migré vers Cloudflare
-      // Pages Functions à l'itération suivante : ce format reste stable.
+      // Charge utile strictement bornée par le contrat de /api/lead.
       const payload = {
         type: 'votre-rue',
-        source: 'QR /votre-rue',
+        attribution: attributionBornee(),
         adresseRecherchee: selection?.label || '',
-        commune: d?.co || '',
+        commune: selection?.city || '',
+        typeBien: model.dom,
+        periodeDu: model.periodFrom,
+        periodeAu: model.periodTo,
         intention: state.intention, intentionKey: state.intentionKey, profil: state.tag,
         qualification: Object.fromEntries(Object.entries(state.answers).map(([k, v]: any) => [k, v.label])),
         prenom: fd.get('prenom'), email: fd.get('email'), telephone: fd.get('telephone') || null,
+        consentement: true,
         site_web: fd.get('site_web') || '',
         contexteInfographie: {
           nbVentes: model.nbVentes, rayon: model.Rw,
@@ -1638,14 +1726,14 @@ import Layout from '../layouts/Layout.astro';
       };
       try {
         const rep = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (rep.ok) {
+        const data = await rep.json().catch(() => null);
+        if (rep.ok && data?.ok === true && data?.delivered === true) {
           panneau.innerHTML = `
             <div class="vr-panneau">
-              <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre analyse personnalisée et vous l'envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+              <p class="vr-q-label">Votre demande a bien été transmise à Mouaad.</p>
+              <p class="font-sans text-[15px] text-brun leading-relaxed">Aucun appel automatique.</p>
             </div>`;
         } else {
-          const data = await rep.json().catch(() => null);
           err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
           err.classList.remove('hidden');
         }
@@ -1653,7 +1741,7 @@ import Layout from '../layouts/Layout.astro';
         err.textContent = "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
         err.classList.remove('hidden');
       } finally {
-        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir mon analyse personnalisée';
+        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Transmettre ma demande à Mouaad';
       }
     });
   }
@@ -1662,18 +1750,19 @@ import Layout from '../layouts/Layout.astro';
   function afficherDonneesEnAttente() {
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">L'accès aux ventes de votre secteur est en cours de finalisation.</p>
-      <p class="font-sans text-[15px] text-brun leading-relaxed">Les données publiques de ventes (DVF) seront disponibles ici très prochainement. En attendant, Mouaad peut vous transmettre les ventes récentes autour de votre adresse.</p>
-      <div class="flex flex-wrap gap-3 mt-5"><a href="/contact?src=votre-rue" class="btn-primaire">Demander à Mouaad</a><a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a></div></div>`;
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Les données publiques de ventes (DVF) ne permettent pas encore de produire ce résultat. Vous pouvez consulter la méthode ou poser votre question à Mouaad.</p>
+      <div class="flex flex-wrap gap-3 mt-5"><a href="/methode" class="btn-primaire">Comprendre la méthode</a><a href="/contact?src=votre-rue" class="btn-secondaire">Poser ma question</a></div></div>`;
   }
-  function afficherAucun(label: string) {
+  function afficherEchantillonInsuffisant(propertyType: PropertyType) {
+    const typeLabel = propertyType === 'Maison' ? 'maisons' : 'appartements';
     scene.hidden = false;
-    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
-      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de « ${esc(label)} », aucune vente ne figure pour l'instant dans les données publiques disponibles (DVF). Cette base n'est pas exhaustive.</p>
+    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">Résultat suspendu&nbsp;: échantillon insuffisant.</p>
+      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de l'adresse confirmée «&nbsp;${esc(selection?.label || '')}&nbsp;», les données disponibles ne contiennent pas au moins 20 ventes de ${typeLabel}, avec surface connue et hors mutations multi-lots, dans un rayon maximal de 3&nbsp;km. Aucun indicateur de marché n'est affiché.</p>
       <div class="flex flex-wrap gap-3 mt-5"><a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a><a href="/contact?src=votre-rue" class="btn-secondaire">Échanger avec Mouaad</a></div></div>`;
   }
 
   // ——— Moment d'analyse (adossé au calcul réel, sans fausse attente) ———
-  async function jouerAnalyseEtRendre(lat: number, lon: number) {
+  async function jouerAnalyseEtRendre(lat: number, lon: number, propertyType: PropertyType) {
     const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', "Lecture de l'évolution du secteur…"];
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-analyse">${messages.map((m, i) => `<div class="vr-analyse-step" data-i="${i}"><span class="vr-analyse-dot"></span><span>${m}</span></div>`).join('')}</div>`;
@@ -1681,14 +1770,14 @@ import Layout from '../layouts/Layout.astro';
     const activer = (i: number) => steps.forEach((s, j) => { s.classList.toggle('is-active', j === i); s.classList.toggle('is-done', j < i); });
 
     activer(0); await wait(450);
-    const model = computeModel(lat, lon); // calcul réel
+    const model = computeModel(lat, lon, propertyType); // calcul réel
     steps[0].classList.add('is-done');
     activer(1); await wait(450);
     activer(2); await wait(450);
     steps.forEach((s) => { s.classList.remove('is-active'); s.classList.add('is-done'); });
     await wait(200);
 
-    if (!model) { afficherAucun(selection?.label || input.value); return; }
+    if (!model) { afficherEchantillonInsuffisant(propertyType); return; }
     lastModel = model;
     // Motion : séquence cinématographique épinglée. Sinon : repli empilé lisible.
     if (reduced) {
@@ -1700,27 +1789,41 @@ import Layout from '../layouts/Layout.astro';
     }
   }
 
-  // ——— Autocomplétion ———
-  let debounce = 0, activeIdx = -1, currentSugs: any[] = [];
+  // ——— Recherche et confirmation explicite de l'adresse ———
+  let activeIdx = -1, currentSugs: GeocodingCandidate[] = [];
   const fermerSug = () => { sugList.hidden = true; input.setAttribute('aria-expanded', 'false'); activeIdx = -1; };
-  function rendreSug(feats: any[]) {
+  function rendreSug(feats: GeocodingCandidate[]) {
     currentSugs = feats;
     if (!feats.length) { fermerSug(); return; }
-    sugList.innerHTML = feats.map((f, i) => { const pr = f.properties || {}; const sub = [pr.postcode, pr.city].filter(Boolean).join(' '); return `<li role="option" id="vr-sug-${i}" aria-selected="false" data-idx="${i}">${esc(pr.label || pr.name || '')}<span class="vr-sug-sub">${esc(sub)}</span></li>`; }).join('');
+    sugList.innerHTML = feats.map((candidate, i) => `<li role="option" id="vr-sug-${i}" aria-selected="false" data-idx="${i}">${esc(candidate.label)}<span class="vr-sug-sub">${esc(candidate.kindLabel)} · ${esc(candidate.postcode)} ${esc(candidate.city)}</span></li>`).join('');
     sugList.hidden = false; input.setAttribute('aria-expanded', 'true'); activeIdx = -1;
   }
   function choisir(i: number) {
-    const f = currentSugs[i]; if (!f) return;
-    const [lon, lat] = f.geometry.coordinates;
-    selection = { lon, lat, label: f.properties?.label || input.value };
-    input.value = selection.label; fermerSug(); lancer();
+    const candidate = currentSugs[i]; if (!candidate) return;
+    selection = candidate;
+    input.value = candidate.label;
+    adresseConfirmeeLabel.textContent = candidate.label;
+    adresseConfirmeeType.textContent = ` · ${candidate.kindLabel} · ${candidate.postcode} ${candidate.city}`;
+    adresseConfirmee.hidden = false;
+    submit.textContent = 'Voir les ventes';
+    geoErreur.classList.add('hidden');
+    fermerSug();
+  }
+  function effacerResultat() {
+    if (cineCleanup) { cineCleanup(); cineCleanup = null; }
+    lastModel = null;
+    scene.innerHTML = '';
+    scene.hidden = true;
   }
   input.addEventListener('input', () => {
-    selection = null; geoErreur.classList.add('hidden');
-    const q = input.value.trim(); window.clearTimeout(debounce);
-    if (q.length < 3) { fermerSug(); return; }
-    debounce = window.setTimeout(async () => { try { rendreSug(await geocoder(q, true, 6)); } catch { fermerSug(); } }, 260);
+    selection = null;
+    adresseConfirmee.hidden = true;
+    submit.textContent = "Rechercher l'adresse";
+    geoErreur.classList.add('hidden');
+    fermerSug();
+    effacerResultat();
   });
+  typeBien.addEventListener('change', () => { geoErreur.classList.add('hidden'); effacerResultat(); });
   input.addEventListener('keydown', (e) => {
     if (sugList.hidden) return;
     const items = Array.from(sugList.querySelectorAll('li'));
@@ -1736,23 +1839,53 @@ import Layout from '../layouts/Layout.astro';
 
   // ——— Lancement ———
   async function lancer() {
+    geoErreur.classList.add('hidden');
+    if (!selection) {
+      const q = boundedGeocodingQuery(input.value);
+      if (q.length < 3) {
+        geoErreur.textContent = "Indiquez une adresse précise avec son numéro, sa rue et sa commune.";
+        geoErreur.classList.remove('hidden');
+        return;
+      }
+      submit.disabled = true;
+      submit.textContent = 'Recherche…';
+      try {
+        const candidates = await geocoder(q, 6);
+        if (!candidates.length) {
+          fermerSug();
+          geoErreur.innerHTML = "Cette adresse ne peut pas être utilisée dans cet outil : seules les adresses avec numéro sont retenues, pas les voies sans numéro ni les lieux-dits. Vous pouvez <a href='/methode' class='underline'>consulter la méthode</a> ou <a href='/contact?src=votre-rue-adresse-exclue' class='underline'>poser votre question à Mouaad</a>.";
+          geoErreur.classList.remove('hidden');
+          return;
+        }
+        rendreSug(candidates);
+        geoErreur.textContent = "Sélectionnez une proposition pour confirmer visiblement l'adresse. Aucun résultat n'est encore calculé.";
+        geoErreur.classList.remove('hidden');
+      } catch {
+        fermerSug();
+        geoErreur.textContent = "Le service Géoplateforme (IGN) ne répond pas. Aucun résultat n'est calculé sans adresse confirmée.";
+        geoErreur.classList.remove('hidden');
+      } finally {
+        submit.disabled = false;
+        submit.textContent = "Rechercher l'adresse";
+      }
+      return;
+    }
+
+    const propertyType = typeBien.value;
+    if (propertyType !== 'Maison' && propertyType !== 'Appartement') {
+      geoErreur.textContent = "Choisissez le type de bien à analyser avant d'afficher un résultat.";
+      geoErreur.classList.remove('hidden');
+      typeBien.focus();
+      return;
+    }
+
     if (cineCleanup) { cineCleanup(); cineCleanup = null; } // détacher un moteur précédent
-    scene.hidden = false;
-    scene.innerHTML = `<div class="vr-analyse"><div class="vr-analyse-step is-active"><span class="vr-analyse-dot"></span><span>Recherche des ventes autour de chez vous…</span></div></div>`;
     try { await chargerDonnees(); } catch {
       geoErreur.textContent = 'Impossible de charger les données pour le moment. Réessayez dans un instant.';
       geoErreur.classList.remove('hidden'); scene.hidden = true; return;
     }
     if (!meta || meta.status !== 'ready' || !dataset || !dataset.length) { afficherDonneesEnAttente(); return; }
-
-    let coords = selection;
-    if (!coords) {
-      const q = input.value.trim();
-      if (q.length < 3) { scene.hidden = true; geoErreur.textContent = "Indiquez d'abord votre rue ou votre adresse."; geoErreur.classList.remove('hidden'); return; }
-      try { const feats = await geocoder(q, false, 1); if (!feats.length) { afficherAucun(q); return; } const [lon, lat] = feats[0].geometry.coordinates; coords = { lon, lat, label: feats[0].properties?.label || q }; selection = coords; }
-      catch { geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.'; geoErreur.classList.remove('hidden'); scene.hidden = true; return; }
-    }
-    await jouerAnalyseEtRendre(coords.lat, coords.lon);
+    await jouerAnalyseEtRendre(selection.lat, selection.lon, propertyType);
   }
 
   form.addEventListener('submit', (e) => { e.preventDefault(); fermerSug(); lancer(); });

@@ -25,21 +25,35 @@ import { site } from '../config/site';
           Rien n’est transmis tant que vous ne le demandez pas.
         </p>
         <p class="mt-3">
-          <strong class="text-encre">L’audit d’annonce</strong> envoie ponctuellement le lien fourni à notre serveur
-          afin de lire les informations publiques accessibles sur la page. Le lien et le contenu lu ne sont pas
-          enregistrés par l’outil. Vos trois réponses courtes sont analysées dans votre navigateur, que le portail
-          autorise ou non la lecture. Le lien, le résultat et vos coordonnées ne sont transmis à Mouaad que si vous demandez
-          ensuite explicitement une lecture humaine.
+          <strong class="text-encre">L’audit d’annonce</strong> est actuellement limité à un questionnaire.
+          Le lien fourni sert uniquement de repère dans votre navigateur : LEVOIS ne l’ouvre pas et ne lit pas
+          automatiquement la page côté serveur. Le lien, vos réponses, le résultat et vos coordonnées ne sont
+          transmis à Mouaad que si vous demandez explicitement une lecture humaine et consentez à l’envoi.
+        </p>
+        <p class="mt-3">
+          <strong class="text-encre">« Votre rue »</strong> utilise le service public de géocodage de la
+          Géoplateforme pour retrouver une adresse. La recherche n’est envoyée qu’après votre action explicite ;
+          vous devez ensuite choisir et confirmer l’adresse proposée avant tout résultat. Le navigateur transmet
+          au service la recherche saisie et les données techniques nécessaires à la connexion. Le serveur LEVOIS
+          ne reçoit pas cette requête de géocodage et elle n’est pas envoyée à PostHog. Si vous demandez ensuite
+          l’analyse de Mouaad, l’adresse que vous avez confirmée n’est transmise qu’après la case de consentement.
         </p>
         <p class="mt-3">
           <strong class="text-encre">Si vous transmettez votre situation à Mouaad</strong>, nous collectons :
           prénom, nom, email, commune du bien, et — si vous les fournissez — téléphone, lien
           d’annonce et détail complémentaire, accompagnés de la synthèse de votre parcours
-          (situation, réponses, lecture produite).
+          (situation, réponses, lecture produite). Pour une demande issue de « Votre rue », cette synthèse comprend
+          aussi l’adresse confirmée, le type de bien, la période, le rayon et la taille de l’échantillon affichés.
         </p>
         <p class="mt-3">
           <strong class="text-encre">Le formulaire de contact</strong> collecte : prénom, nom, email,
           téléphone éventuel, objet et message.
+        </p>
+        <p class="mt-3">
+          Une attribution limitée peut accompagner une demande volontaire : page d’entrée, source et support de
+          campagne sous forme de libellés courts, et nom de domaine référent. Les paramètres libres, chemins du
+          site référent, emails et URLs complètes sont exclus. Cette attribution reste dans le stockage de session
+          jusqu’à la fermeture du navigateur, puis n’est transmise qu’avec le formulaire consenti.
         </p>
       </section>
 
@@ -59,10 +73,13 @@ import { site } from '../config/site';
       <section aria-labelledby="qui">
         <h2 id="qui" class="text-h3 text-encre mb-4">Qui reçoit vos données</h2>
         <p>
-          Mouaad Boullourou, destinataire unique. Prestataires techniques intervenant dans
-          l’acheminement : Cloudflare (hébergement, États-Unis — clauses contractuelles types)
-          Resend (acheminement principal des emails) et Formspree (acheminement de secours). Vos données ne sont ni vendues, ni cédées,
-          ni utilisées à des fins publicitaires.
+          Mouaad Boullourou est le destinataire métier des demandes. Les prestataires techniques sont
+          Cloudflare pour l’hébergement, la protection du formulaire et son acheminement serveur ; Resend pour
+          l’envoi du message à Mouaad ; la Géoplateforme pour la seule recherche d’adresse déclenchée dans
+          « Votre rue » ; et PostHog EU uniquement si vous acceptez la mesure d’audience ci-dessous.
+          Les formulaires servis par <code>/api/lead</code> n’utilisent aucun prestataire de secours implicite.
+          Le parcours distinct « Ma recherche » peut encore utiliser Formspree comme voie de notification de secours.
+          Vos données ne sont ni vendues, ni cédées, ni utilisées à des fins publicitaires.
         </p>
       </section>
 
@@ -71,6 +88,10 @@ import { site } from '../config/site';
         <p>
           Les messages et situations transmis sont conservés le temps du suivi de votre
           demande, puis au maximum trois ans sans contact de votre part, avant suppression.
+          Pour limiter les abus sur les formulaires servis par <code>/api/lead</code>, l’adresse IP est transformée
+          en empreinte avant la limitation de fréquence ; cette empreinte est utilisée pour une fenêtre de dix
+          minutes et n’est jamais incluse dans le message. Le parcours distinct « Ma recherche » relève du chantier
+          B04 annoncé plus haut et conserve pour l’instant son traitement séparé.
         </p>
       </section>
 
@@ -87,27 +108,33 @@ import { site } from '../config/site';
       <section id="mesure-audience" aria-labelledby="cookies">
         <h2 id="cookies" class="text-h3 text-encre mb-4">Mesure d’audience</h2>
         <p>
-          LEVOIS utilise PostHog, hébergé dans l’Union européenne, uniquement pour comprendre
+          Lorsque la clé est explicitement configurée et seulement après votre accord, LEVOIS utilise
+          l’endpoint européen de PostHog pour comprendre
           comment le site est trouvé et utilisé : page d’entrée, pages consultées, page de sortie,
           source de la visite, durée active, progression dans la page et étapes franchies dans les parcours.
           La mesure fonctionne sans cookie, sans enregistrement vidéo de session, sans identification
-          des visiteurs et sans lecture du contenu saisi dans les formulaires. Les liens d’annonces,
+          de profil, sans capture automatique des interactions ni mesure de performance, et sans lecture du
+          contenu saisi dans les formulaires. Les liens d’annonces,
           noms, emails, numéros de téléphone et messages ne sont jamais envoyés à cet outil.
         </p>
         <p class="mt-3">
           Ces statistiques servent exclusivement à améliorer le site et à mesurer l’utilité des contenus.
           Elles ne sont ni utilisées pour du ciblage publicitaire, ni rapprochées du fichier client.
-          Vous pouvez vous y opposer à tout moment sur cet appareil.
+          Elle reste inactive tant que vous ne l’avez pas acceptée. Vous pouvez retirer cet accord à tout moment
+          sur cet appareil ; le signal Global Privacy Control est traité comme un refus.
         </p>
-        <div class="mt-5 flex flex-col items-start gap-2">
-          <button type="button" data-analytics-optout class="border border-encre px-4 py-3 font-semibold hover:bg-encre hover:text-papier transition-colors">
-            Refuser la mesure d’audience
+        <div class="mt-5 flex flex-wrap items-center gap-2">
+          <button type="button" data-analytics-accept class="border border-encre bg-encre text-papier px-4 py-3 font-semibold disabled:opacity-50">
+            Accepter la mesure d’audience
           </button>
-          <span data-analytics-status class="text-sm text-brun" role="status"></span>
+          <button type="button" data-analytics-refuse class="border border-encre px-4 py-3 font-semibold hover:bg-encre hover:text-papier transition-colors disabled:opacity-50">
+            Refuser ou retirer mon accord
+          </button>
+          <span data-analytics-status class="basis-full text-sm text-brun" role="status"></span>
         </div>
         <p class="mt-3">
-          Le stockage de session utilisé par les parcours sert uniquement à ne pas perdre vos réponses
-          lors d’un rafraîchissement. Il ne contient pas vos coordonnées et disparaît à la fermeture du navigateur.
+          Le stockage de session sert à ne pas perdre les réponses d’un parcours et à conserver l’attribution
+          bornée décrite plus haut. Il ne contient pas vos coordonnées et disparaît à la fermeture du navigateur.
         </p>
       </section>
     </div>

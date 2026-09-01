@@ -1,11 +1,13 @@
 name = "levois-site"
 pages_build_output_dir = "dist"
 
-[[d1_databases]]
+[env.preview]
+
+[[env.production.d1_databases]]
 binding = "RECHERCHE_DB"
 database_name = "levois-recherche"
 database_id = "077d24f8-5efc-4787-a451-05b041ddd2f7"
 
-# Le binding D1 est versionné ici afin que les déploiements Git et Wrangler
-# utilisent la même base. Le schéma distant vit dans db/schema.sql.
-# Développement local : wrangler pages dev dist --d1 RECHERCHE_DB
+# Le binding D1 de production est versionné ici. Le schéma distant vit dans
+# db/schema.sql. Les previews et le développement local n'héritent d'aucune
+# base distante implicite.

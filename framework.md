@@ -118,11 +118,11 @@ L’automatisation prépare la lecture. Elle ne remplace ni l’estimation profe
 
 ### Mesure d’audience
 
-- PostHog EU est chargé uniquement lorsqu’une clé publique de projet est configurée.
+- PostHog EU est chargé uniquement lorsqu’une clé publique de projet est configurée et après accord explicite du visiteur.
 - Le mode sans cookies est obligatoire, ainsi que la désactivation des profils, des replays, des heatmaps et de l’autocapture.
 - Les URLs envoyées sont privées de leurs paramètres et fragments ; aucun contenu de formulaire, lien d’annonce ou coordonnée n’est collecté.
 - Les mesures couvrent l’entrée, la sortie, la source, le parcours, la durée active, la profondeur de lecture, les navigations, les formulaires et les sept événements canoniques de l’audit. Les parcours `prescriber` et `team_candidate` restent séparés des trois parcours clients.
-- Les visiteurs peuvent refuser cette mesure depuis `/confidentialite#mesure-audience`.
+- La mesure est inactive par défaut ; les visiteurs peuvent l’accepter, la refuser ou retirer leur accord depuis `/confidentialite#mesure-audience`.
 - Les statistiques restent séparées des demandes de contact et du fichier client.
 
 ## 8. Comportement de l’interface
@@ -148,4 +148,4 @@ Une surface est publiable lorsque :
 
 ## 10. État d’intégration
 
-La page d’accueil V2, les routes QR et les parcours acheteur/vendeur sont intégrés dans le même shell visuel. Chaque environnement de production doit relier `/api/recherche` à la base D1 `RECHERCHE_DB` et exposer `/api/lead` via Cloudflare Pages Functions. Resend est la voie de notification principale ; le Formspree historique assure le secours lorsqu’aucune clé Resend n’est configurée.
+La page d’accueil V2, les routes QR et les parcours acheteur/vendeur sont intégrés dans le même shell visuel. Chaque environnement de production doit relier `/api/recherche` à la base D1 `RECHERCHE_DB` et exposer `/api/lead` via Cloudflare Pages Functions. `/api/lead` échoue sans transmettre si Resend n’est pas configuré. Le chemin distinct Resend/Formspree de `/api/recherche` appartient à B04 et reste inchangé jusqu’à son chantier dédié.
