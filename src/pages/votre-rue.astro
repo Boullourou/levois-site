@@ -20,21 +20,91 @@
  * /api/lead uniquement après consentement explicite.
  */
 import Layout from '../layouts/Layout.astro';
+
+const designContract = `LEVOIS_DA_B_VOTRE_RUE
+THESIS: Un résultat local est un intervalle auditable, pas un prix spectaculaire ; refuser la carte immobilière décorative et l’estimation déguisée.
+OWN-WORLD: Axe de prix fuchsia, repère médian acide, métadonnées sur rails aubergine et limites dans le même champ que le résultat.
+STORY: L’adresse est confirmée, le périmètre est visible, l’intervalle se lit puis sa frontière conduit à la prochaine vérification.
+FIRST VIEWPORT: Adresse et méthode à gauche ; intervalle, échantillon, période, rayon et limites à droite sans défilement trompeur.
+FORM: Territoire B épinglé — résultat local Lignes vives.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md`;
 ---
 
 <Layout
   title="Les prix réels de votre secteur"
   description="Consultez un échantillon de ventes du même type de bien autour d'une adresse confirmée, à partir des données publiques DVF."
   noindex={true}
+  designContract={designContract}
 >
+  <section class="lv-page street-demo" aria-labelledby="street-demo-title">
+    <header class="street-heading">
+      <div>
+        <p>Résultat de démonstration · données DVF déjà intégrées au site</p>
+        <h1 id="street-demo-title" class="lv-headline">Autour de l’adresse d’exemple</h1>
+      </div>
+      <dl>
+        <div><dt>Adresse confirmée</dt><dd>8 rue de la Ravaudière, 28300 Lèves</dd></div>
+        <div><dt>Type retenu</dt><dd>Maison</dd></div>
+      </dl>
+    </header>
+
+    <div class="street-result">
+      <aside class="street-method">
+        <div class="radius-sequence" aria-label="Élargissement progressif du rayon">
+          <span>250 m <b>5</b></span>
+          <span>500 m <b>8</b></span>
+          <span>700 m <b>14</b></span>
+          <span class="is-used">1 km <b>81 ventes retenues</b></span>
+        </div>
+        <h2>Le rayon s’arrête dès que l’échantillon devient suffisant.</h2>
+        <p>Le résultat conserve le type de bien, la période disponible et un minimum de 20 ventes. Ici, 700 m restent insuffisants : le rayon réellement utilisé est donc 1 km.</p>
+        <a class="lv-text-link" href="#vr-form">Essayer avec une autre adresse</a>
+      </aside>
+
+      <div class="street-reading">
+        <div class="street-meta">
+          <span><b>81</b> ventes de maisons</span>
+          <span><b>1 km</b> rayon utilisé</span>
+          <span><b>2021–2025</b> du 8 janv. 2021 au 19 déc. 2025</span>
+        </div>
+
+        <div class="street-axis" aria-label="Intervalle des prix observés au mètre carré">
+          <div class="street-axis-line" aria-hidden="true">
+            <i class="street-range"></i>
+            <i class="street-marker street-marker--low"></i>
+            <i class="street-marker street-marker--median"></i>
+            <i class="street-marker street-marker--high"></i>
+          </div>
+          <dl>
+            <div><dt>Quartile bas</dt><dd>2 069 €/m²</dd></div>
+            <div><dt>Médiane</dt><dd>2 388 €/m²</dd></div>
+            <div><dt>Quartile haut</dt><dd>2 785 €/m²</dd></div>
+          </dl>
+        </div>
+
+        <div class="street-meaning">
+          <div>
+            <h2>Ce que ces données permettent de comprendre</h2>
+            <p>Les ventes retenues dessinent une zone centrale et montrent que même des maisons proches et du même type se vendent à des niveaux différents.</p>
+          </div>
+          <div>
+            <h2>Ce qu’elles ne permettent pas de conclure</h2>
+            <p>Elles ne situent pas cette maison dans l’intervalle et ne constituent pas une estimation. État, exposition, travaux et concurrence actuelle restent à vérifier.</p>
+          </div>
+        </div>
+        <p class="street-source">Source : Demandes de valeurs foncières, DGFiP · données géolocalisées Etalab, période 2021–2025. Calcul du démonstrateur sur le jeu de données public déjà livré avec LEVOIS. Mutations multi-lots exclues ; surfaces connues uniquement.</p>
+      </div>
+    </div>
+  </section>
+
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
 
     <!-- ① Promesse + saisie -->
     <header class="mb-8 md:mb-10">
       <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
-      <h1 class="vr-page-title text-encre mb-4">
+      <h2 class="vr-page-title text-encre mb-4">
         Quelles ventes comparer autour de votre adresse&nbsp;?
-      </h1>
+      </h2>
       <p class="font-sans text-body-lg text-brun max-w-prose">
         Un échantillon de ventes réellement enregistrées, pour le type de bien que vous choisissez.
         Sans inscription et sans coordonnées de contact.
@@ -125,6 +195,61 @@ import Layout from '../layouts/Layout.astro';
      matcherait aucun élément injecté → contenu rendu sans aucun style.
      Tous les sélecteurs sont préfixés .vr- : aucun risque de collision. -->
 <style is:global>
+  .street-demo { border-bottom: 1px solid var(--lv-aubergine); }
+  .street-heading { display: grid; grid-template-columns: 1.1fr .9fr; border-bottom: 1px solid var(--lv-aubergine); }
+  .street-heading > div { min-height: 300px; display: flex; flex-direction: column; justify-content: space-between; padding: 42px var(--lv-edge); border-right: 1px solid var(--lv-aubergine); }
+  .street-heading p { margin: 0; color: var(--lv-fuchsia); font-size: 11px; font-weight: 800; }
+  .street-heading dl { margin: 0; display: grid; grid-template-rows: repeat(2, 1fr); }
+  .street-heading dl > div { display: flex; flex-direction: column; justify-content: space-between; padding: 34px var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .street-heading dl > div:last-child { border-bottom: 0; }
+  .street-heading dt { color: var(--lv-muted); font-size: 11px; }
+  .street-heading dd { margin: 18px 0 0; font-size: clamp(19px, 2.2vw, 32px); font-weight: 800; line-height: 1.08; }
+  .street-result { display: grid; grid-template-columns: .72fr 1.28fr; }
+  .street-method { padding: clamp(50px, 6vw, 90px) var(--lv-edge); border-right: 1px solid var(--lv-aubergine); background: var(--lv-aubergine); color: var(--lv-paper); }
+  .radius-sequence { border-top: 1px solid rgba(245,242,232,.45); }
+  .radius-sequence span { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-bottom: 1px solid rgba(245,242,232,.45); color: var(--lv-lilac); font-size: 12px; }
+  .radius-sequence b { color: var(--lv-paper); font-size: 12px; }
+  .radius-sequence .is-used { margin-inline: calc(var(--lv-edge) * -1); padding-inline: var(--lv-edge); background: var(--lv-acid); color: var(--lv-aubergine); }
+  .radius-sequence .is-used b { color: var(--lv-aubergine); }
+  .street-method h2 { max-width: 15ch; margin: clamp(48px, 6vw, 82px) 0 0; font-size: clamp(29px, 3.3vw, 48px); line-height: 1; letter-spacing: -.03em; }
+  .street-method p { max-width: 51ch; margin: 28px 0; color: var(--lv-lilac); font-size: 14px; line-height: 1.6; }
+  .street-method .lv-text-link { color: var(--lv-acid); }
+  .street-reading { min-width: 0; background: var(--lv-paper); }
+  .street-meta { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--lv-aubergine); }
+  .street-meta span { min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; padding: 18px; border-right: 1px solid var(--lv-aubergine); color: var(--lv-muted); font-size: 11px; }
+  .street-meta span:last-child { border-right: 0; }
+  .street-meta b { color: var(--lv-aubergine); font-size: clamp(23px, 2.5vw, 38px); font-variant-numeric: tabular-nums; }
+  .street-axis { padding: clamp(52px, 6vw, 88px) var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .street-axis-line { position: relative; height: 128px; border-block: 1px solid var(--lv-line); }
+  .street-range { position: absolute; top: 62px; left: 12%; right: 10%; height: 3px; background: var(--lv-fuchsia); }
+  .street-marker { position: absolute; top: 49px; width: 27px; height: 27px; border: 3px solid var(--lv-fuchsia); background: var(--lv-paper); }
+  .street-marker--low { left: 12%; } .street-marker--median { left: 49%; border-color: var(--lv-aubergine); background: var(--lv-acid); } .street-marker--high { right: 10%; }
+  .street-axis dl { margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); }
+  .street-axis dl > div { padding: 17px 0; }
+  .street-axis dl > div:nth-child(2) { text-align: center; }
+  .street-axis dl > div:last-child { text-align: right; }
+  .street-axis dt { color: var(--lv-muted); font-size: 11px; }
+  .street-axis dd { margin: 10px 0 0; font-size: clamp(19px, 2vw, 29px); font-weight: 800; font-variant-numeric: tabular-nums; }
+  .street-meaning { display: grid; grid-template-columns: 1fr 1fr; }
+  .street-meaning > div { min-height: 280px; padding: 38px var(--lv-edge); border-right: 1px solid var(--lv-aubergine); }
+  .street-meaning > div:last-child { border-right: 0; background: var(--lv-acid); }
+  .street-meaning h2 { max-width: 18ch; margin: 0; font-size: clamp(23px, 2.6vw, 38px); line-height: 1; letter-spacing: -.025em; }
+  .street-meaning p { max-width: 48ch; margin: 24px 0 0; font-size: 13px; line-height: 1.55; }
+  .street-source { margin: 0; padding: 16px var(--lv-edge); border-top: 1px solid var(--lv-aubergine); color: var(--lv-muted); font-size: 10px; line-height: 1.5; }
+
+  @media (max-width: 900px) {
+    .street-heading, .street-result { grid-template-columns: 1fr; }
+    .street-heading > div, .street-method { border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .street-heading > div { min-height: 240px; }
+  }
+  @media (max-width: 620px) {
+    .street-meta, .street-axis dl, .street-meaning { grid-template-columns: 1fr; }
+    .street-meta span { min-height: 76px; border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .street-axis dl > div, .street-axis dl > div:nth-child(2), .street-axis dl > div:last-child { text-align: left; border-bottom: 1px solid var(--lv-line); }
+    .street-meaning > div { min-height: 240px; border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .street-meaning > div:last-child { border-bottom: 0; }
+  }
+
   .vr-page-title {
     font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;

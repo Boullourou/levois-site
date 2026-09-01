@@ -11,6 +11,7 @@ export function getStaticPaths() {
 const { resource } = Astro.props;
 const contenu = getResourceContent(resource.id);
 const situationLiee = getSituation(contenu.situationLiee);
+const isPilot = resource.id === 'annonce-vue-peu-de-contacts';
 const articleUrl = `https://levois.fr/ressources/${resource.slug}`;
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -21,95 +22,284 @@ const articleSchema = {
   mainEntityOfPage: articleUrl,
   inLanguage: 'fr-FR',
   author: { '@id': 'https://levois.fr/#mouaad-boullourou' },
-  publisher: { '@id': 'https://levois.fr/#organization' },
   about: ['vente immobilière', 'décision immobilière', 'bassin chartrain'],
   spatialCoverage: { '@type': 'Place', name: 'Bassin chartrain, Eure-et-Loir, France' },
 };
+
+const designContract = isPilot ? `LEVOIS_DA_B_RESSOURCE
+THESIS: Le silence d’une annonce se lit comme une succession d’étapes vérifiables ; refuser l’article SEO uniforme et le diagnostic automatique.
+OWN-WORLD: Entonnoir linéaire bord à bord, décisions fuchsia/acide, typographie frontale et cinq sorties factuelles toujours dans le même ordre.
+STORY: La réponse directe précède l’activité ; la personne localise un décrochage, obtient une lecture prudente puis repart avec une vérification.
+FIRST VIEWPORT: Question et réponse directe à gauche ; entonnoir vue–ouverture–contact–visite immédiatement manipulable à droite.
+FORM: Territoire B épinglé — page-réponse interactive Lignes vives.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md` : undefined;
 ---
 
-<Layout title={resource.titre} description={`${resource.question} ${resource.benefice}`}>
+<Layout title={resource.titre} description={`${resource.question} ${resource.benefice}`} designContract={designContract}>
   <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
-    <header class="mb-10">
-      <p class="eyebrow mb-4">Ressource · {resource.duree}</p>
-      <h1 class="text-display text-encre mb-5">{resource.titre}</h1>
-      <p class="font-display text-xl md:text-2xl text-brun italic" style="font-variation-settings: 'opsz' 30;">
-        {resource.question}
-      </p>
-    </header>
+  {isPilot ? (
+    <article class="lv-page resource-pilot" data-funnel-demo>
+      <header class="pilot-hero">
+        <div class="pilot-question">
+          <p>Ressource pilote · vendre</p>
+          <h1 class="lv-display">{resource.titre}</h1>
+          <p class="pilot-human-question">{resource.question}</p>
+        </div>
+        <div class="pilot-answer">
+          <span>La réponse directe</span>
+          <p>{contenu.reponseCourte}</p>
+          <a href="#entonnoir" class="lv-link-button lv-button--acid">Localiser l’étape à vérifier</a>
+        </div>
+      </header>
 
-    <!-- Réponse courte immédiatement visible -->
-    <div class="carte bg-argile-pale/40 p-6 md:p-7 mb-12">
-      <p class="font-sans text-sm uppercase tracking-widest text-argile mb-3">La réponse courte</p>
-      <p class="font-sans text-body-lg text-encre leading-relaxed">{contenu.reponseCourte}</p>
-    </div>
+      <section class="funnel-experience" id="entonnoir" aria-labelledby="funnel-title">
+        <header>
+          <h2 id="funnel-title" class="lv-headline">À quel endroit l’intérêt se perd-il&nbsp;?</h2>
+          <p>Choisissez le signal réellement disponible. L’outil ne donne ni score ni verdict : il organise la prochaine vérification.</p>
+        </header>
 
-    <!-- Explication -->
-    <section class="space-y-5 mb-12" aria-label="Explication">
-      {contenu.explication.map((p) => (
-        <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{p}</p>
-      ))}
-    </section>
+        <form class="funnel-form" data-funnel-form>
+          <fieldset>
+            <legend>Quel signal observez-vous&nbsp;?</legend>
+            <div class="funnel-options">
+              <label><input type="radio" name="signal" value="few-views" /><span>Peu de vues</span></label>
+              <label><input type="radio" name="signal" value="views-no-open" /><span>Des vues, très peu d’ouvertures</span></label>
+              <label><input type="radio" name="signal" value="open-no-contact" checked /><span>Des ouvertures, peu de contacts</span></label>
+              <label><input type="radio" name="signal" value="no-data" /><span>Je n’ai pas accès aux chiffres</span></label>
+            </div>
+          </fieldset>
 
-    <!-- Exemple -->
-    <section class="mb-12 border-l-2 border-beige pl-6" aria-labelledby="exemple-titre">
-      <h2 id="exemple-titre" class="font-sans text-sm uppercase tracking-widest text-brun mb-3">Exemple · {contenu.exemple.titre}</h2>
-      <p class="font-sans text-[15px] text-encre/80 leading-relaxed">{contenu.exemple.texte}</p>
-    </section>
+          <div class="funnel-rail" aria-label="Étapes entre diffusion et visite">
+            <div data-funnel-stage="view"><span>Vue</span><i></i></div>
+            <div data-funnel-stage="open"><span>Ouverture</span><i></i></div>
+            <div data-funnel-stage="contact" class="is-break"><span>Contact</span><i></i></div>
+            <div data-funnel-stage="visit"><span>Visite</span><i></i></div>
+          </div>
+        </form>
 
-    <!-- Erreurs fréquentes -->
-    <section class="mb-12" aria-labelledby="erreurs-titre">
-      <h2 id="erreurs-titre" class="text-h3 text-encre mb-5">Les erreurs les plus fréquentes</h2>
-      <ul class="space-y-3">
-        {contenu.erreurs.map((e) => (
-          <li class="flex gap-3 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <span class="text-argile mt-0.5" aria-hidden="true">✕</span>
-            <span>{e}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
+        <div class="funnel-reading" role="status" aria-live="polite">
+          <div class="reading-axis"><span>Ce qui est observé</span><p data-read-observed>L’annonce est ouverte, mais débouche sur peu de contacts.</p></div>
+          <div class="reading-axis"><span>Ce que cela pourrait indiquer</span><p data-read-meaning>La promesse perd de sa force à l’intérieur de l’annonce ou tient moins bien face aux alternatives.</p></div>
+          <div class="reading-axis"><span>Les autres explications possibles</span><p data-read-alternatives>Localisation, informations manquantes, prix affiché dans la comparaison ou friction du formulaire de contact.</p></div>
+          <div class="reading-axis"><span>L’information qui manque</span><p data-read-missing>Le point exact où la lecture décroche : première photo, suite des visuels, description, localisation ou comparaison.</p></div>
+          <div class="reading-axis reading-axis--next"><span>La prochaine vérification rationnelle</span><p data-read-next>Relire l’annonce ouverte comme un acheteur et comparer chaque élément aux annonces voisines, sans tout modifier à la fois.</p></div>
+        </div>
+      </section>
 
-    <!-- Checklist -->
-    <section class="mb-12 carte p-6 md:p-8" aria-labelledby="checklist-titre">
-      <h2 id="checklist-titre" class="text-h3 text-encre mb-5">{contenu.checklist.titre}</h2>
-      <ol class="space-y-3.5 list-none counter-reset-item">
-        {contenu.checklist.items.map((item, i) => (
-          <li class="flex gap-4 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <span class="font-sans text-sm text-argile font-medium pt-0.5 tracking-widest">{String(i + 1).padStart(2, '0')}</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ol>
-    </section>
+      <section class="pilot-explanation" aria-labelledby="explain-title">
+        <div class="explain-intro">
+          <h2 id="explain-title" class="lv-headline">Même silence. Causes différentes.</h2>
+          <p>{contenu.explication[0]}</p>
+        </div>
+        <div class="explain-lines">
+          <div><strong>Diffusion</strong><p>Peu de vues peut commencer par une question de support, de classement ou de présence dans la recherche visée.</p></div>
+          <div><strong>Première impression</strong><p>Des vues sans ouverture ramènent à la vignette, au titre et au prix affiché parmi les autres annonces.</p></div>
+          <div><strong>Promesse complète</strong><p>Des ouvertures sans contact invitent à relire la suite des photos, la description, la localisation et la comparaison.</p></div>
+        </div>
+      </section>
 
-    <!-- Ce que l'on ne peut pas conclure -->
-    <section class="mb-12 encart-limite py-1" aria-labelledby="limite-titre">
-      <h2 id="limite-titre" class="font-sans text-sm uppercase tracking-widest text-argile mb-2 pt-1">Ce que cette ressource ne peut pas conclure</h2>
-      <p class="font-sans text-[15px] leading-relaxed">{contenu.limite}</p>
-    </section>
+      <section class="pilot-example" aria-labelledby="example-title">
+        <div>
+          <h2 id="example-title" class="lv-title">{contenu.exemple.titre}</h2>
+          <p>{contenu.exemple.texte}</p>
+        </div>
+        <div class="one-lever">
+          <strong>Un seul levier à la fois.</strong>
+          <p>Modifier photo, texte et prix ensemble empêche de comprendre ce qui a réellement changé la réaction.</p>
+        </div>
+      </section>
 
-    <!-- Prochaine action -->
-    <section class="mb-14" aria-labelledby="action-titre">
-      <h2 id="action-titre" class="text-h3 text-encre mb-3">Votre prochaine action</h2>
-      <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{contenu.action}</p>
-    </section>
+      <section class="pilot-boundary" aria-labelledby="boundary-title">
+        <div>
+          <h2 id="boundary-title" class="lv-title">Ce que cette lecture ne conclut pas</h2>
+          <p>{contenu.limite}</p>
+        </div>
+        <div>
+          <h2 class="lv-title">Votre prochaine vérification</h2>
+          <p>{contenu.action}</p>
+          <a class="lv-link-button lv-button--acid" href="/audit-annonce">Reprendre mon annonce par questionnaire</a>
+        </div>
+      </section>
 
-    <!-- Parcours lié + continuité humaine -->
-    <div class="grid sm:grid-cols-2 gap-4">
-      {situationLiee && (
-        <a href={`/situer-ma-vente?s=${situationLiee.id}`} class="group carte p-6 transition-all duration-200 hover:border-argile">
-          <p class="font-sans text-sm text-argile mb-2">Situer ma vente</p>
-          <p class="font-display text-lg text-encre mb-1">Parcours lié · {situationLiee.titre}</p>
-          <p class="font-sans text-sm text-brun">Trois minutes pour relier cette ressource à votre situation précise.</p>
-        </a>
-      )}
-      <a href="/accompagnement" class="group carte p-6 transition-all duration-200 hover:border-argile">
-        <p class="font-sans text-sm text-argile mb-2">Aller plus loin</p>
-        <p class="font-display text-lg text-encre mb-1">Un regard humain sur votre cas ?</p>
-        <p class="font-sans text-sm text-brun">Mouaad applique cette lecture à votre bien et à votre situation.</p>
-      </a>
-    </div>
-  </article>
+      <footer class="pilot-meta">
+        <p><strong>Auteur responsable :</strong> Mouaad Boullourou, conseiller immobilier SAFTI à Lèves et alentours.</p>
+        <p><strong>Dernière vérification éditoriale :</strong> septembre 2026.</p>
+        <p><strong>Nature :</strong> méthode de lecture prudente. Les chiffres propres aux portails doivent être récupérés sur le support concerné.</p>
+      </footer>
+    </article>
+  ) : (
+    <article class="lv-page generic-resource">
+      <header>
+        <p>Ressource · {resource.duree}</p>
+        <h1 class="lv-display">{resource.titre}</h1>
+        <strong>{resource.question}</strong>
+      </header>
+      <section class="generic-answer"><span>La réponse directe</span><p>{contenu.reponseCourte}</p></section>
+      <section class="generic-body">
+        <div>{contenu.explication.map((paragraph) => <p>{paragraph}</p>)}</div>
+        <aside><h2>{contenu.exemple.titre}</h2><p>{contenu.exemple.texte}</p></aside>
+      </section>
+      <section class="generic-list"><h2>{contenu.checklist.titre}</h2><ol>{contenu.checklist.items.map((item) => <li>{item}</li>)}</ol></section>
+      <section class="generic-close"><div><h2>Limite</h2><p>{contenu.limite}</p></div><div><h2>Prochaine action</h2><p>{contenu.action}</p></div></section>
+      <nav class="generic-links" aria-label="Continuer">
+        {situationLiee && <a class="lv-link-button lv-button--acid" href={`/situer-ma-vente?s=${situationLiee.id}`}>Relier cette ressource à ma situation</a>}
+        <a class="lv-link-button" href="/ressources">Voir toutes les ressources</a>
+      </nav>
+    </article>
+  )}
 </Layout>
+
+<style>
+  .pilot-hero { min-height: 620px; display: grid; grid-template-columns: 1.1fr .9fr; border-bottom: 1px solid var(--lv-aubergine); }
+  .pilot-question, .pilot-answer { display: flex; flex-direction: column; justify-content: center; padding: clamp(52px, 7vw, 110px) var(--lv-edge); }
+  .pilot-question { border-right: 1px solid var(--lv-aubergine); }
+  .pilot-question > p:first-child, .pilot-answer > span { margin: 0; color: var(--lv-fuchsia); font-size: 11px; font-weight: 800; }
+  .pilot-question h1 { max-width: 9ch; margin-top: 36px; }
+  .pilot-human-question { max-width: 32ch; margin: 38px 0 0; font-size: clamp(19px, 2vw, 28px); font-weight: 750; line-height: 1.25; }
+  .pilot-answer { background: var(--lv-aubergine); color: var(--lv-paper); }
+  .pilot-answer p { max-width: 25ch; margin: 34px 0; font-size: clamp(28px, 3.4vw, 51px); font-weight: 800; line-height: 1.06; letter-spacing: -.03em; }
+  .pilot-answer .lv-link-button { width: min(400px, 100%); }
+
+  .funnel-experience > header { display: grid; grid-template-columns: 1.15fr .85fr; align-items: end; gap: 50px; padding: clamp(70px, 8vw, 120px) var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .funnel-experience > header p { max-width: 45ch; margin: 0; color: var(--lv-muted); font-size: 15px; line-height: 1.55; }
+  .funnel-form { display: grid; grid-template-columns: .8fr 1.2fr; border-bottom: 1px solid var(--lv-aubergine); }
+  .funnel-form fieldset { margin: 0; padding: 38px var(--lv-edge); border: 0; border-right: 1px solid var(--lv-aubergine); }
+  .funnel-form legend { padding: 0; font-size: 18px; font-weight: 800; }
+  .funnel-options { margin-top: 25px; border-top: 1px solid var(--lv-aubergine); }
+  .funnel-options label { min-height: 60px; display: grid; grid-template-columns: 48px 1fr; align-items: center; border-bottom: 1px solid var(--lv-aubergine); cursor: pointer; }
+  .funnel-options input { width: 18px; height: 18px; margin: 0 15px; accent-color: var(--lv-fuchsia); }
+  .funnel-options span { align-self: stretch; display: flex; align-items: center; padding: 11px; border-left: 1px solid var(--lv-line); font-size: 13px; font-weight: 700; }
+  .funnel-options label:has(input:checked) { background: var(--lv-acid); }
+  .funnel-rail { min-height: 380px; display: grid; grid-template-columns: repeat(4, 1fr); align-items: stretch; background: var(--lv-aubergine); color: var(--lv-paper); }
+  .funnel-rail > div { position: relative; display: flex; align-items: flex-end; padding: 24px; border-right: 1px solid rgba(245,242,232,.35); }
+  .funnel-rail > div:last-child { border-right: 0; }
+  .funnel-rail span { font-size: clamp(20px, 2.3vw, 34px); font-weight: 800; writing-mode: vertical-rl; transform: rotate(180deg); }
+  .funnel-rail i { position: absolute; left: 50%; top: 0; width: 1px; height: 60%; background: var(--lv-lilac); }
+  .funnel-rail i::after { position: absolute; left: -6px; bottom: -6px; width: 13px; height: 13px; border: 1px solid var(--lv-lilac); background: var(--lv-aubergine); content: ''; }
+  .funnel-rail .is-break { background: var(--lv-fuchsia); }
+  .funnel-rail .is-break i { background: var(--lv-acid); }
+  .funnel-rail .is-break i::after { border-color: var(--lv-acid); background: var(--lv-acid); }
+
+  .funnel-reading { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--lv-aubergine); }
+  .reading-axis { min-height: 310px; display: flex; flex-direction: column; justify-content: space-between; padding: 25px; border-right: 1px solid var(--lv-aubergine); }
+  .reading-axis:last-child { border-right: 0; }
+  .reading-axis span { font-size: 11px; font-weight: 800; }
+  .reading-axis p { margin: 40px 0 0; font-size: clamp(15px, 1.45vw, 20px); font-weight: 700; line-height: 1.25; }
+  .reading-axis--next { background: var(--lv-acid); }
+
+  .pilot-explanation { display: grid; grid-template-columns: .9fr 1.1fr; border-bottom: 1px solid var(--lv-aubergine); }
+  .explain-intro { padding: clamp(70px, 8vw, 120px) var(--lv-edge); border-right: 1px solid var(--lv-aubergine); }
+  .explain-intro p { max-width: 54ch; margin: 34px 0 0; font-size: 16px; line-height: 1.65; }
+  .explain-lines { display: grid; grid-template-rows: repeat(3, 1fr); }
+  .explain-lines > div { min-height: 180px; display: grid; grid-template-columns: 180px 1fr; align-items: center; gap: 28px; padding: 30px var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .explain-lines > div:last-child { border-bottom: 0; }
+  .explain-lines strong { color: var(--lv-fuchsia); font-size: 13px; }
+  .explain-lines p { max-width: 48ch; margin: 0; font-size: 16px; line-height: 1.55; }
+
+  .pilot-example, .pilot-boundary { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--lv-aubergine); }
+  .pilot-example > div, .pilot-boundary > div { min-height: 390px; display: flex; flex-direction: column; justify-content: center; padding: clamp(55px, 7vw, 100px) var(--lv-edge); border-right: 1px solid var(--lv-aubergine); }
+  .pilot-example > div:last-child, .pilot-boundary > div:last-child { border-right: 0; }
+  .pilot-example p, .pilot-boundary p { max-width: 58ch; margin: 26px 0 0; font-size: 16px; line-height: 1.65; }
+  .one-lever { background: var(--lv-fuchsia); color: var(--lv-paper); }
+  .one-lever strong { font-family: var(--lv-display); font-size: clamp(42px, 5vw, 76px); font-weight: 400; line-height: .9; letter-spacing: -.04em; }
+  .pilot-boundary > div:last-child { background: var(--lv-aubergine); color: var(--lv-paper); }
+  .pilot-boundary .lv-link-button { width: min(420px, 100%); margin-top: 30px; }
+  .pilot-meta { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .pilot-meta p { margin: 0; padding: 20px var(--lv-edge); border-right: 1px solid var(--lv-aubergine); color: var(--lv-muted); font-size: 10px; line-height: 1.5; }
+  .pilot-meta p:last-child { border-right: 0; }
+
+  .generic-resource > header { padding: clamp(70px, 9vw, 140px) var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .generic-resource > header > p { color: var(--lv-fuchsia); font-size: 11px; font-weight: 800; }
+  .generic-resource > header h1 { max-width: 11ch; margin-top: 30px; }
+  .generic-resource > header strong { max-width: 45ch; display: block; margin-top: 36px; font-size: 22px; line-height: 1.35; }
+  .generic-answer { display: grid; grid-template-columns: .3fr .7fr; padding: 50px var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); background: var(--lv-acid); }
+  .generic-answer span { font-size: 11px; font-weight: 800; }
+  .generic-answer p { max-width: 38ch; margin: 0; font-size: clamp(24px, 3vw, 42px); font-weight: 800; line-height: 1.1; }
+  .generic-body, .generic-close { display: grid; grid-template-columns: 1.2fr .8fr; border-bottom: 1px solid var(--lv-aubergine); }
+  .generic-body > *, .generic-close > div { padding: clamp(50px, 6vw, 90px) var(--lv-edge); border-right: 1px solid var(--lv-aubergine); }
+  .generic-body > *:last-child, .generic-close > div:last-child { border-right: 0; }
+  .generic-body p, .generic-close p { max-width: 65ch; font-size: 16px; line-height: 1.65; }
+  .generic-list { padding: clamp(60px, 7vw, 110px) var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .generic-list ol { margin-top: 30px; columns: 2; column-gap: 70px; }
+  .generic-list li { margin: 0 0 18px 22px; break-inside: avoid; line-height: 1.55; }
+  .generic-links { display: flex; gap: 1px; padding: 30px var(--lv-edge); background: var(--lv-aubergine); }
+
+  @media (max-width: 950px) {
+    .pilot-hero, .funnel-experience > header, .funnel-form, .pilot-explanation { grid-template-columns: 1fr; }
+    .pilot-question, .funnel-form fieldset, .explain-intro { border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .funnel-reading { grid-template-columns: 1fr 1fr; }
+    .reading-axis { min-height: 240px; border-bottom: 1px solid var(--lv-aubergine); }
+    .reading-axis--next { grid-column: 1 / -1; }
+    .pilot-meta { grid-template-columns: 1fr; }
+    .pilot-meta p { border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+  }
+  @media (max-width: 650px) {
+    .funnel-rail { min-height: 330px; }
+    .funnel-rail > div { padding: 15px 9px; }
+    .funnel-rail span { font-size: 18px; }
+    .funnel-reading, .pilot-example, .pilot-boundary, .generic-answer, .generic-body, .generic-close { grid-template-columns: 1fr; }
+    .reading-axis { min-height: 210px; border-right: 0; }
+    .reading-axis--next { grid-column: auto; }
+    .pilot-example > div, .pilot-boundary > div, .generic-body > *, .generic-close > div { min-height: 320px; border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .explain-lines > div { min-height: 190px; grid-template-columns: 1fr; gap: 16px; }
+    .generic-answer { gap: 25px; }
+    .generic-list ol { columns: 1; }
+    .generic-links { flex-direction: column; }
+  }
+</style>
+
+<script>
+  const funnelForm = document.querySelector<HTMLFormElement>('[data-funnel-form]');
+  const observed = document.querySelector<HTMLElement>('[data-read-observed]');
+  const meaning = document.querySelector<HTMLElement>('[data-read-meaning]');
+  const alternatives = document.querySelector<HTMLElement>('[data-read-alternatives]');
+  const missing = document.querySelector<HTMLElement>('[data-read-missing]');
+  const next = document.querySelector<HTMLElement>('[data-read-next]');
+  const stages = [...document.querySelectorAll<HTMLElement>('[data-funnel-stage]')];
+  const readings: Record<string, { stage: string; observed: string; meaning: string; alternatives: string; missing: string; next: string }> = {
+    'few-views': {
+      stage: 'view',
+      observed: 'L’annonce obtient peu de vues sur le support consulté.',
+      meaning: 'Elle apparaît peut-être peu ou mal dans la recherche réellement faite par les acheteurs.',
+      alternatives: 'Période calme, support peu utilisé, catégorie ou secteur mal renseigné, concurrence plus visible.',
+      missing: 'La position de l’annonce dans une recherche reproduite avec les mêmes critères.',
+      next: 'Reproduire la recherche type et noter si, où et avec quelles annonces elle apparaît.',
+    },
+    'views-no-open': {
+      stage: 'open',
+      observed: 'L’annonce est vue dans une liste, mais elle est peu ouverte.',
+      meaning: 'La première impression ne soutient peut-être pas la comparaison immédiate.',
+      alternatives: 'Prix affiché, titre peu informatif, vignette difficile à lire sur mobile ou alternatives plus claires.',
+      missing: 'Ce que voit réellement la personne pendant les trois premières secondes dans la liste.',
+      next: 'Comparer la vignette, le titre et le prix aux annonces voisines sur téléphone.',
+    },
+    'open-no-contact': {
+      stage: 'contact',
+      observed: 'L’annonce est ouverte, mais débouche sur peu de contacts.',
+      meaning: 'La promesse perd de sa force à l’intérieur de l’annonce ou tient moins bien face aux alternatives.',
+      alternatives: 'Localisation, informations manquantes, prix affiché dans la comparaison ou friction du formulaire de contact.',
+      missing: 'Le point exact où la lecture décroche : première photo, suite des visuels, description, localisation ou comparaison.',
+      next: 'Relire l’annonce ouverte comme un acheteur et comparer chaque élément aux annonces voisines, sans tout modifier à la fois.',
+    },
+    'no-data': {
+      stage: 'none',
+      observed: 'Aucun chiffre fiable de vues, d’ouvertures ou de contacts n’est disponible.',
+      meaning: 'Impossible à conclure pour l’instant : le silence seul ne localise pas l’étape qui décroche.',
+      alternatives: 'Un problème peut se situer dans la diffusion, la première impression ou l’annonce ouverte.',
+      missing: 'Les indicateurs réellement fournis par le support de diffusion et leur définition.',
+      next: 'Récupérer les chiffres disponibles auprès du support avant de choisir un levier.',
+    },
+  };
+  funnelForm?.addEventListener('change', () => {
+    const key = new FormData(funnelForm).get('signal');
+    if (typeof key !== 'string' || !readings[key]) return;
+    const reading = readings[key];
+    if (observed) observed.textContent = reading.observed;
+    if (meaning) meaning.textContent = reading.meaning;
+    if (alternatives) alternatives.textContent = reading.alternatives;
+    if (missing) missing.textContent = reading.missing;
+    if (next) next.textContent = reading.next;
+    stages.forEach((stage) => stage.classList.toggle('is-break', stage.dataset.funnelStage === reading.stage));
+  });
+</script>

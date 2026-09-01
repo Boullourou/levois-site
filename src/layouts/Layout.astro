@@ -4,6 +4,7 @@ import Footer from '../components/Footer.astro';
 import Analytics from '../components/Analytics.astro';
 import { site } from '../config/site';
 import '../styles/global.css';
+import '../styles/lignes-vives.css';
 
 export interface Props {
   title: string;
@@ -86,7 +87,7 @@ const ogImage = image.startsWith('http') ? image : site.url + image;
     })} />
   </head>
 
-  <body class:list={['min-h-screen flex flex-col', { 'home-shell': homeV2 }]}>
+  <body class:list={['min-h-screen flex flex-col lv-site', { 'home-shell': homeV2 }]} data-territory="lignes-vives">
     {designContract && <Fragment set:html={`<!--\n${designContract}\n-->`} />}
     <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-argile focus:text-papier-vif focus:px-4 focus:py-2 focus:rounded-full font-sans">
       Aller au contenu

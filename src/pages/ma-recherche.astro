@@ -1,1116 +1,470 @@
 ---
-/**
- * /ma-recherche — Parcours acquéreur LEVOIS.
- *
- * URL protégée (liée depuis /carte). Ne pas supprimer/renommer sans validation.
- *
- * Philosophie : aide à la décision, pas collecte de critères.
- * Chaque étape révèle les conséquences des choix de l'acheteur.
- * Sortie : une « Lecture de votre recherche » transmise à Mouaad —
- * stratégie de recherche, pas liste de critères.
- *
- * Sources de données : DVF (dvf-secteur.json) pour la lecture de marché.
- * L'architecture est source-agnostique : d'autres sources s'ajouteront sans
- * modifier la structure.
- *
- * Persistance V1 : e-mail structuré (section JSON) vers Mouaad via /api/recherche.
- */
 import Layout from '../layouts/Layout.astro';
-import { site } from '../config/site';
+
+const designContract = `LEVOIS_DA_B_RECHERCHE
+THESIS: Le questionnaire devient un champ de relations où chaque réponse déplace des repères nommés ; refuser le wizard en cartes et le score final.
+OWN-WORLD: Craie, aubergine, fuchsia et acide ; rails de progression, lignes de dépendance, contrôles rectangulaires et quatre blocs bord à bord.
+STORY: La personne comprend la portée, répond, voit la traduction immédiate, choisit une vérification puis lit une synthèse corrigeable.
+FIRST VIEWPORT: Sept fonctions métier sur un rail, ouverture concise au centre et aperçu des quatre sorties en lisière.
+FORM: Territoire B épinglé — démonstration multi-états de Lignes vives.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md`;
+
+const states = [
+  { id: 'opening', label: 'Ouverture' },
+  { id: 'question', label: 'Question' },
+  { id: 'translator', label: 'Traduction' },
+  { id: 'tradeoff', label: 'Arbitrage' },
+  { id: 'reading', label: 'Première lecture' },
+];
 ---
 
 <Layout
-  title="Lecture de votre recherche"
-  description="Clarifiez votre projet d'achat immobilier. Cette lecture deviendra le point de départ des recherches et des échanges avec Mouaad."
-  noindex={true}
-  headerTransparent={false}
+  title="Mettre ma recherche au clair"
+  description="Clarifiez les usages, contraintes et arbitrages de votre projet de résidence principale avant de laisser vos coordonnées."
+  designContract={designContract}
 >
-  <div id="mr-root" class="mr-root">
-    <div class="mr-barre-wrap" aria-hidden="true">
-      <div class="mr-barre" id="mr-barre" style="width:0%" role="progressbar"
-        aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progression"></div>
+  <div class="lv-page research-demo" data-research-demo data-current-state="opening">
+    <header class="demo-header">
+      <div>
+        <p>Résidence principale · première lecture sans coordonnées</p>
+        <h1>Mettre ma recherche au clair</h1>
+      </div>
+      <nav class="state-switcher" aria-label="États du démonstrateur" role="tablist">
+        {states.map((state, index) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${state.id}`}
+            aria-controls={`panel-${state.id}`}
+            aria-selected={index === 0 ? 'true' : 'false'}
+            tabindex={index === 0 ? 0 : -1}
+            data-state-button={state.id}
+          >{state.label}</button>
+        ))}
+      </nav>
+    </header>
+
+    <div class="research-shell">
+      <aside class="step-rail" aria-label="Les sept fonctions du parcours">
+        <ol>
+          <li data-rail-step="1" class="is-current"><span>Niveau d’avancement</span><i></i></li>
+          <li data-rail-step="2"><span>Situation actuelle</span><i></i></li>
+          <li data-rail-step="3"><span>Amélioration attendue</span><i></i></li>
+          <li data-rail-step="4"><span>Usage avant typologie</span><i></i></li>
+          <li data-rail-step="5"><span>Cadre de réalité</span><i></i></li>
+          <li data-rail-step="6"><span>Arbitrage utile</span><i></i></li>
+          <li data-rail-step="7"><span>Première lecture</span><i></i></li>
+        </ol>
+        <p><strong data-progress-label>Ouverture</strong><br /><span data-progress-detail>Comprendre le cadre</span></p>
+      </aside>
+
+      <div class="state-stage">
+        <section
+          class="demo-panel opening-panel"
+          id="panel-opening"
+          role="tabpanel"
+          aria-labelledby="tab-opening"
+          data-state-panel="opening"
+        >
+          <div class="opening-copy">
+            <h2 class="lv-headline">Votre situation d’abord. La forme du logement ensuite.</h2>
+            <p class="lv-lead">En 11 questions essentielles, vous reliez ce qui doit changer, ce que vous voulez préserver et ce qu’il reste à vérifier. Vous voyez la première lecture avant toute demande de coordonnées.</p>
+            <ul>
+              <li>Résidence principale uniquement</li>
+              <li>Aucun montant ni validation bancaire</li>
+              <li>Chaque réponse reste modifiable</li>
+            </ul>
+            <button class="lv-button lv-button--acid" type="button" data-go-state="question">Commencer ma première lecture</button>
+          </div>
+          <div class="opening-map" aria-label="Les quatre blocs produits à la fin">
+            <span>Ce que l’achat doit changer</span>
+            <span>Ce que vous voulez préserver</span>
+            <span>Ce que vous pourriez assouplir</span>
+            <span>Ce qu’il reste à vérifier</span>
+          </div>
+        </section>
+
+        <section
+          class="demo-panel question-panel"
+          id="panel-question"
+          role="tabpanel"
+          aria-labelledby="tab-question"
+          data-state-panel="question"
+          hidden
+        >
+          <form data-usage-form>
+            <div class="question-context">
+              <span>Usage avant typologie</span>
+              <span>Question de démonstration · 5 sur 11</span>
+            </div>
+            <fieldset>
+              <legend>Quel usage doit principalement mieux fonctionner dans votre prochain logement&nbsp;?</legend>
+              <div class="option-axis">
+                <label><input type="radio" name="usage" value="Dormir et préserver l’intimité" /><span>Dormir et préserver l’intimité</span></label>
+                <label><input type="radio" name="usage" value="Travailler ou étudier" /><span>Travailler ou étudier</span></label>
+                <label><input type="radio" name="usage" value="Accueillir ou partager le quotidien" /><span>Accueillir ou partager le quotidien</span></label>
+                <label><input type="radio" name="usage" value="Cuisiner et prendre les repas" /><span>Cuisiner et prendre les repas</span></label>
+                <label><input type="radio" name="usage" value="Profiter réellement d’un extérieur" /><span>Profiter réellement d’un extérieur</span></label>
+                <label><input type="radio" name="usage" value="Je ne sais pas encore" /><span>Je ne sais pas encore</span></label>
+              </div>
+            </fieldset>
+            <div class="inline-translator" role="status" aria-live="polite" data-inline-translator>
+              <span>Traducteur en direct</span>
+              <p>Choisissez un usage : la traduction apparaîtra ici sans déduire une pièce, une surface ou une typologie.</p>
+            </div>
+            <button class="lv-button" type="button" data-go-state="translator" data-needs-usage disabled>Continuer avec cette réponse</button>
+          </form>
+        </section>
+
+        <section
+          class="demo-panel translator-panel"
+          id="panel-translator"
+          role="tabpanel"
+          aria-labelledby="tab-translator"
+          data-state-panel="translator"
+          hidden
+        >
+          <div class="translator-source">
+            <span>Réponse déclarée</span>
+            <strong data-usage-output>Travailler ou étudier</strong>
+          </div>
+          <div class="translator-line" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="translator-reading" role="status">
+            <span>Ce que cette réponse change</span>
+            <p>Vous avez relié le projet à un usage concret : <strong data-usage-output>travailler ou étudier</strong>. Nous pouvons maintenant examiner la forme de logement comme une hypothèse de solution, pas comme une conclusion.</p>
+            <dl>
+              <div><dt>Niveau</dt><dd>Conséquence directement établie</dd></div>
+              <div><dt>Ne permet pas de conclure</dt><dd>Une pièce, une surface ou une typologie</dd></div>
+            </dl>
+            <div class="translator-actions">
+              <button type="button" class="lv-button lv-button--paper" data-go-state="question">Modifier ma réponse</button>
+              <button type="button" class="lv-button lv-button--acid" data-go-state="tradeoff">Voir un arbitrage</button>
+            </div>
+          </div>
+        </section>
+
+        <section
+          class="demo-panel tradeoff-panel"
+          id="panel-tradeoff"
+          role="tabpanel"
+          aria-labelledby="tab-tradeoff"
+          data-state-panel="tradeoff"
+          hidden
+        >
+          <form data-tradeoff-form>
+            <div class="question-context">
+              <span>Arbitrage utile</span>
+              <span>Question de démonstration · 11 sur 11</span>
+            </div>
+            <fieldset>
+              <legend>Lequel de ces deux scénarios mérite d’être vérifié en premier&nbsp;?</legend>
+              <p class="tradeoff-help">Les deux enjeux peuvent rester compatibles. Vous choisissez seulement la première vérification.</p>
+              <div class="tradeoff-axis">
+                <label>
+                  <input type="radio" name="tradeoff" value="preserve" />
+                  <span><b>Préserver d’abord les trajets actuels</b><small>Comparer plusieurs organisations de l’espace dans ce même repère.</small></span>
+                </label>
+                <div class="axis-junction" aria-hidden="true"><i></i></div>
+                <label>
+                  <input type="radio" name="tradeoff" value="change" />
+                  <span><b>Prioriser l’espace de travail</b><small>Tester comment conserver des trajets praticables avec un repère différent.</small></span>
+                </label>
+              </div>
+              <label class="neutral-option"><input type="radio" name="tradeoff" value="missing" /><span>Impossible de choisir sans une information supplémentaire</span></label>
+            </fieldset>
+            <button class="lv-button lv-button--acid" type="button" data-go-state="reading" data-needs-tradeoff disabled>Voir ma première lecture</button>
+          </form>
+        </section>
+
+        <section
+          class="demo-panel reading-panel"
+          id="panel-reading"
+          role="tabpanel"
+          aria-labelledby="tab-reading"
+          data-state-panel="reading"
+          hidden
+        >
+          <header class="reading-header">
+            <div>
+              <span>Première lecture · scénario de démonstration</span>
+              <h2 class="lv-headline">Ce qui devient plus clair</h2>
+            </div>
+            <p>Cette lecture organise ce que vous avez déclaré. Elle ne valide ni un budget, ni un financement, ni un bien et ne remplace pas les vérifications propres à votre situation.</p>
+          </header>
+          <div class="reading-grid">
+            <article class="reading-block reading-block--change">
+              <span>Ce que votre achat doit changer</span>
+              <h3>Mieux organiser l’espace autour de <em data-usage-lower>votre usage principal</em>.</h3>
+              <p>Vous avez indiqué que l’achat doit principalement améliorer l’espace et son organisation. Dans le quotidien, cela se traduit d’abord par <strong data-usage-output>travailler ou étudier</strong>.</p>
+              <button type="button" data-go-state="question">Modifier cette réponse</button>
+            </article>
+            <article class="reading-block reading-block--preserve">
+              <span>Ce que vous voulez préserver</span>
+              <h3>Des trajets déjà pratiques.</h3>
+              <p>Ce repère reste une condition à confronter aux solutions comparées. Il n’impose pas encore une commune précise.</p>
+              <button type="button" data-go-state="question">Modifier cette réponse</button>
+            </article>
+            <article class="reading-block reading-block--flex">
+              <span>Ce que vous pourriez assouplir</span>
+              <h3 data-flex-title>Tester plusieurs organisations avant de déplacer le repère géographique.</h3>
+              <p data-flex-copy>Ce compromis sert à apprendre. Il ne rend aucun critère définitivement flexible.</p>
+              <button type="button" data-go-state="tradeoff">Modifier l’arbitrage</button>
+            </article>
+            <article class="reading-block reading-block--verify">
+              <span>Ce qu’il reste à décider ou vérifier</span>
+              <ul>
+                <li><strong>Cadre financier.</strong> Le repère global reste à confirmer ; aucune faisabilité n’est déduite.</li>
+                <li><strong>Géographie.</strong> Tester un trajet réel avant de figer le secteur.</li>
+                <li><strong>Forme du logement.</strong> Maison et appartement restent des hypothèses ouvertes.</li>
+              </ul>
+              <button type="button" data-go-state="question">Revoir mes réponses</button>
+            </article>
+          </div>
+          <div class="reading-actions">
+            <button type="button" class="lv-button lv-button--paper">Affiner cette lecture</button>
+            <button type="button" class="lv-button lv-button--acid">Recevoir ma synthèse</button>
+            <button type="button" class="lv-button">Demander un échange</button>
+          </div>
+          <p class="reading-boundary">Recevoir la synthèse reste séparé d’une demande d’échange. Aucune information n’est transmise à Mouaad sans action explicite.</p>
+        </section>
+      </div>
     </div>
-    <div class="mr-retour-banda">
-      <button id="mr-retour" class="mr-retour" hidden aria-label="Revenir à l'étape précédente">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M10 13l-5-5 5-5" stroke="currentColor" stroke-width="1.6"
-            stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Retour
-      </button>
-    </div>
-    <div id="mr-ecran" class="mr-ecran" role="main" aria-live="polite"></div>
   </div>
 </Layout>
 
-<style is:global>
-  .mr-root {
-    min-height: calc(100vh - var(--site-header-h));
-    display: flex; flex-direction: column;
-    background: #F2F5EF;
-  }
-  .mr-barre-wrap {
-    position: fixed; top: 0; left: 0; right: 0; height: 3px;
-    z-index: 200; background: rgba(36,60,255,0.12);
-  }
-  .mr-barre {
-    height: 100%; background: #243CFF;
-    transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-  }
-  /*
-   * Conteneur sticky à hauteur zéro — ne perturbe pas le flux flex.
-   * Le bouton est positionné en absolu à l'intérieur.
-   * Sticky par rapport à la fenêtre (aucun ancêtre n'a overflow:hidden/auto/clip).
-   * top = hauteur réelle du header mobile (h-16 = 64px).
-   */
-  .mr-retour-banda {
-    position: sticky;
-    top: var(--site-header-h);
-    height: 0;
-    overflow: visible;
-    z-index: 49;
-    pointer-events: none;
-  }
-  .mr-retour {
-    position: absolute;
-    top: 8px;
-    left: clamp(1rem, 4vw, 2.5rem);
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500;
-    color: #58615B;
-    background: rgba(247,244,240,0.90);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    border: none; border-radius: 0; cursor: pointer;
-    padding: 0.45rem 0.7rem;
-    min-height: 44px; /* zone tactile iOS */
-    transition: color 0.15s ease;
-    pointer-events: auto;
-  }
-  .mr-retour:hover { color: #111522; }
-  .mr-ecran {
-    flex: 1; display: flex; align-items: flex-start; justify-content: center;
-    padding: clamp(3.5rem,8vw,5.5rem) clamp(1rem,5vw,2.5rem) clamp(2rem,5vw,4rem);
-  }
-  .mr-ecran-int {
-    width: 100%; max-width: 720px;
-    animation: mr-entrer 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
-  }
-  @keyframes mr-entrer {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: none; }
-  }
+<style>
+  .research-demo { min-height: calc(100svh - var(--lv-header)); background: var(--lv-paper); }
+  .demo-header { min-height: 116px; display: grid; grid-template-columns: 1fr auto; align-items: stretch; border-bottom: 1px solid var(--lv-aubergine); background: var(--lv-chalk); }
+  .demo-header > div { display: flex; align-items: baseline; gap: 22px; padding: 24px var(--lv-edge); }
+  .demo-header p { margin: 0; color: var(--lv-muted); font-size: 11px; font-weight: 700; }
+  .demo-header h1 { margin: 0; font-family: var(--lv-display); font-size: clamp(25px, 3vw, 46px); font-weight: 400; line-height: .95; letter-spacing: -.035em; }
+  .state-switcher { display: grid; grid-template-columns: repeat(5, minmax(92px, 1fr)); border-left: 1px solid var(--lv-aubergine); }
+  .state-switcher button { min-height: 52px; padding: 12px; border: 0; border-right: 1px solid rgba(50,16,63,.35); border-radius: 0; background: transparent; color: var(--lv-aubergine); font: 700 11px/1.25 var(--lv-sans); cursor: pointer; }
+  .state-switcher button:last-child { border-right: 0; }
+  .state-switcher button[aria-selected='true'] { background: var(--lv-aubergine); color: var(--lv-acid); }
 
-  /* ——— Indicateur de progression (points) ——— */
-  .mr-passos {
-    display: flex; gap: 4px; margin-bottom: 1.25rem; align-items: center;
-  }
-  .mr-pas {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-    background: rgba(17,21,34,0.12);
-    transition: background 0.2s ease, width 0.25s cubic-bezier(0.22,1,0.36,1);
-  }
-  .mr-pas-done { background: rgba(36,60,255,0.35); }
-  .mr-pas-cur  { background: #243CFF; width: 20px; border-radius: 3px; }
+  .research-shell { min-height: 720px; display: grid; grid-template-columns: minmax(190px, 18vw) 1fr; }
+  .step-rail { display: flex; flex-direction: column; justify-content: space-between; padding: 32px 0 28px var(--lv-edge); border-right: 1px solid var(--lv-aubergine); background: var(--lv-chalk); }
+  .step-rail ol { margin: 0; padding: 0; list-style: none; }
+  .step-rail li { position: relative; min-height: 66px; display: grid; grid-template-columns: 1fr 36px; align-items: start; gap: 14px; padding-right: 0; color: var(--lv-muted); font-size: 11px; line-height: 1.3; }
+  .step-rail li i { position: relative; height: 1px; margin-top: 7px; background: var(--lv-line); }
+  .step-rail li i::after { position: absolute; top: -4px; right: 0; width: 9px; height: 9px; border: 1px solid var(--lv-line); background: var(--lv-chalk); content: ''; }
+  .step-rail li.is-current { color: var(--lv-aubergine); font-weight: 800; }
+  .step-rail li.is-current i { background: var(--lv-fuchsia); }
+  .step-rail li.is-current i::after { border-color: var(--lv-fuchsia); background: var(--lv-acid); }
+  .step-rail > p { margin: 0; font-size: 11px; line-height: 1.4; }
+  .step-rail > p strong { color: var(--lv-fuchsia); }
 
-  /* ——— Typographie ——— */
-  .mr-kicker {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.71rem; font-weight: 600;
-    letter-spacing: 0.22em; text-transform: uppercase; color: #243CFF;
-    display: inline-flex; align-items: center; gap: 0.55rem; margin-bottom: 1rem;
-  }
-  .mr-kicker::before {
-    content: ''; display: inline-block; width: 18px; height: 1px;
-    background: currentColor; opacity: 0.7;
-  }
-  .mr-titre-xl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(2rem,6vw,3rem); line-height: 1.1;
-    letter-spacing: -0.022em; color: #111522; margin: 0 0 1.25rem;
-  }
-  .mr-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.5rem,4.5vw,2.1rem); line-height: 1.15;
-    letter-spacing: -0.018em; color: #111522; margin: 0 0 0.25rem;
-  }
-  .mr-question {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.25rem,3.5vw,1.65rem); line-height: 1.22;
-    letter-spacing: -0.015em; color: #111522; margin: 0 0 0.4rem;
-  }
-  .mr-lede {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: clamp(1rem,2.5vw,1.1rem);
-    line-height: 1.6; color: #58615B; margin: 0 0 0.7rem; max-width: 38rem;
-  }
-  .mr-lede-s {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem;
-    line-height: 1.55; color: #58615B; margin: 0 0 2rem;
-  }
-  .mr-sous-q {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
-    line-height: 1.5; color: #58615B; margin: 0 0 1.75rem;
-  }
-  .mr-auto-hint {
-    margin: -0.95rem 0 1.55rem;
-    color: #243CFF;
-    font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    line-height: 1.4;
-  }
+  .state-stage { min-width: 0; position: relative; }
+  .demo-panel { min-height: 720px; }
+  .demo-panel[hidden] { display: none; }
 
-  /* ——— Cartes de choix ——— */
-  .mr-grille { display: grid; gap: 0.7rem; margin-bottom: 1.75rem; }
-  .mr-grille-2 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-  .mr-choix {
-    display: flex; flex-direction: column; background: #FFFFFF;
-    border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: 1.1rem 3.2rem 1.1rem 1.35rem; cursor: pointer; text-align: left;
-    transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
-    position: relative; font-family: inherit; width: 100%;
-  }
-  .mr-choix::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 1.25rem;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid #243CFF;
-    border-right: 2px solid #243CFF;
-    animation: mr-choice-cue 2.8s cubic-bezier(.16,1,.3,1) infinite;
-  }
-  .mr-choix:hover {
-    border-color: rgba(36,60,255,0.3); transform: translateY(-2px);
-    box-shadow: none;
-  }
-  .mr-choix:focus-visible {
-    outline: 2.5px solid #243CFF; outline-offset: 2px;
-  }
-  .mr-choix.actif {
-    border-color: #243CFF; background: rgba(36,60,255,0.04);
-    box-shadow: none;
-  }
-  .mr-choix.actif::before { opacity: 0; animation: none; }
-  .mr-choix.actif::after {
-    content: ''; position: absolute; top: 10px; right: 12px;
-    width: 20px; height: 20px; border-radius: 50%;
-    background-color: #243CFF;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: center; background-size: 12px;
-  }
-  .mr-grille--max .mr-choix:not(.actif) { opacity: 0.38; pointer-events: none; }
-  .mr-choix-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.97rem; font-weight: 600;
-    color: #111522; margin-bottom: 0.15rem;
-  }
-  .mr-choix-desc {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.825rem;
-    line-height: 1.4; color: #58615B;
-  }
+  .opening-panel { display: grid; grid-template-columns: 1.15fr .85fr; }
+  .opening-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(48px, 7vw, 110px) var(--lv-edge); border-right: 1px solid var(--lv-aubergine); }
+  .opening-copy .lv-headline { max-width: 13ch; }
+  .opening-copy .lv-lead { margin-top: 30px; }
+  .opening-copy ul { margin: 30px 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--lv-aubergine); list-style: none; }
+  .opening-copy li { min-height: 82px; display: flex; align-items: center; padding: 15px; border-right: 1px solid var(--lv-aubergine); font-size: 11px; line-height: 1.4; }
+  .opening-copy li:last-child { border-right: 0; }
+  .opening-copy .lv-button { width: min(430px, 100%); }
+  .opening-map { display: grid; grid-template-rows: repeat(4, 1fr); background: var(--lv-aubergine); color: var(--lv-paper); }
+  .opening-map span { position: relative; display: flex; align-items: flex-end; padding: 28px; border-bottom: 1px solid rgba(245,242,232,.35); font-size: clamp(18px, 2vw, 29px); font-weight: 800; line-height: 1.05; }
+  .opening-map span::before { position: absolute; top: 0; left: 20%; width: 1px; height: 58%; background: var(--lv-acid); content: ''; }
+  .opening-map span:nth-child(2)::before { left: 42%; background: var(--lv-fuchsia); }
+  .opening-map span:nth-child(3)::before { left: 63%; }
+  .opening-map span:nth-child(4) { border-bottom: 0; background: var(--lv-acid); color: var(--lv-aubergine); }
+  .opening-map span:nth-child(4)::before { left: 80%; background: var(--lv-fuchsia); }
 
-  /* ——— Saisie ——— */
-  .mr-saisie { margin-bottom: 1.75rem; }
-  .mr-label {
-    display: block; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.875rem; font-weight: 600; color: #111522; margin-bottom: 0.5rem;
-  }
-  .mr-input-wrap { position: relative; display: flex; align-items: center; }
-  .mr-input {
-    width: 100%; padding: 0.875rem 3.5rem 0.875rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.1rem; font-weight: 500;
-    color: #111522; background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08);
-    border-radius: 0; outline: none;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    -webkit-appearance: none; appearance: none;
-  }
-  .mr-input:focus {
-    border-color: #243CFF; outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none;
-  }
-  .mr-input-unite {
-    position: absolute; right: 1rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.9rem; color: #58615B; pointer-events: none;
-  }
-  .mr-input-aide {
-    margin-top: 0.5rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.82rem; color: #58615B;
-  }
+  .question-panel form, .tradeoff-panel form { min-height: 720px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr); grid-template-rows: auto 1fr auto; }
+  .question-context { grid-column: 1 / -1; min-height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 12px var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); color: var(--lv-muted); font-size: 11px; font-weight: 700; }
+  fieldset { min-width: 0; margin: 0; padding: clamp(40px, 5vw, 74px) var(--lv-edge); border: 0; border-right: 1px solid var(--lv-aubergine); }
+  legend { max-width: 18ch; padding: 0; font-size: clamp(31px, 4vw, 58px); font-weight: 850; line-height: 1; letter-spacing: -.035em; text-wrap: balance; }
+  .option-axis { margin-top: 42px; border-top: 1px solid var(--lv-aubergine); }
+  .option-axis label { position: relative; min-height: 60px; display: grid; grid-template-columns: 44px 1fr; align-items: center; border-bottom: 1px solid var(--lv-aubergine); cursor: pointer; }
+  .option-axis input { width: 18px; height: 18px; margin: 0 13px; accent-color: var(--lv-fuchsia); }
+  .option-axis span { padding: 14px; border-left: 1px solid var(--lv-line); font-size: 14px; font-weight: 650; }
+  .option-axis label:has(input:checked) { background: var(--lv-acid); }
+  .inline-translator { padding: clamp(40px, 5vw, 74px) clamp(22px, 3vw, 44px); background: var(--lv-aubergine); color: var(--lv-paper); }
+  .inline-translator > span { color: var(--lv-acid); font-size: 11px; font-weight: 800; }
+  .inline-translator p { margin: 42px 0 0; font-size: clamp(20px, 2.4vw, 34px); font-weight: 750; line-height: 1.15; letter-spacing: -.02em; }
+  .question-panel .lv-button, .tradeoff-panel .lv-button { grid-column: 1 / -1; margin: 22px var(--lv-edge) 28px auto; }
+  .lv-button:disabled { background: var(--lv-line); border-color: var(--lv-line); color: var(--lv-paper); cursor: not-allowed; }
 
-  /* ——— Boutons ——— */
-  .mr-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
-  .mr-btn {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    min-height: 52px; padding: 0.9rem 1.8rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.97rem; font-weight: 600; color: #FFFFFF; background: #243CFF;
-    border: none; border-radius: 0; cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
-    box-shadow: none; text-decoration: none;
-    animation: mr-button-cue 3.2s cubic-bezier(.16,1,.3,1) infinite;
-  }
-  .mr-btn svg { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1); flex-shrink: 0; }
-  .mr-btn:hover:not(:disabled) svg { transform: translateX(3px); }
-  .mr-btn:hover:not(:disabled) {
-    background: #111522; color: #D7FF42; transform: translateY(-1px);
-    box-shadow: none;
-  }
-  .mr-btn:focus-visible { outline: 2.5px solid #243CFF; outline-offset: 3px; }
-  .mr-btn:disabled { opacity: 0.42; cursor: default; box-shadow: none; transform: none; }
+  .translator-panel { display: grid; grid-template-columns: .7fr .2fr 1.1fr; background: var(--lv-aubergine); color: var(--lv-paper); }
+  .translator-source, .translator-reading { display: flex; flex-direction: column; justify-content: center; padding: var(--lv-edge); }
+  .translator-source span, .translator-reading > span { color: var(--lv-acid); font-size: 11px; font-weight: 800; }
+  .translator-source strong { margin-top: 28px; font-family: var(--lv-display); font-size: clamp(42px, 6vw, 86px); font-weight: 400; line-height: .9; letter-spacing: -.04em; }
+  .translator-line { position: relative; border-inline: 1px solid rgba(245,242,232,.34); }
+  .translator-line::before { position: absolute; top: 20%; bottom: 20%; left: 50%; width: 1px; background: var(--lv-acid); content: ''; }
+  .translator-line i { position: absolute; left: calc(50% - 6px); width: 13px; height: 13px; border: 1px solid var(--lv-acid); background: var(--lv-aubergine); }
+  .translator-line i:nth-child(1) { top: 20%; } .translator-line i:nth-child(2) { top: 49%; background: var(--lv-fuchsia); } .translator-line i:nth-child(3) { bottom: 20%; background: var(--lv-acid); }
+  .translator-reading p { max-width: 31ch; margin: 30px 0; font-size: clamp(22px, 2.8vw, 40px); font-weight: 750; line-height: 1.16; letter-spacing: -.02em; }
+  .translator-reading dl { margin: 0; border-block: 1px solid rgba(245,242,232,.36); }
+  .translator-reading dl > div { display: grid; grid-template-columns: 170px 1fr; gap: 18px; padding: 13px 0; border-bottom: 1px solid rgba(245,242,232,.25); font-size: 12px; }
+  .translator-reading dl > div:last-child { border-bottom: 0; }
+  .translator-reading dt { color: var(--lv-lilac); } .translator-reading dd { margin: 0; }
+  .translator-actions { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--lv-paper); }
+  .translator-actions .lv-button { border: 0; }
 
-  @keyframes mr-button-cue {
-    0%, 72%, 100% { transform: translateY(0); }
-    79% { transform: translateY(-2px); }
-    86% { transform: translateY(0); }
-    92% { transform: translateY(-1px); }
-  }
+  .tradeoff-help { max-width: 55ch; margin: 22px 0 0; color: var(--lv-muted); font-size: 13px; line-height: 1.5; }
+  .tradeoff-axis { margin-top: 40px; display: grid; grid-template-columns: 1fr 90px 1fr; align-items: stretch; }
+  .tradeoff-axis label { min-height: 220px; display: flex; padding: 22px; border: 1px solid var(--lv-aubergine); cursor: pointer; }
+  .tradeoff-axis label:has(input:checked) { background: var(--lv-acid); }
+  .tradeoff-axis input, .neutral-option input { width: 18px; height: 18px; margin: 2px 18px 0 0; flex: 0 0 auto; accent-color: var(--lv-fuchsia); }
+  .tradeoff-axis span { display: flex; flex-direction: column; justify-content: space-between; gap: 40px; }
+  .tradeoff-axis b { font-size: clamp(21px, 2.3vw, 32px); line-height: 1.08; }
+  .tradeoff-axis small { font-size: 13px; line-height: 1.5; }
+  .axis-junction { position: relative; }
+  .axis-junction::before { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--lv-fuchsia); content: ''; }
+  .axis-junction i { position: absolute; top: calc(50% - 8px); left: calc(50% - 8px); width: 17px; height: 17px; background: var(--lv-fuchsia); }
+  .neutral-option { min-height: 58px; display: flex; align-items: center; padding: 13px; border: 1px solid var(--lv-aubergine); border-top: 0; cursor: pointer; }
+  .neutral-option:has(input:checked) { background: var(--lv-lilac); }
+  .tradeoff-panel fieldset { grid-column: 1 / -1; border-right: 0; }
 
-  @keyframes mr-choice-cue {
-    0%, 68%, 100% { transform: translate(-4px, -50%) rotate(45deg); }
-    78%, 90% { transform: translate(2px, -50%) rotate(45deg); }
-  }
-  .mr-btn-ghost {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.75rem 1.4rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.92rem; font-weight: 500; color: #58615B; background: transparent;
-    border: 1.5px solid rgba(17,21,34,0.1); border-radius: 0; cursor: pointer;
-    transition: all 0.18s ease;
-  }
-  .mr-btn-ghost:hover { border-color: rgba(36,60,255,0.3); color: #111522; }
-  .mr-btn-ghost:focus-visible { outline: 2.5px solid rgba(36,60,255,0.5); outline-offset: 2px; }
+  .reading-header { display: grid; grid-template-columns: 1.1fr .9fr; align-items: end; gap: 50px; padding: 48px var(--lv-edge); border-bottom: 1px solid var(--lv-aubergine); }
+  .reading-header span { color: var(--lv-fuchsia); font-size: 11px; font-weight: 800; }
+  .reading-header h2 { margin-top: 18px; }
+  .reading-header > p { max-width: 55ch; margin: 0; color: var(--lv-muted); font-size: 13px; line-height: 1.55; }
+  .reading-grid { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .reading-block { min-height: 330px; display: flex; flex-direction: column; padding: 30px var(--lv-edge); border-right: 1px solid var(--lv-aubergine); border-bottom: 1px solid var(--lv-aubergine); }
+  .reading-block:nth-child(2n) { border-right: 0; }
+  .reading-block > span { font-size: 11px; font-weight: 800; }
+  .reading-block h3 { max-width: 20ch; margin: 30px 0 0; font-size: clamp(25px, 3vw, 44px); font-weight: 850; line-height: 1; letter-spacing: -.03em; }
+  .reading-block h3 em { color: var(--lv-fuchsia); font-style: normal; }
+  .reading-block p, .reading-block ul { max-width: 64ch; margin: 24px 0; font-size: 13px; line-height: 1.55; }
+  .reading-block ul { padding-left: 20px; }
+  .reading-block li + li { margin-top: 10px; }
+  .reading-block button { width: max-content; min-height: 44px; margin-top: auto; padding: 8px 0; border: 0; border-bottom: 1px solid currentColor; border-radius: 0; background: transparent; color: inherit; font: 700 12px/1.2 var(--lv-sans); cursor: pointer; }
+  .reading-block--change { background: var(--lv-acid); }
+  .reading-block--preserve { background: var(--lv-paper); }
+  .reading-block--flex { background: var(--lv-fuchsia); color: var(--lv-paper); }
+  .reading-block--verify { background: var(--lv-aubergine); color: var(--lv-paper); }
+  .reading-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; padding: 28px var(--lv-edge); background: var(--lv-aubergine); }
+  .reading-actions .lv-button { border: 0; }
+  .reading-boundary { margin: 0; padding: 0 var(--lv-edge) 32px; background: var(--lv-aubergine); color: var(--lv-lilac); font-size: 11px; }
 
-  /* ——— Positionnement DVF (hero) ——— */
-  .mr-pos-hero {
-    display: flex; flex-direction: column;
-    padding: 1.25rem 1.5rem; border-radius: 0; margin-bottom: 1rem;
-    background: #FFFFFF;
-    border: 1px solid rgba(36,60,255,0.14);
+  @media (max-width: 1040px) {
+    .demo-header { grid-template-columns: 1fr; }
+    .state-switcher { border-top: 1px solid var(--lv-aubergine); border-left: 0; overflow-x: auto; }
+    .research-shell { grid-template-columns: 1fr; }
+    .step-rail { min-height: auto; padding: 16px var(--lv-edge); border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .step-rail ol { display: grid; grid-template-columns: repeat(7, minmax(90px, 1fr)); overflow-x: auto; }
+    .step-rail li { min-height: 48px; display: block; padding-right: 14px; }
+    .step-rail li i { display: block; margin-top: 9px; }
+    .step-rail > p { display: none; }
   }
-  .mr-pos-badge {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #243CFF; margin-bottom: 0.4rem;
-  }
-  .mr-pos-row { display: flex; align-items: baseline; gap: 0.3rem; }
-  .mr-pos-val {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(2.2rem,5vw,3rem); line-height: 1;
-    letter-spacing: -0.025em; color: #111522;
-  }
-  .mr-pos-unit {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; font-weight: 500; color: #58615B;
-  }
-  .mr-pos-ctx {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-top: 0.35rem;
-  }
-
-  /* ——— Lecture de marché ——— */
-  .mr-carte {
-    background: #FFFFFF; border: 1px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: clamp(1.25rem,3vw,1.75rem); margin-bottom: 1.5rem;
-    box-shadow: none;
-  }
-  .mr-carte-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 1rem; letter-spacing: -0.01em; color: #111522; margin: 0 0 0.75rem;
-  }
-  .mr-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
-  .mr-stat {
-    padding: 0.6rem 0.75rem; background: #F2F5EF; border-radius: 0;
-  }
-  .mr-stat-v {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.25rem;
-    color: #111522; letter-spacing: -0.02em; display: block;
-  }
-  .mr-stat-l {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem;
-    color: #58615B; display: block; margin-top: 0.1rem;
-  }
-
-  /* ——— Règle de prix ——— */
-  .mr-regle { margin: 1rem 0 0.5rem; padding: 0 0.25rem; }
-  .mr-regle-piste {
-    position: relative; height: 12px; border-radius: 99px;
-    background: rgba(17,21,34,0.07); margin-bottom: 0.4rem;
-  }
-  .mr-regle-iqr {
-    position: absolute; top: 0; height: 100%;
-    background: rgba(36,60,255,0.22); border-radius: 99px;
-  }
-  .mr-regle-med {
-    position: absolute; top: -5px; bottom: -5px; width: 3px;
-    border-radius: 2px; background: #243CFF; transform: translateX(-50%);
-  }
-  .mr-regle-bud {
-    position: absolute; top: -7px; bottom: -7px; width: 4px;
-    border-radius: 2px; background: #111522; transform: translateX(-50%);
-  }
-  .mr-regle-bud::after {
-    content: attr(data-lbl); position: absolute; top: -24px; left: 50%;
-    transform: translateX(-50%); font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.72rem; font-weight: 600; color: #111522; white-space: nowrap;
-    background: #F2F5EF; padding: 1px 6px; border-radius: 0;
-    box-shadow: none;
-  }
-  .mr-regle-labs {
-    display: flex; justify-content: space-between;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.75rem; color: #58615B;
-  }
-
-  /* ——— Signaux ——— */
-  .mr-signal {
-    display: flex; align-items: flex-start; gap: 0.6rem;
-    padding: 0.75rem 1rem; border-radius: 0; margin-top: 0.75rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; line-height: 1.45;
-  }
-  .mr-signal.ok  { background: rgba(215,255,66,0.22); color: #111522; border: 1px solid #C9CEC8; }
-  .mr-signal.warn { background: rgba(36,60,255,0.08); color: #202635; border: 1px solid rgba(36,60,255,0.2); }
-  .mr-signal-ico { flex: 0 0 auto; margin-top: 1px; }
-
-  /* ——— Tension / conséquences ——— */
-  .mr-tension-intro {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
-    line-height: 1.5; color: #58615B; margin: 0 0 1.5rem;
-    padding: 0.75rem 1rem; background: rgba(36,60,255,0.05);
-    border-left: 1px solid #243CFF; border-radius: 0;
-  }
-  .mr-chemin {
-    background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: 1.1rem 1.25rem; margin-bottom: 0.75rem; cursor: pointer;
-    transition: border-color 0.18s ease, background 0.18s ease; text-align: left;
-    font-family: inherit; width: 100%;
-  }
-  .mr-chemin:hover { border-color: rgba(36,60,255,0.3); box-shadow: none; }
-  .mr-chemin.actif { border-color: #243CFF; background: rgba(36,60,255,0.03); }
-  .mr-ch-titre { font-family:'Public Sans',system-ui,sans-serif; font-size:0.96rem; font-weight:700; color:#111522; margin:0 0 0.5rem; }
-  .mr-ch-plus  { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:#243CFF; margin:0 0 0.2rem; }
-  .mr-ch-moins { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:#58615B; margin:0 0 0.2rem; }
-  .mr-ch-txt   { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; margin:0 0 0.4rem; }
-
-  /* ——— Relecture ——— */
-  .mr-relecture {
-    background: #FFFFFF; border: 1px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: clamp(1.25rem,3vw,2rem); margin-bottom: 1.5rem;
-    box-shadow: none;
-  }
-  .mr-rel-header { margin-bottom: 0.9rem; }
-  .mr-rel-eyebrow {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #58615B; margin: 0;
-  }
-  .mr-rel-body {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 0.5rem;
-  }
-  .mr-rel-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 1rem; color: #111522; margin: 0 0 0.75rem; letter-spacing: -0.01em;
-  }
-  .mr-rel-liste { list-style: none; padding: 0; margin: 0 0 0.5rem; }
-  .mr-rel-liste li {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem; color: #111522;
-    padding: 0.3rem 0 0.3rem 1.25rem; position: relative;
-  }
-  .mr-rel-liste li::before { content: '•'; position: absolute; left: 0; color: #243CFF; }
-  .mr-sep { border: none; border-top: 1px solid rgba(17,21,34,0.07); margin: 1rem 0; }
-  .mr-rel-flex-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem; font-weight: 600;
-    color: #58615B; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.5rem;
-  }
-  .mr-rel-note {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5;
-    color: #58615B; margin-top: 1rem; padding-top: 0.75rem;
-    border-top: 1px solid rgba(17,21,34,0.07); font-style: italic;
-  }
-
-  /* ——— Priorités — jauge ——— */
-  .mr-slot-track {
-    display: flex; gap: 6px; margin-bottom: 0.85rem; align-items: center;
-  }
-  .mr-slot {
-    height: 6px; width: 32px; border-radius: 99px; background: rgba(17,21,34,0.1);
-    transition: background 0.25s cubic-bezier(0.22,1,0.36,1);
-  }
-  .mr-slot--filled { background: #243CFF; }
-  .mr-pr-cpt {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-bottom: 1rem;
-  }
-  .mr-pr-cpt span { color: #243CFF; font-weight: 600; }
-
-  /* ——— Contact ——— */
-  .mr-cg { margin-bottom: 1.25rem; }
-  .mr-ci {
-    width: 100%; box-sizing: border-box; padding: 0.875rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522;
-    background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    outline: none; transition: border-color 0.18s ease, outline-color 0.18s ease;
-    -webkit-appearance: none; appearance: none;
-  }
-  .mr-ci:focus { border-color: #243CFF; outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none; }
-  .mr-ci-ta { min-height: 90px; resize: vertical; }
-  .mr-ci-aide { font-family:'Public Sans',system-ui,sans-serif; font-size:0.82rem; color:#58615B; margin-top:0.35rem; }
-  .mr-consent { display:flex; align-items:flex-start; gap:0.65rem; margin:1.25rem 0; }
-  .mr-consent input[type=checkbox] { margin-top:3px; flex:0 0 auto; accent-color:#243CFF; width:16px; height:16px; cursor:pointer; }
-  .mr-consent-lbl { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; }
-  .mr-hp { display:none !important; }
-  .mr-erreur {
-    background: rgba(36,60,255,0.07); border-left: 1px solid #243CFF;
-    border-radius: 0; padding: 0.75rem 1rem; margin-top: 0.75rem;
-    font-family:'Public Sans',system-ui,sans-serif; font-size:0.88rem; line-height:1.5; color:#202635;
-  }
-
-  /* ——— Conclusion ——— */
-  .mr-conc-done {
-    width: 48px; height: 48px; border-radius: 50%; background: #243CFF;
-    display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;
-  }
-  .mr-conc-pivot {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.3rem,4vw,1.75rem); line-height: 1.32;
-    color: #111522; letter-spacing: -0.015em; margin: 1rem 0 1.5rem;
-  }
-  .mr-conc-corps {
-    font-family:'Public Sans',system-ui,sans-serif; font-size:1rem; line-height:1.65;
-    color:#58615B; margin:0 0 1.25rem;
-  }
-  .mr-conc-liens { display:flex; flex-direction:column; gap:0.5rem; margin-top:1.5rem; }
-  .mr-lien {
-    display:inline-flex; align-items:center; gap:0.65rem;
-    font-family:'Public Sans',system-ui,sans-serif; font-size:0.98rem; font-weight:500;
-    color:#202635; text-decoration:none; padding:0.5rem 0;
-    border-bottom:1px solid rgba(17,21,34,0.08);
-    transition:color 0.15s ease, border-color 0.15s ease;
-  }
-  .mr-lien:hover { color:#243CFF; border-color:rgba(36,60,255,0.3); }
-  .mr-lien svg { color:#58615B; flex:0 0 auto; }
-  .mr-lien:hover svg { color:#243CFF; }
-  .mr-lien b { font-weight:600; }
-
-  /* ——— Spinner ——— */
-  .mr-spin {
-    display:inline-block; width:16px; height:16px;
-    border:2px solid rgba(255,255,255,0.4); border-top-color:#FFFFFF;
-    border-radius:50%; animation:mr-tour 0.7s linear infinite;
-  }
-  @keyframes mr-tour { to { transform:rotate(360deg); } }
-
-  /* ——— Responsive ——— */
-  @media (max-width:500px) {
-    .mr-grille-2 { grid-template-columns:1fr; }
-    .mr-stats { grid-template-columns:1fr; }
-    .mr-rel-body { grid-template-columns:1fr; }
-  }
-  @media (prefers-reduced-motion:reduce) {
-    .mr-ecran-int { animation:none; }
-    .mr-barre, .mr-btn, .mr-btn svg, .mr-choix, .mr-choix::before, .mr-chemin, .mr-pas, .mr-slot { animation:none; transition:none; }
+  @media (max-width: 760px) {
+    .demo-header > div { display: block; padding-block: 18px; }
+    .demo-header p { margin-bottom: 8px; }
+    .state-switcher { grid-template-columns: repeat(5, minmax(118px, 1fr)); }
+    .opening-panel, .question-panel form, .translator-panel, .tradeoff-panel form, .reading-header { grid-template-columns: 1fr; }
+    .opening-copy, fieldset { border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .opening-copy ul { grid-template-columns: 1fr; }
+    .opening-copy li { min-height: 54px; border-right: 0; border-bottom: 1px solid var(--lv-aubergine); }
+    .opening-copy li:last-child { border-bottom: 0; }
+    .opening-map span { min-height: 120px; }
+    .question-context { align-items: flex-start; gap: 10px; }
+    .question-context span:last-child { text-align: right; }
+    .question-panel .inline-translator { min-height: 280px; }
+    .question-panel .lv-button, .tradeoff-panel .lv-button { margin-inline: var(--lv-edge); }
+    .translator-source, .translator-reading { min-height: 310px; }
+    .translator-line { min-height: 90px; border-block: 1px solid rgba(245,242,232,.34); border-inline: 0; }
+    .translator-line::before { inset: 50% 15% auto; width: auto; height: 1px; }
+    .translator-line i { top: calc(50% - 6px) !important; bottom: auto !important; left: auto; }
+    .translator-line i:nth-child(1) { left: 15%; } .translator-line i:nth-child(2) { left: 49%; } .translator-line i:nth-child(3) { right: 15%; }
+    .translator-actions { grid-template-columns: 1fr; }
+    .tradeoff-axis { grid-template-columns: 1fr; }
+    .tradeoff-axis label { min-height: 170px; }
+    .axis-junction { min-height: 70px; }
+    .axis-junction::before { top: 0; bottom: 0; left: 50%; right: auto; width: 1px; height: auto; }
+    .reading-grid, .reading-actions { grid-template-columns: 1fr; }
+    .reading-block { min-height: 290px; border-right: 0; }
+    .reading-header { align-items: start; }
   }
 </style>
 
-<script define:vars={{ _tel: site.phone, _telD: site.phoneDisplay, _email: site.email }}>
-  window.__LV = { tel: _tel, telD: _telD, email: _email };
-</script>
-
 <script>
-  // ——— Types ———
-  interface Tx {
-    id:string; d:string; v:number; t:string; lat:number; lon:number;
-    sb:number; p:number; st?:number; lots?:number; co?:string; cp?:string;
-  }
-  interface LM {
-    n:number; nParAn:number; q1:number; median:number; q3:number;
-    budgetPPM2:number; surfaceAuMedian:number;
-    position:'sous_q1'|'q1_q3'|'au_dessus_q3';
-  }
-  interface Etat {
-    step:number; situation:string|null; type:string|null;
-    secteurContraint:boolean|null; secteur:string|null;
-    budget:number|null; surface:number|null; preserves:string[];
-    decisionTension:string|null; lecture:LM|null;
-    prenom:string; contact:string; commentaire:string;
-    src:string;
-  }
-
-  // ——— Constantes ———
-  const PRIORITES = [
-    { id:'localisation', label:'La localisation',       output:'la localisation',        desc:'Secteur, proximité, ancrage géographique' },
-    { id:'surface',      label:"L'espace habitable",    output:"l'espace habitable",     desc:'Surface, volume, nombre de pièces' },
-    { id:'cadre',        label:'Le cadre de vie',       output:'le cadre de vie',        desc:'Jardin, extérieur, calme, environnement' },
-    { id:'etat',         label:"L'état du bien",        output:"l'état du bien",         desc:'Peu ou pas de travaux, emménagement facile' },
-    { id:'delai',        label:'La rapidité',           output:'la rapidité',            desc:'Trouver vite, disponibilité rapide' },
-    { id:'budget',       label:'La maîtrise du budget', output:'la maîtrise du budget',  desc:'Budget respecté, pas de dépassement' },
-  ] as const;
-  const SITUATIONS = [
-    { id:'premier',       label:'Premier achat',              desc:'Je deviens propriétaire pour la première fois' },
-    { id:'agrandissement',label:'Agrandissement',             desc:"La famille s'agrandit, nous avons besoin de plus d'espace" },
-    { id:'cadre',         label:'Changement de cadre de vie', desc:'Nouvelle étape, nouveau cadre' },
-    { id:'invest',        label:'Investissement locatif',     desc:'Pour louer et construire un patrimoine' },
-    { id:'rapprochement', label:'Rapprochement',              desc:'Pour être plus proche — famille, emploi, services' },
-    { id:'autre',         label:'Autre situation',            desc:'Mon projet est différent' },
-  ];
-  const TOTAL = 11;
-  const eur = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
-  const num = new Intl.NumberFormat('fr-FR');
-
-  // ——— État ———
-  const E: Etat = {
-    step:0, situation:null, type:null, secteurContraint:null, secteur:null,
-    budget:null, surface:null, preserves:[], decisionTension:null, lecture:null,
-    prenom:'', contact:'', commentaire:'',
-    src: new URLSearchParams(window.location.search).get('src')??'',
+  const demo = document.querySelector<HTMLElement>('[data-research-demo]');
+  const stateButtons = [...document.querySelectorAll<HTMLButtonElement>('[data-state-button]')];
+  const statePanels = [...document.querySelectorAll<HTMLElement>('[data-state-panel]')];
+  const progressLabel = document.querySelector<HTMLElement>('[data-progress-label]');
+  const progressDetail = document.querySelector<HTMLElement>('[data-progress-detail]');
+  const railSteps = [...document.querySelectorAll<HTMLElement>('[data-rail-step]')];
+  const stateMeta: Record<string, { label: string; detail: string; step: number }> = {
+    opening: { label: 'Ouverture', detail: 'Comprendre le cadre', step: 1 },
+    question: { label: 'Question ordinaire', detail: 'Usage avant typologie', step: 4 },
+    translator: { label: 'Traducteur en direct', detail: 'Ce que la réponse change', step: 4 },
+    tradeoff: { label: 'Arbitrage utile', detail: 'Choisir une vérification', step: 6 },
+    reading: { label: 'Première lecture', detail: 'Quatre blocs corrigeables', step: 7 },
   };
 
-  // ——— DVF ———
-  let dvf: Tx[]|null = null;
-  let dvfP: Promise<Tx[]>|null = null;
-  function loadDvf(): Promise<Tx[]> {
-    if (dvf) return Promise.resolve(dvf);
-    if (dvfP) return dvfP;
-    dvfP = fetch('/data/dvf-secteur.json').then(r=>r.json()).then((d:Tx[])=>{ dvf=d; return d; });
-    return dvfP;
+  function activateState(state: string, focusPanel = true) {
+    const meta = stateMeta[state] ?? stateMeta.opening;
+    if (demo) demo.dataset.currentState = state;
+    stateButtons.forEach((button) => {
+      const active = button.dataset.stateButton === state;
+      button.setAttribute('aria-selected', String(active));
+      button.tabIndex = active ? 0 : -1;
+    });
+    statePanels.forEach((panel) => { panel.hidden = panel.dataset.statePanel !== state; });
+    railSteps.forEach((step) => step.classList.toggle('is-current', Number(step.dataset.railStep) === meta.step));
+    if (progressLabel) progressLabel.textContent = meta.label;
+    if (progressDetail) progressDetail.textContent = meta.detail;
+    if (focusPanel) document.querySelector<HTMLElement>(`[data-state-panel="${state}"]`)?.focus({ preventScroll: true });
   }
 
-  function analyser(data:Tx[], type:string|null, secteur:string|null, budget:number, surface:number): LM {
-    const propre = data.filter(t=>!t.lots||t.lots<=1);
-    const parType = (!type||type==='Indifferent') ? propre : propre.filter(t=>t.t===type);
-    const parZone = secteur==='chartres' ? parType.filter(t=>t.co==='Chartres') : parType;
-    const ppms = parZone.filter(t=>t.sb>0&&t.v>0).map(t=>t.v/t.sb).sort((a,b)=>a-b);
-    const n = parZone.length;
-    const q = (p:number) => {
-      if (!ppms.length) return 0;
-      const idx=(ppms.length-1)*p, lo=Math.floor(idx), hi=Math.ceil(idx);
-      return lo===hi?ppms[lo]:ppms[lo]*(hi-idx)+ppms[hi]*(idx-lo);
-    };
-    const q1=Math.round(q(0.25)), median=Math.round(q(0.5)), q3=Math.round(q(0.75));
-    const budgetPPM2 = surface>0 ? Math.round(budget/surface) : 0;
-    const surfaceAuMedian = median>0 ? Math.round(budget/median) : 0;
-    const position: LM['position'] = budgetPPM2<q1 ? 'sous_q1' : budgetPPM2>q3 ? 'au_dessus_q3' : 'q1_q3';
-    return { n, nParAn:Math.round(n/5), q1, median, q3, budgetPPM2, surfaceAuMedian, position };
-  }
+  stateButtons.forEach((button, index) => {
+    button.addEventListener('click', () => activateState(button.dataset.stateButton ?? 'opening', false));
+    button.addEventListener('keydown', (event) => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      let next = index;
+      if (event.key === 'ArrowRight') next = (index + 1) % stateButtons.length;
+      if (event.key === 'ArrowLeft') next = (index - 1 + stateButtons.length) % stateButtons.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = stateButtons.length - 1;
+      stateButtons[next]?.focus();
+      activateState(stateButtons[next]?.dataset.stateButton ?? 'opening', false);
+    });
+  });
 
-  // ——— Utilitaires ———
-  const lv = () => (window as any).__LV || {};
-  const flexibles = () => PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.id);
-  const zoneLbl = () => E.secteur==='chartres' ? 'Chartres intramuros' : 'la zone chartraine';
-  const typeLbl = () => E.type==='Maison' ? 'maison' : E.type==='Appartement' ? 'appartement' : 'bien';
-  const ICO_ARR = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  let autoTimer: number | undefined;
+  document.querySelectorAll<HTMLButtonElement>('[data-go-state]').forEach((button) => {
+    button.addEventListener('click', () => activateState(button.dataset.goState ?? 'opening', false));
+  });
 
-  function autoAdvance(n:number) {
-    if(autoTimer) window.clearTimeout(autoTimer);
-    const delay=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:180;
-    autoTimer=window.setTimeout(()=>{ autoTimer=undefined; avancer(n); },delay);
-  }
+  const usageForm = document.querySelector<HTMLFormElement>('[data-usage-form]');
+  const usageContinue = document.querySelector<HTMLButtonElement>('[data-needs-usage]');
+  const inlineTranslator = document.querySelector<HTMLElement>('[data-inline-translator] p');
+  let selectedUsage = 'Travailler ou étudier';
 
-  // Indicateur de progression — points
-  function pas(n: number): string {
-    return `<div class="mr-passos" aria-hidden="true">${
-      Array.from({length:10},(_,i)=>`<span class="mr-pas${i<n-1?' mr-pas-done':i===n-1?' mr-pas-cur':''}"></span>`).join('')
-    }</div>`;
+  function renderUsage(value: string) {
+    selectedUsage = value;
+    document.querySelectorAll<HTMLElement>('[data-usage-output]').forEach((element) => { element.textContent = value; });
+    document.querySelectorAll<HTMLElement>('[data-usage-lower]').forEach((element) => { element.textContent = value.toLocaleLowerCase('fr-FR'); });
+    if (inlineTranslator) inlineTranslator.innerHTML = `Vous avez relié le projet à un usage concret : <strong>${value}</strong>. Cela n’impose ni pièce, ni surface, ni typologie.`;
+    if (usageContinue) usageContinue.disabled = false;
   }
+  usageForm?.addEventListener('change', () => {
+    const value = new FormData(usageForm).get('usage');
+    if (typeof value === 'string') renderUsage(value);
+  });
 
-  // ——— Barre + navigation ———
-  function avancer(n:number) {
-    E.step=n;
-    const b=document.getElementById('mr-barre');
-    if(b){ const p=n<=0?0:Math.round((n/TOTAL)*100); b.style.width=p+'%'; b.setAttribute('aria-valuenow',String(p)); }
-    const ret=document.getElementById('mr-retour');
-    if(ret) ret.hidden=n<=0||n>=TOTAL;
-    render(n);
-    window.scrollTo(0,0);
-  }
-  function reculer() {
-    if(autoTimer) { window.clearTimeout(autoTimer); autoTimer=undefined; }
-    if(E.step<=0) return;
-    let prev=E.step-1;
-    if(prev===8&&(!E.lecture||E.lecture.position!=='sous_q1')) prev=7;
-    avancer(prev);
-  }
-
-  // ——— Rendu ———
-  function render(s:number) {
-    const c=document.getElementById('mr-ecran'); if(!c) return;
-    c.innerHTML='';
-    const w=document.createElement('div'); w.className='mr-ecran-int';
-    w.innerHTML=html(s); c.appendChild(w);
-    bind(s,w);
-  }
-
-  function html(s:number): string {
-    switch(s){
-      case 0:  return h0();
-      case 1:  return h1();
-      case 2:  return h2();
-      case 3:  return h3();
-      case 4:  return h4();
-      case 5:  return h5();
-      case 6:  return h6();
-      case 7:  return h7();
-      case 8:  return h8();
-      case 9:  return h9();
-      case 10: return h10();
-      case 11: return h11();
-      default: return '';
+  const tradeoffForm = document.querySelector<HTMLFormElement>('[data-tradeoff-form]');
+  const tradeoffContinue = document.querySelector<HTMLButtonElement>('[data-needs-tradeoff]');
+  const flexTitle = document.querySelector<HTMLElement>('[data-flex-title]');
+  const flexCopy = document.querySelector<HTMLElement>('[data-flex-copy]');
+  tradeoffForm?.addEventListener('change', () => {
+    const choice = new FormData(tradeoffForm).get('tradeoff');
+    if (tradeoffContinue) tradeoffContinue.disabled = false;
+    if (choice === 'preserve') {
+      if (flexTitle) flexTitle.textContent = 'Tester plusieurs organisations avant de déplacer le repère géographique.';
+      if (flexCopy) flexCopy.textContent = 'Vous préservez d’abord les trajets actuels. Ce compromis reste à tester, pas à adopter.';
+    } else if (choice === 'change') {
+      if (flexTitle) flexTitle.textContent = `Tester un autre repère géographique pour mieux faire fonctionner : ${selectedUsage.toLocaleLowerCase('fr-FR')}.`;
+      if (flexCopy) flexCopy.textContent = 'Vous priorisez l’usage tout en vérifiant que les trajets restent praticables.';
+    } else {
+      if (flexTitle) flexTitle.textContent = 'Aucun assouplissement n’est conclu pour l’instant.';
+      if (flexCopy) flexCopy.textContent = 'L’information manquante rejoint les vérifications, sans rendre un critère flexible.';
     }
-  }
-
-  // ——— Écrans HTML ———
-  function h0() {
-    return `
-      <p class="mr-kicker">LEVOIS · Parcours acquéreur</p>
-      <h1 class="mr-titre-xl">Votre recherche doit devenir une stratégie.</h1>
-      <p class="mr-lede">Ce parcours confronte budget, surface, secteur et priorités aux ventes réellement enregistrées. Vous obtenez une première lecture avant de transmettre la moindre coordonnée.</p>
-      <p class="mr-lede">À la fin, le site vous dira clairement ce qu’il peut conclure et ce qui exige encore un échange. Si vous choisissez de poursuivre, Mouaad partira de cette synthèse pour construire la stratégie avec vous.</p>
-      <p class="mr-lede-s">Gratuit · aucune coordonnée demandée avant votre première lecture.</p>
-      <div class="mr-actions"><button class="mr-btn" id="mr-start">Commencer ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h1() {
-    return `
-      ${pas(1)}
-      <p class="mr-kicker">Étape 1 sur 10</p>
-      <h2 class="mr-question">Qu'est-ce qui vous amène à chercher aujourd'hui&nbsp;?</h2>
-      <p class="mr-sous-q">Ce contexte aide Mouaad à comprendre votre projet avant même de vous rencontrer.</p>
-      <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
-      <div class="mr-grille" id="mr-sits">
-        ${SITUATIONS.map(s=>`<button class="mr-choix${E.situation===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
-      </div>
-    `;
-  }
-
-  function h2() {
-    const types=[
-      {id:'Maison',     label:'Une maison',                desc:'Avec ou sans jardin, individuelle ou de ville'},
-      {id:'Appartement',label:'Un appartement',             desc:'En immeuble, du studio au grand format'},
-      {id:'Indifferent',label:"Les deux m'intéressent",    desc:'Je suis ouvert selon les biens'},
-    ];
-    return `
-      ${pas(2)}
-      <p class="mr-kicker">Étape 2 sur 10</p>
-      <h2 class="mr-question">Quel type de bien recherchez-vous&nbsp;?</h2>
-      <p class="mr-sous-q">Ce choix oriente la lecture des données du marché chartrain.</p>
-      <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
-      <div class="mr-grille mr-grille-2" id="mr-types">
-        ${types.map(t=>`<button class="mr-choix${E.type===t.id?' actif':''}" data-id="${t.id}"><span class="mr-choix-lbl">${t.label}</span><span class="mr-choix-desc">${t.desc}</span></button>`).join('')}
-      </div>
-    `;
-  }
-
-  function h3() {
-    const sub = E.secteurContraint===true ? `
-      <p class="mr-sous-q" style="margin-top:0.25rem">Dans quel secteur prioritairement&nbsp;?</p>
-      <div class="mr-grille mr-grille-2" id="mr-sects">
-        ${[{id:'chartres',label:'Chartres intramuros',desc:'La ville de Chartres'},{id:'tout',label:"L'ensemble de la zone",desc:'Lèves, Mainvilliers, Lucé, Champhol, Le Coudray, Luisant et Chartres'}].map(s=>`<button class="mr-choix${E.secteur===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
-      </div>` : '';
-    return `
-      ${pas(3)}
-      <p class="mr-kicker">Étape 3 sur 10</p>
-      <h2 class="mr-question">Votre secteur est-il défini par une contrainte précise&nbsp;?</h2>
-      <p class="mr-sous-q">Proximité école, travail, famille — ou liberté selon les biens.</p>
-      <p class="mr-auto-hint">Un choix suffit · si le secteur est précis, une seconde question apparaît.</p>
-      <div class="mr-grille" id="mr-cont">
-        <button class="mr-choix${E.secteurContraint===true?' actif':''}" data-id="oui"><span class="mr-choix-lbl">Oui, j'ai un secteur précis</span><span class="mr-choix-desc">Une contrainte géographique oriente ma recherche</span></button>
-        <button class="mr-choix${E.secteurContraint===false?' actif':''}" data-id="non"><span class="mr-choix-lbl">Je suis ouvert au secteur</span><span class="mr-choix-desc">Je choisis selon les biens, sans ancrage fixe</span></button>
-      </div>
-      ${sub}
-    `;
-  }
-
-  function h4() {
-    return `
-      ${pas(4)}
-      <p class="mr-kicker">Étape 4 sur 10</p>
-      <h2 class="mr-question">Quel est votre budget global&nbsp;?</h2>
-      <p class="mr-sous-q">Le montant que vous ne dépasserez pas — frais de notaire et éventuels travaux inclus, quelles que soient les circonstances.</p>
-      <div class="mr-saisie">
-        <label class="mr-label" for="mr-bgt">Budget total</label>
-        <div class="mr-input-wrap">
-          <input id="mr-bgt" type="number" inputmode="numeric" class="mr-input" placeholder="280 000" value="${E.budget??''}" min="1" max="9999999"/>
-          <span class="mr-input-unite">€</span>
-        </div>
-        <p class="mr-input-aide">Votre budget sera positionné dans la distribution des prix réels du marché chartrain.</p>
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.budget?'disabled':''}>Continuer ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h5() {
-    return `
-      ${pas(5)}
-      <p class="mr-kicker">Étape 5 sur 10</p>
-      <h2 class="mr-question">Quelle surface habitable visez-vous&nbsp;?</h2>
-      <p class="mr-sous-q">La surface minimale qui correspondrait à votre projet de vie. Pas l'idéal — le minimum acceptable.</p>
-      <div class="mr-saisie">
-        <label class="mr-label" for="mr-surf">Surface minimale souhaitée</label>
-        <div class="mr-input-wrap">
-          <input id="mr-surf" type="number" inputmode="numeric" class="mr-input" placeholder="80" value="${E.surface??''}" min="1" max="1000"/>
-          <span class="mr-input-unite">m²</span>
-        </div>
-        <p class="mr-input-aide">Cette surface croisée avec votre budget révèle votre position réelle dans le marché.</p>
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.surface?'disabled':''}>Voir la lecture de marché ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h6() {
-    if(!E.lecture) return `<p class="mr-lede">Chargement des données…</p>`;
-    const l=E.lecture;
-    const zlbl = E.secteur==='chartres'?'Chartres intramuros':'la zone chartraine';
-    const tlbl = E.type==='Maison'?'maisons':E.type==='Appartement'?'appartements':'biens';
-    // Règle de prix
-    const rangeTotal=l.q3*1.25-l.q1*0.8, base=l.q1*0.8;
-    const pct=(v:number)=>Math.max(0,Math.min(100,((v-base)/rangeTotal)*100)).toFixed(1);
-    const iL=pct(l.q1), iW=(((l.q3-l.q1)/rangeTotal)*100).toFixed(1), mP=pct(l.median), bP=pct(l.budgetPPM2);
-    let signal='';
-    if(l.position==='sous_q1') signal=`<div class="mr-signal warn"><span class="mr-signal-ico">⚠</span><span>Votre budget rapporté à ${num.format(E.surface!)} m² correspond à ${num.format(l.budgetPPM2)} €/m² — en dessous du premier quartile des prix constatés. Le marché offre typiquement ${num.format(l.surfaceAuMedian)} m² pour ${eur.format(E.budget!)} dans cette zone. La prochaine étape explore ce que cela implique.</span></div>`;
-    else if(l.position==='q1_q3') signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget est cohérent avec les prix constatés. À ${num.format(l.budgetPPM2)} €/m², vous êtes dans la fourchette centrale du marché.</span></div>`;
-    else signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget vous positionne dans le quartile supérieur. À ${num.format(l.budgetPPM2)} €/m², vous dépassez 75 % des prix constatés dans cette zone sur les cinq dernières années.</span></div>`;
-    return `
-      ${pas(6)}
-      <p class="mr-kicker">Étape 6 sur 10</p>
-      <h2 class="mr-question">Ce que le marché dit de votre projet</h2>
-      <p class="mr-sous-q">Données issues des DVF — transactions réellement enregistrées dans la zone.</p>
-      <div class="mr-pos-hero">
-        <span class="mr-pos-badge">Votre position dans le marché</span>
-        <div class="mr-pos-row">
-          <span class="mr-pos-val">${num.format(l.budgetPPM2)}</span>
-          <span class="mr-pos-unit">€/m²</span>
-        </div>
-        <p class="mr-pos-ctx">Budget de ${eur.format(E.budget!)} pour ${num.format(E.surface!)} m² dans ${zlbl}</p>
-      </div>
-      <div class="mr-carte">
-        <p class="mr-carte-titre">Marché des ${tlbl} · ${zlbl}</p>
-        <div class="mr-stats">
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.n)}</span><span class="mr-stat-l">transactions sur 5 ans</span></div>
-          <div class="mr-stat"><span class="mr-stat-v">~${num.format(l.nParAn)}</span><span class="mr-stat-l">ventes par an</span></div>
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.q1)} – ${num.format(l.q3)}</span><span class="mr-stat-l">fourchette centrale (€/m²)</span></div>
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.median)}</span><span class="mr-stat-l">repère central (€/m²)</span></div>
-        </div>
-        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.82rem;color:#58615B;margin:0 0 0.5rem">La moitié des ventes se situe entre ${num.format(l.q1)} et ${num.format(l.q3)} €/m².</p>
-        <div class="mr-regle">
-          <div class="mr-regle-piste">
-            <div class="mr-regle-iqr" style="left:${iL}%;width:${iW}%"></div>
-            <div class="mr-regle-med" style="left:${mP}%"></div>
-            <div class="mr-regle-bud" style="left:${bP}%" data-lbl="Votre budget"></div>
-          </div>
-          <div class="mr-regle-labs"><span>${num.format(l.q1)} €/m²</span><span>Médiane ${num.format(l.median)}</span><span>${num.format(l.q3)} €/m²</span></div>
-        </div>
-        ${signal}
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Définir mes priorités ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h7() {
-    const c=E.preserves.length;
-    return `
-      ${pas(7)}
-      <p class="mr-kicker">Étape 7 sur 10</p>
-      <h2 class="mr-question">Ce que vous souhaitez préserver en priorité</h2>
-      <p class="mr-sous-q">Sélectionnez 1 à 3 éléments. Ce que vous ne sélectionnez pas restera flexible dans la recherche.</p>
-      <div class="mr-slot-track" id="mr-slots" aria-hidden="true">
-        <span class="mr-slot${c>=1?' mr-slot--filled':''}"></span>
-        <span class="mr-slot${c>=2?' mr-slot--filled':''}"></span>
-        <span class="mr-slot${c>=3?' mr-slot--filled':''}"></span>
-      </div>
-      <p class="mr-pr-cpt"><span id="mr-prc">${c}</span> / 3 sélectionné${c>1?'s':''}</p>
-      <div class="mr-grille${c>=3?' mr-grille--max':''}" id="mr-prs">
-        ${PRIORITES.map(p=>`<button class="mr-choix${E.preserves.includes(p.id)?' actif':''}" data-id="${p.id}"><span class="mr-choix-lbl">${p.label}</span><span class="mr-choix-desc">${p.desc}</span></button>`).join('')}
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${c===0?'disabled':''}>Continuer ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h8() {
-    if(!E.lecture) return h9();
-    const l=E.lecture;
-    const bN=Math.round(E.surface!*l.median), delta=E.surface!-l.surfaceAuMedian;
-    const chemins=[
-      {id:'localisation',titre:'Si vous préservez la localisation',
-       plus:`Votre ancrage géographique, votre quotidien, vos habitudes.`,
-       moins:`${delta>0?num.format(Math.abs(delta))+' m² en moyenne':''} — le marché offre typiquement ${num.format(l.surfaceAuMedian)} m² pour ${eur.format(E.budget!)} dans ${zoneLbl()}.`},
-      {id:'surface',titre:'Si vous préservez la surface',
-       plus:`L'espace de vie que vous imaginez pour votre projet — ${num.format(E.surface!)} m².`,
-       moins:`Peut-être votre secteur le plus précis. Un ${typeLbl()} de ${num.format(E.surface!)} m² dans cette zone correspond à un budget autour de ${eur.format(bN)}.`},
-      {id:'les_deux',titre:'Si vous tenez les deux',
-       plus:`La qualité complète de votre projet, sans transiger.`,
-       moins:`La facilité et le délai. Ce profil existe dans la zone mais se présente moins fréquemment — cela demande du temps et une réactivité forte lorsqu'un bien arrive.`},
-    ];
-    return `
-      ${pas(8)}
-      <p class="mr-kicker">Étape 8 sur 10</p>
-      <h2 class="mr-question">Une décision à prendre</h2>
-      <p class="mr-tension-intro">Votre budget, rapporté à votre surface cible, vous positionne en dessous du premier quartile des prix constatés dans ${zoneLbl()}. Ce n'est pas un obstacle — c'est une réalité à arbitrer. Trois chemins existent. Chacun a un prix.</p>
-      <p class="mr-auto-hint">Choisissez un chemin pour afficher directement votre synthèse.</p>
-      <div id="mr-chem">
-        ${chemins.map(c=>`
-          <button class="mr-chemin${E.decisionTension===c.id?' actif':''}" data-id="${c.id}">
-            <p class="mr-ch-titre">${c.titre}</p>
-            <p class="mr-ch-plus">Ce que vous choisissez :</p><p class="mr-ch-txt">${c.plus}</p>
-            <p class="mr-ch-moins">Ce à quoi vous renoncez :</p><p class="mr-ch-txt">${c.moins}</p>
-          </button>`).join('')}
-      </div>
-      <div class="mr-actions" style="margin-top:1.25rem">
-        <button class="mr-btn-ghost" id="mr-pass">Passer cette étape</button>
-      </div>
-    `;
-  }
-
-  function h9() {
-    const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
-    const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
-    const decMap:Record<string,string>={
-      localisation:'Préserver la localisation, accepter une surface adaptée au marché',
-      surface:'Préserver la surface, explorer une zone plus large si nécessaire',
-      les_deux:'Tenir les deux — recherche plus longue, réactivité forte',
-    };
-    const decHtml=E.decisionTension?`<hr class="mr-sep"/><p class="mr-rel-flex-lbl">Décision prise</p><p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${decMap[E.decisionTension]??''}</p>`:'';
-    const arb=E.decisionTension==='les_deux'?`<hr class="mr-sep"/><p class="mr-rel-flex-lbl">Arbitrage ouvert</p><p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0">La tension budget / surface reste à clarifier avec Mouaad — notamment la capacité éventuelle de travaux.</p>`:'';
-    return `
-      ${pas(9)}
-      <p class="mr-kicker">Étape 9 sur 10</p>
-      <h2 class="mr-question">Votre manière de décider</h2>
-      <p class="mr-sous-q">Voici ce que les données et vos choix permettent déjà de comprendre. Vous pouvez reculer pour corriger.</p>
-      <div class="mr-relecture">
-        <div class="mr-rel-header">
-          <p class="mr-rel-eyebrow">Synthèse de votre parcours</p>
-        </div>
-        <div class="mr-rel-body">
-          <div>
-            <p class="mr-rel-titre">Vous avez choisi de préserver en priorité :</p>
-            <ul class="mr-rel-liste">${pL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
-          </div>
-          <div>
-            <p class="mr-rel-flex-lbl">Flexible sur</p>
-            <ul class="mr-rel-liste">${fL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
-          </div>
-        </div>
-        ${decHtml}${arb}
-        <p class="mr-rel-note"><strong>Le calcul s’arrête ici.</strong> Le terrain, les biens disponibles, votre capacité réelle à arbitrer et le bon rythme de recherche exigent maintenant un regard humain.</p>
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Passer à l’analyse personnalisée ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h10() {
-    return `
-      ${pas(10)}
-      <p class="mr-kicker">Étape 10 sur 10</p>
-      <h2 class="mr-question">Transformer cette lecture en stratégie&nbsp;?</h2>
-      <p class="mr-sous-q">Mouaad recevra toute votre synthèse. Lors de l’échange, il pourra confronter vos choix aux biens disponibles, expliquer les scénarios possibles et vous laisser décider en connaissance de cause.</p>
-      <form id="mr-form" novalidate autocomplete="off">
-        <input type="text" name="site_web" class="mr-hp" tabindex="-1" aria-hidden="true" autocomplete="off"/>
-        <div class="mr-cg">
-          <label class="mr-label" for="mr-prenom">Prénom</label>
-          <input id="mr-prenom" name="prenom" type="text" class="mr-ci" placeholder="Votre prénom" value="${E.prenom}" autocomplete="given-name" required/>
-        </div>
-        <div class="mr-cg">
-          <label class="mr-label" for="mr-contact">Téléphone ou e-mail</label>
-          <input id="mr-contact" name="contact" type="text" class="mr-ci" placeholder="07 XX XX XX XX ou nom@exemple.fr" value="${E.contact}"/>
-          <p class="mr-ci-aide">L'un ou l'autre suffit pour que Mouaad vous recontacte.</p>
-        </div>
-        <div class="mr-cg">
-          <label class="mr-label" for="mr-comm">Un mot sur votre projet <span style="color:#58615B;font-weight:400">(facultatif)</span></label>
-          <textarea id="mr-comm" name="commentaire" class="mr-ci mr-ci-ta" placeholder="Précision, délai, question…">${E.commentaire}</textarea>
-        </div>
-        <div class="mr-consent">
-          <input type="checkbox" id="mr-cb" name="consent"/>
-          <label class="mr-consent-lbl" for="mr-cb">J'accepte d'être recontacté par Mouaad Boullourou au sujet de ma recherche immobilière.</label>
-        </div>
-        <div id="mr-err" hidden></div>
-        <div class="mr-actions">
-          <button type="submit" class="mr-btn" id="mr-sub" disabled>Demander mon analyse personnalisée ${ICO_ARR}</button>
-        </div>
-      </form>
-    `;
-  }
-
-  function h11() {
-    const lv_=lv();
-    return `
-      <div class="mr-conc-done" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-          <path d="M5 11.5l4.5 4.5L17 6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <p class="mr-kicker">Lecture transmise</p>
-      <h2 class="mr-titre">Votre recherche a changé de nature.</h2>
-      <p class="mr-conc-pivot">Au début de ce parcours, vous aviez une idée de votre futur bien. À présent, nous comprenons ce qui compte réellement pour vous, ce qui peut évoluer et les décisions qui restent à prendre.</p>
-      <p class="mr-conc-corps">Votre recherche n'est plus une liste de critères. Elle est devenue une base de décision. Mouaad reprendra cette lecture avec vous pour comparer les options, leurs conséquences et le rythme le plus cohérent.</p>
-      <p class="mr-conc-corps">Vous garderez la décision. Si vous choisissez de poursuivre, il pourra ensuite activer le réseau SAFTI et vous signaler certains biens avant leur diffusion lorsqu'ils correspondent à votre projet.</p>
-      <div class="mr-conc-liens">
-        <a class="mr-lien" href="tel:${lv_.tel||'+33781380121'}">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M3.5 2.5h2l1 3-1.5 1a8 8 0 0 0 3.5 3.5l1-1.5 3 1v2A1.5 1.5 0 0 1 11 13 8 8 0 0 1 2 4a1.5 1.5 0 0 1 1.5-1.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Appeler directement · <b>${lv_.telD||'07 81 38 01 21'}</b></span>
-        </a>
-        <a class="mr-lien" href="/">Retour à l'accueil</a>
-      </div>
-    `;
-  }
-
-  // ——— Attachement des événements ———
-  function bind(s:number, el:HTMLElement) {
-    if(s===0)  b0(el);
-    if(s===1)  b1(el);
-    if(s===2)  b2(el);
-    if(s===3)  b3(el);
-    if(s===4)  b4(el);
-    if(s===5)  b5(el);
-    if(s===6)  b6(el);
-    if(s===7)  b7(el);
-    if(s===8)  b8(el);
-    if(s===9)  b9(el);
-    if(s===10) b10(el);
-  }
-
-  function b0(el:HTMLElement) {
-    el.querySelector('#mr-start')?.addEventListener('click',()=>{ loadDvf(); avancer(1); });
-  }
-
-  function choix(el:HTMLElement, sel:string, key:string, cb?:(id:string)=>void) {
-    el.querySelectorAll(`${sel} .mr-choix`).forEach(b=>{
-      b.addEventListener('click',()=>{
-        (E as any)[key]=(b as HTMLElement).dataset.id??null;
-        el.querySelectorAll(`${sel} .mr-choix`).forEach(x=>x.classList.remove('actif'));
-        b.classList.add('actif');
-        const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-        if(btn) btn.disabled=!(E as any)[key];
-        cb?.((b as HTMLElement).dataset.id??'');
-      });
-    });
-  }
-
-  function b1(el:HTMLElement) {
-    choix(el,'#mr-sits','situation',()=>autoAdvance(2));
-  }
-  function b2(el:HTMLElement) {
-    choix(el,'#mr-types','type',()=>autoAdvance(3));
-  }
-  function b3(el:HTMLElement) {
-    el.querySelectorAll('#mr-cont .mr-choix').forEach(b=>{
-      b.addEventListener('click',()=>{
-        E.secteurContraint=(b as HTMLElement).dataset.id==='oui';
-        if(!E.secteurContraint) E.secteur='tout';
-        else E.secteur=null;
-        render(3);
-        if(!E.secteurContraint) autoAdvance(4);
-      });
-    });
-    el.querySelectorAll('#mr-sects .mr-choix')?.forEach(b=>{
-      b.addEventListener('click',()=>{
-        E.secteur=(b as HTMLElement).dataset.id??null;
-        el.querySelectorAll('#mr-sects .mr-choix').forEach(x=>x.classList.remove('actif'));
-        b.classList.add('actif');
-        autoAdvance(4);
-      });
-    });
-  }
-  function numInput(el:HTMLElement, id:string, key:string, min=1) {
-    const inp=el.querySelector(id) as HTMLInputElement;
-    const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-    inp?.addEventListener('input',()=>{
-      const v=Number(inp.value);
-      (E as any)[key]=v>=min?v:null;
-      if(btn) btn.disabled=!(E as any)[key];
-    });
-    return inp;
-  }
-  function b4(el:HTMLElement) {
-    numInput(el,'#mr-bgt','budget',1);
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.budget&&avancer(5));
-  }
-  function b5(el:HTMLElement) {
-    numInput(el,'#mr-surf','surface',1);
-    el.querySelector('#mr-nxt')?.addEventListener('click',async()=>{
-      if(!E.surface||!E.budget) return;
-      const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-      if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Calcul en cours…`; }
-      const data=await loadDvf();
-      E.lecture=analyser(data,E.type,E.secteur,E.budget,E.surface);
-      avancer(6);
-    });
-  }
-  function b6(el:HTMLElement) {
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(7));
-  }
-  function b7(el:HTMLElement) {
-    function syncPr() {
-      const c=E.preserves.length;
-      const prc=el.querySelector('#mr-prc'); if(prc) prc.textContent=String(c);
-      const btn=el.querySelector('#mr-nxt') as HTMLButtonElement; if(btn) btn.disabled=c===0;
-      el.querySelectorAll('#mr-slots .mr-slot').forEach((s,i)=>s.classList.toggle('mr-slot--filled',i<c));
-      const grille=el.querySelector('#mr-prs'); if(grille) grille.classList.toggle('mr-grille--max',c>=3);
-    }
-    el.querySelectorAll('#mr-prs .mr-choix').forEach(b=>{
-      b.addEventListener('click',()=>{
-        const id=(b as HTMLElement).dataset.id!;
-        if(E.preserves.includes(id)){ E.preserves=E.preserves.filter(x=>x!==id); b.classList.remove('actif'); }
-        else if(E.preserves.length<3){ E.preserves.push(id); b.classList.add('actif'); }
-        syncPr();
-      });
-    });
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>{
-      if(E.preserves.length===0) return;
-      avancer(E.lecture&&E.lecture.position==='sous_q1'?8:9);
-    });
-  }
-  function b8(el:HTMLElement) {
-    el.querySelectorAll('#mr-chem .mr-chemin').forEach(b=>{
-      b.addEventListener('click',()=>{
-        E.decisionTension=(b as HTMLElement).dataset.id??null;
-        el.querySelectorAll('#mr-chem .mr-chemin').forEach(x=>x.classList.remove('actif'));
-        b.classList.add('actif');
-        autoAdvance(9);
-      });
-    });
-    el.querySelector('#mr-pass')?.addEventListener('click',()=>avancer(9));
-  }
-  function b9(el:HTMLElement) {
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(10));
-  }
-  function b10(el:HTMLElement) {
-    const prenom=el.querySelector('#mr-prenom') as HTMLInputElement;
-    const contact=el.querySelector('#mr-contact') as HTMLInputElement;
-    const comm=el.querySelector('#mr-comm') as HTMLTextAreaElement;
-    const cb=el.querySelector('#mr-cb') as HTMLInputElement;
-    const btn=el.querySelector('#mr-sub') as HTMLButtonElement;
-    const valider=()=>{
-      E.prenom=prenom?.value.trim()??'';
-      E.contact=contact?.value.trim()??'';
-      E.commentaire=comm?.value.trim()??'';
-      if(btn) btn.disabled=!E.prenom||!E.contact||!cb?.checked;
-    };
-    prenom?.addEventListener('input',valider);
-    contact?.addEventListener('input',valider);
-    cb?.addEventListener('change',valider);
-    el.querySelector('#mr-form')?.addEventListener('submit',async(e:Event)=>{
-      e.preventDefault(); valider();
-      if(!E.prenom||!E.contact||!cb.checked) return;
-      const errEl=el.querySelector('#mr-err') as HTMLElement;
-      if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Transmission…`; }
-      const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
-      const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
-      const hp=(el.querySelector('[name=site_web]') as HTMLInputElement)?.value??'';
-      const payload={
-        source:'ma-recherche', src:E.src, site_web:hp,
-        prenom:E.prenom, contact:E.contact, commentaire:E.commentaire, consent:true,
-        situation:E.situation, type:E.type, secteur:E.secteur, secteurContraint:E.secteurContraint,
-        budget:E.budget, surface:E.surface,
-        preserves:E.preserves, preservesLabels:pL, flexibles:flexibles(), flexiblesLabels:fL,
-        decisionTension:E.decisionTension, lecture:E.lecture,
-      };
-      try {
-        const r=await fetch('/api/recherche',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
-        const d=await r.json() as {ok:boolean;message?:string};
-        if(!d.ok) throw new Error(d.message??'Erreur');
-        avancer(11);
-      } catch(err:any) {
-        if(errEl){ errEl.hidden=false; errEl.className='mr-erreur';
-          errEl.textContent=err.message?.includes('dry-run')
-            ?`Configuration en cours — vos informations ont bien été reçues. Vous pouvez aussi écrire à ${lv().email||'mouaad@levois.fr'}.`
-            :`L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à ${lv().email||'mouaad@levois.fr'}.`; }
-        if(btn){ btn.disabled=false; btn.innerHTML=`Réessayer ${ICO_ARR}`; }
-      }
-    });
-  }
-
-  // ——— Init ———
-  document.getElementById('mr-retour')?.addEventListener('click',reculer);
-  avancer(0);
+  });
 </script>
