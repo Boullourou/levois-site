@@ -1,0 +1,63 @@
+---
+import CahierHeader from '../components/cahier/CahierHeader.astro';
+import CahierFooter from '../components/cahier/CahierFooter.astro';
+import { site } from '../config/site';
+import '../styles/cahier.css';
+
+export interface Props {
+  title: string;
+  description?: string;
+  canonicalPath?: string;
+  pageClass?: string;
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = site.description,
+  canonicalPath = Astro.url.pathname,
+  pageClass = '',
+  schema,
+} = Astro.props;
+
+const fullTitle = title === 'Accueil' ? 'LEVOIS · Mettre votre projet immobilier au clair' : `${title} · LEVOIS`;
+const canonical = site.url + canonicalPath;
+const designContract = `LEVOIS_DA_A_CAHIER_CLAIR
+THESIS: Transformer une situation immobilière confuse en dossier de décision lisible ; refuser le héros immobilier aspirationnel et l’empilement de cartes.
+OWN-WORLD: Papier ivoire texturé, graphite, encre charbon et vermillon unique ; feuillets asymétriques, règles de mesure, notes de marge et bandes de preuve.
+STORY: Le visiteur formule ce qu’il vit, voit chaque réponse traduite, distingue preuve et hypothèse, puis choisit sa prochaine vérification.
+FIRST VIEWPORT: Une grande page de cahier porte la promesse validée ; une marge annotée relie quatre sorties immédiatement accessibles, avec l’achat nettement prioritaire.
+FORM: Territoire A « Cahier clair », direction imposée par le brief ; seed 87ef8dd1 documenté mais non prioritaire face au choix explicite.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md`;
+---
+
+<!doctype html>
+<html lang="fr" class="cc-html">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="LEVOIS" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+  </head>
+  <body class={pageClass}>
+    <Fragment set:html={`<!--\n${designContract}\n-->`} />
+    <a href="#contenu" class="cc-skip">Aller au contenu</a>
+    <CahierHeader />
+    <main id="contenu">
+      <slot />
+    </main>
+    <CahierFooter />
+  </body>
+</html>

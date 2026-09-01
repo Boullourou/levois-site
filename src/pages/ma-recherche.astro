@@ -1,1116 +1,244 @@
 ---
-/**
- * /ma-recherche — Parcours acquéreur LEVOIS.
- *
- * URL protégée (liée depuis /carte). Ne pas supprimer/renommer sans validation.
- *
- * Philosophie : aide à la décision, pas collecte de critères.
- * Chaque étape révèle les conséquences des choix de l'acheteur.
- * Sortie : une « Lecture de votre recherche » transmise à Mouaad —
- * stratégie de recherche, pas liste de critères.
- *
- * Sources de données : DVF (dvf-secteur.json) pour la lecture de marché.
- * L'architecture est source-agnostique : d'autres sources s'ajouteront sans
- * modifier la structure.
- *
- * Persistance V1 : e-mail structuré (section JSON) vers Mouaad via /api/recherche.
- */
-import Layout from '../layouts/Layout.astro';
-import { site } from '../config/site';
+import CahierLayout from '../layouts/CahierLayout.astro';
 ---
 
-<Layout
-  title="Lecture de votre recherche"
-  description="Clarifiez votre projet d'achat immobilier. Cette lecture deviendra le point de départ des recherches et des échanges avec Mouaad."
-  noindex={true}
-  headerTransparent={false}
+<CahierLayout
+  title="Mettre ma recherche au clair"
+  description="Clarifiez les usages, les contraintes et les arbitrages de l’achat de votre résidence principale avant toute demande de coordonnées."
+  pageClass="cc-search-page"
 >
-  <div id="mr-root" class="mr-root">
-    <div class="mr-barre-wrap" aria-hidden="true">
-      <div class="mr-barre" id="mr-barre" style="width:0%" role="progressbar"
-        aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progression"></div>
+  <div class="cc-shell">
+    <header class="cc-page-head">
+      <div class="cc-page-head__grid">
+        <div>
+          <p class="cc-meta cc-signal">Résidence principale · démonstrateur de parcours</p>
+          <h1 class="cc-display" style="margin-top:18px">Mettre ma recherche au clair</h1>
+        </div>
+        <p class="cc-page-head__aside">
+          Onze questions dans le parcours standard, puis une première lecture en quatre blocs. Aucun montant, aucune validation bancaire, aucune recommandation automatique de bien.
+        </p>
+      </div>
+    </header>
+
+    <div class="cc-demo" data-search-demo>
+      <aside class="cc-demo__nav" aria-label="États présentés dans ce démonstrateur">
+        <div role="tablist" aria-label="États de ma recherche">
+          <button class="cc-demo__tab" role="tab" type="button" id="tab-ouverture" aria-controls="panel-ouverture" aria-selected="true" data-state-target="ouverture"><span>A</span><span>Ouverture</span></button>
+          <button class="cc-demo__tab" role="tab" type="button" id="tab-question" aria-controls="panel-question" aria-selected="false" tabindex="-1" data-state-target="question"><span>B</span><span>Question</span></button>
+          <button class="cc-demo__tab" role="tab" type="button" id="tab-traducteur" aria-controls="panel-traducteur" aria-selected="false" tabindex="-1" data-state-target="traducteur"><span>C</span><span>Traducteur</span></button>
+          <button class="cc-demo__tab" role="tab" type="button" id="tab-arbitrage" aria-controls="panel-arbitrage" aria-selected="false" tabindex="-1" data-state-target="arbitrage"><span>D</span><span>Arbitrage</span></button>
+          <button class="cc-demo__tab" role="tab" type="button" id="tab-lecture" aria-controls="panel-lecture" aria-selected="false" tabindex="-1" data-state-target="lecture"><span>E</span><span>Première lecture</span></button>
+        </div>
+      </aside>
+
+      <div class="cc-demo__stage">
+        <section class="cc-demo-panel" id="panel-ouverture" role="tabpanel" aria-labelledby="tab-ouverture" data-demo-panel="ouverture" data-active="true">
+          <p class="cc-meta cc-signal">Avant de commencer</p>
+          <h2>Votre liste de critères n’est pas encore votre recherche.</h2>
+          <p class="cc-lead">
+            Ce parcours est conçu pour l’achat de votre résidence principale. Il relie votre situation actuelle, ce qui doit changer, ce qui doit être préservé et les vérifications encore nécessaires.
+          </p>
+          <div class="cc-note" style="margin-top:34px">
+            Une première lecture utile apparaît avant toute demande de coordonnées. Vous pouvez ensuite modifier chaque réponse.
+          </div>
+          <div class="cc-demo-actions">
+            <button class="cc-button cc-button--primary" type="button" data-go-state="question">Commencer par un usage concret</button>
+            <a class="cc-button" href="/contact?objet=investissement">Mon projet concerne un investissement</a>
+          </div>
+        </section>
+
+        <section class="cc-demo-panel" id="panel-question" role="tabpanel" aria-labelledby="tab-question" data-demo-panel="question">
+          <p class="cc-meta cc-signal">Étape 4 · usage avant typologie</p>
+          <h2>Quel usage doit principalement mieux fonctionner dans votre prochain logement&nbsp;?</h2>
+          <p>Une seule réponse. Les autres usages peuvent être précisés plus tard, sans bloquer la première lecture.</p>
+          <div class="cc-choice-list" aria-label="Choisir l’usage principal">
+            <button class="cc-choice" type="button" aria-pressed="false" data-usage="Dormir et préserver l’intimité">Dormir et préserver l’intimité</button>
+            <button class="cc-choice" type="button" aria-pressed="false" data-usage="Travailler ou étudier">Travailler ou étudier</button>
+            <button class="cc-choice" type="button" aria-pressed="false" data-usage="Accueillir ou partager le quotidien">Accueillir ou partager le quotidien</button>
+            <button class="cc-choice" type="button" aria-pressed="false" data-usage="Profiter d’un espace extérieur">Profiter d’un espace extérieur</button>
+            <button class="cc-choice" type="button" aria-pressed="false" data-usage="Simplifier les déplacements dans le logement">Simplifier les déplacements dans le logement</button>
+            <button class="cc-choice" type="button" aria-pressed="false" data-usage="Je ne sais pas encore">Je ne sais pas encore</button>
+          </div>
+          <div class="cc-translator cc-note" id="usage-translator" aria-live="polite" hidden>
+            <strong>Ce que cette réponse change</strong>
+            <p></p>
+          </div>
+          <div class="cc-demo-actions">
+            <button class="cc-button" type="button" data-go-state="traducteur">Voir le traducteur en direct</button>
+          </div>
+        </section>
+
+        <section class="cc-demo-panel" id="panel-traducteur" role="tabpanel" aria-labelledby="tab-traducteur" data-demo-panel="traducteur">
+          <p class="cc-meta cc-signal">Le traducteur en direct</p>
+          <h2>Chaque réponse laisse une trace compréhensible.</h2>
+          <p>La formulation change avec le niveau de preuve. Elle n’ajoute jamais une conclusion que la personne n’a pas donnée.</p>
+
+          <div class="cc-reading" aria-label="Exemples de traduction">
+            <div class="cc-reading__block">
+              <h3>Déclaré</h3>
+              <div class="cc-reading__body"><p>Vous avez indiqué que <mark>travailler ou étudier</mark> doit principalement mieux fonctionner.</p><small>Reprise fidèle d’une réponse.</small></div>
+            </div>
+            <div class="cc-reading__block">
+              <h3>Conséquence directe</h3>
+              <div class="cc-reading__body"><p>Cela change la manière d’examiner une typologie&nbsp;: elle reste une hypothèse de solution, pas une conclusion.</p><small>Effet logique certain dans le parcours.</small></div>
+            </div>
+            <div class="cc-reading__block">
+              <h3>Interprétation</h3>
+              <div class="cc-reading__body"><p>Avec un horizon rapproché et un cadre financier encore ouvert, cela semble indiquer que <mark>la prochaine vérification doit porter sur la préparation</mark>.</p><small>Plusieurs réponses convergent ; une autre explication reste possible.</small></div>
+            </div>
+            <div class="cc-reading__block">
+              <h3>Absence de conclusion</h3>
+              <div class="cc-reading__body"><p>Impossible à conclure pour l’instant. Il manque encore le repère qui délimite principalement la zone de recherche.</p><small>Le manque devient une prochaine vérification, jamais une faiblesse.</small></div>
+            </div>
+          </div>
+          <div class="cc-demo-actions">
+            <button class="cc-button cc-button--primary" type="button" data-go-state="arbitrage">Passer à l’arbitrage</button>
+          </div>
+        </section>
+
+        <section class="cc-demo-panel" id="panel-arbitrage" role="tabpanel" aria-labelledby="tab-arbitrage" data-demo-panel="arbitrage">
+          <p class="cc-meta cc-signal">Étape 6 · arbitrage utile</p>
+          <h2>Lequel de ces deux scénarios mérite d’être vérifié en premier&nbsp;?</h2>
+          <p>Les scénarios ne sont pas déclarés incompatibles. Ils organisent seulement l’ordre des vérifications.</p>
+
+          <div class="cc-scenarios" aria-label="Choisir une prochaine vérification">
+            <button class="cc-scenario" type="button" aria-pressed="false" data-arbitrage="preserver">
+              <strong>Préserver le temps de trajet</strong>
+              <p>Garder ce repère et comparer plusieurs manières de faire mieux fonctionner le travail à domicile.</p>
+              <span>Vérifier ce scénario</span>
+            </button>
+            <button class="cc-scenario" type="button" aria-pressed="false" data-arbitrage="usage">
+              <strong>Préserver l’usage prioritaire</strong>
+              <p>Garder un espace de travail réellement praticable et tester un repère géographique différent.</p>
+              <span>Vérifier ce scénario</span>
+            </button>
+          </div>
+          <div class="cc-translator cc-note" id="arbitrage-note" aria-live="polite" hidden>
+            <strong>Arbitrage retenu pour la lecture</strong>
+            <p></p>
+          </div>
+          <div class="cc-demo-actions">
+            <button class="cc-button cc-button--primary" type="button" data-go-state="lecture">Voir ma première lecture</button>
+          </div>
+        </section>
+
+        <section class="cc-demo-panel" id="panel-lecture" role="tabpanel" aria-labelledby="tab-lecture" data-demo-panel="lecture">
+          <p class="cc-meta cc-signal">Première lecture · avant coordonnées</p>
+          <h2>Une base de décision, pas un diagnostic.</h2>
+          <p>Cette démonstration utilise un cas illustratif clairement identifié. Dans le produit, chaque phrase devra être reliée à une réponse effectivement donnée.</p>
+
+          <div class="cc-reading" aria-label="Première lecture en quatre blocs">
+            <section class="cc-reading__block">
+              <h3>Ce que l’achat doit changer</h3>
+              <div class="cc-reading__body">
+                <p>Vous avez indiqué que l’achat doit principalement apporter <mark>un quotidien moins contraint</mark>. Cela se traduit d’abord par <mark>un espace où travailler sans détourner une autre pièce de son usage</mark>.</p>
+                <small>Niveau : déclaré et conséquence directe.</small>
+                <button type="button" data-go-state="question">Modifier cette réponse</button>
+              </div>
+            </section>
+            <section class="cc-reading__block">
+              <h3>Ce que vous voulez préserver</h3>
+              <div class="cc-reading__body">
+                <p>Vous souhaitez surtout ne pas perdre <mark>un temps de trajet compatible avec le quotidien</mark>. L’usage de travail doit également rester praticable dans les solutions comparées.</p>
+                <small>Niveau : déclaré. Aucun autre critère n’est rendu flexible par déduction.</small>
+                <button type="button" data-go-state="question">Modifier cette réponse</button>
+              </div>
+            </section>
+            <section class="cc-reading__block">
+              <h3>Ce que vous pourriez assouplir</h3>
+              <div class="cc-reading__body">
+                <p id="reading-tradeoff">Vous pourriez tester plusieurs manières d’obtenir un espace de travail tout en gardant le repère de trajet. Ce compromis n’est pas une décision définitive.</p>
+                <small>Niveau : scénario choisi. Aucun assouplissement n’est produit sans choix explicite.</small>
+                <button type="button" data-go-state="arbitrage">Modifier cet arbitrage</button>
+              </div>
+            </section>
+            <section class="cc-reading__block">
+              <h3>Ce qu’il reste à décider ou vérifier</h3>
+              <div class="cc-reading__body">
+                <p>Le cadre financier décrit un niveau de préparation, pas une validation. Il reste à vérifier ce qu’il inclut, puis à confronter l’horizon souhaité au repère géographique retenu.</p>
+                <small>Niveau : limite et prochaine vérification. Aucune donnée DVF n’est utilisée pour conclure sur la faisabilité.</small>
+                <button type="button" data-go-state="arbitrage">Modifier la prochaine vérification</button>
+              </div>
+            </section>
+          </div>
+
+          <p class="cc-note" style="margin-top:30px">Vous pouvez modifier chaque réponse. Une modification peut retirer ou changer les éléments qui en dépendent.</p>
+          <div class="cc-reading-actions">
+            <button class="cc-button" type="button" disabled aria-disabled="true" title="Sortie non activée dans ce démonstrateur">Recevoir ma synthèse — sortie non activée</button>
+            <a class="cc-button cc-button--primary" href="/contact?objet=achat">Demander un échange séparé</a>
+          </div>
+        </section>
+      </div>
     </div>
-    <div class="mr-retour-banda">
-      <button id="mr-retour" class="mr-retour" hidden aria-label="Revenir à l'étape précédente">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M10 13l-5-5 5-5" stroke="currentColor" stroke-width="1.6"
-            stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Retour
-      </button>
-    </div>
-    <div id="mr-ecran" class="mr-ecran" role="main" aria-live="polite"></div>
   </div>
-</Layout>
 
-<style is:global>
-  .mr-root {
-    min-height: calc(100vh - var(--site-header-h));
-    display: flex; flex-direction: column;
-    background: #F2F5EF;
-  }
-  .mr-barre-wrap {
-    position: fixed; top: 0; left: 0; right: 0; height: 3px;
-    z-index: 200; background: rgba(36,60,255,0.12);
-  }
-  .mr-barre {
-    height: 100%; background: #243CFF;
-    transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-  }
-  /*
-   * Conteneur sticky à hauteur zéro — ne perturbe pas le flux flex.
-   * Le bouton est positionné en absolu à l'intérieur.
-   * Sticky par rapport à la fenêtre (aucun ancêtre n'a overflow:hidden/auto/clip).
-   * top = hauteur réelle du header mobile (h-16 = 64px).
-   */
-  .mr-retour-banda {
-    position: sticky;
-    top: var(--site-header-h);
-    height: 0;
-    overflow: visible;
-    z-index: 49;
-    pointer-events: none;
-  }
-  .mr-retour {
-    position: absolute;
-    top: 8px;
-    left: clamp(1rem, 4vw, 2.5rem);
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500;
-    color: #58615B;
-    background: rgba(247,244,240,0.90);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-    border: none; border-radius: 0; cursor: pointer;
-    padding: 0.45rem 0.7rem;
-    min-height: 44px; /* zone tactile iOS */
-    transition: color 0.15s ease;
-    pointer-events: auto;
-  }
-  .mr-retour:hover { color: #111522; }
-  .mr-ecran {
-    flex: 1; display: flex; align-items: flex-start; justify-content: center;
-    padding: clamp(3.5rem,8vw,5.5rem) clamp(1rem,5vw,2.5rem) clamp(2rem,5vw,4rem);
-  }
-  .mr-ecran-int {
-    width: 100%; max-width: 720px;
-    animation: mr-entrer 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
-  }
-  @keyframes mr-entrer {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: none; }
-  }
+  <script>
+    const root = document.querySelector('[data-search-demo]');
+    if (root) {
+      const tabs = Array.from(root.querySelectorAll('[data-state-target]'));
+      const panels = Array.from(root.querySelectorAll('[data-demo-panel]'));
 
-  /* ——— Indicateur de progression (points) ——— */
-  .mr-passos {
-    display: flex; gap: 4px; margin-bottom: 1.25rem; align-items: center;
-  }
-  .mr-pas {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
-    background: rgba(17,21,34,0.12);
-    transition: background 0.2s ease, width 0.25s cubic-bezier(0.22,1,0.36,1);
-  }
-  .mr-pas-done { background: rgba(36,60,255,0.35); }
-  .mr-pas-cur  { background: #243CFF; width: 20px; border-radius: 3px; }
-
-  /* ——— Typographie ——— */
-  .mr-kicker {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.71rem; font-weight: 600;
-    letter-spacing: 0.22em; text-transform: uppercase; color: #243CFF;
-    display: inline-flex; align-items: center; gap: 0.55rem; margin-bottom: 1rem;
-  }
-  .mr-kicker::before {
-    content: ''; display: inline-block; width: 18px; height: 1px;
-    background: currentColor; opacity: 0.7;
-  }
-  .mr-titre-xl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(2rem,6vw,3rem); line-height: 1.1;
-    letter-spacing: -0.022em; color: #111522; margin: 0 0 1.25rem;
-  }
-  .mr-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.5rem,4.5vw,2.1rem); line-height: 1.15;
-    letter-spacing: -0.018em; color: #111522; margin: 0 0 0.25rem;
-  }
-  .mr-question {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.25rem,3.5vw,1.65rem); line-height: 1.22;
-    letter-spacing: -0.015em; color: #111522; margin: 0 0 0.4rem;
-  }
-  .mr-lede {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: clamp(1rem,2.5vw,1.1rem);
-    line-height: 1.6; color: #58615B; margin: 0 0 0.7rem; max-width: 38rem;
-  }
-  .mr-lede-s {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem;
-    line-height: 1.55; color: #58615B; margin: 0 0 2rem;
-  }
-  .mr-sous-q {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
-    line-height: 1.5; color: #58615B; margin: 0 0 1.75rem;
-  }
-  .mr-auto-hint {
-    margin: -0.95rem 0 1.55rem;
-    color: #243CFF;
-    font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  /* ——— Cartes de choix ——— */
-  .mr-grille { display: grid; gap: 0.7rem; margin-bottom: 1.75rem; }
-  .mr-grille-2 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
-  .mr-choix {
-    display: flex; flex-direction: column; background: #FFFFFF;
-    border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: 1.1rem 3.2rem 1.1rem 1.35rem; cursor: pointer; text-align: left;
-    transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
-    position: relative; font-family: inherit; width: 100%;
-  }
-  .mr-choix::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: 1.25rem;
-    width: 10px;
-    height: 10px;
-    border-top: 2px solid #243CFF;
-    border-right: 2px solid #243CFF;
-    animation: mr-choice-cue 2.8s cubic-bezier(.16,1,.3,1) infinite;
-  }
-  .mr-choix:hover {
-    border-color: rgba(36,60,255,0.3); transform: translateY(-2px);
-    box-shadow: none;
-  }
-  .mr-choix:focus-visible {
-    outline: 2.5px solid #243CFF; outline-offset: 2px;
-  }
-  .mr-choix.actif {
-    border-color: #243CFF; background: rgba(36,60,255,0.04);
-    box-shadow: none;
-  }
-  .mr-choix.actif::before { opacity: 0; animation: none; }
-  .mr-choix.actif::after {
-    content: ''; position: absolute; top: 10px; right: 12px;
-    width: 20px; height: 20px; border-radius: 50%;
-    background-color: #243CFF;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: center; background-size: 12px;
-  }
-  .mr-grille--max .mr-choix:not(.actif) { opacity: 0.38; pointer-events: none; }
-  .mr-choix-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.97rem; font-weight: 600;
-    color: #111522; margin-bottom: 0.15rem;
-  }
-  .mr-choix-desc {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.825rem;
-    line-height: 1.4; color: #58615B;
-  }
-
-  /* ——— Saisie ——— */
-  .mr-saisie { margin-bottom: 1.75rem; }
-  .mr-label {
-    display: block; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.875rem; font-weight: 600; color: #111522; margin-bottom: 0.5rem;
-  }
-  .mr-input-wrap { position: relative; display: flex; align-items: center; }
-  .mr-input {
-    width: 100%; padding: 0.875rem 3.5rem 0.875rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.1rem; font-weight: 500;
-    color: #111522; background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08);
-    border-radius: 0; outline: none;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-    -webkit-appearance: none; appearance: none;
-  }
-  .mr-input:focus {
-    border-color: #243CFF; outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none;
-  }
-  .mr-input-unite {
-    position: absolute; right: 1rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.9rem; color: #58615B; pointer-events: none;
-  }
-  .mr-input-aide {
-    margin-top: 0.5rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.82rem; color: #58615B;
-  }
-
-  /* ——— Boutons ——— */
-  .mr-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
-  .mr-btn {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    min-height: 52px; padding: 0.9rem 1.8rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.97rem; font-weight: 600; color: #FFFFFF; background: #243CFF;
-    border: none; border-radius: 0; cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
-    box-shadow: none; text-decoration: none;
-    animation: mr-button-cue 3.2s cubic-bezier(.16,1,.3,1) infinite;
-  }
-  .mr-btn svg { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1); flex-shrink: 0; }
-  .mr-btn:hover:not(:disabled) svg { transform: translateX(3px); }
-  .mr-btn:hover:not(:disabled) {
-    background: #111522; color: #D7FF42; transform: translateY(-1px);
-    box-shadow: none;
-  }
-  .mr-btn:focus-visible { outline: 2.5px solid #243CFF; outline-offset: 3px; }
-  .mr-btn:disabled { opacity: 0.42; cursor: default; box-shadow: none; transform: none; }
-
-  @keyframes mr-button-cue {
-    0%, 72%, 100% { transform: translateY(0); }
-    79% { transform: translateY(-2px); }
-    86% { transform: translateY(0); }
-    92% { transform: translateY(-1px); }
-  }
-
-  @keyframes mr-choice-cue {
-    0%, 68%, 100% { transform: translate(-4px, -50%) rotate(45deg); }
-    78%, 90% { transform: translate(2px, -50%) rotate(45deg); }
-  }
-  .mr-btn-ghost {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.75rem 1.4rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.92rem; font-weight: 500; color: #58615B; background: transparent;
-    border: 1.5px solid rgba(17,21,34,0.1); border-radius: 0; cursor: pointer;
-    transition: all 0.18s ease;
-  }
-  .mr-btn-ghost:hover { border-color: rgba(36,60,255,0.3); color: #111522; }
-  .mr-btn-ghost:focus-visible { outline: 2.5px solid rgba(36,60,255,0.5); outline-offset: 2px; }
-
-  /* ——— Positionnement DVF (hero) ——— */
-  .mr-pos-hero {
-    display: flex; flex-direction: column;
-    padding: 1.25rem 1.5rem; border-radius: 0; margin-bottom: 1rem;
-    background: #FFFFFF;
-    border: 1px solid rgba(36,60,255,0.14);
-  }
-  .mr-pos-badge {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #243CFF; margin-bottom: 0.4rem;
-  }
-  .mr-pos-row { display: flex; align-items: baseline; gap: 0.3rem; }
-  .mr-pos-val {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(2.2rem,5vw,3rem); line-height: 1;
-    letter-spacing: -0.025em; color: #111522;
-  }
-  .mr-pos-unit {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; font-weight: 500; color: #58615B;
-  }
-  .mr-pos-ctx {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-top: 0.35rem;
-  }
-
-  /* ——— Lecture de marché ——— */
-  .mr-carte {
-    background: #FFFFFF; border: 1px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: clamp(1.25rem,3vw,1.75rem); margin-bottom: 1.5rem;
-    box-shadow: none;
-  }
-  .mr-carte-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 1rem; letter-spacing: -0.01em; color: #111522; margin: 0 0 0.75rem;
-  }
-  .mr-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
-  .mr-stat {
-    padding: 0.6rem 0.75rem; background: #F2F5EF; border-radius: 0;
-  }
-  .mr-stat-v {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.25rem;
-    color: #111522; letter-spacing: -0.02em; display: block;
-  }
-  .mr-stat-l {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem;
-    color: #58615B; display: block; margin-top: 0.1rem;
-  }
-
-  /* ——— Règle de prix ——— */
-  .mr-regle { margin: 1rem 0 0.5rem; padding: 0 0.25rem; }
-  .mr-regle-piste {
-    position: relative; height: 12px; border-radius: 99px;
-    background: rgba(17,21,34,0.07); margin-bottom: 0.4rem;
-  }
-  .mr-regle-iqr {
-    position: absolute; top: 0; height: 100%;
-    background: rgba(36,60,255,0.22); border-radius: 99px;
-  }
-  .mr-regle-med {
-    position: absolute; top: -5px; bottom: -5px; width: 3px;
-    border-radius: 2px; background: #243CFF; transform: translateX(-50%);
-  }
-  .mr-regle-bud {
-    position: absolute; top: -7px; bottom: -7px; width: 4px;
-    border-radius: 2px; background: #111522; transform: translateX(-50%);
-  }
-  .mr-regle-bud::after {
-    content: attr(data-lbl); position: absolute; top: -24px; left: 50%;
-    transform: translateX(-50%); font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.72rem; font-weight: 600; color: #111522; white-space: nowrap;
-    background: #F2F5EF; padding: 1px 6px; border-radius: 0;
-    box-shadow: none;
-  }
-  .mr-regle-labs {
-    display: flex; justify-content: space-between;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.75rem; color: #58615B;
-  }
-
-  /* ——— Signaux ——— */
-  .mr-signal {
-    display: flex; align-items: flex-start; gap: 0.6rem;
-    padding: 0.75rem 1rem; border-radius: 0; margin-top: 0.75rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; line-height: 1.45;
-  }
-  .mr-signal.ok  { background: rgba(215,255,66,0.22); color: #111522; border: 1px solid #C9CEC8; }
-  .mr-signal.warn { background: rgba(36,60,255,0.08); color: #202635; border: 1px solid rgba(36,60,255,0.2); }
-  .mr-signal-ico { flex: 0 0 auto; margin-top: 1px; }
-
-  /* ——— Tension / conséquences ——— */
-  .mr-tension-intro {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
-    line-height: 1.5; color: #58615B; margin: 0 0 1.5rem;
-    padding: 0.75rem 1rem; background: rgba(36,60,255,0.05);
-    border-left: 1px solid #243CFF; border-radius: 0;
-  }
-  .mr-chemin {
-    background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: 1.1rem 1.25rem; margin-bottom: 0.75rem; cursor: pointer;
-    transition: border-color 0.18s ease, background 0.18s ease; text-align: left;
-    font-family: inherit; width: 100%;
-  }
-  .mr-chemin:hover { border-color: rgba(36,60,255,0.3); box-shadow: none; }
-  .mr-chemin.actif { border-color: #243CFF; background: rgba(36,60,255,0.03); }
-  .mr-ch-titre { font-family:'Public Sans',system-ui,sans-serif; font-size:0.96rem; font-weight:700; color:#111522; margin:0 0 0.5rem; }
-  .mr-ch-plus  { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:#243CFF; margin:0 0 0.2rem; }
-  .mr-ch-moins { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:#58615B; margin:0 0 0.2rem; }
-  .mr-ch-txt   { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; margin:0 0 0.4rem; }
-
-  /* ——— Relecture ——— */
-  .mr-relecture {
-    background: #FFFFFF; border: 1px solid rgba(17,21,34,0.08); border-radius: 0;
-    padding: clamp(1.25rem,3vw,2rem); margin-bottom: 1.5rem;
-    box-shadow: none;
-  }
-  .mr-rel-header { margin-bottom: 0.9rem; }
-  .mr-rel-eyebrow {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #58615B; margin: 0;
-  }
-  .mr-rel-body {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 0.5rem;
-  }
-  .mr-rel-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 1rem; color: #111522; margin: 0 0 0.75rem; letter-spacing: -0.01em;
-  }
-  .mr-rel-liste { list-style: none; padding: 0; margin: 0 0 0.5rem; }
-  .mr-rel-liste li {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem; color: #111522;
-    padding: 0.3rem 0 0.3rem 1.25rem; position: relative;
-  }
-  .mr-rel-liste li::before { content: '•'; position: absolute; left: 0; color: #243CFF; }
-  .mr-sep { border: none; border-top: 1px solid rgba(17,21,34,0.07); margin: 1rem 0; }
-  .mr-rel-flex-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem; font-weight: 600;
-    color: #58615B; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.5rem;
-  }
-  .mr-rel-note {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5;
-    color: #58615B; margin-top: 1rem; padding-top: 0.75rem;
-    border-top: 1px solid rgba(17,21,34,0.07); font-style: italic;
-  }
-
-  /* ——— Priorités — jauge ——— */
-  .mr-slot-track {
-    display: flex; gap: 6px; margin-bottom: 0.85rem; align-items: center;
-  }
-  .mr-slot {
-    height: 6px; width: 32px; border-radius: 99px; background: rgba(17,21,34,0.1);
-    transition: background 0.25s cubic-bezier(0.22,1,0.36,1);
-  }
-  .mr-slot--filled { background: #243CFF; }
-  .mr-pr-cpt {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-bottom: 1rem;
-  }
-  .mr-pr-cpt span { color: #243CFF; font-weight: 600; }
-
-  /* ——— Contact ——— */
-  .mr-cg { margin-bottom: 1.25rem; }
-  .mr-ci {
-    width: 100%; box-sizing: border-box; padding: 0.875rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522;
-    background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
-    outline: none; transition: border-color 0.18s ease, outline-color 0.18s ease;
-    -webkit-appearance: none; appearance: none;
-  }
-  .mr-ci:focus { border-color: #243CFF; outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none; }
-  .mr-ci-ta { min-height: 90px; resize: vertical; }
-  .mr-ci-aide { font-family:'Public Sans',system-ui,sans-serif; font-size:0.82rem; color:#58615B; margin-top:0.35rem; }
-  .mr-consent { display:flex; align-items:flex-start; gap:0.65rem; margin:1.25rem 0; }
-  .mr-consent input[type=checkbox] { margin-top:3px; flex:0 0 auto; accent-color:#243CFF; width:16px; height:16px; cursor:pointer; }
-  .mr-consent-lbl { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; }
-  .mr-hp { display:none !important; }
-  .mr-erreur {
-    background: rgba(36,60,255,0.07); border-left: 1px solid #243CFF;
-    border-radius: 0; padding: 0.75rem 1rem; margin-top: 0.75rem;
-    font-family:'Public Sans',system-ui,sans-serif; font-size:0.88rem; line-height:1.5; color:#202635;
-  }
-
-  /* ——— Conclusion ——— */
-  .mr-conc-done {
-    width: 48px; height: 48px; border-radius: 50%; background: #243CFF;
-    display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;
-  }
-  .mr-conc-pivot {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.3rem,4vw,1.75rem); line-height: 1.32;
-    color: #111522; letter-spacing: -0.015em; margin: 1rem 0 1.5rem;
-  }
-  .mr-conc-corps {
-    font-family:'Public Sans',system-ui,sans-serif; font-size:1rem; line-height:1.65;
-    color:#58615B; margin:0 0 1.25rem;
-  }
-  .mr-conc-liens { display:flex; flex-direction:column; gap:0.5rem; margin-top:1.5rem; }
-  .mr-lien {
-    display:inline-flex; align-items:center; gap:0.65rem;
-    font-family:'Public Sans',system-ui,sans-serif; font-size:0.98rem; font-weight:500;
-    color:#202635; text-decoration:none; padding:0.5rem 0;
-    border-bottom:1px solid rgba(17,21,34,0.08);
-    transition:color 0.15s ease, border-color 0.15s ease;
-  }
-  .mr-lien:hover { color:#243CFF; border-color:rgba(36,60,255,0.3); }
-  .mr-lien svg { color:#58615B; flex:0 0 auto; }
-  .mr-lien:hover svg { color:#243CFF; }
-  .mr-lien b { font-weight:600; }
-
-  /* ——— Spinner ——— */
-  .mr-spin {
-    display:inline-block; width:16px; height:16px;
-    border:2px solid rgba(255,255,255,0.4); border-top-color:#FFFFFF;
-    border-radius:50%; animation:mr-tour 0.7s linear infinite;
-  }
-  @keyframes mr-tour { to { transform:rotate(360deg); } }
-
-  /* ——— Responsive ——— */
-  @media (max-width:500px) {
-    .mr-grille-2 { grid-template-columns:1fr; }
-    .mr-stats { grid-template-columns:1fr; }
-    .mr-rel-body { grid-template-columns:1fr; }
-  }
-  @media (prefers-reduced-motion:reduce) {
-    .mr-ecran-int { animation:none; }
-    .mr-barre, .mr-btn, .mr-btn svg, .mr-choix, .mr-choix::before, .mr-chemin, .mr-pas, .mr-slot { animation:none; transition:none; }
-  }
-</style>
-
-<script define:vars={{ _tel: site.phone, _telD: site.phoneDisplay, _email: site.email }}>
-  window.__LV = { tel: _tel, telD: _telD, email: _email };
-</script>
-
-<script>
-  // ——— Types ———
-  interface Tx {
-    id:string; d:string; v:number; t:string; lat:number; lon:number;
-    sb:number; p:number; st?:number; lots?:number; co?:string; cp?:string;
-  }
-  interface LM {
-    n:number; nParAn:number; q1:number; median:number; q3:number;
-    budgetPPM2:number; surfaceAuMedian:number;
-    position:'sous_q1'|'q1_q3'|'au_dessus_q3';
-  }
-  interface Etat {
-    step:number; situation:string|null; type:string|null;
-    secteurContraint:boolean|null; secteur:string|null;
-    budget:number|null; surface:number|null; preserves:string[];
-    decisionTension:string|null; lecture:LM|null;
-    prenom:string; contact:string; commentaire:string;
-    src:string;
-  }
-
-  // ——— Constantes ———
-  const PRIORITES = [
-    { id:'localisation', label:'La localisation',       output:'la localisation',        desc:'Secteur, proximité, ancrage géographique' },
-    { id:'surface',      label:"L'espace habitable",    output:"l'espace habitable",     desc:'Surface, volume, nombre de pièces' },
-    { id:'cadre',        label:'Le cadre de vie',       output:'le cadre de vie',        desc:'Jardin, extérieur, calme, environnement' },
-    { id:'etat',         label:"L'état du bien",        output:"l'état du bien",         desc:'Peu ou pas de travaux, emménagement facile' },
-    { id:'delai',        label:'La rapidité',           output:'la rapidité',            desc:'Trouver vite, disponibilité rapide' },
-    { id:'budget',       label:'La maîtrise du budget', output:'la maîtrise du budget',  desc:'Budget respecté, pas de dépassement' },
-  ] as const;
-  const SITUATIONS = [
-    { id:'premier',       label:'Premier achat',              desc:'Je deviens propriétaire pour la première fois' },
-    { id:'agrandissement',label:'Agrandissement',             desc:"La famille s'agrandit, nous avons besoin de plus d'espace" },
-    { id:'cadre',         label:'Changement de cadre de vie', desc:'Nouvelle étape, nouveau cadre' },
-    { id:'invest',        label:'Investissement locatif',     desc:'Pour louer et construire un patrimoine' },
-    { id:'rapprochement', label:'Rapprochement',              desc:'Pour être plus proche — famille, emploi, services' },
-    { id:'autre',         label:'Autre situation',            desc:'Mon projet est différent' },
-  ];
-  const TOTAL = 11;
-  const eur = new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0});
-  const num = new Intl.NumberFormat('fr-FR');
-
-  // ——— État ———
-  const E: Etat = {
-    step:0, situation:null, type:null, secteurContraint:null, secteur:null,
-    budget:null, surface:null, preserves:[], decisionTension:null, lecture:null,
-    prenom:'', contact:'', commentaire:'',
-    src: new URLSearchParams(window.location.search).get('src')??'',
-  };
-
-  // ——— DVF ———
-  let dvf: Tx[]|null = null;
-  let dvfP: Promise<Tx[]>|null = null;
-  function loadDvf(): Promise<Tx[]> {
-    if (dvf) return Promise.resolve(dvf);
-    if (dvfP) return dvfP;
-    dvfP = fetch('/data/dvf-secteur.json').then(r=>r.json()).then((d:Tx[])=>{ dvf=d; return d; });
-    return dvfP;
-  }
-
-  function analyser(data:Tx[], type:string|null, secteur:string|null, budget:number, surface:number): LM {
-    const propre = data.filter(t=>!t.lots||t.lots<=1);
-    const parType = (!type||type==='Indifferent') ? propre : propre.filter(t=>t.t===type);
-    const parZone = secteur==='chartres' ? parType.filter(t=>t.co==='Chartres') : parType;
-    const ppms = parZone.filter(t=>t.sb>0&&t.v>0).map(t=>t.v/t.sb).sort((a,b)=>a-b);
-    const n = parZone.length;
-    const q = (p:number) => {
-      if (!ppms.length) return 0;
-      const idx=(ppms.length-1)*p, lo=Math.floor(idx), hi=Math.ceil(idx);
-      return lo===hi?ppms[lo]:ppms[lo]*(hi-idx)+ppms[hi]*(idx-lo);
-    };
-    const q1=Math.round(q(0.25)), median=Math.round(q(0.5)), q3=Math.round(q(0.75));
-    const budgetPPM2 = surface>0 ? Math.round(budget/surface) : 0;
-    const surfaceAuMedian = median>0 ? Math.round(budget/median) : 0;
-    const position: LM['position'] = budgetPPM2<q1 ? 'sous_q1' : budgetPPM2>q3 ? 'au_dessus_q3' : 'q1_q3';
-    return { n, nParAn:Math.round(n/5), q1, median, q3, budgetPPM2, surfaceAuMedian, position };
-  }
-
-  // ——— Utilitaires ———
-  const lv = () => (window as any).__LV || {};
-  const flexibles = () => PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.id);
-  const zoneLbl = () => E.secteur==='chartres' ? 'Chartres intramuros' : 'la zone chartraine';
-  const typeLbl = () => E.type==='Maison' ? 'maison' : E.type==='Appartement' ? 'appartement' : 'bien';
-  const ICO_ARR = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-  let autoTimer: number | undefined;
-
-  function autoAdvance(n:number) {
-    if(autoTimer) window.clearTimeout(autoTimer);
-    const delay=window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:180;
-    autoTimer=window.setTimeout(()=>{ autoTimer=undefined; avancer(n); },delay);
-  }
-
-  // Indicateur de progression — points
-  function pas(n: number): string {
-    return `<div class="mr-passos" aria-hidden="true">${
-      Array.from({length:10},(_,i)=>`<span class="mr-pas${i<n-1?' mr-pas-done':i===n-1?' mr-pas-cur':''}"></span>`).join('')
-    }</div>`;
-  }
-
-  // ——— Barre + navigation ———
-  function avancer(n:number) {
-    E.step=n;
-    const b=document.getElementById('mr-barre');
-    if(b){ const p=n<=0?0:Math.round((n/TOTAL)*100); b.style.width=p+'%'; b.setAttribute('aria-valuenow',String(p)); }
-    const ret=document.getElementById('mr-retour');
-    if(ret) ret.hidden=n<=0||n>=TOTAL;
-    render(n);
-    window.scrollTo(0,0);
-  }
-  function reculer() {
-    if(autoTimer) { window.clearTimeout(autoTimer); autoTimer=undefined; }
-    if(E.step<=0) return;
-    let prev=E.step-1;
-    if(prev===8&&(!E.lecture||E.lecture.position!=='sous_q1')) prev=7;
-    avancer(prev);
-  }
-
-  // ——— Rendu ———
-  function render(s:number) {
-    const c=document.getElementById('mr-ecran'); if(!c) return;
-    c.innerHTML='';
-    const w=document.createElement('div'); w.className='mr-ecran-int';
-    w.innerHTML=html(s); c.appendChild(w);
-    bind(s,w);
-  }
-
-  function html(s:number): string {
-    switch(s){
-      case 0:  return h0();
-      case 1:  return h1();
-      case 2:  return h2();
-      case 3:  return h3();
-      case 4:  return h4();
-      case 5:  return h5();
-      case 6:  return h6();
-      case 7:  return h7();
-      case 8:  return h8();
-      case 9:  return h9();
-      case 10: return h10();
-      case 11: return h11();
-      default: return '';
-    }
-  }
-
-  // ——— Écrans HTML ———
-  function h0() {
-    return `
-      <p class="mr-kicker">LEVOIS · Parcours acquéreur</p>
-      <h1 class="mr-titre-xl">Votre recherche doit devenir une stratégie.</h1>
-      <p class="mr-lede">Ce parcours confronte budget, surface, secteur et priorités aux ventes réellement enregistrées. Vous obtenez une première lecture avant de transmettre la moindre coordonnée.</p>
-      <p class="mr-lede">À la fin, le site vous dira clairement ce qu’il peut conclure et ce qui exige encore un échange. Si vous choisissez de poursuivre, Mouaad partira de cette synthèse pour construire la stratégie avec vous.</p>
-      <p class="mr-lede-s">Gratuit · aucune coordonnée demandée avant votre première lecture.</p>
-      <div class="mr-actions"><button class="mr-btn" id="mr-start">Commencer ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h1() {
-    return `
-      ${pas(1)}
-      <p class="mr-kicker">Étape 1 sur 10</p>
-      <h2 class="mr-question">Qu'est-ce qui vous amène à chercher aujourd'hui&nbsp;?</h2>
-      <p class="mr-sous-q">Ce contexte aide Mouaad à comprendre votre projet avant même de vous rencontrer.</p>
-      <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
-      <div class="mr-grille" id="mr-sits">
-        ${SITUATIONS.map(s=>`<button class="mr-choix${E.situation===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
-      </div>
-    `;
-  }
-
-  function h2() {
-    const types=[
-      {id:'Maison',     label:'Une maison',                desc:'Avec ou sans jardin, individuelle ou de ville'},
-      {id:'Appartement',label:'Un appartement',             desc:'En immeuble, du studio au grand format'},
-      {id:'Indifferent',label:"Les deux m'intéressent",    desc:'Je suis ouvert selon les biens'},
-    ];
-    return `
-      ${pas(2)}
-      <p class="mr-kicker">Étape 2 sur 10</p>
-      <h2 class="mr-question">Quel type de bien recherchez-vous&nbsp;?</h2>
-      <p class="mr-sous-q">Ce choix oriente la lecture des données du marché chartrain.</p>
-      <p class="mr-auto-hint">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
-      <div class="mr-grille mr-grille-2" id="mr-types">
-        ${types.map(t=>`<button class="mr-choix${E.type===t.id?' actif':''}" data-id="${t.id}"><span class="mr-choix-lbl">${t.label}</span><span class="mr-choix-desc">${t.desc}</span></button>`).join('')}
-      </div>
-    `;
-  }
-
-  function h3() {
-    const sub = E.secteurContraint===true ? `
-      <p class="mr-sous-q" style="margin-top:0.25rem">Dans quel secteur prioritairement&nbsp;?</p>
-      <div class="mr-grille mr-grille-2" id="mr-sects">
-        ${[{id:'chartres',label:'Chartres intramuros',desc:'La ville de Chartres'},{id:'tout',label:"L'ensemble de la zone",desc:'Lèves, Mainvilliers, Lucé, Champhol, Le Coudray, Luisant et Chartres'}].map(s=>`<button class="mr-choix${E.secteur===s.id?' actif':''}" data-id="${s.id}"><span class="mr-choix-lbl">${s.label}</span><span class="mr-choix-desc">${s.desc}</span></button>`).join('')}
-      </div>` : '';
-    return `
-      ${pas(3)}
-      <p class="mr-kicker">Étape 3 sur 10</p>
-      <h2 class="mr-question">Votre secteur est-il défini par une contrainte précise&nbsp;?</h2>
-      <p class="mr-sous-q">Proximité école, travail, famille — ou liberté selon les biens.</p>
-      <p class="mr-auto-hint">Un choix suffit · si le secteur est précis, une seconde question apparaît.</p>
-      <div class="mr-grille" id="mr-cont">
-        <button class="mr-choix${E.secteurContraint===true?' actif':''}" data-id="oui"><span class="mr-choix-lbl">Oui, j'ai un secteur précis</span><span class="mr-choix-desc">Une contrainte géographique oriente ma recherche</span></button>
-        <button class="mr-choix${E.secteurContraint===false?' actif':''}" data-id="non"><span class="mr-choix-lbl">Je suis ouvert au secteur</span><span class="mr-choix-desc">Je choisis selon les biens, sans ancrage fixe</span></button>
-      </div>
-      ${sub}
-    `;
-  }
-
-  function h4() {
-    return `
-      ${pas(4)}
-      <p class="mr-kicker">Étape 4 sur 10</p>
-      <h2 class="mr-question">Quel est votre budget global&nbsp;?</h2>
-      <p class="mr-sous-q">Le montant que vous ne dépasserez pas — frais de notaire et éventuels travaux inclus, quelles que soient les circonstances.</p>
-      <div class="mr-saisie">
-        <label class="mr-label" for="mr-bgt">Budget total</label>
-        <div class="mr-input-wrap">
-          <input id="mr-bgt" type="number" inputmode="numeric" class="mr-input" placeholder="280 000" value="${E.budget??''}" min="1" max="9999999"/>
-          <span class="mr-input-unite">€</span>
-        </div>
-        <p class="mr-input-aide">Votre budget sera positionné dans la distribution des prix réels du marché chartrain.</p>
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.budget?'disabled':''}>Continuer ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h5() {
-    return `
-      ${pas(5)}
-      <p class="mr-kicker">Étape 5 sur 10</p>
-      <h2 class="mr-question">Quelle surface habitable visez-vous&nbsp;?</h2>
-      <p class="mr-sous-q">La surface minimale qui correspondrait à votre projet de vie. Pas l'idéal — le minimum acceptable.</p>
-      <div class="mr-saisie">
-        <label class="mr-label" for="mr-surf">Surface minimale souhaitée</label>
-        <div class="mr-input-wrap">
-          <input id="mr-surf" type="number" inputmode="numeric" class="mr-input" placeholder="80" value="${E.surface??''}" min="1" max="1000"/>
-          <span class="mr-input-unite">m²</span>
-        </div>
-        <p class="mr-input-aide">Cette surface croisée avec votre budget révèle votre position réelle dans le marché.</p>
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.surface?'disabled':''}>Voir la lecture de marché ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h6() {
-    if(!E.lecture) return `<p class="mr-lede">Chargement des données…</p>`;
-    const l=E.lecture;
-    const zlbl = E.secteur==='chartres'?'Chartres intramuros':'la zone chartraine';
-    const tlbl = E.type==='Maison'?'maisons':E.type==='Appartement'?'appartements':'biens';
-    // Règle de prix
-    const rangeTotal=l.q3*1.25-l.q1*0.8, base=l.q1*0.8;
-    const pct=(v:number)=>Math.max(0,Math.min(100,((v-base)/rangeTotal)*100)).toFixed(1);
-    const iL=pct(l.q1), iW=(((l.q3-l.q1)/rangeTotal)*100).toFixed(1), mP=pct(l.median), bP=pct(l.budgetPPM2);
-    let signal='';
-    if(l.position==='sous_q1') signal=`<div class="mr-signal warn"><span class="mr-signal-ico">⚠</span><span>Votre budget rapporté à ${num.format(E.surface!)} m² correspond à ${num.format(l.budgetPPM2)} €/m² — en dessous du premier quartile des prix constatés. Le marché offre typiquement ${num.format(l.surfaceAuMedian)} m² pour ${eur.format(E.budget!)} dans cette zone. La prochaine étape explore ce que cela implique.</span></div>`;
-    else if(l.position==='q1_q3') signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget est cohérent avec les prix constatés. À ${num.format(l.budgetPPM2)} €/m², vous êtes dans la fourchette centrale du marché.</span></div>`;
-    else signal=`<div class="mr-signal ok"><span class="mr-signal-ico">✓</span><span>Votre budget vous positionne dans le quartile supérieur. À ${num.format(l.budgetPPM2)} €/m², vous dépassez 75 % des prix constatés dans cette zone sur les cinq dernières années.</span></div>`;
-    return `
-      ${pas(6)}
-      <p class="mr-kicker">Étape 6 sur 10</p>
-      <h2 class="mr-question">Ce que le marché dit de votre projet</h2>
-      <p class="mr-sous-q">Données issues des DVF — transactions réellement enregistrées dans la zone.</p>
-      <div class="mr-pos-hero">
-        <span class="mr-pos-badge">Votre position dans le marché</span>
-        <div class="mr-pos-row">
-          <span class="mr-pos-val">${num.format(l.budgetPPM2)}</span>
-          <span class="mr-pos-unit">€/m²</span>
-        </div>
-        <p class="mr-pos-ctx">Budget de ${eur.format(E.budget!)} pour ${num.format(E.surface!)} m² dans ${zlbl}</p>
-      </div>
-      <div class="mr-carte">
-        <p class="mr-carte-titre">Marché des ${tlbl} · ${zlbl}</p>
-        <div class="mr-stats">
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.n)}</span><span class="mr-stat-l">transactions sur 5 ans</span></div>
-          <div class="mr-stat"><span class="mr-stat-v">~${num.format(l.nParAn)}</span><span class="mr-stat-l">ventes par an</span></div>
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.q1)} – ${num.format(l.q3)}</span><span class="mr-stat-l">fourchette centrale (€/m²)</span></div>
-          <div class="mr-stat"><span class="mr-stat-v">${num.format(l.median)}</span><span class="mr-stat-l">repère central (€/m²)</span></div>
-        </div>
-        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.82rem;color:#58615B;margin:0 0 0.5rem">La moitié des ventes se situe entre ${num.format(l.q1)} et ${num.format(l.q3)} €/m².</p>
-        <div class="mr-regle">
-          <div class="mr-regle-piste">
-            <div class="mr-regle-iqr" style="left:${iL}%;width:${iW}%"></div>
-            <div class="mr-regle-med" style="left:${mP}%"></div>
-            <div class="mr-regle-bud" style="left:${bP}%" data-lbl="Votre budget"></div>
-          </div>
-          <div class="mr-regle-labs"><span>${num.format(l.q1)} €/m²</span><span>Médiane ${num.format(l.median)}</span><span>${num.format(l.q3)} €/m²</span></div>
-        </div>
-        ${signal}
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Définir mes priorités ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h7() {
-    const c=E.preserves.length;
-    return `
-      ${pas(7)}
-      <p class="mr-kicker">Étape 7 sur 10</p>
-      <h2 class="mr-question">Ce que vous souhaitez préserver en priorité</h2>
-      <p class="mr-sous-q">Sélectionnez 1 à 3 éléments. Ce que vous ne sélectionnez pas restera flexible dans la recherche.</p>
-      <div class="mr-slot-track" id="mr-slots" aria-hidden="true">
-        <span class="mr-slot${c>=1?' mr-slot--filled':''}"></span>
-        <span class="mr-slot${c>=2?' mr-slot--filled':''}"></span>
-        <span class="mr-slot${c>=3?' mr-slot--filled':''}"></span>
-      </div>
-      <p class="mr-pr-cpt"><span id="mr-prc">${c}</span> / 3 sélectionné${c>1?'s':''}</p>
-      <div class="mr-grille${c>=3?' mr-grille--max':''}" id="mr-prs">
-        ${PRIORITES.map(p=>`<button class="mr-choix${E.preserves.includes(p.id)?' actif':''}" data-id="${p.id}"><span class="mr-choix-lbl">${p.label}</span><span class="mr-choix-desc">${p.desc}</span></button>`).join('')}
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${c===0?'disabled':''}>Continuer ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h8() {
-    if(!E.lecture) return h9();
-    const l=E.lecture;
-    const bN=Math.round(E.surface!*l.median), delta=E.surface!-l.surfaceAuMedian;
-    const chemins=[
-      {id:'localisation',titre:'Si vous préservez la localisation',
-       plus:`Votre ancrage géographique, votre quotidien, vos habitudes.`,
-       moins:`${delta>0?num.format(Math.abs(delta))+' m² en moyenne':''} — le marché offre typiquement ${num.format(l.surfaceAuMedian)} m² pour ${eur.format(E.budget!)} dans ${zoneLbl()}.`},
-      {id:'surface',titre:'Si vous préservez la surface',
-       plus:`L'espace de vie que vous imaginez pour votre projet — ${num.format(E.surface!)} m².`,
-       moins:`Peut-être votre secteur le plus précis. Un ${typeLbl()} de ${num.format(E.surface!)} m² dans cette zone correspond à un budget autour de ${eur.format(bN)}.`},
-      {id:'les_deux',titre:'Si vous tenez les deux',
-       plus:`La qualité complète de votre projet, sans transiger.`,
-       moins:`La facilité et le délai. Ce profil existe dans la zone mais se présente moins fréquemment — cela demande du temps et une réactivité forte lorsqu'un bien arrive.`},
-    ];
-    return `
-      ${pas(8)}
-      <p class="mr-kicker">Étape 8 sur 10</p>
-      <h2 class="mr-question">Une décision à prendre</h2>
-      <p class="mr-tension-intro">Votre budget, rapporté à votre surface cible, vous positionne en dessous du premier quartile des prix constatés dans ${zoneLbl()}. Ce n'est pas un obstacle — c'est une réalité à arbitrer. Trois chemins existent. Chacun a un prix.</p>
-      <p class="mr-auto-hint">Choisissez un chemin pour afficher directement votre synthèse.</p>
-      <div id="mr-chem">
-        ${chemins.map(c=>`
-          <button class="mr-chemin${E.decisionTension===c.id?' actif':''}" data-id="${c.id}">
-            <p class="mr-ch-titre">${c.titre}</p>
-            <p class="mr-ch-plus">Ce que vous choisissez :</p><p class="mr-ch-txt">${c.plus}</p>
-            <p class="mr-ch-moins">Ce à quoi vous renoncez :</p><p class="mr-ch-txt">${c.moins}</p>
-          </button>`).join('')}
-      </div>
-      <div class="mr-actions" style="margin-top:1.25rem">
-        <button class="mr-btn-ghost" id="mr-pass">Passer cette étape</button>
-      </div>
-    `;
-  }
-
-  function h9() {
-    const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
-    const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
-    const decMap:Record<string,string>={
-      localisation:'Préserver la localisation, accepter une surface adaptée au marché',
-      surface:'Préserver la surface, explorer une zone plus large si nécessaire',
-      les_deux:'Tenir les deux — recherche plus longue, réactivité forte',
-    };
-    const decHtml=E.decisionTension?`<hr class="mr-sep"/><p class="mr-rel-flex-lbl">Décision prise</p><p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${decMap[E.decisionTension]??''}</p>`:'';
-    const arb=E.decisionTension==='les_deux'?`<hr class="mr-sep"/><p class="mr-rel-flex-lbl">Arbitrage ouvert</p><p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0">La tension budget / surface reste à clarifier avec Mouaad — notamment la capacité éventuelle de travaux.</p>`:'';
-    return `
-      ${pas(9)}
-      <p class="mr-kicker">Étape 9 sur 10</p>
-      <h2 class="mr-question">Votre manière de décider</h2>
-      <p class="mr-sous-q">Voici ce que les données et vos choix permettent déjà de comprendre. Vous pouvez reculer pour corriger.</p>
-      <div class="mr-relecture">
-        <div class="mr-rel-header">
-          <p class="mr-rel-eyebrow">Synthèse de votre parcours</p>
-        </div>
-        <div class="mr-rel-body">
-          <div>
-            <p class="mr-rel-titre">Vous avez choisi de préserver en priorité :</p>
-            <ul class="mr-rel-liste">${pL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
-          </div>
-          <div>
-            <p class="mr-rel-flex-lbl">Flexible sur</p>
-            <ul class="mr-rel-liste">${fL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
-          </div>
-        </div>
-        ${decHtml}${arb}
-        <p class="mr-rel-note"><strong>Le calcul s’arrête ici.</strong> Le terrain, les biens disponibles, votre capacité réelle à arbitrer et le bon rythme de recherche exigent maintenant un regard humain.</p>
-      </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Passer à l’analyse personnalisée ${ICO_ARR}</button></div>
-    `;
-  }
-
-  function h10() {
-    return `
-      ${pas(10)}
-      <p class="mr-kicker">Étape 10 sur 10</p>
-      <h2 class="mr-question">Transformer cette lecture en stratégie&nbsp;?</h2>
-      <p class="mr-sous-q">Mouaad recevra toute votre synthèse. Lors de l’échange, il pourra confronter vos choix aux biens disponibles, expliquer les scénarios possibles et vous laisser décider en connaissance de cause.</p>
-      <form id="mr-form" novalidate autocomplete="off">
-        <input type="text" name="site_web" class="mr-hp" tabindex="-1" aria-hidden="true" autocomplete="off"/>
-        <div class="mr-cg">
-          <label class="mr-label" for="mr-prenom">Prénom</label>
-          <input id="mr-prenom" name="prenom" type="text" class="mr-ci" placeholder="Votre prénom" value="${E.prenom}" autocomplete="given-name" required/>
-        </div>
-        <div class="mr-cg">
-          <label class="mr-label" for="mr-contact">Téléphone ou e-mail</label>
-          <input id="mr-contact" name="contact" type="text" class="mr-ci" placeholder="07 XX XX XX XX ou nom@exemple.fr" value="${E.contact}"/>
-          <p class="mr-ci-aide">L'un ou l'autre suffit pour que Mouaad vous recontacte.</p>
-        </div>
-        <div class="mr-cg">
-          <label class="mr-label" for="mr-comm">Un mot sur votre projet <span style="color:#58615B;font-weight:400">(facultatif)</span></label>
-          <textarea id="mr-comm" name="commentaire" class="mr-ci mr-ci-ta" placeholder="Précision, délai, question…">${E.commentaire}</textarea>
-        </div>
-        <div class="mr-consent">
-          <input type="checkbox" id="mr-cb" name="consent"/>
-          <label class="mr-consent-lbl" for="mr-cb">J'accepte d'être recontacté par Mouaad Boullourou au sujet de ma recherche immobilière.</label>
-        </div>
-        <div id="mr-err" hidden></div>
-        <div class="mr-actions">
-          <button type="submit" class="mr-btn" id="mr-sub" disabled>Demander mon analyse personnalisée ${ICO_ARR}</button>
-        </div>
-      </form>
-    `;
-  }
-
-  function h11() {
-    const lv_=lv();
-    return `
-      <div class="mr-conc-done" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-          <path d="M5 11.5l4.5 4.5L17 6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-      <p class="mr-kicker">Lecture transmise</p>
-      <h2 class="mr-titre">Votre recherche a changé de nature.</h2>
-      <p class="mr-conc-pivot">Au début de ce parcours, vous aviez une idée de votre futur bien. À présent, nous comprenons ce qui compte réellement pour vous, ce qui peut évoluer et les décisions qui restent à prendre.</p>
-      <p class="mr-conc-corps">Votre recherche n'est plus une liste de critères. Elle est devenue une base de décision. Mouaad reprendra cette lecture avec vous pour comparer les options, leurs conséquences et le rythme le plus cohérent.</p>
-      <p class="mr-conc-corps">Vous garderez la décision. Si vous choisissez de poursuivre, il pourra ensuite activer le réseau SAFTI et vous signaler certains biens avant leur diffusion lorsqu'ils correspondent à votre projet.</p>
-      <div class="mr-conc-liens">
-        <a class="mr-lien" href="tel:${lv_.tel||'+33781380121'}">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M3.5 2.5h2l1 3-1.5 1a8 8 0 0 0 3.5 3.5l1-1.5 3 1v2A1.5 1.5 0 0 1 11 13 8 8 0 0 1 2 4a1.5 1.5 0 0 1 1.5-1.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Appeler directement · <b>${lv_.telD||'07 81 38 01 21'}</b></span>
-        </a>
-        <a class="mr-lien" href="/">Retour à l'accueil</a>
-      </div>
-    `;
-  }
-
-  // ——— Attachement des événements ———
-  function bind(s:number, el:HTMLElement) {
-    if(s===0)  b0(el);
-    if(s===1)  b1(el);
-    if(s===2)  b2(el);
-    if(s===3)  b3(el);
-    if(s===4)  b4(el);
-    if(s===5)  b5(el);
-    if(s===6)  b6(el);
-    if(s===7)  b7(el);
-    if(s===8)  b8(el);
-    if(s===9)  b9(el);
-    if(s===10) b10(el);
-  }
-
-  function b0(el:HTMLElement) {
-    el.querySelector('#mr-start')?.addEventListener('click',()=>{ loadDvf(); avancer(1); });
-  }
-
-  function choix(el:HTMLElement, sel:string, key:string, cb?:(id:string)=>void) {
-    el.querySelectorAll(`${sel} .mr-choix`).forEach(b=>{
-      b.addEventListener('click',()=>{
-        (E as any)[key]=(b as HTMLElement).dataset.id??null;
-        el.querySelectorAll(`${sel} .mr-choix`).forEach(x=>x.classList.remove('actif'));
-        b.classList.add('actif');
-        const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-        if(btn) btn.disabled=!(E as any)[key];
-        cb?.((b as HTMLElement).dataset.id??'');
-      });
-    });
-  }
-
-  function b1(el:HTMLElement) {
-    choix(el,'#mr-sits','situation',()=>autoAdvance(2));
-  }
-  function b2(el:HTMLElement) {
-    choix(el,'#mr-types','type',()=>autoAdvance(3));
-  }
-  function b3(el:HTMLElement) {
-    el.querySelectorAll('#mr-cont .mr-choix').forEach(b=>{
-      b.addEventListener('click',()=>{
-        E.secteurContraint=(b as HTMLElement).dataset.id==='oui';
-        if(!E.secteurContraint) E.secteur='tout';
-        else E.secteur=null;
-        render(3);
-        if(!E.secteurContraint) autoAdvance(4);
-      });
-    });
-    el.querySelectorAll('#mr-sects .mr-choix')?.forEach(b=>{
-      b.addEventListener('click',()=>{
-        E.secteur=(b as HTMLElement).dataset.id??null;
-        el.querySelectorAll('#mr-sects .mr-choix').forEach(x=>x.classList.remove('actif'));
-        b.classList.add('actif');
-        autoAdvance(4);
-      });
-    });
-  }
-  function numInput(el:HTMLElement, id:string, key:string, min=1) {
-    const inp=el.querySelector(id) as HTMLInputElement;
-    const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-    inp?.addEventListener('input',()=>{
-      const v=Number(inp.value);
-      (E as any)[key]=v>=min?v:null;
-      if(btn) btn.disabled=!(E as any)[key];
-    });
-    return inp;
-  }
-  function b4(el:HTMLElement) {
-    numInput(el,'#mr-bgt','budget',1);
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>E.budget&&avancer(5));
-  }
-  function b5(el:HTMLElement) {
-    numInput(el,'#mr-surf','surface',1);
-    el.querySelector('#mr-nxt')?.addEventListener('click',async()=>{
-      if(!E.surface||!E.budget) return;
-      const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
-      if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Calcul en cours…`; }
-      const data=await loadDvf();
-      E.lecture=analyser(data,E.type,E.secteur,E.budget,E.surface);
-      avancer(6);
-    });
-  }
-  function b6(el:HTMLElement) {
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(7));
-  }
-  function b7(el:HTMLElement) {
-    function syncPr() {
-      const c=E.preserves.length;
-      const prc=el.querySelector('#mr-prc'); if(prc) prc.textContent=String(c);
-      const btn=el.querySelector('#mr-nxt') as HTMLButtonElement; if(btn) btn.disabled=c===0;
-      el.querySelectorAll('#mr-slots .mr-slot').forEach((s,i)=>s.classList.toggle('mr-slot--filled',i<c));
-      const grille=el.querySelector('#mr-prs'); if(grille) grille.classList.toggle('mr-grille--max',c>=3);
-    }
-    el.querySelectorAll('#mr-prs .mr-choix').forEach(b=>{
-      b.addEventListener('click',()=>{
-        const id=(b as HTMLElement).dataset.id!;
-        if(E.preserves.includes(id)){ E.preserves=E.preserves.filter(x=>x!==id); b.classList.remove('actif'); }
-        else if(E.preserves.length<3){ E.preserves.push(id); b.classList.add('actif'); }
-        syncPr();
-      });
-    });
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>{
-      if(E.preserves.length===0) return;
-      avancer(E.lecture&&E.lecture.position==='sous_q1'?8:9);
-    });
-  }
-  function b8(el:HTMLElement) {
-    el.querySelectorAll('#mr-chem .mr-chemin').forEach(b=>{
-      b.addEventListener('click',()=>{
-        E.decisionTension=(b as HTMLElement).dataset.id??null;
-        el.querySelectorAll('#mr-chem .mr-chemin').forEach(x=>x.classList.remove('actif'));
-        b.classList.add('actif');
-        autoAdvance(9);
-      });
-    });
-    el.querySelector('#mr-pass')?.addEventListener('click',()=>avancer(9));
-  }
-  function b9(el:HTMLElement) {
-    el.querySelector('#mr-nxt')?.addEventListener('click',()=>avancer(10));
-  }
-  function b10(el:HTMLElement) {
-    const prenom=el.querySelector('#mr-prenom') as HTMLInputElement;
-    const contact=el.querySelector('#mr-contact') as HTMLInputElement;
-    const comm=el.querySelector('#mr-comm') as HTMLTextAreaElement;
-    const cb=el.querySelector('#mr-cb') as HTMLInputElement;
-    const btn=el.querySelector('#mr-sub') as HTMLButtonElement;
-    const valider=()=>{
-      E.prenom=prenom?.value.trim()??'';
-      E.contact=contact?.value.trim()??'';
-      E.commentaire=comm?.value.trim()??'';
-      if(btn) btn.disabled=!E.prenom||!E.contact||!cb?.checked;
-    };
-    prenom?.addEventListener('input',valider);
-    contact?.addEventListener('input',valider);
-    cb?.addEventListener('change',valider);
-    el.querySelector('#mr-form')?.addEventListener('submit',async(e:Event)=>{
-      e.preventDefault(); valider();
-      if(!E.prenom||!E.contact||!cb.checked) return;
-      const errEl=el.querySelector('#mr-err') as HTMLElement;
-      if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Transmission…`; }
-      const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
-      const fL=PRIORITES.filter(p=>!E.preserves.includes(p.id)).map(p=>p.output);
-      const hp=(el.querySelector('[name=site_web]') as HTMLInputElement)?.value??'';
-      const payload={
-        source:'ma-recherche', src:E.src, site_web:hp,
-        prenom:E.prenom, contact:E.contact, commentaire:E.commentaire, consent:true,
-        situation:E.situation, type:E.type, secteur:E.secteur, secteurContraint:E.secteurContraint,
-        budget:E.budget, surface:E.surface,
-        preserves:E.preserves, preservesLabels:pL, flexibles:flexibles(), flexiblesLabels:fL,
-        decisionTension:E.decisionTension, lecture:E.lecture,
+      const activate = (name, focusTab = false) => {
+        tabs.forEach((tab) => {
+          const active = tab.getAttribute('data-state-target') === name;
+          tab.setAttribute('aria-selected', String(active));
+          tab.setAttribute('tabindex', active ? '0' : '-1');
+          if (active && focusTab) tab.focus();
+        });
+        panels.forEach((panel) => panel.setAttribute('data-active', String(panel.getAttribute('data-demo-panel') === name)));
+        const activePanel = panels.find((panel) => panel.getAttribute('data-demo-panel') === name);
+        if (activePanel && !focusTab) activePanel.querySelector('h2')?.focus?.();
       };
-      try {
-        const r=await fetch('/api/recherche',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
-        const d=await r.json() as {ok:boolean;message?:string};
-        if(!d.ok) throw new Error(d.message??'Erreur');
-        avancer(11);
-      } catch(err:any) {
-        if(errEl){ errEl.hidden=false; errEl.className='mr-erreur';
-          errEl.textContent=err.message?.includes('dry-run')
-            ?`Configuration en cours — vos informations ont bien été reçues. Vous pouvez aussi écrire à ${lv().email||'mouaad@levois.fr'}.`
-            :`L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à ${lv().email||'mouaad@levois.fr'}.`; }
-        if(btn){ btn.disabled=false; btn.innerHTML=`Réessayer ${ICO_ARR}`; }
-      }
-    });
-  }
 
-  // ——— Init ———
-  document.getElementById('mr-retour')?.addEventListener('click',reculer);
-  avancer(0);
-</script>
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activate(tab.getAttribute('data-state-target')));
+        tab.addEventListener('keydown', (event) => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+          activate(tabs[nextIndex].getAttribute('data-state-target'), true);
+        });
+      });
+
+      root.querySelectorAll('[data-go-state]').forEach((control) => control.addEventListener('click', () => activate(control.getAttribute('data-go-state'))));
+
+      const usageTranslator = root.querySelector('#usage-translator');
+      root.querySelectorAll('[data-usage]').forEach((choice) => {
+        choice.addEventListener('click', () => {
+          root.querySelectorAll('[data-usage]').forEach((item) => item.setAttribute('aria-pressed', 'false'));
+          choice.setAttribute('aria-pressed', 'true');
+          const usage = choice.getAttribute('data-usage');
+          if (usageTranslator) {
+            usageTranslator.hidden = false;
+            const message = usage === 'Je ne sais pas encore'
+              ? 'Vous ne savez pas encore quel usage doit primer. Impossible à conclure pour l’instant : observer les moments où le logement actuel vous contraint devient la prochaine vérification.'
+              : `Vous avez relié le projet à un usage concret : ${usage?.toLocaleLowerCase('fr-FR')}. Nous pouvons maintenant examiner la forme de logement comme une hypothèse de solution, pas comme une conclusion.`;
+            const paragraph = usageTranslator.querySelector('p');
+            if (paragraph) paragraph.textContent = message;
+          }
+        });
+      });
+
+      const tradeoff = root.querySelector('#reading-tradeoff');
+      const arbitrageNote = root.querySelector('#arbitrage-note');
+      root.querySelectorAll('[data-arbitrage]').forEach((choice) => {
+        choice.addEventListener('click', () => {
+          root.querySelectorAll('[data-arbitrage]').forEach((item) => item.setAttribute('aria-pressed', 'false'));
+          choice.setAttribute('aria-pressed', 'true');
+          const keepPlace = choice.getAttribute('data-arbitrage') === 'preserver';
+          const text = keepPlace
+            ? 'Vous choisissez de garder le repère de trajet et de comparer plusieurs réponses à l’usage de travail.'
+            : 'Vous choisissez de garder l’usage de travail prioritaire et de tester un repère géographique différent.';
+          if (arbitrageNote) {
+            arbitrageNote.hidden = false;
+            const paragraph = arbitrageNote.querySelector('p');
+            if (paragraph) paragraph.textContent = `${text} Cela organise une vérification ; ce n’est pas une décision définitive.`;
+          }
+          if (tradeoff) tradeoff.textContent = keepPlace
+            ? 'Vous pourriez tester plusieurs manières d’obtenir un espace de travail tout en gardant le repère de trajet. Ce compromis n’est pas une décision définitive.'
+            : 'Vous pourriez tester un repère géographique différent pour préserver un espace de travail réellement praticable. Ce compromis n’est pas une décision définitive.';
+        });
+      });
+    }
+  </script>
+</CahierLayout>

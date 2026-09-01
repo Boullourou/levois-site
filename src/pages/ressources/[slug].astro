@@ -1,11 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import CahierLayout from '../../layouts/CahierLayout.astro';
 import { resources } from '../../data/resources';
 import { getResourceContent } from '../../data/resourceContent';
 import { getSituation } from '../../data/situations';
 
 export function getStaticPaths() {
-  return resources.map((r) => ({ params: { slug: r.slug }, props: { resource: r } }));
+  return resources.map((resource) => ({ params: { slug: resource.slug }, props: { resource } }));
 }
 
 const { resource } = Astro.props;
@@ -25,91 +26,233 @@ const articleSchema = {
   about: ['vente immobilière', 'décision immobilière', 'bassin chartrain'],
   spatialCoverage: { '@type': 'Place', name: 'Bassin chartrain, Eure-et-Loir, France' },
 };
+const isPilot = resource.slug === 'annonce-vue-peu-de-contacts';
 ---
 
-<Layout title={resource.titre} description={`${resource.question} ${resource.benefice}`}>
-  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
-  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+{isPilot ? (
+  <CahierLayout
+    title={resource.titre}
+    description={`${resource.question} ${resource.benefice}`}
+    canonicalPath={`/ressources/${resource.slug}`}
+    pageClass="cc-resource-page"
+    schema={articleSchema}
+  >
+    <div class="cc-shell" data-funnel-demo>
+      <header class="cc-resource-head">
+        <div class="cc-resource-head__copy">
+          <p class="cc-meta cc-signal">Ressource pilote · vendeur · lecture prudente</p>
+          <h1 class="cc-display" style="margin-top:18px">{resource.question}</h1>
+          <p>{resource.benefice}</p>
+        </div>
+        <aside class="cc-resource-head__answer" aria-label="Réponse directe">
+          <strong>La réponse directe</strong>
+          <p>{contenu.reponseCourte}</p>
+          <span class="cc-meta">Réponse avant activité · aucune coordonnée</span>
+        </aside>
+      </header>
 
-    <header class="mb-10">
-      <p class="eyebrow mb-4">Ressource · {resource.duree}</p>
-      <h1 class="text-display text-encre mb-5">{resource.titre}</h1>
-      <p class="font-display text-xl md:text-2xl text-brun italic" style="font-variation-settings: 'opsz' 30;">
-        {resource.question}
-      </p>
-    </header>
+      <section class="cc-funnel" aria-labelledby="funnel-title">
+        <div class="cc-funnel__steps">
+          <p class="cc-meta cc-signal">Entonnoir prudent</p>
+          <h2 id="funnel-title" class="cc-title" style="margin-top:18px">À quelle étape l’intérêt semble-t-il se resserrer&nbsp;?</h2>
+          <p>Choisissez le premier constat que vous pouvez réellement établir. L’activité ne donne ni score, ni diagnostic certain.</p>
+          <div class="cc-funnel-list" aria-label="Choisir un constat">
+            <button class="cc-funnel-step" type="button" aria-pressed="false" data-funnel-choice="diffusion"><span>1</span><strong>L’annonce apparaît peu dans les recherches</strong><span>Diffusion</span></button>
+            <button class="cc-funnel-step" type="button" aria-pressed="true" data-funnel-choice="ouverture"><span>2</span><strong>Elle apparaît, mais elle est peu ouverte</strong><span>Ouverture</span></button>
+            <button class="cc-funnel-step" type="button" aria-pressed="false" data-funnel-choice="contact"><span>3</span><strong>Elle est ouverte, mais suscite peu de contacts</strong><span>Contact</span></button>
+            <button class="cc-funnel-step" type="button" aria-pressed="false" data-funnel-choice="visite"><span>4</span><strong>Les contacts existent, mais les visites n’avancent pas</strong><span>Visite</span></button>
+            <button class="cc-funnel-step" type="button" aria-pressed="false" data-funnel-choice="inconnu"><span>?</span><strong>Je n’ai pas les chiffres nécessaires</strong><span>À vérifier</span></button>
+          </div>
+        </div>
 
-    <!-- Réponse courte immédiatement visible -->
-    <div class="carte bg-argile-pale/40 p-6 md:p-7 mb-12">
-      <p class="font-sans text-sm uppercase tracking-widest text-argile mb-3">La réponse courte</p>
-      <p class="font-sans text-body-lg text-encre leading-relaxed">{contenu.reponseCourte}</p>
+        <div class="cc-funnel__result" aria-live="polite">
+          <p class="cc-meta cc-signal">Votre grille de lecture</p>
+          <h2 class="cc-subtitle" style="margin-top:18px" id="funnel-result-title">La première impression mérite d’être vérifiée.</h2>
+          <dl class="cc-funnel-output">
+            <div><dt>Ce qui est observé</dt><dd id="funnel-observed">L’annonce apparaît dans la liste, mais elle est peu ouverte.</dd></div>
+            <div><dt>Ce que cela pourrait signifier</dt><dd id="funnel-meaning">La vignette, le titre ou le prix affiché ne soutient peut-être pas la comparaison immédiate.</dd></div>
+            <div><dt>Autres explications</dt><dd id="funnel-alternative">Le classement du portail, la qualité de la mesure ou la recherche reproduite peuvent aussi déplacer le constat.</dd></div>
+            <div><dt>Information manquante</dt><dd id="funnel-missing">Le nombre d’apparitions et le taux d’ouverture mesurés sur une même période.</dd></div>
+            <div><dt>Prochaine vérification</dt><dd id="funnel-next">Reproduire la recherche type sur téléphone et comparer la vignette aux annonces voisines, sans modifier plusieurs éléments à la fois.</dd></div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="cc-resource-body" aria-labelledby="resource-explain-title">
+        <aside class="cc-resource-body__aside">
+          <p class="cc-meta cc-signal">Limite de méthode</p>
+          <p class="cc-note" style="margin-top:22px">{contenu.limite}</p>
+          <p style="margin-top:24px;font-size:13px">Une période d’observation de dix à quatorze jours est un repère proposé dans le contenu existant, pas une règle universelle.</p>
+        </aside>
+        <div class="cc-resource-body__copy">
+          <h2 id="resource-explain-title" class="cc-title">Même silence, causes différentes.</h2>
+          {contenu.explication.map((paragraph) => <p>{paragraph}</p>)}
+          <div class="cc-note" style="margin-top:38px">
+            <strong>{contenu.exemple.titre}.</strong> {contenu.exemple.texte}
+          </div>
+          <div class="cc-demo-actions">
+            <a class="cc-button cc-button--primary" href="/audit-annonce">Questionner mon annonce</a>
+            <a class="cc-button" href="/contact?src=ressource-peu-contacts">Reprendre la lecture avec Mouaad</a>
+          </div>
+          <p class="cc-meta" style="margin-top:34px;color:var(--cc-muted)">Responsable éditorial : Mouaad Boullourou · vérification : 1er septembre 2026 · contenu sans conclusion automatique</p>
+        </div>
+      </section>
     </div>
 
-    <!-- Explication -->
-    <section class="space-y-5 mb-12" aria-label="Explication">
-      {contenu.explication.map((p) => (
-        <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{p}</p>
-      ))}
-    </section>
+    <script>
+      const funnel = document.querySelector('[data-funnel-demo]');
+      const readings = {
+        diffusion: {
+          title: 'La diffusion mérite d’être vérifiée.',
+          observed: 'Vous indiquez que l’annonce apparaît peu dans les recherches reproduites.',
+          meaning: 'Le support, les filtres ou la position dans les listes peuvent limiter l’exposition.',
+          alternative: 'La recherche reproduite peut ne pas correspondre à celle des acheteurs ; la période observée peut aussi être trop courte.',
+          missing: 'Le nombre d’apparitions sur une période définie et les filtres exacts utilisés.',
+          next: 'Reproduire une recherche réaliste, noter la position et vérifier les filtres avant de modifier l’annonce.',
+        },
+        ouverture: {
+          title: 'La première impression mérite d’être vérifiée.',
+          observed: 'L’annonce apparaît dans la liste, mais elle est peu ouverte.',
+          meaning: 'La vignette, le titre ou le prix affiché ne soutient peut-être pas la comparaison immédiate.',
+          alternative: 'Le classement du portail, la qualité de la mesure ou la recherche reproduite peuvent aussi déplacer le constat.',
+          missing: 'Le nombre d’apparitions et le taux d’ouverture mesurés sur une même période.',
+          next: 'Reproduire la recherche type sur téléphone et comparer la vignette aux annonces voisines, sans modifier plusieurs éléments à la fois.',
+        },
+        contact: {
+          title: 'La promesse complète mérite d’être relue.',
+          observed: 'L’annonce est ouverte, mais elle produit peu de contacts.',
+          meaning: 'Les photos suivantes, la description, la localisation ou la comparaison avec les alternatives peuvent affaiblir l’intérêt.',
+          alternative: 'Le mode de contact, la saison ou des informations pratiques absentes peuvent aussi intervenir.',
+          missing: 'Les éléments réellement consultés, les questions reçues et des alternatives comparables au même moment.',
+          next: 'Relire l’annonce ouverte comme un acheteur et repérer l’endroit précis où la promesse devient moins claire.',
+        },
+        visite: {
+          title: 'Les retours de visite méritent d’être structurés.',
+          observed: 'Des contacts et des visites existent, mais ils ne débouchent pas encore sur une suite.',
+          meaning: 'Un écart peut apparaître entre la promesse de l’annonce et l’expérience réelle du bien.',
+          alternative: 'Une objection isolée peut relever d’une sensibilité personnelle ou d’un projet acheteur incompatible.',
+          missing: 'Des retours recueillis de la même manière après chaque visite et les motifs qui se répètent.',
+          next: 'Noter séparément faits, interprétations et questions après chaque visite avant de décider quoi modifier.',
+        },
+        inconnu: {
+          title: 'L’information manque encore pour localiser la perte.',
+          observed: 'Les chiffres de vues, d’ouvertures ou de contacts ne sont pas disponibles ou comparables.',
+          meaning: 'Impossible à conclure pour l’instant.',
+          alternative: 'Le silence peut venir de la diffusion, de la première impression, du contenu ouvert ou du contexte de marché.',
+          missing: 'Les mesures réellement disponibles auprès du support et leur définition exacte.',
+          next: 'Demander au support quelles étapes sont mesurées, sur quelle période et avec quelles définitions.',
+        },
+      };
 
-    <!-- Exemple -->
-    <section class="mb-12 border-l-2 border-beige pl-6" aria-labelledby="exemple-titre">
-      <h2 id="exemple-titre" class="font-sans text-sm uppercase tracking-widest text-brun mb-3">Exemple · {contenu.exemple.titre}</h2>
-      <p class="font-sans text-[15px] text-encre/80 leading-relaxed">{contenu.exemple.texte}</p>
-    </section>
+      if (funnel) {
+        funnel.querySelectorAll('[data-funnel-choice]').forEach((choice) => {
+          choice.addEventListener('click', () => {
+            funnel.querySelectorAll('[data-funnel-choice]').forEach((item) => item.setAttribute('aria-pressed', 'false'));
+            choice.setAttribute('aria-pressed', 'true');
+            const reading = readings[choice.getAttribute('data-funnel-choice')];
+            if (!reading) return;
+            const values = {
+              '#funnel-result-title': reading.title,
+              '#funnel-observed': reading.observed,
+              '#funnel-meaning': reading.meaning,
+              '#funnel-alternative': reading.alternative,
+              '#funnel-missing': reading.missing,
+              '#funnel-next': reading.next,
+            };
+            Object.entries(values).forEach(([selector, value]) => {
+              const element = funnel.querySelector(selector);
+              if (element) element.textContent = value;
+            });
+          });
+        });
+      }
+    </script>
+  </CahierLayout>
+) : (
+  <Layout title={resource.titre} description={`${resource.question} ${resource.benefice}`}>
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
-    <!-- Erreurs fréquentes -->
-    <section class="mb-12" aria-labelledby="erreurs-titre">
-      <h2 id="erreurs-titre" class="text-h3 text-encre mb-5">Les erreurs les plus fréquentes</h2>
-      <ul class="space-y-3">
-        {contenu.erreurs.map((e) => (
-          <li class="flex gap-3 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <span class="text-argile mt-0.5" aria-hidden="true">✕</span>
-            <span>{e}</span>
-          </li>
+      <header class="mb-10">
+        <p class="eyebrow mb-4">Ressource · {resource.duree}</p>
+        <h1 class="text-display text-encre mb-5">{resource.titre}</h1>
+        <p class="font-display text-xl md:text-2xl text-brun italic" style="font-variation-settings: 'opsz' 30;">
+          {resource.question}
+        </p>
+      </header>
+
+      <!-- Réponse courte immédiatement visible -->
+      <div class="carte bg-argile-pale/40 p-6 md:p-7 mb-12">
+        <p class="font-sans text-sm uppercase tracking-widest text-argile mb-3">La réponse courte</p>
+        <p class="font-sans text-body-lg text-encre leading-relaxed">{contenu.reponseCourte}</p>
+      </div>
+
+      <!-- Explication -->
+      <section class="space-y-5 mb-12" aria-label="Explication">
+        {contenu.explication.map((p) => (
+          <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{p}</p>
         ))}
-      </ul>
-    </section>
+      </section>
 
-    <!-- Checklist -->
-    <section class="mb-12 carte p-6 md:p-8" aria-labelledby="checklist-titre">
-      <h2 id="checklist-titre" class="text-h3 text-encre mb-5">{contenu.checklist.titre}</h2>
-      <ol class="space-y-3.5 list-none counter-reset-item">
-        {contenu.checklist.items.map((item, i) => (
-          <li class="flex gap-4 font-sans text-[15px] text-encre/85 leading-relaxed">
-            <span class="font-sans text-sm text-argile font-medium pt-0.5 tracking-widest">{String(i + 1).padStart(2, '0')}</span>
-            <span>{item}</span>
-          </li>
-        ))}
-      </ol>
-    </section>
+      <!-- Exemple -->
+      <section class="mb-12 border-l-2 border-beige pl-6" aria-labelledby="exemple-titre">
+        <h2 id="exemple-titre" class="font-sans text-sm uppercase tracking-widest text-brun mb-3">Exemple · {contenu.exemple.titre}</h2>
+        <p class="font-sans text-[15px] text-encre/80 leading-relaxed">{contenu.exemple.texte}</p>
+      </section>
 
-    <!-- Ce que l'on ne peut pas conclure -->
-    <section class="mb-12 encart-limite py-1" aria-labelledby="limite-titre">
-      <h2 id="limite-titre" class="font-sans text-sm uppercase tracking-widest text-argile mb-2 pt-1">Ce que cette ressource ne peut pas conclure</h2>
-      <p class="font-sans text-[15px] leading-relaxed">{contenu.limite}</p>
-    </section>
+      <!-- Erreurs fréquentes -->
+      <section class="mb-12" aria-labelledby="erreurs-titre">
+        <h2 id="erreurs-titre" class="text-h3 text-encre mb-5">Les erreurs les plus fréquentes</h2>
+        <ul class="space-y-3">
+          {contenu.erreurs.map((e) => (
+            <li class="flex gap-3 font-sans text-[15px] text-encre/85 leading-relaxed">
+              <span class="text-argile mt-0.5" aria-hidden="true">✕</span>
+              <span>{e}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
-    <!-- Prochaine action -->
-    <section class="mb-14" aria-labelledby="action-titre">
-      <h2 id="action-titre" class="text-h3 text-encre mb-3">Votre prochaine action</h2>
-      <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{contenu.action}</p>
-    </section>
+      <!-- Checklist -->
+      <section class="mb-12 carte p-6 md:p-8" aria-labelledby="checklist-titre">
+        <h2 id="checklist-titre" class="text-h3 text-encre mb-5">{contenu.checklist.titre}</h2>
+        <ol class="space-y-3.5 list-none counter-reset-item">
+          {contenu.checklist.items.map((item, i) => (
+            <li class="flex gap-4 font-sans text-[15px] text-encre/85 leading-relaxed">
+              <span class="font-sans text-sm text-argile font-medium pt-0.5 tracking-widest">{String(i + 1).padStart(2, '0')}</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-    <!-- Parcours lié + continuité humaine -->
-    <div class="grid sm:grid-cols-2 gap-4">
-      {situationLiee && (
-        <a href={`/situer-ma-vente?s=${situationLiee.id}`} class="group carte p-6 transition-all duration-200 hover:border-argile">
-          <p class="font-sans text-sm text-argile mb-2">Situer ma vente</p>
-          <p class="font-display text-lg text-encre mb-1">Parcours lié · {situationLiee.titre}</p>
-          <p class="font-sans text-sm text-brun">Trois minutes pour relier cette ressource à votre situation précise.</p>
+      <!-- Ce que l'on ne peut pas conclure -->
+      <section class="mb-12 encart-limite py-1" aria-labelledby="limite-titre">
+        <h2 id="limite-titre" class="font-sans text-sm uppercase tracking-widest text-argile mb-2 pt-1">Ce que cette ressource ne peut pas conclure</h2>
+        <p class="font-sans text-[15px] leading-relaxed">{contenu.limite}</p>
+      </section>
+
+      <!-- Prochaine action -->
+      <section class="mb-14" aria-labelledby="action-titre">
+        <h2 id="action-titre" class="text-h3 text-encre mb-3">Votre prochaine action</h2>
+        <p class="font-sans text-body-lg text-encre/85 leading-relaxed">{contenu.action}</p>
+      </section>
+
+      <!-- Parcours lié + continuité humaine -->
+      <div class="grid sm:grid-cols-2 gap-4">
+        {situationLiee && (
+          <a href={`/situer-ma-vente?s=${situationLiee.id}`} class="group carte p-6 transition-all duration-200 hover:border-argile">
+            <p class="font-sans text-sm text-argile mb-2">Situer ma vente</p>
+            <p class="font-display text-lg text-encre mb-1">Parcours lié · {situationLiee.titre}</p>
+            <p class="font-sans text-sm text-brun">Trois minutes pour relier cette ressource à votre situation précise.</p>
+          </a>
+        )}
+        <a href="/accompagnement" class="group carte p-6 transition-all duration-200 hover:border-argile">
+          <p class="font-sans text-sm text-argile mb-2">Aller plus loin</p>
+          <p class="font-display text-lg text-encre mb-1">Un regard humain sur votre cas ?</p>
+          <p class="font-sans text-sm text-brun">Mouaad applique cette lecture à votre bien et à votre situation.</p>
         </a>
-      )}
-      <a href="/accompagnement" class="group carte p-6 transition-all duration-200 hover:border-argile">
-        <p class="font-sans text-sm text-argile mb-2">Aller plus loin</p>
-        <p class="font-display text-lg text-encre mb-1">Un regard humain sur votre cas ?</p>
-        <p class="font-sans text-sm text-brun">Mouaad applique cette lecture à votre bien et à votre situation.</p>
-      </a>
-    </div>
-  </article>
-</Layout>
+      </div>
+    </article>
+  </Layout>
+)}

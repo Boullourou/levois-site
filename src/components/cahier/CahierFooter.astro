@@ -1,0 +1,24 @@
+---
+import { site } from '../../config/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="cc-footer">
+  <div class="cc-footer__lead">
+    <strong>LEVOIS</strong>
+    <p>Comprendre la situation. Comparer les options. Savoir quoi vérifier.</p>
+  </div>
+  <div class="cc-footer__contact">
+    <span>Mouaad répond personnellement.</span>
+    <a href={`mailto:${site.email}`}>{site.email}</a>
+    <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a>
+  </div>
+  <div class="cc-footer__legal">
+    <p>Mouaad Boullourou · Conseiller immobilier SAFTI à Lèves, à Chartres et aux alentours</p>
+    <nav aria-label="Liens légaux">
+      <a href="/mentions-legales">Mentions légales</a>
+      <a href="/confidentialite">Confidentialité</a>
+      <span>© {year}</span>
+    </nav>
+  </div>
+</footer>

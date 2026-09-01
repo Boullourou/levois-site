@@ -19,14 +19,35 @@
  * Conversion : les réponses de qualification + le contexte sont destinés à
  * /api/lead uniquement après consentement explicite.
  */
-import Layout from '../layouts/Layout.astro';
+import CahierLayout from '../layouts/CahierLayout.astro';
+import VotreRueResultDemo from '../components/cahier/VotreRueResultDemo.astro';
+import '../styles/global.css';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'Échantillon DVF autour de la rue de la Ravaudière à Lèves — maisons',
+  description: 'Démonstration de lecture prudente de ventes de maisons avec surface connue, observées dans les données DVF intégrées au site.',
+  inLanguage: 'fr-FR',
+  license: 'https://www.etalab.gouv.fr/licence-ouverte-open-licence/',
+  temporalCoverage: '2021-01-08/2025-12-19',
+  spatialCoverage: { '@type': 'Place', name: 'Lèves, Eure-et-Loir, France' },
+  isBasedOn: 'https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres-geolocalisees/',
+};
 ---
 
-<Layout
-  title="Les prix réels de votre secteur"
-  description="Consultez un échantillon de ventes du même type de bien autour d'une adresse confirmée, à partir des données publiques DVF."
-  noindex={true}
+<CahierLayout
+  title="Ventes autour de votre rue"
+  description="Une exploration locale prudente des ventes enregistrées autour d’une adresse, avec période, rayon, échantillon et limites."
+  pageClass="cc-local-page"
+  schema={schema}
 >
+  <VotreRueResultDemo />
+
+  <section class="cc-live-tool" aria-labelledby="cc-live-tool-title">
+    <details>
+      <summary id="cc-live-tool-title">Explorer une autre adresse</summary>
+      <p class="cc-live-tool__intro">L’outil opérationnel reste disponible derrière cette preuve de direction artistique. Il conserve sa méthode prudente et ses protections existantes.</p>
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
 
     <!-- ① Promesse + saisie -->
@@ -118,7 +139,9 @@ import Layout from '../layouts/Layout.astro';
     </details>
 
   </div>
-</Layout>
+    </details>
+  </section>
+</CahierLayout>
 
 <!-- is:global OBLIGATOIRE : l'infographie est injectée en JS (innerHTML), donc
      sans l'attribut de scope Astro (data-astro-cid). Une feuille scopée ne

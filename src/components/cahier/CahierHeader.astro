@@ -1,0 +1,27 @@
+---
+const links = [
+  { href: '/ma-recherche', label: 'Acheter' },
+  { href: '/situer-ma-vente', label: 'Vendre' },
+  { href: '/votre-rue', label: 'Ventes locales' },
+  { href: '/ressources/annonce-vue-peu-de-contacts', label: 'Ressources' },
+];
+---
+
+<header class="cc-header">
+  <a class="cc-wordmark" href="/" aria-label="LEVOIS — retour à l’accueil">
+    <span aria-hidden="true"></span>LEVOIS
+  </a>
+
+  <nav class="cc-nav cc-nav--desktop" aria-label="Navigation principale">
+    {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    <a class="cc-nav-contact" href="/contact">Mouaad</a>
+  </nav>
+
+  <details class="cc-menu">
+    <summary>Menu</summary>
+    <nav class="cc-nav cc-nav--mobile" aria-label="Navigation mobile">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      <a href="/contact">Contacter Mouaad</a>
+    </nav>
+  </details>
+</header>
