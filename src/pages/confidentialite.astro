@@ -2,114 +2,30 @@
 import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
 ---
-
-<Layout title="Politique de confidentialité" description="Quelles données LEVOIS collecte, pourquoi, et vos droits.">
-  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
-
-    <header class="mb-12">
-      <p class="eyebrow mb-4">Vos données</p>
-      <h1 class="text-display text-encre mb-4">Politique de confidentialité</h1>
-      <p class="font-sans text-body-lg text-brun">
-        La règle LEVOIS est simple : vos données servent à vous répondre — à rien d’autre.
-        Voici le détail, sans jargon.
-      </p>
-    </header>
-
-    <div class="space-y-12 font-sans text-[15px] text-encre/85 leading-relaxed">
-
-      <section aria-labelledby="quoi">
-        <h2 id="quoi" class="text-h3 text-encre mb-4">Ce que nous collectons, et quand</h2>
-        <p>
-          <strong class="text-encre">Le parcours « Situer ma vente »</strong> fonctionne sans aucune coordonnée :
-          vos réponses restent dans votre navigateur (stockage de session) et disparaissent à la fermeture.
-          Rien n’est transmis tant que vous ne le demandez pas.
-        </p>
-        <p class="mt-3">
-          <strong class="text-encre">L’audit d’annonce</strong> envoie ponctuellement le lien fourni à notre serveur
-          afin de lire les informations publiques accessibles sur la page. Le lien et le contenu lu ne sont pas
-          enregistrés par l’outil. Vos trois réponses courtes sont analysées dans votre navigateur, que le portail
-          autorise ou non la lecture. Le lien, le résultat et vos coordonnées ne sont transmis à Mouaad que si vous demandez
-          ensuite explicitement une lecture humaine.
-        </p>
-        <p class="mt-3">
-          <strong class="text-encre">Si vous transmettez votre situation à Mouaad</strong>, nous collectons :
-          prénom, nom, email, commune du bien, et — si vous les fournissez — téléphone, lien
-          d’annonce et détail complémentaire, accompagnés de la synthèse de votre parcours
-          (situation, réponses, lecture produite).
-        </p>
-        <p class="mt-3">
-          <strong class="text-encre">Le formulaire de contact</strong> collecte : prénom, nom, email,
-          téléphone éventuel, objet et message.
-        </p>
-      </section>
-
-      <section aria-labelledby="pourquoi">
-        <h2 id="pourquoi" class="text-h3 text-encre mb-4">Pourquoi, et sur quelle base</h2>
-        <p>
-          Ces données servent exclusivement à vous répondre et à préparer l’échange que vous
-          avez sollicité. Base légale : votre consentement explicite (case à cocher), et les
-          mesures précontractuelles à votre demande.
-        </p>
-        <p class="mt-3">
-          <strong class="text-encre">Aucune inscription automatique à une newsletter.</strong> Tout
-          consentement marketing serait demandé séparément — il ne l’est pas aujourd’hui.
-        </p>
-      </section>
-
-      <section aria-labelledby="qui">
-        <h2 id="qui" class="text-h3 text-encre mb-4">Qui reçoit vos données</h2>
-        <p>
-          Mouaad Boullourou, destinataire unique. Prestataires techniques intervenant dans
-          l’acheminement : Cloudflare (hébergement, États-Unis — clauses contractuelles types)
-          Resend (acheminement principal des emails) et Formspree (acheminement de secours). Vos données ne sont ni vendues, ni cédées,
-          ni utilisées à des fins publicitaires.
-        </p>
-      </section>
-
-      <section aria-labelledby="duree">
-        <h2 id="duree" class="text-h3 text-encre mb-4">Durée de conservation</h2>
-        <p>
-          Les messages et situations transmis sont conservés le temps du suivi de votre
-          demande, puis au maximum trois ans sans contact de votre part, avant suppression.
-        </p>
-      </section>
-
-      <section aria-labelledby="droits">
-        <h2 id="droits" class="text-h3 text-encre mb-4">Vos droits</h2>
-        <p>
-          Accès, rectification, opposition, suppression : écrivez à
-          <a href={`mailto:${site.email}`} class="text-argile underline underline-offset-2">{site.email}</a> —
-          la demande est traitée personnellement. Vous disposez également d’un droit de
-          réclamation auprès de la <a href="https://www.cnil.fr" class="text-argile underline underline-offset-2">CNIL</a>.
-        </p>
-      </section>
-
-      <section id="mesure-audience" aria-labelledby="cookies">
-        <h2 id="cookies" class="text-h3 text-encre mb-4">Mesure d’audience</h2>
-        <p>
-          LEVOIS utilise PostHog, hébergé dans l’Union européenne, uniquement pour comprendre
-          comment le site est trouvé et utilisé : page d’entrée, pages consultées, page de sortie,
-          source de la visite, durée active, progression dans la page et étapes franchies dans les parcours.
-          La mesure fonctionne sans cookie, sans enregistrement vidéo de session, sans identification
-          des visiteurs et sans lecture du contenu saisi dans les formulaires. Les liens d’annonces,
-          noms, emails, numéros de téléphone et messages ne sont jamais envoyés à cet outil.
-        </p>
-        <p class="mt-3">
-          Ces statistiques servent exclusivement à améliorer le site et à mesurer l’utilité des contenus.
-          Elles ne sont ni utilisées pour du ciblage publicitaire, ni rapprochées du fichier client.
-          Vous pouvez vous y opposer à tout moment sur cet appareil.
-        </p>
-        <div class="mt-5 flex flex-col items-start gap-2">
-          <button type="button" data-analytics-optout class="border border-encre px-4 py-3 font-semibold hover:bg-encre hover:text-papier transition-colors">
-            Refuser la mesure d’audience
-          </button>
-          <span data-analytics-status class="text-sm text-brun" role="status"></span>
-        </div>
-        <p class="mt-3">
-          Le stockage de session utilisé par les parcours sert uniquement à ne pas perdre vos réponses
-          lors d’un rafraîchissement. Il ne contient pas vos coordonnées et disparaît à la fermeture du navigateur.
-        </p>
-      </section>
-    </div>
-  </article>
-</Layout>
+<Layout title="Vos données et votre confidentialité" description="Ce qui reste dans votre navigateur, ce qui est transmis à votre demande et comment exercer vos droits.">
+<article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+<header class="mb-12"><p class="eyebrow">Vos données</p><h1 class="text-display">Vous choisissez<br/>ce que vous partagez.</h1><p>Vous pouvez consulter les ventes et obtenir une première synthèse de votre projet sans donner vos coordonnées.</p></header>
+<div class="space-y-12 font-sans text-[15px] leading-relaxed">
+<section aria-labelledby="responsable"><h2 id="responsable">Qui est responsable ?</h2><p>Mouaad Boullourou, entrepreneur individuel, 25 rue de la Butte Celtique, 28300 Lèves. Pour toute question ou demande : <a href={`mailto:${site.email}`}>{site.email}</a>.</p></section>
+<section aria-labelledby="navigation"><h2 id="navigation">Quand vous explorez le site</h2>
+<p>Le serveur d’hébergement reçoit les informations techniques nécessaires au chargement des pages, notamment votre adresse IP. Saisir une adresse pour consulter les ventes interroge le service public de géocodage de la Géoplateforme IGN. Le texte recherché lui est transmis pour proposer des adresses. Les ventes DVF sont ensuite téléchargées et analysées dans votre navigateur. Une adresse recherchée n’est pas automatiquement envoyée à Mouaad.</p>
+<p>Les réponses aux parcours sont conservées dans le stockage de session du navigateur pour permettre le retour arrière ou le rafraîchissement. Ce stockage peut être restauré par votre navigateur après sa fermeture. Les fonctions « recommencer » effacent les réponses du parcours concerné. Les coordonnées saisies ne sont pas enregistrées dans ce stockage.</p>
+<p>Pour relire une annonce, le lien fourni est envoyé à notre serveur, qui tente de lire la page publique correspondante. L’outil ne l’enregistre pas dans une base de données. Le site de l’annonce peut recevoir cette requête technique. Les réponses au questionnaire et la première analyse sont traitées dans votre navigateur.</p></section>
+<section aria-labelledby="transmission"><h2 id="transmission">Quand vous demandez de l’aide</h2>
+<p>Un envoi exige votre action et votre accord. Le contact transmet vos nom, prénom, email, téléphone facultatif, objet et message. Les demandes issues d’un parcours transmettent aussi la synthèse affichée, vos réponses et les précisions que vous ajoutez : commune, adresse recherchée ou lien d’annonce selon l’outil.</p>
+<p>La recherche acheteur est enregistrée dans une base Cloudflare D1 avec le prénom, le moyen de contact, le commentaire éventuel, les critères du projet, la synthèse, les choix de contact et la source de visite si elle est présente dans le lien. Une notification est adressée à Mouaad. Si l’enregistrement réussit mais que la notification échoue, la confirmation vous le précise.</p>
+<p>Vous choisissez séparément de demander l’envoi de votre synthèse, d’être averti d’une opportunité ou de demander un échange. La synthèse est disponible immédiatement à l’écran ; son envoi par Mouaad n’est pas un email automatique. Aucune inscription à une newsletter n’est déclenchée.</p></section>
+<section aria-labelledby="finalites"><h2 id="finalites">Pourquoi ces informations sont utilisées</h2>
+<p>Les demandes de contact et de suivi servent à répondre à votre demande et à préparer les démarches précontractuelles que vous sollicitez. L’envoi d’opportunités repose sur votre accord distinct, que vous pouvez retirer à tout moment. Vos coordonnées ne sont ni vendues ni utilisées pour du ciblage publicitaire.</p></section>
+<section aria-labelledby="destinataires"><h2 id="destinataires">Qui intervient dans leur traitement ?</h2>
+<p>Mouaad Boullourou traite votre demande. Cloudflare héberge le site et la base des recherches. Resend assure l’acheminement des emails lorsqu’il est configuré ; Formspree est utilisé comme solution de transmission alternative. Ces prestataires traitent les informations nécessaires à leur service. Leurs infrastructures peuvent impliquer un traitement hors de l’Union européenne ; leurs engagements et mécanismes de transfert figurent dans leurs politiques : <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a>, <a href="https://resend.com/legal/privacy-policy">Resend</a> et <a href="https://formspree.io/legal/privacy-policy/">Formspree</a>.</p></section>
+<section id="mesure-audience" aria-labelledby="audience"><h2 id="audience">La mesure d’audience est facultative</h2>
+<p>Par défaut, PostHog n’est pas chargé. Si vous acceptez, il mesure les pages consultées, la progression et les actions dans les parcours, via son point de collecte européen. L’enregistrement de session et la capture automatique des champs sont désactivés. Les noms, coordonnées, messages, liens d’annonces et adresses recherchées sont exclus des événements envoyés par LEVOIS. Les paramètres des URL sont retirés.</p>
+<p>Votre choix est conservé sur cet appareil pendant 180 jours. Vous pouvez le modifier ci-dessous ou depuis le pied de page. Le refus n’empêche aucune fonction du site. Si votre navigateur demande de ne pas être suivi, la mesure reste désactivée.</p>
+<button type="button" class="btn-primaire" data-analytics-settings>Modifier mon choix de confidentialité</button></section>
+<section aria-labelledby="conservation"><h2 id="conservation">Combien de temps ?</h2>
+<p>Les demandes et recherches transmises sont conservées pendant leur suivi, puis au maximum trois ans sans contact de votre part, avant suppression. Vous pouvez demander leur suppression plus tôt. Le suivi et la suppression de ces demandes sont assurés par Mouaad ; le site n’effectue pas de purge automatique des emails ou de la base.</p></section>
+<section aria-labelledby="droits"><h2 id="droits">Vos droits</h2>
+<p>Vous pouvez demander l’accès à vos données, leur rectification, leur suppression, la limitation de leur utilisation et, lorsqu’il s’applique, leur transfert. Vous pouvez vous opposer à un traitement ou retirer votre accord pour les utilisations facultatives. Écrivez à <a href={`mailto:${site.email}`}>{site.email}</a>. Vous pouvez également adresser une réclamation à la <a href="https://www.cnil.fr/fr/adresser-une-plainte">CNIL</a>.</p></section>
+<p>Mise à jour : 6 septembre 2026. <a href="/mentions-legales">Consulter les mentions légales</a>.</p>
+</div></article></Layout>

@@ -1,0 +1,23 @@
+import fs from 'node:fs/promises';import {chromium,expect} from '@playwright/test';
+const out='artifacts/visual-close',assets=['/brand/levois-horizontal.svg','/brand/levois-monochrome.svg','/brand/levois-inverse.svg','/brand/levois-vo.svg','/favicon.svg'];
+const luminance=hex=>{const c=hex.replace('#','').match(/../g).map(x=>parseInt(x,16)/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
+const contrast=(a,b)=>{const x=luminance(a),y=luminance(b);return +( (Math.max(x,y)+.05)/(Math.min(x,y)+.05)).toFixed(2);};
+const report={assets:[],sizes:[],orange:'#f47b20',contrasts:[
+ {use:'Numéros de la méthode sur fond nuit',background:'#182447',ratio:contrast('#f47b20','#182447'),text:true},
+ {use:'Point du logo et détail près du portrait, sur papier',background:'#f5f6fa',ratio:contrast('#f47b20','#f5f6fa'),text:false},
+ {use:'Point du logo inversé sur cobalt',background:'#2545df',ratio:contrast('#f47b20','#2545df'),text:false},
+ {use:'Point du logo sur footer',background:'#e9ecf4',ratio:contrast('#f47b20','#e9ecf4'),text:false},
+ {use:'Point du logo, papier et blanc',background:'#ffffff',ratio:contrast('#f47b20','#ffffff'),text:false}
+],normalMarkContrast:contrast('#111a30','#f5f6fa'),inverseMarkContrast:contrast('#f5f6fa','#2545df'),errors:[]};
+for(const c of report.contrasts)if(c.text)expect(c.ratio).toBeGreaterThanOrEqual(4.5);
+for(const asset of assets){const s=await fs.readFile('public'+asset,'utf8');expect(s).not.toMatch(/<(text|image|filter|linearGradient|radialGradient|foreignObject)\b/);expect(s).not.toMatch(/(?:href|src)=/);expect(s).toContain('<path');report.assets.push({asset,bytes:Buffer.byteLength(s),pathsOnly:true});}
+const b=await chromium.launch({headless:true});
+try{
+ for(const width of [1440,390,320]){const c=await b.newContext({viewport:{width,height:width===1440?900:844},reducedMotion:'reduce'}),p=await c.newPage();p.on('pageerror',e=>report.errors.push(e.message));await p.goto('http://127.0.0.1:4327/',{waitUntil:'networkidle'});const x=await p.evaluate(()=>({width:innerWidth,headerHeight:document.querySelector('.rp-header').getBoundingClientRect().height,logoHeight:document.querySelector('.levois-wordmark').getBoundingClientRect().height,captionSize:getComputedStyle(document.querySelector('.world-scene-caption')).fontSize,trustSize:getComputedStyle(document.querySelector('.world-dock-trust')).fontSize,footerSize:getComputedStyle(document.querySelector('.rp-footer-bottom')).fontSize,orangeNumbers:[...document.querySelectorAll('.world-method-steps article>span')].map(e=>getComputedStyle(e).color),blueButtons:[...document.querySelectorAll('.world-button')].filter(e=>e.getBoundingClientRect().width>0).map(e=>getComputedStyle(e).backgroundColor)}));expect(x.headerHeight).toBe(width===1440?88:72);expect(x.orangeNumbers).toEqual(['rgb(244, 123, 32)','rgb(244, 123, 32)','rgb(244, 123, 32)']);expect(x.blueButtons).not.toContain('rgb(244, 123, 32)');expect(parseFloat(x.captionSize)).toBeGreaterThanOrEqual(11);expect(parseFloat(x.trustSize)).toBeGreaterThanOrEqual(12);expect(parseFloat(x.footerSize)).toBeGreaterThanOrEqual(12);report.sizes.push(x);await c.close();}
+ const c=await b.newContext({viewport:{width:1200,height:630},deviceScaleFactor:1}),p=await c.newPage();
+ await p.setContent(`<html lang="fr"><style>body{margin:0;background:#f5f6fa;color:#111a30;font:14px/1.5 system-ui}h1{font-size:20px;font-weight:500;margin:24px}header{display:grid;grid-template-columns:90px repeat(5,1fr);align-items:center;min-height:105px;border-top:1px solid #dce0e9;padding:0 24px;gap:20px}img{display:block}.inverse{background:#2545df;padding:12px}label{font-size:12px}p{margin:10px 24px}</style><h1>levois · contrôle du logo à 16, 24, 32 et 48 px</h1>${[16,24,32,48].map(size=>`<header><span>${size} px</span>${assets.map((a,i)=>`<div class="${i===2?'inverse':''}"><img src="http://127.0.0.1:4327${a}" style="${i===4?'width:':'height:'}${size}px" alt="${a.split('/').pop()}"></div>`).join('')}</header>`).join('')}<p>Horizontal · monochrome · inversé sur cobalt · signe vo · favicon carré. Les dimensions indiquent la hauteur, sauf pour le favicon (côté du carré).</p></html>`);
+ await p.evaluate(async()=>{await Promise.all([...document.images].map(i=>i.decode()));});
+ for(const img of await p.locator('img').all())expect(await img.evaluate(i=>i.complete&&i.naturalWidth>0)).toBe(true);
+ await p.screenshot({path:out+'/captures/header-logo-sizes.png'});await c.close();
+}finally{await b.close();await fs.writeFile(out+'/brand-check.json',JSON.stringify(report,null,2));}
+if(report.errors.length)process.exitCode=1;console.log(JSON.stringify(report,null,2));

@@ -1,272 +1,146 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ResponsiveImage from '../components/ResponsiveImage.astro';
-import WorldGateway from '../components/home/WorldGateway.astro';
-import marketSummary from '../data/dvf-market-summary.json';
-
-const levesHouses = marketSummary.series.find(
-  (series) => series.commune === 'Lèves' && series.propertyType === 'Maison',
-);
-if (!levesHouses) throw new Error('Série DVF absente : Lèves · Maison');
-
-const latestMarket = levesHouses.latest;
-const number = new Intl.NumberFormat('fr-FR');
-
-const designContract = `LEVOIS_HOME_BUYER_FIRST
-THESIS: Faire entrer par la recherche acheteur, puis maintenir deux portes vendeurs utiles sans les diminuer.
-OWN-WORLD: Blanc de jour, bleu calme, cobalt-lime et corail; grandes figures photographiques, séparations courbes et signes en mouvement.
-STORY: Clarifier un achat avant de courir les annonces; aider le vendeur à lire les signaux; rencontrer Mouaad quand les données ne suffisent plus.
-FIRST VIEWPORT: La recherche acheteur est visible et active en premier; les deux parcours vendeurs restent lisibles, actionnables et proches.
-FORM: Fusion approuvée C+A — passage cinématographique et trois portails vivants; seed f5d676a7.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md`;
-
-const marketDatasetSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Dataset',
-  '@id': 'https://levois.fr/#dvf-market-dataset',
-  name: 'Repères DVF de Lèves et Chartres — maisons et appartements',
-  description:
-    'Synthèse locale des ventes immobilières passées à Lèves et Chartres : médiane du prix observé au m², quartiles, évolution annuelle et taille des échantillons.',
-  url: 'https://levois.fr/#repere-local',
-  inLanguage: 'fr-FR',
-  license: 'https://www.etalab.gouv.fr/licence-ouverte-open-licence/',
-  isAccessibleForFree: true,
-  temporalCoverage: '2021/2025',
-  spatialCoverage: [
-    { '@type': 'Place', name: 'Lèves, Eure-et-Loir, France' },
-    { '@type': 'Place', name: 'Chartres, Eure-et-Loir, France' },
-  ],
-  creator: { '@id': 'https://levois.fr/#organization' },
-  isBasedOn: 'https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres-geolocalisees/',
-  distribution: {
-    '@type': 'DataDownload',
-    encodingFormat: 'application/json',
-    contentUrl: 'https://levois.fr/data/dvf-market-summary.json',
-  },
-};
+import WorldScene from '../components/WorldScene.astro';
+import Icon from '../components/WorldIcon.astro';
+import summary from '../data/dvf-market-summary.json';
+const houses=summary.series.find(s=>s.commune==='Lèves'&&s.propertyType==='Maison')!;
 ---
-
-<Layout
-  title="Accueil"
-  description="À Lèves, Chartres et dans le bassin chartrain, LEVOIS aide propriétaires, vendeurs et acheteurs à voir plus clair avant de décider."
-  image="/images/hero-chartres-evidence-1536.webp"
-  homeV2={true}
-  designContract={designContract}
->
-  <script type="application/ld+json" set:html={JSON.stringify(marketDatasetSchema)} />
-
-  <div class="home-experience">
-    <WorldGateway />
-
-    <section class="local-scene" id="repere-local" aria-labelledby="local-title">
-      <div class="local-map" aria-hidden="true">
-        <span class="local-ring local-ring--one"></span>
-        <span class="local-ring local-ring--two"></span>
-        <span class="local-street local-street--one"></span>
-        <span class="local-street local-street--two"></span>
-        <b>LÈVES</b>
-      </div>
-      <div class="local-message">
-        <h2 id="local-title">Un repère pour Lèves.<br /><em>Pas une estimation.</em></h2>
-        <div class="local-number">
-          <strong>{number.format(latestMarket.pricePerSqm.median)} <span>€/m²</span></strong>
-          <p>Prix médian signé pour une maison à Lèves en {latestMarket.year}.</p>
-        </div>
-        <p class="local-limit">
-          {latestMarket.count} ventes de maisons observées. Ce chiffre situe le marché local ; votre rue, votre bien et votre situation donnent le reste du sens.
-        </p>
-      </div>
-      <p class="local-source">Données DVF · DGFiP · ventes passées, ni estimation ni prévision</p>
-    </section>
-
-    <section class="three-gestures" aria-label="La promesse LEVOIS">
-      <p class="gesture gesture--see">Voir clair.</p>
-      <p class="gesture gesture--understand">Comprendre ce qui change.</p>
-      <p class="gesture gesture--choose">Choisir sans subir.</p>
-      <span>Le site vous donne le premier repère. Vous gardez toujours la décision.</span>
-    </section>
-
-    <section class="human-scene" id="mouaad" aria-labelledby="human-title">
-      <figure class="human-picture">
-        <ResponsiveImage
-          slot="mouaad-rdv"
-          ratio="none"
-          sizes="(min-width: 900px) 56vw, 100vw"
-          class="human-image"
-        />
-      </figure>
-      <div class="human-message">
-        <h2 id="human-title">Puis il y a ce qu’aucun écran ne peut décider à votre place.</h2>
-        <p>
-          Je prends le relais quand votre situation mérite mieux qu’une réponse automatique. On regarde les options ensemble. Je vous explique ce que chacune change. Vous choisissez.
-        </p>
-        <a href="/mouaad">Faire connaissance <i aria-hidden="true"></i></a>
-        <small>Mouaad Boullourou · Conseiller immobilier indépendant SAFTI · Lèves et bassin chartrain</small>
-      </div>
-    </section>
-
-    <section class="side-doors" aria-labelledby="side-title">
-      <header>
-        <h2 id="side-title">Vous n’avez peut-être pas de projet.<br />Mais quelqu’un autour de vous, oui.</h2>
-      </header>
-      <div class="side-worlds">
-        <a class="side-world side-world--connect" href="/recommander" data-journey="prescriber">
-          <span class="side-kicker">Aider un proche</span>
-          <strong>Je connais quelqu’un qui veut acheter ou vendre.</strong>
-          <span class="side-action">Découvrir SAFTI Connect <i aria-hidden="true"></i></span>
-        </a>
-        <a class="side-world side-world--team" href="/rejoindre" data-journey="team_candidate">
-          <span class="side-kicker">Ouvrir une possibilité</span>
-          <strong>Et si l’immobilier devenait mon métier&nbsp;?</strong>
-          <span class="side-action">En parler sans m’engager <i aria-hidden="true"></i></span>
-        </a>
-      </div>
-    </section>
+<Layout title="Accueil" description="Il y a une vie derrière chaque adresse. Explorez les ventes du bassin chartrain, clarifiez votre projet et avancez avec Mouaad Boullourou, conseiller immobilier SAFTI.">
+<section class="world-home-hero" aria-labelledby="world-home-title">
+  <WorldScene />
+  <div class="world-hero-heading">
+    <h1 id="world-home-title">Il y a une vie derrière<br /><span>chaque adresse.</span></h1>
+    <p>Acheter, vendre ou comprendre les ventes locales : commencez par votre situation.</p>
   </div>
+  <div class="world-marker world-marker-right">
+    <button type="button" aria-expanded="false" aria-controls="world-marker-detail"><span class="world-marker-dot"><Icon name="plus"/></span><span>Et derrière les prix ?</span></button>
+    <div id="world-marker-detail" class="world-marker-detail" hidden><strong>Des ventes, vraiment signées.</strong><p>Un premier repère pour comprendre ce qui se passe autour de vous.</p><a href="/votre-rue">Voir les faits <Icon /></a></div>
+  </div>
+  <div class="world-dock world-entry">
+    <div id="home-projects">
+      <h2 id="home-entry-title">Qu’est-ce qui vous amène ?</h2>
+      <nav class="world-entry-choices" aria-labelledby="home-entry-title">
+        <a href="/ma-recherche"><Icon name="home"/><span>Je cherche un logement</span><Icon /></a>
+        <a href="/situer-ma-vente"><Icon name="key"/><span>Je prépare ou je vends un bien</span><Icon /></a>
+        <a id="home-explore" href="/votre-rue"><Icon name="pin"/><span>Je consulte les ventes près de chez moi</span><Icon /></a>
+      </nav>
+    </div>
+    <div id="home-place" hidden>
+      <button id="home-project-back" class="world-entry-back" type="button"><Icon /><span>Changer de projet</span></button>
+      <form action="/votre-rue" method="get" data-world-address>
+        <div class="world-dock-input"><Icon name="pin"/><div><label for="home-adresse">Quelle adresse vous intéresse ?</label><input id="home-adresse" name="q" type="text" autocomplete="off" placeholder="Une rue, une adresse, une commune…" required minlength="3" maxlength="180" role="combobox" aria-expanded="false" aria-controls="home-address-list" aria-autocomplete="list"/><ul id="home-address-list" class="world-address-list" role="listbox" aria-label="Adresses proposées" hidden></ul></div></div>
+        <input type="hidden" name="src" value="accueil" />
+        <button type="submit" class="world-button">Voir les ventes <Icon /></button>
+      </form>
+      <p id="home-address-status" class="world-address-status" role="status" hidden></p>
+      <a class="world-entry-direct" href="/votre-rue">Accéder directement aux ventes locales <Icon /></a>
+    </div>
+    <p class="world-dock-trust"><Icon name="lock"/> Un premier éclairage. Sans coordonnées.</p>
+  </div>
+  <p class="world-scene-caption">Quartier illustré · une invitation à explorer le vôtre</p>
+  <a href="/carte" class="world-hero-person"><img src="/images/levois-mouaad-avatar.webp" alt="" width="44" height="44"/><span>Mouaad Boullourou<small>Votre conseiller SAFTI · bassin chartrain</small></span></a>
+</section>
+<div class="world-local-strip"><span>Lèves. Chartres. Et la vie autour.</span><a href="#votre-projet">Un premier fait local <span aria-hidden="true">↓</span></a></div>
+<section class="world-project" id="votre-projet" aria-labelledby="world-project-title">
+  <div class="world-section-opening"><h2 id="world-project-title">Un prix ne raconte<br /><span>jamais toute l’histoire.</span></h2><p>Les ventes récentes donnent un repère. L’adresse, l’état du bien et votre projet changent la lecture.</p></div>
+  <div class="world-local-reading">
+    <div class="world-local-fact">
+      <p>Maisons à Lèves · {houses.latest.year}</p>
+      <p class="world-local-price"><strong>{houses.latest.pricePerSqm.median.toLocaleString('fr-FR')}</strong><span>€/m² médian</span></p>
+      <p class="world-local-source">{houses.latest.count} ventes observées · source DVF</p>
+      <p class="world-local-boundary">Ce chiffre décrit les ventes observées.<br/>Il ne donne pas le prix de votre logement.</p>
+    </div>
+    <div class="world-local-context">
+      <h3>Ce que le chiffre ne dit pas.</h3>
+      <dl>
+        <div><dt>L’adresse</dt><dd>La rue, les trajets, la vie autour du logement.</dd></div>
+        <div><dt>L’état du bien</dt><dd>Ce qui est déjà prêt, ce qu’il faudra prévoir.</dd></div>
+        <div><dt>Votre projet</dt><dd>Vos priorités, votre calendrier et votre marge de choix.</dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="world-local-follow"><p>Une vente voisine n’est pas une estimation de votre bien.</p><a class="world-text-action" href="/votre-rue">Explorer les ventes locales <Icon /></a></div>
+</section>
+<section class="world-method" aria-labelledby="world-method-title">
+  <div class="world-method-title"><h2 id="world-method-title">Moins de flou.<br /><span>Plus de perspectives.</span></h2><p>Le chiffre n’est que le début.<br />Ce qui compte, c’est ce qu’il change pour vous.</p></div>
+  <div class="world-method-steps">
+    <article><span aria-hidden="true">01</span><div><h3>Voir les faits.</h3><p>Des ventes enregistrées, des sources accessibles et les limites de ce qu’on peut en déduire.</p></div></article>
+    <article><span aria-hidden="true">02</span><div><h3>Poser vos priorités.</h3><p>Votre budget, vos contraintes, les choses auxquelles vous tenez. Un projet prend forme.</p></div></article>
+    <article><span aria-hidden="true">03</span><div><h3>Choisir la suite.</h3><p>Vous repartez avec une lecture. Si vous le souhaitez, nous la confrontons ensemble au terrain.</p></div></article>
+  </div>
+</section>
+<section class="world-human" aria-labelledby="world-human-title">
+  <div class="world-human-photo"><img src="/images/levois-mouaad.webp" width="800" height="1202" loading="lazy" alt="Mouaad Boullourou"/><span>Mouaad Boullourou · Conseiller immobilier SAFTI</span></div>
+  <div class="world-human-copy"><h2 id="world-human-title">Et derrière LEVOIS,<br /><span>il y a Mouaad.</span></h2><p>Un outil peut rapprocher des chiffres. Pour comprendre ce que votre projet représente, il faut une conversation.</p><p>Je vous accompagne à Lèves, à Chartres et dans les communes voisines. Avec une lecture locale, des options expliquées et de la place pour vos questions.</p><a href="/carte" class="world-button world-button-dark">Faisons connaissance <Icon /></a><small>Votre rythme. Votre décision.</small></div>
+</section>
 </Layout>
-
 <style>
-  .home-experience {
-    --ink: #0b1730;
-    --paper: #f7f9f5;
-    --blue: #2a6ff5;
-    --cobalt: #243cff;
-    --lime: #d7ff42;
-    --coral: #f56a5a;
-    overflow: clip;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Public Sans', system-ui, sans-serif;
+  .world-local-reading { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; align-items: center; }
+  .world-local-fact { padding: 18px 0; }
+  .world-local-fact > p:first-child { font-size: 15px; color: var(--rp-muted); }
+  .world-local-price { display: flex; flex-wrap: wrap; gap: 8px 15px; align-items: baseline; margin: 14px 0 8px; }
+  .world-local-price strong { font-size: clamp(64px, 6.3vw, 88px); font-weight: 400; letter-spacing: -.04em; line-height: 1.1; color: var(--rp-accent); }
+  .world-local-price span { font-size: 17px; color: var(--rp-muted); }
+  .world-local-source { font-size: 13px; color: var(--rp-muted); }
+  .world-local-boundary { margin-top: 27px; color: var(--rp-muted); font-size: 14px; line-height: 1.8; }
+  .world-local-context { border-left: 1px solid var(--rp-line); padding-left: 40px; }
+  .world-local-context h3 { margin: 0 0 22px; font-size: 25px; line-height: 1.3; font-weight: 500; letter-spacing: -.02em; }
+  .world-local-context dl { margin: 0; }
+  .world-local-context dl > div + div { margin-top: 20px; }
+  .world-local-context dt { font-size: 15px; font-weight: 500; }
+  .world-local-context dd { margin: 4px 0 0; color: var(--rp-muted); font-size: 14px; line-height: 1.6; }
+  .world-local-follow { margin-top: 40px; padding-top: 23px; border-top: 1px solid var(--rp-line); display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+  .world-local-follow p { color: var(--rp-muted); font-size: 13px; }
+  @media (max-width: 700px) {
+    .world-local-reading { grid-template-columns: 1fr; gap: 36px; }
+    .world-local-fact { padding: 0; }
+    .world-local-context { border-left: 0; padding-left: 0; }
+    .world-local-context h3 { font-size: 23px; }
+    .world-local-follow { display: block; margin-top: 30px; }
+    .world-local-follow .world-text-action { margin-top: 12px; font-size: 14px; }
   }
-  .home-experience *, .home-experience *::before, .home-experience *::after { box-sizing: border-box; }
-  .home-experience h2, .home-experience p, .home-experience figure { margin: 0; }
-
-  .local-scene {
-    position: relative;
-    min-height: 110svh;
-    display: grid;
-    align-items: end;
-    isolation: isolate;
-    overflow: hidden;
-    background: #09182a;
-    color: #fff;
+  /* Accueil uniquement : la situation précède l’adresse. */
+  .world-hero-heading > p { max-width: 690px; padding-inline: 12px; }
+  .world-entry.world-dock { width: min(940px, calc(100% - 48px)); padding: 22px 22px 15px; }
+  .world-entry h2 { margin: 0 0 17px; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -.02em; }
+  .world-entry-choices { display: grid; grid-template-columns: 1fr 1fr 1.12fr; gap: 8px; }
+  .world-entry-choices > :is(a, button) { display: grid; grid-template-columns: 22px 1fr 18px; align-items: center; gap: 11px; min-height: 92px; padding: 15px 14px; border: 0; border-radius: var(--levois-action-radius); background: transparent; color: var(--rp-ink); font: 500 15px/1.4 Satoshi, sans-serif; text-align: left; text-decoration: none; transition: background 180ms; }
+  .world-entry-choices > :first-child { background: var(--levois-selected); }
+  .world-entry-choices > :is(a, button):hover { background: var(--levois-selected); }
+  .world-entry-choices > :is(a, button) > :global(svg) { color: var(--rp-accent); }
+  .world-entry-choices > :is(a, button) > :global(svg:last-child) { width: 18px; height: 18px; }
+  .world-entry-choices > :is(a, button):focus-visible { outline-offset: 2px; }
+  .world-entry .world-dock-trust { margin-top: 15px; }
+  .world-entry-back { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0; margin: -6px 0 10px; border: 0; background: transparent; color: var(--rp-accent); font-size: 13px; }
+  .world-entry-back > :global(svg) { width: 17px; transform: rotate(180deg); }
+  .world-entry-direct { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; margin-top: 5px; color: var(--rp-accent); font-size: 12px; text-decoration: none; }
+  .world-entry-direct > :global(svg) { width: 16px; }
+  .world-entry-direct:hover, .world-entry-back:hover { text-decoration: underline; }
+  @media (max-width: 900px) {
+    .world-entry.world-dock { width: min(680px, calc(100% - 48px)); }
+    .world-entry-choices { grid-template-columns: 1fr; gap: 0; }
+    .world-entry-choices > :is(a, button) { min-height: 62px; padding: 12px 14px; }
+    .world-entry-choices > :last-child { border-top: 1px solid var(--rp-line); border-radius: 0; }
   }
-  .local-map { position: absolute; inset: 0; pointer-events: none; opacity: .95; }
-  .local-map::before { content: ''; position: absolute; inset: 9% -8% -14% 43%; background: #243cff; clip-path: polygon(12% 5%,100% 0,92% 78%,47% 100%,0 75%); }
-  .local-map::after { content: ''; position: absolute; width: 44vw; height: 44vw; right: -7vw; top: 8%; border: 1px solid rgba(215,255,66,.55); border-radius: 50%; }
-  .local-map b { position: absolute; right: 7vw; bottom: 8vh; color: rgba(255,255,255,.1); font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(110px,20vw,330px); line-height: .8; letter-spacing: -.04em; }
-  .local-ring { position: absolute; z-index: 2; border: 2px solid var(--lime); border-radius: 50%; animation: local-pulse 4s ease-out infinite; }
-  .local-ring--one { width: 18px; height: 18px; right: 30%; top: 30%; }
-  .local-ring--two { width: 14px; height: 14px; right: 17%; top: 54%; animation-delay: 1.4s; }
-  .local-street { position: absolute; z-index: 1; right: 4%; width: 47%; height: 2px; background: rgba(255,255,255,.52); transform-origin: right center; }
-  .local-street--one { top: 42%; transform: rotate(-17deg); }
-  .local-street--two { top: 61%; transform: rotate(9deg); }
-  .local-message {
-    width: min(100%, 1500px);
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr);
-    gap: clamp(42px, 7vw, 120px);
-    align-items: end;
-    padding: clamp(100px, 14vh, 180px) clamp(22px, 5vw, 76px) clamp(88px, 11vh, 140px);
+  @media (max-width: 600px) {
+    .world-entry.world-dock { width: calc(100% - 32px); padding: 18px 16px 14px; }
+    .world-entry h2 { font-size: 20px; margin-bottom: 12px; }
+    .world-entry-choices > :is(a, button) { min-height: 61px; gap: 10px; padding: 12px 10px; font-size: 14px; }
+    .world-entry .world-dock-trust { margin-top: 12px; }
   }
-  .local-message h2 {
-    max-width: 920px;
-    font-family: 'Bricolage Grotesque', 'Public Sans', sans-serif;
-    font-size: clamp(70px, 9vw, 140px);
-    font-weight: 630;
-    line-height: .96;
-    letter-spacing: -.035em;
-    text-wrap: balance;
+  @media (max-width: 359px) {
+    .world-entry.world-dock { width: calc(100% - 24px); padding-inline: 12px; }
+    .world-entry h2 { font-size: 19px; }
+    .world-entry-choices > :is(a, button) { grid-template-columns: 20px 1fr 16px; gap: 8px; padding-inline: 8px; }
   }
-  .local-message h2 em { color: var(--lime); font-style: normal; }
-  .local-number { align-self: center; }
-  .local-number strong { display: block; font-family: 'Bricolage Grotesque', sans-serif; font-size: clamp(68px, 8vw, 124px); font-weight: 760; line-height: .95; letter-spacing: -.035em; }
-  .local-number strong span { font-size: .34em; }
-  .local-number p { max-width: 390px; margin-top: 18px; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.45; }
-  .local-limit { grid-column: 2; max-width: 520px; color: rgba(255,255,255,.78); font-size: 15px; line-height: 1.6; }
-  .local-source { position: absolute; left: clamp(22px,5vw,76px); bottom: 24px; color: rgba(255,255,255,.58); font-size: 12px; }
-
-  .three-gestures {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(100px, 14vh, 180px) clamp(22px, 5vw, 76px);
-    background: #f7f9f5;
-  }
-  .gesture {
-    width: max-content;
-    max-width: 100%;
-    font-family: 'Bricolage Grotesque', 'Public Sans', sans-serif;
-    font-size: clamp(72px, 11.6vw, 180px);
-    font-weight: 650;
-    line-height: .98;
-    letter-spacing: -.03em;
-    animation: gesture-arrive linear both;
-    animation-timeline: view();
-    animation-range: entry 5% cover 45%;
-  }
-  .gesture--see { color: var(--blue); }
-  .gesture--understand { align-self: flex-end; color: var(--cobalt); text-align: right; }
-  .gesture--choose { color: var(--coral); }
-  .three-gestures > span { max-width: 440px; margin: clamp(48px, 7vh, 82px) 0 0 auto; color: #526077; font-size: 16px; line-height: 1.55; }
-
-  .human-scene { min-height: 100svh; display: grid; grid-template-columns: 1.04fr .96fr; background: #e9f3ff; }
-  .human-picture { min-height: 760px; overflow: hidden; clip-path: ellipse(88% 82% at 12% 50%); }
-  :global(.human-image) { width: 100%; height: 100%; }
-  :global(.human-image img) { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
-  .human-message { display: flex; flex-direction: column; justify-content: center; padding: clamp(90px, 10vw, 150px) clamp(22px, 6vw, 94px) clamp(80px, 10vw, 140px) clamp(30px, 4vw, 70px); }
-  .human-message h2 { max-width: 760px; font-family: 'Bricolage Grotesque', 'Public Sans', sans-serif; font-size: clamp(54px, 6vw, 96px); font-weight: 720; line-height: .98; letter-spacing: -.035em; text-wrap: balance; }
-  .human-message p { max-width: 650px; margin-top: 34px; font-size: clamp(18px, 1.7vw, 23px); line-height: 1.55; }
-  .human-message a { width: max-content; display: inline-flex; align-items: center; gap: 18px; margin-top: 34px; color: var(--cobalt); font-weight: 800; text-decoration: none; }
-  .human-message a:hover { color: var(--ink); }
-  .human-message i, .side-action i { position: relative; width: 35px; height: 12px; }
-  .human-message i::before, .side-action i::before { content: ''; position: absolute; left: 0; top: 5px; width: 33px; height: 2px; background: currentColor; }
-  .human-message i::after, .side-action i::after { content: ''; position: absolute; right: 0; top: 1px; width: 9px; height: 9px; border: solid currentColor; border-width: 2px 2px 0 0; transform: rotate(45deg); }
-  .human-message small { max-width: 500px; margin-top: 44px; color: #526077; font-size: 12px; line-height: 1.5; }
-
-  .side-doors { padding: clamp(100px, 12vw, 170px) 0 0; background: #fff; }
-  .side-doors > header { padding: 0 clamp(22px, 5vw, 76px) clamp(64px, 8vw, 120px); }
-  .side-doors h2 { max-width: 1180px; font-family: 'Bricolage Grotesque', 'Public Sans', sans-serif; font-size: clamp(58px, 7.5vw, 116px); font-weight: 720; line-height: .98; letter-spacing: -.035em; text-wrap: balance; }
-  .side-worlds { min-height: 600px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
-  .side-world { position: relative; display: flex; flex-direction: column; justify-content: flex-end; gap: 20px; padding: clamp(50px, 7vw, 110px); color: var(--ink); text-decoration: none; transition: flex .7s cubic-bezier(.16, 1, .3, 1), background .45s ease; }
-  .side-world--connect { background: #ff6a35; clip-path: ellipse(92% 112% at 8% 100%); }
-  .side-world--team { margin-left: -7vw; padding-left: clamp(100px, 12vw, 190px); background: var(--lime); clip-path: ellipse(92% 112% at 92% 100%); }
-  .side-world:hover { filter: saturate(1.08); }
-  .side-kicker { font-size: 14px; font-weight: 780; }
-  .side-world strong { max-width: 650px; font-family: 'Bricolage Grotesque', 'Public Sans', sans-serif; font-size: clamp(42px, 4.4vw, 70px); font-weight: 720; line-height: 1; letter-spacing: -.03em; }
-  .side-action { width: max-content; max-width: 100%; display: inline-flex; align-items: center; gap: 18px; margin-top: 10px; font-weight: 800; }
-
-  .home-experience :focus-visible { outline: 4px solid var(--lime); outline-offset: 5px; }
-  @keyframes local-pulse { 0% { box-shadow: 0 0 0 0 rgba(215,255,66,.7); } 70% { box-shadow: 0 0 0 34px rgba(215,255,66,0); } 100% { box-shadow: 0 0 0 0 rgba(215,255,66,0); } }
-  @keyframes gesture-arrive { from { opacity: .25; transform: translateX(-9vw); } to { opacity: 1; transform: none; } }
-
-  @media (max-width: 980px) {
-    .local-message { grid-template-columns: 1fr; }
-    .local-limit { grid-column: auto; }
-    .human-scene { grid-template-columns: 1fr; }
-    .human-picture { min-height: 680px; clip-path: ellipse(84% 92% at 50% 8%); }
-    .human-message { padding-top: 50px; }
-  }
-  @media (max-width: 720px) {
-    .local-scene { min-height: 900px; }
-    .local-map::before { inset: 34% -30% -4% 8%; }
-    .local-map b { right: -4vw; bottom: 12vh; font-size: 34vw; }
-    .local-street { width: 72%; }
-    .local-message { align-self: end; gap: 34px; padding: 100px 20px 90px; }
-    .local-message h2 { font-size: clamp(66px, 20vw, 96px); }
-    .local-limit { font-size: 14px; }
-    .three-gestures { min-height: 760px; padding-right: 20px; padding-left: 20px; }
-    .gesture { font-size: clamp(66px, 21vw, 104px); }
-    .gesture--understand { max-width: 95%; }
-    .human-picture { min-height: 560px; }
-    .human-message { padding: 44px 20px 92px; }
-    .side-doors > header { padding-right: 20px; padding-left: 20px; }
-    .side-worlds { min-height: 900px; grid-template-columns: 1fr; }
-    .side-world { min-height: 470px; padding: 64px 24px; clip-path: ellipse(116% 100% at 50% 100%); }
-    .side-world--team { margin: -60px 0 0; padding-left: 24px; clip-path: ellipse(116% 100% at 50% 100%); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .local-ring, .gesture { animation: none; transform: none; opacity: 1; }
+  @media (prefers-reduced-motion: no-preference) {
+    #home-place:not([hidden]) { animation: home-place-reveal 220ms var(--levois-ease) both; }
+    @keyframes home-place-reveal { from { opacity: .5; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   }
 </style>
+<script>
+  import '../scripts/home-address';
+  const marker=document.querySelector<HTMLButtonElement>('.world-marker button');const detail=document.getElementById('world-marker-detail');
+  marker?.addEventListener('click',()=>{const opened=marker.getAttribute('aria-expanded')==='true';marker.setAttribute('aria-expanded',String(!opened));if(detail)detail.hidden=opened;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&detail&&!detail.hidden){detail.hidden=true;marker?.setAttribute('aria-expanded','false');marker?.focus();}});
+</script>

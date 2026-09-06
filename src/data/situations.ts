@@ -37,7 +37,7 @@ export const situations: Situation[] = [
       {
         id: 'prix',
         label: 'Avez-vous déjà une idée du prix de présentation ?',
-        aide: 'L’origine d’une hypothèse de prix compte plus que son montant.',
+        aide: 'L’origine d’un prix envisagé compte plus que son montant.',
         options: [
           { value: 'aucune', label: 'Non, aucune', signals: [{ signal: 'alignement', poids: 1 }], fragment: 'le prix n’est pas encore défini' },
           { value: 'en-ligne', label: 'Une estimation en ligne', signals: [{ signal: 'prix-premature', poids: 1 }], fragment: 'vous disposez d’une estimation en ligne' },
@@ -86,10 +86,10 @@ export const situations: Situation[] = [
       {
         gap: 'alignement',
         titre: 'Alignement avant publication',
-        definition: 'Faire coïncider l’état du bien, les documents, la présentation et l’hypothèse de positionnement avant d’exposer le bien au marché.',
-        interpretation: 'Votre calendrier vous laisse encore le temps de construire une première présentation cohérente. La priorité ne semble pas être de choisir immédiatement un prix définitif, mais d’aligner l’état du bien, les documents, la mise en scène et l’hypothèse de positionnement.',
+        definition: 'Faire coïncider l’état du bien, les documents, la présentation et le prix envisagé face aux biens comparables avant d’exposer le bien au marché.',
+        interpretation: 'Votre calendrier vous laisse encore le temps de construire une première présentation cohérente. La priorité ne semble pas être de choisir immédiatement un prix définitif, mais d’aligner l’état du bien, les documents, la mise en scène et le prix envisagé face aux biens comparables.',
         limite: 'Sans comparaison locale et sans analyse précise du bien, il n’est pas possible de définir un prix ni de savoir quels ajustements de présentation auront le plus d’impact.',
-        action: 'Établir un ordre de préparation : documents, points à corriger, prise de vues, puis hypothèse de positionnement.',
+        action: 'Établir un ordre de préparation : documents, points à corriger, prise de vues, puis prix envisagé face aux biens comparables.',
         resourceId: 'lancement-coherent',
         ctaLabel: 'Faire relire mon lancement',
       },
@@ -106,12 +106,12 @@ export const situations: Situation[] = [
       {
         gap: 'prix-premature',
         titre: 'Prix défini trop tôt',
-        definition: 'Une hypothèse de prix se forme avant que les éléments qui devraient la fonder soient réunis.',
-        interpretation: 'Vos réponses suggèrent qu’une hypothèse de prix est en train de se fixer — à partir d’une estimation isolée, d’avis divergents ou du besoin de financer la suite. Or un prix construit avant la comparaison locale devient vite un point de fixation difficile à corriger.',
+        definition: 'Un prix envisagé se forme avant que les éléments qui devraient le justifier soient réunis.',
+        interpretation: 'Vos réponses suggèrent qu’un prix envisagé est en train de se fixer — à partir d’une estimation isolée, d’avis divergents ou du besoin de financer la suite. Or un prix construit avant la comparaison locale devient vite un point de fixation difficile à corriger.',
         limite: 'Ces réponses ne permettent pas de dire si le montant envisagé est cohérent : seule une comparaison avec les biens réellement en concurrence, au même moment et au même budget, peut le vérifier.',
         action: 'Suspendre le choix du prix définitif et lister d’abord les cinq à huit annonces que les acheteurs verront dans la même recherche que la vôtre.',
         resourceId: 'verifier-avant-baisse-prix',
-        ctaLabel: 'Vérifier mon hypothèse de prix',
+        ctaLabel: 'Vérifier mon prix envisagé',
       },
       {
         gap: 'presentation',
@@ -129,7 +129,7 @@ export const situations: Situation[] = [
         definition: 'Les étapes existent, mais leur enchaînement n’est pas encore clair.',
         interpretation: 'Vos réponses suggèrent que la difficulté n’est pas une étape en particulier, mais l’ordre dans lequel les aborder. C’est une situation très courante — et c’est précisément ce qu’un lancement structuré permet d’éviter : décider chaque chose au bon moment, une fois les informations réunies.',
         limite: 'Ces réponses ne permettent pas encore de dire quelle étape est prioritaire pour votre bien précis : l’ordre dépend du calendrier réel, de l’état du bien et de votre projet d’après-vente.',
-        action: 'Commencer par la seule étape sans regret possible : réunir les documents. Puis dérouler dans l’ordre — état du bien, présentation, comparaison locale, hypothèse de prix.',
+        action: 'Commencer par la seule étape sans regret possible : réunir les documents. Puis dérouler dans l’ordre — état du bien, présentation, comparaison locale, prix envisagé.',
         resourceId: 'lancement-coherent',
         ctaLabel: 'Remettre les étapes dans l’ordre',
       },

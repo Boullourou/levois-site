@@ -15,7 +15,7 @@ export const resources: ResourceMeta[] = [
     slug: 'lancement-coherent',
     titre: 'Construire un lancement cohérent',
     question: 'Dans quel ordre prendre les décisions avant de publier ?',
-    benefice: 'Aligner documents, préparation, prise de vues et hypothèse de prix — dans le bon ordre.',
+    benefice: 'Aligner documents, préparation, prise de vues et prix envisagé — dans le bon ordre.',
     duree: '7 min de lecture',
     cta: 'Lire',
     imageSlot: 'ressource-lancement-coherent',

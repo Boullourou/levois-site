@@ -21,7 +21,8 @@
     "data:dvf": "node scripts/build-dvf.mjs",
     "data:market": "node scripts/build-market-summary.mjs",
     "test:market": "node --test tests/market-summary.node.mjs",
-    "data:verify": "node scripts/verify-dvf.mjs"
+    "data:verify": "node scripts/verify-dvf.mjs",
+    "test:public": "node scripts/verify-public.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",
@@ -33,7 +34,9 @@
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@cloudflare/workers-types": "5.20260818.1",
+    "@playwright/test": "1.63.0",
     "vitest": "^4.1.10",
     "wrangler": "4.124.0"
   }

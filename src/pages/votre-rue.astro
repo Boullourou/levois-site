@@ -20,31 +20,28 @@
  * /api/lead (backend migré à l'itération suivante — cf. commentaire d'envoi).
  */
 import Layout from '../layouts/Layout.astro';
+import LocalObservatory from '../components/LocalObservatory.astro';
+import WorldScene from '../components/WorldScene.astro';
+import Icon from '../components/WorldIcon.astro';
 ---
 
 <Layout
   title="Les prix réels de votre secteur"
   description="Combien s'est vendue la dernière maison de votre quartier ? Les ventes réelles de votre secteur, à partir des données publiques DVF. Sans inscription."
-  noindex={true}
 >
-  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section md:pb-section-md">
+  <div class="rp-territory-page">
 
-    <!-- ① Promesse + saisie -->
-    <header class="mb-8 md:mb-10">
-      <p class="eyebrow mb-4">Les prix réels de votre secteur · Lèves &amp; bassin chartrain</p>
-      <h1 class="vr-page-title text-encre mb-4">
-        Combien s'est vendue la dernière maison de votre quartier&nbsp;?
-      </h1>
-      <p class="font-sans text-body-lg text-brun max-w-prose">
-        Les ventes réellement enregistrées autour de chez vous.
-        Sans inscription, sans qu'on vous rappelle. La réponse en 30&nbsp;secondes.
-      </p>
+    <section class="world-street-hero" aria-labelledby="street-title">
+    <WorldScene compact />
+    <header class="rp-territory-intro">
+      <h1 id="street-title" class="vr-page-title">Votre rue a des choses<br/><span>à vous dire.</span></h1>
+      <p>Découvrez les ventes réellement signées autour de chez vous.<br/>Les faits d’abord. Votre prochaine décision ensuite.</p>
+      <p class="rp-territory-location">Lèves · Chartres · 7 communes du bassin chartrain</p>
       <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
     </header>
-
-    <form id="vr-form" class="vr-search carte p-5 md:p-6" autocomplete="off" novalidate>
+    <form id="vr-form" class="vr-search" autocomplete="off" novalidate>
       <label for="vr-adresse" class="block font-sans text-sm text-brun mb-2">
-        Votre rue ou votre adresse
+        Quelle adresse souhaitez-vous explorer ?
       </label>
       <div class="vr-field">
         <div class="vr-combo">
@@ -60,13 +57,17 @@ import Layout from '../layouts/Layout.astro';
         <button type="submit" id="vr-submit" class="btn-primaire vr-submit">Voir les ventes</button>
       </div>
       <p class="font-sans text-[13px] text-brun/70 mt-3">
-        Aucune création de compte. Aucun e-mail ni téléphone demandé pour obtenir le résultat.
+        Votre résultat est accessible sans e-mail ni téléphone.
       </p>
       <p id="vr-geo-erreur" class="font-sans text-sm text-argile mt-2 hidden" role="alert"></p>
     </form>
 
+    <p class="world-street-caption">Quartier illustré · les résultats ci-dessous proviennent des données DVF.</p>
+    </section>
+
     <!-- ②③④⑤⑥ Scène (analyse → infographie → En clair → détails → conversion) -->
     <section id="vr-scene" aria-live="polite" hidden></section>
+    <LocalObservatory />
 
     <!-- ⑦ Méthode & limites (accessibles mais discrètes) -->
     <details id="vr-methode" class="vr-methode">
@@ -105,59 +106,59 @@ import Layout from '../layouts/Layout.astro';
      Tous les sélecteurs sont préfixés .vr- : aucun risque de collision. -->
 <style is:global>
   .vr-page-title {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;
   }
   .vr-fraicheur {
     display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B;
-    background: #D7FF42; border-radius: 999px; padding: 0.35rem 0.85rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.85rem; color: var(--levois-muted);
+    background: var(--levois-selected); border-radius: 999px; padding: 0.35rem 0.85rem;
   }
-  .vr-fraicheur::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: #243CFF; flex: 0 0 auto; }
+  .vr-fraicheur::before { content: ''; width: 7px; height: 7px; border-radius: 999px; background: var(--levois-accent); flex: 0 0 auto; }
 
   .vr-field { display: flex; flex-direction: column; gap: 0.75rem; }
   @media (min-width: 560px) { .vr-field { flex-direction: row; align-items: flex-start; } }
   .vr-combo { position: relative; flex: 1; }
   .vr-input {
-    width: 100%; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0;
-    padding: 0.85rem 1rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem;
-    color: #111522; min-height: 52px;
+    width: 100%; background: var(--levois-paper); border: 1px solid var(--levois-line); border-radius: 0;
+    padding: 0.85rem 1rem; font-family: Satoshi, system-ui, sans-serif; font-size: 1rem;
+    color: var(--levois-ink); min-height: 52px;
   }
-  .vr-input:focus { outline: 2px solid #243CFF; outline-offset: 2px; border-color: #243CFF; }
+  .vr-input:focus { outline: 2px solid var(--levois-accent); outline-offset: 2px; border-color: var(--levois-accent); }
   .vr-submit { min-height: 52px; white-space: nowrap; }
   @media (max-width: 559px) { .vr-submit { width: 100%; } }
 
   .vr-suggestions {
     position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px);
-    background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0;
+    background: #FFFFFF; border: 1px solid var(--levois-line); border-radius: 0;
     box-shadow: none;
     list-style: none; margin: 0; padding: 0.35rem; max-height: 320px; overflow-y: auto;
   }
   .vr-suggestions li {
     padding: 0.65rem 0.75rem; border-radius: 0; cursor: pointer;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.95rem; color: #111522; line-height: 1.35;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.95rem; color: var(--levois-ink); line-height: 1.35;
   }
-  .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: #58615B; }
-  .vr-suggestions li[aria-selected="true"], .vr-suggestions li:hover { background: #D7FF42; }
+  .vr-suggestions li .vr-sug-sub { display: block; font-size: 0.82rem; color: var(--levois-muted); }
+  .vr-suggestions li[aria-selected="true"], .vr-suggestions li:hover { background: var(--levois-selected); }
 
   /* ——— Analyse ——— */
   .vr-analyse { padding: 2.5rem 0 1rem; }
   .vr-analyse-step {
     display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; color: #58615B;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 1.02rem; color: var(--levois-muted);
     transition: color 0.3s ease;
   }
-  .vr-analyse-step.is-active { color: #111522; }
-  .vr-analyse-step.is-done { color: #58615B; }
+  .vr-analyse-step.is-active { color: var(--levois-ink); }
+  .vr-analyse-step.is-done { color: var(--levois-muted); }
   .vr-analyse-dot {
     width: 20px; height: 20px; border-radius: 999px; flex: 0 0 auto; position: relative;
     border: 2px solid currentColor;
   }
   .vr-analyse-step.is-active .vr-analyse-dot::after {
-    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: #243CFF;
+    content: ''; position: absolute; inset: 3px; border-radius: 999px; background: var(--levois-accent);
     animation: vr-pulse 0.9s ease-in-out infinite;
   }
-  .vr-analyse-step.is-done .vr-analyse-dot { background: #243CFF; border-color: #243CFF; }
+  .vr-analyse-step.is-done .vr-analyse-dot { background: var(--levois-accent); border-color: var(--levois-accent); }
   .vr-analyse-step.is-done .vr-analyse-dot::after {
     content: ''; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   }
@@ -166,134 +167,134 @@ import Layout from '../layouts/Layout.astro';
   /* ——— Résultats : séquence compacte de cartes ——— */
   .vr-results { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
   .vr-head { margin: 0.25rem 0 0.1rem; }
-  .vr-head-eyebrow { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #243CFF; }
-  .vr-head-adr { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.95rem; color: #58615B; margin-top: 0.25rem; }
+  .vr-head-eyebrow { font-family: Satoshi, system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--levois-accent); }
+  .vr-head-adr { font-family: Satoshi, system-ui, sans-serif; font-size: 0.95rem; color: var(--levois-muted); margin-top: 0.25rem; }
 
   .vr-block { opacity: 0; transform: translateY(14px); transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1); }
   .vr-block.is-in { opacity: 1; transform: none; }
 
-  .vr-card { background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0; padding: 1.5rem 1.35rem; }
+  .vr-card { background: #FFFFFF; border: 1px solid var(--levois-line); border-radius: 0; padding: 1.5rem 1.35rem; }
   @media (min-width: 768px) { .vr-card { padding: 1.9rem; } }
-  .vr-card--dark { background: #111522; border-color: #111522; }
-  .vr-card--warm { background: #D7FF42; border-color: #C9CEC8; }
+  .vr-card--dark { background: var(--levois-ink); border-color: var(--levois-ink); }
+  .vr-card--warm { background: var(--levois-selected); border-color: var(--levois-line); }
 
-  .vr-label { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #243CFF; }
-  .vr-card--dark .vr-label { color: #D7FF42; }
-  .vr-num { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: #111522; }
-  .vr-card--dark .vr-num { color: #F2F5EF; }
-  .vr-sub { font-family: 'Public Sans', system-ui, sans-serif; color: #58615B; }
+  .vr-label { font-family: Satoshi, system-ui, sans-serif; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--levois-accent); }
+  .vr-card--dark .vr-label { color: var(--levois-selected); }
+  .vr-num { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.02em; color: var(--levois-ink); }
+  .vr-card--dark .vr-num { color: var(--levois-paper); }
+  .vr-sub { font-family: Satoshi, system-ui, sans-serif; color: var(--levois-muted); }
   .vr-card--dark .vr-sub { color: rgba(242,245,239,0.7); }
 
   /* B — compteur de ventes */
   .vr-b-num { font-size: clamp(3.4rem, 16vw, 5rem); }
-  .vr-b-l { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.1rem; color: #111522; margin-top: 0.15rem; }
+  .vr-b-l { font-family: Satoshi, system-ui, sans-serif; font-size: 1.1rem; color: var(--levois-ink); margin-top: 0.15rem; }
   .vr-b-sub { font-size: 0.9rem; margin-top: 0.45rem; }
 
   /* C — prix du milieu + curseur de fourchette */
   .vr-c-num { font-size: clamp(2.7rem, 12vw, 3.8rem); }
   .vr-c-lbl { margin-top: 0.55rem; }
   .vr-range { margin-top: 1.8rem; }
-  .vr-range-line { position: relative; height: 3px; background: #C9CEC8; margin: 0 0.2rem; border-radius: 3px; }
-  .vr-range-dot { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 999px; background: #243CFF; box-shadow: none; transform: translate(-50%, -50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
-  .vr-range-cap { position: absolute; top: -1.55rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.92rem; color: #111522; font-weight: 600; }
+  .vr-range-line { position: relative; height: 3px; background: var(--levois-line); margin: 0 0.2rem; border-radius: 3px; }
+  .vr-range-dot { position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 999px; background: var(--levois-accent); box-shadow: none; transform: translate(-50%, -50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .vr-range-cap { position: absolute; top: -1.55rem; font-family: Satoshi, system-ui, sans-serif; font-size: 0.92rem; color: var(--levois-ink); font-weight: 600; }
   .vr-range-cap.g { left: 0; } .vr-range-cap.d { right: 0; }
-  .vr-range-arrows { display: flex; justify-content: space-between; color: #58615B; font-size: 1rem; margin-top: 0.35rem; padding: 0 0.1rem; }
-  .vr-c-phrase { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.98rem; color: #58615B; margin-top: 1rem; line-height: 1.5; }
-  .vr-c-m2 { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; color: #58615B; opacity: 0.85; margin-top: 0.55rem; }
+  .vr-range-arrows { display: flex; justify-content: space-between; color: var(--levois-muted); font-size: 1rem; margin-top: 0.35rem; padding: 0 0.1rem; }
+  .vr-c-phrase { font-family: Satoshi, system-ui, sans-serif; font-size: 0.98rem; color: var(--levois-muted); margin-top: 1rem; line-height: 1.5; }
+  .vr-c-m2 { font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem; color: var(--levois-muted); opacity: 0.85; margin-top: 0.55rem; }
 
   /* D — tendance : titre + jauge baisse/stable/hausse */
   .vr-d-head { display: flex; align-items: center; gap: 0.65rem; margin-top: 0.7rem; }
   .vr-d-ico { width: 32px; height: 32px; flex: 0 0 auto; }
   .vr-d-ico svg { width: 100%; height: 100%; }
-  .vr-d-title { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.4rem, 5vw, 1.9rem); line-height: 1.1; color: #111522; }
-  .vr-d-pct { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; color: #58615B; margin-top: 0.9rem; }
+  .vr-d-title { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: clamp(1.4rem, 5vw, 1.9rem); line-height: 1.1; color: var(--levois-ink); }
+  .vr-d-pct { font-family: Satoshi, system-ui, sans-serif; font-size: 0.9rem; color: var(--levois-muted); margin-top: 0.9rem; }
   .vr-gauge { margin-top: 1.3rem; }
-  .vr-gauge-track { position: relative; height: 12px; border-radius: 999px; background: #C9CEC8; }
-  .vr-gauge-cursor { position: absolute; top: -5px; width: 4px; height: 22px; border-radius: 2px; background: #111522; transform: translateX(-50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
-  .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.55rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: #58615B; }
-  .vr-gauge-lbls .on { color: #243CFF; font-weight: 600; }
+  .vr-gauge-track { position: relative; height: 12px; border-radius: 999px; background: var(--levois-line); }
+  .vr-gauge-cursor { position: absolute; top: -5px; width: 4px; height: 22px; border-radius: 2px; background: var(--levois-ink); transform: translateX(-50%); transition: left 0.9s cubic-bezier(0.22,1,0.36,1); }
+  .vr-gauge-lbls { display: flex; justify-content: space-between; margin-top: 0.55rem; font-family: Satoshi, system-ui, sans-serif; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--levois-muted); }
+  .vr-gauge-lbls .on { color: var(--levois-accent); font-weight: 600; }
 
   /* A — dernière vente */
   .vr-a-num { font-size: clamp(2.5rem, 11vw, 3.4rem); margin-top: 0.7rem; }
-  .vr-a-bien { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; margin-top: 0.5rem; color: rgba(242,245,239,0.92); }
-  .vr-a-meta { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.92rem; margin-top: 0.35rem; }
+  .vr-a-bien { font-family: Satoshi, system-ui, sans-serif; font-size: 1.02rem; margin-top: 0.5rem; color: rgba(242,245,239,0.92); }
+  .vr-a-meta { font-family: Satoshi, system-ui, sans-serif; font-size: 0.92rem; margin-top: 0.35rem; }
 
   /* En clair */
-  .vr-ec { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.3rem, 4.6vw, 1.8rem); line-height: 1.32; color: #111522; margin-top: 0.7rem; }
-  .vr-maj { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem; color: #58615B; margin-top: 0.9rem; }
+  .vr-ec { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: clamp(1.3rem, 4.6vw, 1.8rem); line-height: 1.32; color: var(--levois-ink); margin-top: 0.7rem; }
+  .vr-maj { font-family: Satoshi, system-ui, sans-serif; font-size: 0.8rem; color: var(--levois-muted); margin-top: 0.9rem; }
 
   /* Ventes détaillées (secondaire) */
   .vr-details { margin-top: 0.1rem; }
   .vr-details summary {
-    cursor: pointer; font-family: 'Public Sans', system-ui, sans-serif; font-weight: 600; color: #243CFF;
+    cursor: pointer; font-family: Satoshi, system-ui, sans-serif; font-weight: 600; color: var(--levois-accent);
     padding: 0.9rem 0; list-style: none; display: inline-flex; align-items: center; gap: 0.5rem;
   }
   .vr-details summary::-webkit-details-marker { display: none; }
   .vr-details summary::before { content: '＋'; font-weight: 400; }
   .vr-details[open] summary::before { content: '－'; }
-  .vr-autre { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.85rem 0; border-top: 1px solid #C9CEC8; font-family: 'Public Sans', system-ui, sans-serif; }
-  .vr-autre-sub { display: block; font-size: 0.85rem; color: #58615B; }
-  .vr-autre-prix { font-weight: 600; color: #111522; }
+  .vr-autre { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.3rem 1rem; padding: 0.85rem 0; border-top: 1px solid var(--levois-line); font-family: Satoshi, system-ui, sans-serif; }
+  .vr-autre-sub { display: block; font-size: 0.85rem; color: var(--levois-muted); }
+  .vr-autre-prix { font-weight: 600; color: var(--levois-ink); }
 
   /* ——— Conversion : rupture forte (carte sombre) ——— */
-  .vr-conv { background: #111522; color: #F2F5EF; border-radius: 0; padding: 2rem 1.5rem; margin-top: 1.75rem; }
+  .vr-conv { background: var(--levois-ink); color: var(--levois-paper); border-radius: 0; padding: 2rem 1.5rem; margin-top: 1.75rem; }
   @media (min-width: 768px) { .vr-conv { padding: 2.75rem; } }
-  .vr-conv-eyebrow { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #D7FF42; margin-bottom: 0.8rem; }
-  .vr-conv-titre { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.8rem, 6.5vw, 2.6rem); line-height: 1.08; color: #F2F5EF; margin-bottom: 0.7rem; }
-  .vr-conv-intro { font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.02rem; line-height: 1.6; color: rgba(242,245,239,0.72); margin-bottom: 1.6rem; }
+  .vr-conv-eyebrow { font-family: Satoshi, system-ui, sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--levois-selected); margin-bottom: 0.8rem; }
+  .vr-conv-titre { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: clamp(1.8rem, 6.5vw, 2.6rem); line-height: 1.08; color: var(--levois-paper); margin-bottom: 0.7rem; }
+  .vr-conv-intro { font-family: Satoshi, system-ui, sans-serif; font-size: 1.02rem; line-height: 1.6; color: rgba(242,245,239,0.72); margin-bottom: 1.6rem; }
   .vr-paths { display: grid; gap: 0.7rem; }
   .vr-path { text-align: left; width: 100%; border: 0; border-radius: 0; padding: 1.15rem 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 1rem; transition: transform 0.2s, background 0.2s, border-color 0.2s; }
-  .vr-path-t { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.18rem; display: block; }
-  .vr-path-d { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; margin-top: 0.2rem; display: block; }
+  .vr-path-t { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: 1.18rem; display: block; }
+  .vr-path-d { font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem; margin-top: 0.2rem; display: block; }
   .vr-path-arrow { flex: 0 0 auto; font-size: 1.15rem; }
-  .vr-path--1 { background: #243CFF; }
-  .vr-path--1 .vr-path-t { color: #F2F5EF; } .vr-path--1 .vr-path-d { color: rgba(242,245,239,0.82); } .vr-path--1 .vr-path-arrow { color: #F2F5EF; }
+  .vr-path--1 { background: var(--levois-accent); }
+  .vr-path--1 .vr-path-t { color: var(--levois-paper); } .vr-path--1 .vr-path-d { color: rgba(242,245,239,0.82); } .vr-path--1 .vr-path-arrow { color: var(--levois-paper); }
   .vr-path--1:hover { background: #202635; transform: translateY(-2px); box-shadow: none; }
-  .vr-path--2 { background: #F2F5EF; }
-  .vr-path--2 .vr-path-t { color: #111522; } .vr-path--2 .vr-path-d { color: #58615B; } .vr-path--2 .vr-path-arrow { color: #243CFF; }
+  .vr-path--2 { background: var(--levois-paper); }
+  .vr-path--2 .vr-path-t { color: var(--levois-ink); } .vr-path--2 .vr-path-d { color: var(--levois-muted); } .vr-path--2 .vr-path-arrow { color: var(--levois-accent); }
   .vr-path--2:hover { transform: translateY(-2px); box-shadow: none; }
   .vr-path--3 { background: transparent; border: 1px solid rgba(242,245,239,0.26); }
-  .vr-path--3 .vr-path-t { color: #F2F5EF; font-size: 1.04rem; } .vr-path--3 .vr-path-d { color: rgba(242,245,239,0.6); } .vr-path--3 .vr-path-arrow { color: rgba(242,245,239,0.6); }
-  .vr-path--3:hover { border-color: #D7FF42; }
+  .vr-path--3 .vr-path-t { color: var(--levois-paper); font-size: 1.04rem; } .vr-path--3 .vr-path-d { color: rgba(242,245,239,0.6); } .vr-path--3 .vr-path-arrow { color: rgba(242,245,239,0.6); }
+  .vr-path--3:hover { border-color: var(--levois-selected); }
 
   /* Panneau (qualif / contact / explorer) — carte claire imbriquée dans la conversion sombre */
   .vr-panneau { margin-top: 1.35rem; background: #FFFFFF; border-radius: 0; padding: 1.5rem 1.35rem; }
   .vr-panneau:empty { display: none; }
   .vr-q-progress { display: flex; gap: 0.35rem; margin-bottom: 1.25rem; }
-  .vr-q-dot { height: 4px; flex: 1; border-radius: 999px; background: #C9CEC8; }
-  .vr-q-dot.is-on { background: #243CFF; }
-  .vr-q-label { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.2; color: #111522; margin-bottom: 1.1rem; }
+  .vr-q-dot { height: 4px; flex: 1; border-radius: 999px; background: var(--levois-line); }
+  .vr-q-dot.is-on { background: var(--levois-accent); }
+  .vr-q-label { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: 1.35rem; line-height: 1.2; color: var(--levois-ink); margin-bottom: 1.1rem; }
   .vr-q-opts { display: grid; gap: 0.6rem; }
   .vr-q-opt {
-    text-align: left; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0;
-    padding: 0.9rem 1.1rem; cursor: pointer; font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522;
+    text-align: left; background: var(--levois-paper); border: 1px solid var(--levois-line); border-radius: 0;
+    padding: 0.9rem 1.1rem; cursor: pointer; font-family: Satoshi, system-ui, sans-serif; font-size: 1rem; color: var(--levois-ink);
     transition: border-color 0.15s, background 0.15s;
   }
-  .vr-q-opt:hover { border-color: #243CFF; background: #D7FF42; }
-  .vr-q-back { background: none; border: 0; color: #58615B; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; padding: 0.3rem 0; }
-  .vr-q-back:hover { color: #243CFF; }
+  .vr-q-opt:hover { border-color: var(--levois-accent); background: var(--levois-selected); }
+  .vr-q-back { background: none; border: 0; color: var(--levois-muted); font-family: Satoshi, system-ui, sans-serif; font-size: 0.9rem; cursor: pointer; margin-top: 1rem; padding: 0.3rem 0; }
+  .vr-q-back:hover { color: var(--levois-accent); }
 
   .vr-champ { display: block; margin-bottom: 0.9rem; }
-  .vr-champ label { display: block; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.9rem; color: #58615B; margin-bottom: 0.4rem; }
+  .vr-champ label { display: block; font-family: Satoshi, system-ui, sans-serif; font-size: 0.9rem; color: var(--levois-muted); margin-bottom: 0.4rem; }
   .vr-champ input {
-    width: 100%; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0; padding: 0.8rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522; min-height: 50px;
+    width: 100%; background: var(--levois-paper); border: 1px solid var(--levois-line); border-radius: 0; padding: 0.8rem 1rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 1rem; color: var(--levois-ink); min-height: 50px;
   }
-  .vr-champ input:focus { outline: 2px solid #243CFF; outline-offset: 2px; border-color: #243CFF; }
-  .vr-consent { display: flex; align-items: flex-start; gap: 0.6rem; font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; color: #58615B; line-height: 1.5; margin: 0.5rem 0 1rem; cursor: pointer; }
-  .vr-consent input { margin-top: 0.15rem; width: 18px; height: 18px; accent-color: #243CFF; flex: 0 0 auto; }
+  .vr-champ input:focus { outline: 2px solid var(--levois-accent); outline-offset: 2px; border-color: var(--levois-accent); }
+  .vr-consent { display: flex; align-items: flex-start; gap: 0.6rem; font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem; color: var(--levois-muted); line-height: 1.5; margin: 0.5rem 0 1rem; cursor: pointer; }
+  .vr-consent input { margin-top: 0.15rem; width: 18px; height: 18px; accent-color: var(--levois-accent); flex: 0 0 auto; }
   .vr-contact-liens { display: flex; flex-wrap: wrap; gap: 0.6rem; }
   .vr-explorer { display: grid; gap: 0.6rem; }
-  .vr-explorer a { display: block; background: #F2F5EF; border: 1px solid #C9CEC8; border-radius: 0; padding: 0.9rem 1.1rem; font-family: 'Public Sans', system-ui, sans-serif; color: #111522; transition: border-color 0.15s; }
-  .vr-explorer a:hover { border-color: #243CFF; }
-  .vr-explorer a b { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; }
+  .vr-explorer a { display: block; background: var(--levois-paper); border: 1px solid var(--levois-line); border-radius: 0; padding: 0.9rem 1.1rem; font-family: Satoshi, system-ui, sans-serif; color: var(--levois-ink); transition: border-color 0.15s; }
+  .vr-explorer a:hover { border-color: var(--levois-accent); }
+  .vr-explorer a b { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; }
 
-  .vr-vide { background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0; padding: 1.75rem 1.5rem; }
+  .vr-vide { background: #FFFFFF; border: 1px solid var(--levois-line); border-radius: 0; padding: 1.75rem 1.5rem; }
 
-  .vr-methode { margin-top: 2.5rem; font-family: 'Public Sans', system-ui, sans-serif; }
-  .vr-methode summary { cursor: pointer; font-size: 0.85rem; color: #58615B; }
+  .vr-methode { margin-top: 2.5rem; font-family: Satoshi, system-ui, sans-serif; }
+  .vr-methode summary { cursor: pointer; font-size: 0.85rem; color: var(--levois-muted); }
   .vr-methode-corps { margin-top: 0.8rem; display: grid; gap: 0.7rem; }
-  .vr-methode-corps p { font-size: 0.85rem; color: #58615B; line-height: 1.6; }
+  .vr-methode-corps p { font-size: 0.85rem; color: var(--levois-muted); line-height: 1.6; }
 
   /* ——————————————————————————————————————————————————————————————
      Infographique premium — 7 blocs, IntersectionObserver
@@ -303,40 +304,40 @@ import Layout from '../layouts/Layout.astro';
   .vr-cine-wrap { display: grid; gap: 0; border-radius: 0; overflow: hidden; }
 
   .vr-bloc { padding: 2rem clamp(1.25rem, 5vw, 2.25rem) 2.25rem; }
-  .vr-bloc--hero  { background: #111522; padding-top: 2.75rem; padding-bottom: 2.75rem; }
-  .vr-bloc--b1    { background: #F2F5EF; }
-  .vr-bloc--b2    { background: #C9CEC8; }
-  .vr-bloc--surf  { background: #F2F5EF; }
-  .vr-bloc--spark { background: #C9CEC8; }
-  .vr-bloc--tx    { background: #FFFFFF; border-top: 1px solid #C9CEC8; }
+  .vr-bloc--hero  { background: var(--levois-ink); padding-top: 2.75rem; padding-bottom: 2.75rem; }
+  .vr-bloc--b1    { background: var(--levois-paper); }
+  .vr-bloc--b2    { background: var(--levois-line); }
+  .vr-bloc--surf  { background: var(--levois-paper); }
+  .vr-bloc--spark { background: var(--levois-line); }
+  .vr-bloc--tx    { background: #FFFFFF; border-top: 1px solid var(--levois-line); }
   .vr-bloc--conc  { background: #202635; }
 
   .vr-kicker {
-    font-family: 'Public Sans', system-ui, sans-serif;
+    font-family: Satoshi, system-ui, sans-serif;
     font-size: 0.72rem; font-weight: 600;
     letter-spacing: 0.18em; text-transform: uppercase;
     margin-bottom: 0.4rem;
   }
   .vr-kicker--light { color: rgba(255,255,255,0.5); }
-  .vr-kicker--terra { color: #243CFF; }
-  .vr-kicker--ink   { color: #58615B; }
+  .vr-kicker--terra { color: var(--levois-accent); }
+  .vr-kicker--ink   { color: var(--levois-muted); }
 
   .vr-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.2rem, 4.2vw, 1.6rem); line-height: 1.22;
     margin-bottom: 1.25rem;
   }
-  .vr-titre--dark { color: #111522; }
+  .vr-titre--dark { color: var(--levois-ink); }
 
   /* Héro */
   .vr-hero-counter {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(3.5rem, 14vw, 6rem); line-height: 1;
-    color: #D7FF42; letter-spacing: -0.02em;
+    color: var(--levois-selected); letter-spacing: -0.02em;
     margin: 0.2rem 0 0.05rem;
   }
   .vr-hero-count-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif;
+    font-family: Satoshi, system-ui, sans-serif;
     font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase;
     color: rgba(255,255,255,0.55); font-weight: 500;
   }
@@ -346,7 +347,7 @@ import Layout from '../layouts/Layout.astro';
     align-items: center; gap: 0.65rem;
   }
   .vr-hero-bar-yr {
-    font-family: 'Public Sans', system-ui, sans-serif;
+    font-family: Satoshi, system-ui, sans-serif;
     font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.5);
   }
   .vr-hero-bar-track {
@@ -355,11 +356,11 @@ import Layout from '../layouts/Layout.astro';
   }
   .vr-hero-bar-fill {
     height: 100%; border-radius: 999px;
-    background: #D7FF42; width: 0%;
+    background: var(--levois-selected); width: 0%;
     transition: width 1.1s cubic-bezier(0.25,0.46,0.45,0.94);
   }
   .vr-hero-bar-n {
-    font-family: 'Public Sans', system-ui, sans-serif;
+    font-family: Satoshi, system-ui, sans-serif;
     font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.75);
     text-align: right;
   }
@@ -367,8 +368,8 @@ import Layout from '../layouts/Layout.astro';
     display: inline-flex; align-items: center;
     background: rgba(215,255,66,0.15); border: 1px solid rgba(215,255,66,0.3);
     border-radius: 999px; padding: 0.2rem 0.65rem; margin-top: 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 600;
-    color: #D7FF42;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.78rem; font-weight: 600;
+    color: var(--levois-selected);
   }
 
   /* Bloc dots — nuage de points */
@@ -377,8 +378,8 @@ import Layout from '../layouts/Layout.astro';
 
   .vr-dot-legend {
     display: flex; gap: 1.75rem; justify-content: center; margin-bottom: 0.75rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.82rem;
-    color: #111522; align-items: center;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.82rem;
+    color: var(--levois-ink); align-items: center;
     opacity: 0; transition: opacity 0.5s ease;
   }
   .vr-dot-legend-ico {
@@ -392,26 +393,26 @@ import Layout from '../layouts/Layout.astro';
     opacity: 0; transition: opacity 0.55s ease;
   }
   .vr-dot-count {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: 1; display: block;
     letter-spacing: -0.02em;
   }
-  .vr-dot-count--M { color: #243CFF; }
+  .vr-dot-count--M { color: var(--levois-accent); }
   .vr-dot-count--A { color: #202635; }
   .vr-dot-count-item {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem;
-    color: #58615B; font-weight: 500; letter-spacing: 0.04em; text-align: center;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.8rem;
+    color: var(--levois-muted); font-weight: 500; letter-spacing: 0.04em; text-align: center;
   }
 
   /* Textes narratifs des phases */
   .vr-phase-txt {
-    font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: clamp(0.9rem, 2.8vw, 1rem); line-height: 1.62; color: #58615B;
+    font-family: Satoshi, system-ui, sans-serif;
+    font-size: clamp(0.9rem, 2.8vw, 1rem); line-height: 1.62; color: var(--levois-muted);
     transition: opacity 0.5s ease;
   }
   .vr-pt1 {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 600;
-    font-size: clamp(1rem, 3.5vw, 1.2rem); color: #111522;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 600;
+    font-size: clamp(1rem, 3.5vw, 1.2rem); color: var(--levois-ink);
     margin-top: 0.25rem; margin-bottom: 0.25rem;
   }
   .vr-pt2 { margin-top: 0.85rem; }
@@ -420,10 +421,10 @@ import Layout from '../layouts/Layout.astro';
   .vr-dist-type-pill {
     display: inline-block; border-radius: 999px;
     padding: 0.18rem 0.75rem; margin-bottom: 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
     letter-spacing: 0.07em; text-transform: uppercase;
   }
-  .vr-dist-type-pill--M { background: rgba(36,60,255,0.1); color: #243CFF; }
+  .vr-dist-type-pill--M { background: rgba(36,60,255,0.1); color: var(--levois-accent); }
   .vr-dist-type-pill--A { background: rgba(32,38,53,0.1); color: #202635; }
 
   .vr-dist-wrap { max-width: 42rem; }
@@ -432,28 +433,28 @@ import Layout from '../layouts/Layout.astro';
   .vr-dist-dot { opacity: 0; transition: opacity 0.25s ease; }
   .vr-dist-med-line { transition: opacity 0.5s ease; }
   .vr-dist-axis-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.62rem; fill: #58615B; letter-spacing: 0.04em;
+    font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.62rem; fill: var(--levois-muted); letter-spacing: 0.04em;
   }
   .vr-dist-zone-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 0.85rem; fill: #111522;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
+    font-size: 0.85rem; fill: var(--levois-ink);
     transition: opacity 0.5s ease;
   }
   .vr-dist-zone-sub {
-    font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.6rem; fill: #58615B;
+    font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.6rem; fill: var(--levois-muted);
     text-transform: uppercase; letter-spacing: 0.07em;
     transition: opacity 0.5s ease;
   }
   .vr-dist-med-big {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 0.88rem; fill: #243CFF;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
+    font-size: 0.88rem; fill: var(--levois-accent);
     transition: opacity 0.5s ease;
   }
   .vr-dist-note {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem;
-    color: #58615B; line-height: 1.58; margin-top: 0.9rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem;
+    color: var(--levois-muted); line-height: 1.58; margin-top: 0.9rem;
     opacity: 0; transform: translateY(6px);
     transition: opacity 0.55s ease, transform 0.55s ease;
   }
@@ -464,25 +465,25 @@ import Layout from '../layouts/Layout.astro';
     align-items: center; gap: 0.5rem; max-width: 24rem; text-align: center;
   }
   .vr-surf-col-val {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.3rem, 5vw, 1.85rem); line-height: 1.1; color: #111522;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
+    font-size: clamp(1.3rem, 5vw, 1.85rem); line-height: 1.1; color: var(--levois-ink);
   }
   .vr-surf-col-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem;
-    color: #58615B; letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.7rem;
+    color: var(--levois-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.2rem;
   }
   .vr-surf-delta-wrap { text-align: center; padding: 0 0.25rem; }
   .vr-surf-delta {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: clamp(1.8rem, 8vw, 2.8rem); line-height: 1; color: #243CFF;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
+    font-size: clamp(1.8rem, 8vw, 2.8rem); line-height: 1; color: var(--levois-accent);
     opacity: 0; transform: scale(0.7);
     transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
   }
   .vr-surf-delta.on { opacity: 1; transform: none; }
-  .vr-surf-arrow { font-size: 0.85rem; color: #58615B; display: block; margin-top: 0.15rem; }
+  .vr-surf-arrow { font-size: 0.85rem; color: var(--levois-muted); display: block; margin-top: 0.15rem; }
   .vr-surf-note {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem;
-    color: #58615B; line-height: 1.58; margin-top: 1.1rem; max-width: 24rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem;
+    color: var(--levois-muted); line-height: 1.58; margin-top: 1.1rem; max-width: 24rem;
   }
 
   /* Sparkline — grande */
@@ -491,16 +492,16 @@ import Layout from '../layouts/Layout.astro';
   .vr-spark-path { fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
   .vr-spark-dot { opacity: 0; transition: opacity 0.3s ease; }
   .vr-spark-dot.on { opacity: 1; }
-  .vr-spark-yr { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; fill: #58615B; text-anchor: middle; }
-  .vr-spark-val { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem; font-weight: 500; fill: #111522; text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
+  .vr-spark-yr { font-family: Satoshi, system-ui, sans-serif; font-size: 0.72rem; fill: var(--levois-muted); text-anchor: middle; }
+  .vr-spark-val { font-family: Satoshi, system-ui, sans-serif; font-size: 0.78rem; font-weight: 500; fill: var(--levois-ink); text-anchor: middle; opacity: 0; transition: opacity 0.3s ease; }
   .vr-spark-val.on { opacity: 1; }
-  .vr-spark-dir { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: clamp(1.05rem,3.5vw,1.35rem); color: #111522; margin-top: 0.65rem; }
-  .vr-spark-pct { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-top: 0.15rem; }
+  .vr-spark-dir { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: clamp(1.05rem,3.5vw,1.35rem); color: var(--levois-ink); margin-top: 0.65rem; }
+  .vr-spark-pct { font-family: Satoshi, system-ui, sans-serif; font-size: 0.85rem; color: var(--levois-muted); margin-top: 0.15rem; }
 
   /* Ventes réelles — cartes avec stagger */
   .vr-tx-cards { display: grid; gap: 0.7rem; }
   .vr-tx-card {
-    background: #FFFFFF; border: 1px solid #C9CEC8; border-radius: 0;
+    background: #FFFFFF; border: 1px solid var(--levois-line); border-radius: 0;
     padding: 0.85rem 1rem; display: grid;
     grid-template-columns: 2.2rem 1fr auto; gap: 0.6rem; align-items: start;
     opacity: 0; transform: translateY(10px);
@@ -514,51 +515,51 @@ import Layout from '../layouts/Layout.astro';
   .vr-tx-ico--M { background: rgba(36,60,255,0.1); }
   .vr-tx-ico--A { background: rgba(32,38,53,0.1); }
   .vr-tx-info { min-width: 0; }
-  .vr-tx-name { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; font-weight: 600; color: #111522; }
+  .vr-tx-name { font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--levois-ink); }
   .vr-tx-addr {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem;
-    color: #58615B; margin-top: 0.12rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.78rem;
+    color: var(--levois-muted); margin-top: 0.12rem;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .vr-tx-meta { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; color: #58615B; margin-top: 0.1rem; }
+  .vr-tx-meta { font-family: Satoshi, system-ui, sans-serif; font-size: 0.72rem; color: var(--levois-muted); margin-top: 0.1rem; }
   .vr-tx-right { text-align: right; flex-shrink: 0; }
-  .vr-tx-price { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1rem; color: #111522; white-space: nowrap; }
+  .vr-tx-price { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: 1rem; color: var(--levois-ink); white-space: nowrap; }
   .vr-tx-ppm {
     display: inline-block; margin-top: 0.25rem;
     border-radius: 999px; padding: 0.1rem 0.5rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.68rem; font-weight: 600; white-space: nowrap;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.68rem; font-weight: 600; white-space: nowrap;
   }
-  .vr-tx-ppm--M { background: rgba(36,60,255,0.1); color: #243CFF; }
+  .vr-tx-ppm--M { background: rgba(36,60,255,0.1); color: var(--levois-accent); }
   .vr-tx-ppm--A { background: rgba(32,38,53,0.1); color: #202635; }
-  .vr-tx-more summary { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; cursor: pointer; padding: 0.4rem 0; list-style: none; }
+  .vr-tx-more summary { font-family: Satoshi, system-ui, sans-serif; font-size: 0.85rem; color: var(--levois-muted); cursor: pointer; padding: 0.4rem 0; list-style: none; }
   .vr-tx-more summary::-webkit-details-marker { display: none; }
   .vr-tx-more[open] summary { margin-bottom: 0.7rem; }
 
   /* Conclusion */
   .vr-conc-eyebrow {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.72rem; font-weight: 600;
     letter-spacing: 0.18em; text-transform: uppercase; color: rgba(242,245,239,0.45);
     margin-bottom: 0.75rem;
   }
   .vr-conc-hl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.3rem,5vw,1.75rem); line-height: 1.25; color: #FFFFFF;
     margin-bottom: 1.25rem;
   }
   .vr-conc-body {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: clamp(0.9rem,3vw,1rem);
+    font-family: Satoshi, system-ui, sans-serif; font-size: clamp(0.9rem,3vw,1rem);
     line-height: 1.68; color: rgba(242,245,239,0.75); margin-bottom: 1.75rem;
   }
   .vr-conc-body p + p { margin-top: 0.75rem; }
   .vr-conc-cta {
-    display: block; width: 100%; background: #243CFF; color: #FFFFFF;
+    display: block; width: 100%; background: var(--levois-accent); color: #FFFFFF;
     border-radius: 0; padding: 0.95rem 1.5rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; font-weight: 600;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 1rem; font-weight: 600;
     letter-spacing: 0.04em; text-align: center; text-decoration: none;
     border: none; cursor: pointer;
     transition: background 0.2s ease, transform 0.15s ease;
   }
-  .vr-conc-cta:hover { background: #D7FF42; color: #111522; transform: translateY(-1px); }
+  .vr-conc-cta:hover { background: var(--levois-selected); color: var(--levois-ink); transform: translateY(-1px); }
   .vr-conc-cta:active { transform: none; }
 
   /* Animation entrée (IntersectionObserver) */
@@ -569,10 +570,10 @@ import Layout from '../layouts/Layout.astro';
   .vr-bloc-anim.is-on { opacity: 1; transform: none; }
 
   /* Gardées — utilisées par construireStack */
-  .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #C9CEC8; }
-  .vr-ppm-alt-type { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #58615B; }
-  .vr-ppm-alt-val { font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.3rem; color: #111522; margin-top: 0.25rem; }
-  .vr-ppm-alt-range { font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; color: #58615B; margin-top: 0.15rem; }
+  .vr-ppm-alt { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--levois-line); }
+  .vr-ppm-alt-type { font-family: Satoshi, system-ui, sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--levois-muted); }
+  .vr-ppm-alt-val { font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: 1.3rem; color: var(--levois-ink); margin-top: 0.25rem; }
+  .vr-ppm-alt-range { font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem; color: var(--levois-muted); margin-top: 0.15rem; }
 
   .vr-after { margin-top: 1.5rem; }
 
@@ -601,6 +602,7 @@ import Layout from '../layouts/Layout.astro';
 </style>
 
 <script>
+import {requestJson} from '../lib/request-json';
   type Tx = {
     id: string; d: string; v: number; t: string; lat: number; lon: number;
     no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
@@ -634,7 +636,7 @@ import Layout from '../layouts/Layout.astro';
   // ——— Fraîcheur affichée d'emblée ———
   (async () => {
     try {
-      const m = (await (await fetch('/data/dvf-meta.json')).json()) as Meta;
+      const {data:m}=await requestJson<Meta>('/data/dvf-meta.json',{},12000);
       meta = m;
       if (m.status === 'ready' && m.dateVenteLaPlusRecente) {
         fraicheurEl.textContent = `Données DVF disponibles jusqu'au ${dateComplete(m.dateVenteLaPlusRecente)}`;
@@ -645,9 +647,9 @@ import Layout from '../layouts/Layout.astro';
 
   async function chargerDonnees() {
     if (dataset) return;
-    const [d, m] = await Promise.all([fetch('/data/dvf-secteur.json'), fetch('/data/dvf-meta.json')]);
-    dataset = (await d.json()) as Tx[];
-    meta = (await m.json()) as Meta;
+    const [d,m]=await Promise.all([requestJson<Tx[]>('/data/dvf-secteur.json'),requestJson<Meta>('/data/dvf-meta.json')]);
+    if(!d.response.ok||!m.response.ok||!Array.isArray(d.data))throw new Error('Ventes indisponibles');
+    dataset=d.data;meta=m.data;
   }
 
   async function geocoder(q: string, autocomplete: boolean, limit: number) {
@@ -657,9 +659,8 @@ import Layout from '../layouts/Layout.astro';
     url.searchParams.set('lon', String(BIAIS.lon));
     url.searchParams.set('lat', String(BIAIS.lat));
     if (autocomplete) url.searchParams.set('autocomplete', '1');
-    const rep = await fetch(url.toString());
+    const {response:rep,data:json}=await requestJson<any>(url.toString(),{},10000);
     if (!rep.ok) throw new Error(`geocode ${rep.status}`);
-    const json = await rep.json();
     const feats = Array.isArray(json.features) ? json.features : [];
     return feats.filter((f: any) => String(f?.properties?.citycode || '').startsWith('28'));
   }
@@ -1012,400 +1013,6 @@ import Layout from '../layouts/Layout.astro';
   }
 
   // ——— Infographique premium — 7 blocs, IntersectionObserver ———
-  let cineCleanup: null | (() => void) = null;
-
-  function construireCine(model: any) {
-    if (cineCleanup) { cineCleanup(); cineCleanup = null; }
-
-    const ios: IntersectionObserver[] = [];
-    const touts: ReturnType<typeof setTimeout>[] = [];
-    const later = (ms: number, fn: () => void) => { touts.push(setTimeout(fn, ms)); };
-    const observe = (id: string, fn: () => void) => {
-      const el = scene.querySelector(id);
-      if (!el) return;
-      const io = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) { io.disconnect(); fn(); }
-      }, { threshold: 0.08 });
-      io.observe(el);
-      ios.push(io);
-    };
-
-    const domColor = model.dom === 'Maison' ? '#243CFF' : '#202635';
-    const D = model.D;
-    const sf = model.surfaceEffect;
-
-    // ——— Nuage de points (positions déterministes) ———
-    const NDOTS = 44;
-    const propM = model.nM / Math.max(model.nM + model.nA, 1);
-    const nDotM = Math.max(4, Math.min(40, Math.round(NDOTS * propM)));
-    const SW = 360, SH = 130, CX = SW / 2, CY = SH / 2;
-    let _s = 0x9e3779b9;
-    const rnd = () => { _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s = ((_s ^ (_s >>> 16)) * 0x45d9f3b) >>> 0; _s ^= _s >>> 16; return (_s >>> 0) / 0x100000000; };
-    type Dot = { x0: number; y0: number; dx: number; dy: number; isM: boolean };
-    const dots: Dot[] = Array.from({ length: NDOTS }, (_, i) => {
-      const isM = i < nDotM;
-      const x0 = CX + (rnd() * 2 - 1) * 8, y0 = CY + (rnd() * 2 - 1) * 8;
-      const x1 = isM ? 14 + rnd() * 100 : SW - 114 + rnd() * 100, y1 = 10 + rnd() * 110;
-      return { x0, y0, dx: x1 - x0, dy: y1 - y0, isM };
-    });
-    const dotSvg = dots.map((d, i) =>
-      `<circle class="vr-dot" cx="${d.x0.toFixed(1)}" cy="${d.y0.toFixed(1)}" r="${d.isM ? 5 : 4}" fill="#C9CEC8" data-di="${i}"/>`
-    ).join('');
-
-    // ——— Distribution jitter (€/m² réels) ———
-    const ppmDom = model.dom === 'Maison' ? model.ppmM : model.ppmA;
-    const ppmDots: number[] = (model.dom === 'Maison' ? model.ppmDotsM : model.ppmDotsA) || [];
-    let distHtml = '';
-    if (ppmDom && ppmDots.length >= 5) {
-      const q1 = ppmDom.q1, med = ppmDom.median, q3 = ppmDom.q3;
-      const iqr = q3 - q1;
-      const xMin = Math.max(Math.min(...ppmDots), q1 - 1.5 * iqr);
-      const xMax = Math.min(Math.max(...ppmDots), q3 + 1.5 * iqr);
-      const DW = 360, DH = 64, YN = 6, YX = 58;
-      const xs = (v: number) => Math.max(2, Math.min(DW - 2, ((v - xMin) / Math.max(xMax - xMin, 1)) * DW));
-      const q1x = xs(q1), medx = xs(med), q3x = xs(q3), zoneW = Math.max(0, q3x - q1x);
-      let _s2 = 0xabcdef01;
-      const rnd2 = () => { _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 = ((_s2 ^ (_s2 >>> 16)) * 0x45d9f3b) >>> 0; _s2 ^= _s2 >>> 16; return (_s2 >>> 0) / 0x100000000; };
-      const visible = ppmDots.filter((v: number) => v >= xMin && v <= xMax);
-      const ddots = visible.map((v: number, i: number) =>
-        `<circle class="vr-dist-dot" cx="${xs(v).toFixed(1)}" cy="${(YN + rnd2() * (YX - YN)).toFixed(1)}" r="3.5" fill="${domColor}" data-di="${i}"/>`
-      ).join('');
-      const pillCls = model.dom === 'Maison' ? 'vr-dist-type-pill--M' : 'vr-dist-type-pill--A';
-      const pillTxt = model.dom === 'Maison' ? 'Maisons' : 'Appartements';
-      const lblY = DH + 16;
-      const q1LblX = Math.max(q1x, 28);
-      const q3LblX = Math.min(q3x, DW - 28);
-      distHtml = `
-        <div class="vr-bloc vr-bloc--b2 vr-bloc-anim" id="vr-b-dist">
-          <p class="vr-kicker vr-kicker--ink">CE QUE LES PRIX MONTRENT</p>
-          <p class="vr-titre vr-titre--dark">Les prix dans ce secteur</p>
-          <span class="vr-dist-type-pill ${pillCls}">${esc(pillTxt)}</span>
-          <div class="vr-dist-wrap">
-            <svg class="vr-dist-svg" viewBox="0 0 ${DW} ${DH + 42}" aria-hidden="true">
-              <rect class="vr-dist-zone" id="vr-dz" x="${q1x.toFixed(1)}" y="${YN - 4}" width="${zoneW.toFixed(1)}" height="${YX - YN + 8}" rx="4" fill="${domColor}" fill-opacity="0.15" style="opacity:0"/>
-              ${ddots}
-              <line class="vr-dist-med-line" id="vr-dml" x1="${medx.toFixed(1)}" y1="${YN - 8}" x2="${medx.toFixed(1)}" y2="${YX + 8}" stroke="${domColor}" stroke-width="2.5" stroke-dasharray="4 2" style="opacity:0"/>
-              <text x="2" y="${lblY}" class="vr-dist-axis-lbl">${eur.format(Math.round(xMin))} €/m²</text>
-              <text x="${DW - 2}" y="${lblY}" class="vr-dist-axis-lbl" text-anchor="end">${eur.format(Math.round(xMax))} €/m²</text>
-              <text id="vr-q1-lbl" class="vr-dist-zone-lbl" x="${q1LblX.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(q1))}</text>
-              <text id="vr-q1-sub" class="vr-dist-zone-sub" x="${q1LblX.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">1er quartile</text>
-              <text id="vr-dml-txt" class="vr-dist-med-big" x="${medx.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(med))}</text>
-              <text id="vr-dml-sub" class="vr-dist-zone-sub" x="${medx.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">médiane</text>
-              <text id="vr-q3-lbl" class="vr-dist-zone-lbl" x="${q3LblX.toFixed(1)}" y="${(DH + 30).toFixed(1)}" text-anchor="middle" style="opacity:0">${eur.format(Math.round(q3))}</text>
-              <text id="vr-q3-sub" class="vr-dist-zone-sub" x="${q3LblX.toFixed(1)}" y="${(DH + 40).toFixed(1)}" text-anchor="middle" style="opacity:0">3e quartile</text>
-            </svg>
-            <p class="vr-dist-note" id="vr-dn">La moitié des ${esc(typePlurielNu(model.dom))} vendues se situent dans la zone colorée. Les données constatent cet écart — elles n'en expliquent pas encore toutes les causes.</p>
-          </div>
-        </div>`;
-    }
-
-    // ——— Effet surface ———
-    let surfHtml = '';
-    if (sf) {
-      const sign = sf.deltaPct > 0 ? '+' : '';
-      surfHtml = `
-        <div class="vr-bloc vr-bloc--surf vr-bloc-anim" id="vr-b-surf">
-          <p class="vr-kicker vr-kicker--terra">L'EFFET DE LA SURFACE</p>
-          <p class="vr-titre vr-titre--dark">Même le prix au m² n'est pas unique</p>
-          <div class="vr-surf-trio">
-            <div>
-              <div class="vr-surf-col-val">${eur.format(sf.smallMed)} €/m²</div>
-              <div class="vr-surf-col-lbl">${esc(sf.smallLabel)}</div>
-            </div>
-            <div class="vr-surf-delta-wrap">
-              <div class="vr-surf-delta" id="vr-sd">${sign}${sf.deltaPct} %</div>
-              <span class="vr-surf-arrow">→</span>
-            </div>
-            <div>
-              <div class="vr-surf-col-val">${eur.format(sf.largeMed)} €/m²</div>
-              <div class="vr-surf-col-lbl">${esc(sf.largeLabel)}</div>
-            </div>
-          </div>
-          <p class="vr-surf-note">Écart constaté entre petits et grands appartements dans ce secteur. DVF constate cet écart — il ne l'explique pas.</p>
-        </div>`;
-    }
-
-    // ——— Sparkline ———
-    let sparkHtml = '';
-    const hasSpark = !!D && Array.isArray(D.annualMeds) && D.annualMeds.length >= 3;
-    if (hasSpark) {
-      const meds = D.annualMeds as { year: number; med: number }[];
-      const spW = 360, spH = 120, topM = 22, botM = 30, availH = spH - topM - botM;
-      const xPts = meds.map((_: any, i: number) => 24 + (i / (meds.length - 1)) * (spW - 48));
-      const vals = meds.map((m: any) => m.med);
-      const minV = Math.min(...vals), maxV = Math.max(...vals), rng = maxV - minV || 1;
-      const yPts = vals.map((v: number) => topM + ((maxV - v) / rng) * availH);
-      const lineD = xPts.map((x: number, i: number) => `${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${yPts[i].toFixed(1)}`).join(' ');
-      const pct = `${D.delta >= 0 ? '+' : ''}${D.delta.toFixed(1).replace('.', ',')} % sur ${D.anneeDebut}–${D.anneeFin}`;
-      const dirTxt = D.dir === 'hausse' ? 'Tendance à la hausse sur 5 ans' : D.dir === 'baisse' ? 'Tendance à la baisse sur 5 ans' : 'Prix globalement stables sur 5 ans';
-      const spDots = meds.map((m: any, i: number) => [
-        `<circle class="vr-spark-dot" cx="${xPts[i].toFixed(1)}" cy="${yPts[i].toFixed(1)}" r="5" fill="${domColor}" data-si="${i}"/>`,
-        `<text class="vr-spark-val" x="${xPts[i].toFixed(1)}" y="${(yPts[i] - 10).toFixed(1)}" data-si="${i}">${eur.format(m.med)}</text>`
-      ].join('')).join('');
-      const spLabels = meds.map((m: any, i: number) => `<text class="vr-spark-yr" x="${xPts[i].toFixed(1)}" y="${spH - 4}">${m.year}</text>`).join('');
-      sparkHtml = `
-        <div class="vr-bloc vr-bloc--spark vr-bloc-anim" id="vr-b-spark">
-          <p class="vr-kicker vr-kicker--ink">5 ANS DE MARCHÉ</p>
-          <p class="vr-titre vr-titre--dark">La trajectoire des prix</p>
-          <div class="vr-spark-wrap">
-            <svg class="vr-spark-svg" viewBox="0 0 ${spW} ${spH}" aria-hidden="true">
-              <path d="${lineD}" class="vr-spark-path" id="vr-sp" stroke="${domColor}"/>
-              ${spDots}${spLabels}
-            </svg>
-            <p class="vr-spark-dir">${esc(dirTxt)}</p>
-            <p class="vr-spark-pct">${esc(pct)}</p>
-          </div>
-        </div>`;
-    }
-
-    // ——— Ventes réelles ———
-    const allTx = [model.derniere, ...(model.autres || [])].filter(Boolean).slice(0, 5);
-    let txHtml = '';
-    if (allTx.length) {
-      const card = (tx: any) => {
-        const isM = tx.t === 'Maison';
-        const ico = isM ? '🏠' : '🏢';
-        const surf = tx.sb > 0 ? `${Math.round(tx.sb)} m²` : '';
-        const pieces = tx.p > 0 ? `${tx.p} pièce${tx.p > 1 ? 's' : ''}` : '';
-        const meta = [surf, pieces, dateMois(tx.d)].filter(Boolean).join(' · ');
-        const ppmVal = tx.sb > 0 ? Math.round(tx.v / tx.sb) : 0;
-        const ppmCls = isM ? 'vr-tx-ppm--M' : 'vr-tx-ppm--A';
-        return `<div class="vr-tx-card">
-          <div class="vr-tx-ico ${isM ? 'vr-tx-ico--M' : 'vr-tx-ico--A'}">${ico}</div>
-          <div class="vr-tx-info">
-            <div class="vr-tx-name">${esc(bienCourt(tx))}</div>
-            <div class="vr-tx-addr">${esc(adresse(tx))}</div>
-            <div class="vr-tx-meta">${esc(meta)}</div>
-          </div>
-          <div class="vr-tx-right">
-            <div class="vr-tx-price">${eur.format(tx.v)} €</div>
-            ${ppmVal > 0 ? `<span class="vr-tx-ppm ${ppmCls}">${eur.format(ppmVal)} €/m²</span>` : ''}
-          </div>
-        </div>`;
-      };
-      const first = allTx.slice(0, 3).map(card).join('');
-      const more = allTx.length > 3
-        ? `<details class="vr-tx-more"><summary>Voir ${allTx.length - 3} vente${allTx.length - 3 > 1 ? 's' : ''} de plus →</summary>${allTx.slice(3).map(card).join('')}</details>`
-        : '';
-      txHtml = `
-        <div class="vr-bloc vr-bloc--tx vr-bloc-anim" id="vr-b-tx">
-          <p class="vr-kicker vr-kicker--ink">VENTES RÉCENTES</p>
-          <p class="vr-titre vr-titre--dark">Quelques ventes autour de chez vous</p>
-          <div class="vr-tx-cards" id="vr-tx-cards">${first}${more}</div>
-        </div>`;
-    }
-
-    // ——— Héro ———
-    const maxBar = Math.max(model.n2024 || 0, model.n2025 || 0, 1);
-    const p24 = Math.round(((model.n2024 || 0) / maxBar) * 100);
-    const p25 = Math.round(((model.n2025 || 0) / maxBar) * 100);
-    let heroBadge = '';
-    if ((model.n2024 || 0) > 0 && (model.n2025 || 0) > 0) {
-      const diff = Math.round(((model.n2025 - model.n2024) / model.n2024) * 100);
-      heroBadge = `<span class="vr-hero-badge">${diff >= 0 ? '+' : ''}${diff} % entre 2024 et 2025</span>`;
-    }
-    const heroBars = (model.n2024 || 0) > 0 || (model.n2025 || 0) > 0 ? `
-      <div class="vr-hero-bars">
-        <div class="vr-hero-bar-row">
-          <span class="vr-hero-bar-yr">2024</span>
-          <div class="vr-hero-bar-track"><div class="vr-hero-bar-fill" data-pct="${p24}"></div></div>
-          <span class="vr-hero-bar-n">${model.n2024 || 0}</span>
-        </div>
-        <div class="vr-hero-bar-row">
-          <span class="vr-hero-bar-yr">2025</span>
-          <div class="vr-hero-bar-track"><div class="vr-hero-bar-fill" data-pct="${p25}"></div></div>
-          <span class="vr-hero-bar-n">${model.n2025 || 0}</span>
-        </div>
-      </div>
-      ${heroBadge}` : '';
-
-    // ——— Conclusion dynamique ———
-    const concP1 = `Nous sommes partis de ${model.nbVentes} ventes. Nous avons déjà écarté celles qui ne correspondent pas au même type de bien. Mais même parmi les ${esc(typePlurielNu(model.dom))}, les écarts restent importants.`;
-    const concP2 = `Une adresse permet de comprendre votre marché. Pas encore de savoir où votre bien se place dedans.`;
-    const concP3 = `Pour aller plus loin, il faut maintenant identifier les ventes qui ressemblent réellement à votre bien.`;
-
-    // ——— Assemblage HTML ———
-    scene.innerHTML = `
-      <div class="vr-cine-wrap">
-        <div class="vr-bloc vr-bloc--hero" id="vr-b-hero">
-          <p class="vr-kicker vr-kicker--light">Analyse locale</p>
-          <div class="vr-hero-counter" id="vr-hc" data-count="${model.nbVentes}">0</div>
-          <p class="vr-hero-count-lbl">ventes analysées autour de cette adresse</p>
-          ${heroBars}
-        </div>
-        <div class="vr-bloc vr-bloc--b1 vr-bloc-anim" id="vr-b-dots">
-          <p class="vr-kicker vr-kicker--terra">CE QUI S'EST VENDU</p>
-          <p class="vr-titre vr-titre--dark">Deux marchés différents autour de chez vous</p>
-          <svg class="vr-dots-svg" viewBox="0 0 ${SW} ${SH}" aria-hidden="true">${dotSvg}</svg>
-          <div class="vr-dot-legend" id="vr-dl">
-            <span><span class="vr-dot-legend-ico" style="background:#243CFF"></span>Maisons</span>
-            <span><span class="vr-dot-legend-ico" style="background:#202635"></span>Appartements</span>
-          </div>
-          <div class="vr-dot-counts" id="vr-dc">
-            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--M">${model.nM}</span> maisons</div>
-            <div class="vr-dot-count-item"><span class="vr-dot-count vr-dot-count--A">${model.nA}</span> appartements</div>
-          </div>
-          <p class="vr-phase-txt vr-pt1" id="vr-pt1">${model.nbVentes} ventes autour de cette adresse. Mais toutes ne sont pas comparables entre elles.</p>
-          <p class="vr-phase-txt vr-pt2" id="vr-pt2" style="opacity:0">Pour comprendre le marché ${model.dom === 'Maison' ? "d'une maison" : "d'un appartement"}, les ventes de l'autre type doivent déjà être écartées.</p>
-        </div>
-        ${distHtml}
-        ${surfHtml}
-        ${sparkHtml}
-        ${txHtml}
-        <div class="vr-bloc vr-bloc--conc vr-bloc-anim" id="vr-b-conc">
-          <p class="vr-conc-eyebrow">CE QUE ÇA CHANGE POUR VOUS</p>
-          <p class="vr-conc-hl">Le bon prix ne vient pas d'une moyenne. Il vient d'une comparaison pertinente.</p>
-          <div class="vr-conc-body">
-            <p>${esc(concP1)}</p>
-            <p>${esc(concP2)}</p>
-            <p>${esc(concP3)}</p>
-          </div>
-          <button class="vr-conc-cta" type="button">SITUER MON BIEN DANS CE MARCHÉ →</button>
-        </div>
-      </div>
-      <div class="vr-after">
-        <p class="vr-maj">${majLigne()}</p>
-        ${construireConversion()}
-      </div>`;
-    brancherConversion(model);
-
-    // ——— Animations ———
-
-    // Héro : déclenché immédiatement (visible au-dessus du fold)
-    const hc = scene.querySelector<HTMLElement>('#vr-hc');
-    if (hc) animeCompteur(hc, model.nbVentes);
-    later(600, () => {
-      scene.querySelectorAll<HTMLElement>('.vr-hero-bar-fill').forEach((b) => {
-        b.style.width = (b.dataset.pct || '0') + '%';
-      });
-    });
-
-    // CE QUI S'EST VENDU
-    observe('#vr-b-dots', () => {
-      const el = scene.querySelector<HTMLElement>('#vr-b-dots');
-      if (el) el.classList.add('is-on');
-      const dotEls = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dot'));
-      // Phase 1 : nuage se colore et se sépare
-      later(300, () => {
-        dotEls.forEach((d, i) => {
-          d.style.transform = `translate(${dots[i].dx.toFixed(1)}px,${dots[i].dy.toFixed(1)}px)`;
-          d.style.fill = dots[i].isM ? '#243CFF' : '#202635';
-        });
-        const dl = scene.querySelector<HTMLElement>('#vr-dl');
-        if (dl) dl.style.opacity = '1';
-      });
-      // Phase 2 : compteurs apparaissent
-      later(750, () => {
-        const dc = scene.querySelector<HTMLElement>('#vr-dc');
-        if (dc) dc.style.opacity = '1';
-      });
-      // Phase 3 : non-dominant s'estompe, texte bascule
-      later(1200, () => {
-        const isDomM = model.dom === 'Maison';
-        dotEls.forEach((d, i) => {
-          if (dots[i].isM !== isDomM) d.style.opacity = '0.2';
-        });
-        const pt1 = scene.querySelector<HTMLElement>('#vr-pt1');
-        if (pt1) pt1.style.opacity = '0';
-        later(350, () => {
-          const pt2 = scene.querySelector<HTMLElement>('#vr-pt2');
-          if (pt2) pt2.style.opacity = '1';
-        });
-      });
-    });
-
-    // CE QUE LES PRIX MONTRENT
-    if (distHtml) {
-      observe('#vr-b-dist', () => {
-        const el = scene.querySelector<HTMLElement>('#vr-b-dist');
-        if (el) el.classList.add('is-on');
-        const ddots = Array.from(scene.querySelectorAll<SVGCircleElement>('.vr-dist-dot'));
-        const stagger = Math.max(8, Math.floor(500 / Math.max(ddots.length, 1)));
-        ddots.forEach((d, i) => later(i * stagger, () => { d.style.opacity = '0.72'; }));
-        const zoneDelay = ddots.length * stagger + 250;
-        later(zoneDelay, () => {
-          const dz = scene.querySelector<HTMLElement>('#vr-dz');
-          if (dz) dz.style.opacity = '1';
-        });
-        later(zoneDelay + 450, () => {
-          const dml = scene.querySelector<HTMLElement>('#vr-dml');
-          if (dml) dml.style.opacity = '1';
-          ['#vr-q1-lbl','#vr-q1-sub','#vr-dml-txt','#vr-dml-sub','#vr-q3-lbl','#vr-q3-sub'].forEach((sel) => {
-            const el2 = scene.querySelector<HTMLElement>(sel);
-            if (el2) el2.style.opacity = '1';
-          });
-        });
-        later(zoneDelay + 750, () => {
-          const dn = scene.querySelector<HTMLElement>('#vr-dn');
-          if (dn) { dn.style.opacity = '1'; dn.style.transform = 'none'; }
-        });
-      });
-    }
-
-    // L'EFFET DE LA SURFACE
-    if (sf) {
-      observe('#vr-b-surf', () => {
-        const el = scene.querySelector<HTMLElement>('#vr-b-surf');
-        if (el) el.classList.add('is-on');
-        later(400, () => {
-          const sd = scene.querySelector<HTMLElement>('#vr-sd');
-          if (sd) sd.classList.add('on');
-        });
-      });
-    }
-
-    // 5 ANS DE MARCHÉ
-    if (hasSpark) {
-      observe('#vr-b-spark', () => {
-        const el = scene.querySelector<HTMLElement>('#vr-b-spark');
-        if (el) el.classList.add('is-on');
-        const sp = scene.querySelector<SVGPathElement>('#vr-sp');
-        if (sp) {
-          const l = sp.getTotalLength();
-          sp.style.strokeDasharray = l + 'px';
-          sp.style.strokeDashoffset = l + 'px';
-          sp.getBoundingClientRect();
-          sp.style.transition = 'stroke-dashoffset 1.8s cubic-bezier(0.25,0.46,0.45,0.94)';
-          sp.style.strokeDashoffset = '0';
-        }
-        const meds = D.annualMeds as { year: number; med: number }[];
-        meds.forEach((_: any, i: number) => {
-          later(350 + i * 320, () => {
-            const dot = scene.querySelector<SVGCircleElement>(`.vr-spark-dot[data-si="${i}"]`);
-            if (dot) dot.classList.add('on');
-            const val = scene.querySelector<SVGTextElement>(`.vr-spark-val[data-si="${i}"]`);
-            if (val) val.classList.add('on');
-          });
-        });
-      });
-    }
-
-    // VENTES RÉCENTES — stagger
-    if (txHtml) {
-      observe('#vr-b-tx', () => {
-        const el = scene.querySelector<HTMLElement>('#vr-b-tx');
-        if (el) el.classList.add('is-on');
-        const cards = Array.from(scene.querySelectorAll<HTMLElement>('#vr-tx-cards .vr-tx-card'));
-        cards.forEach((c, i) => later(i * 120, () => c.classList.add('on')));
-      });
-    }
-
-    // CONCLUSION
-    observe('#vr-b-conc', () => {
-      const el = scene.querySelector<HTMLElement>('#vr-b-conc');
-      if (el) el.classList.add('is-on');
-    });
-
-    // Scroll doux vers le haut du résultat
-    const headerH = document.getElementById('site-header')?.offsetHeight ?? 64;
-    const top = scene.getBoundingClientRect().top + window.scrollY - headerH - 8;
-    window.scrollTo({ top, behavior: 'smooth' });
-
-    cineCleanup = () => { ios.forEach((io) => io.disconnect()); touts.forEach(clearTimeout); };
-  }
-
-
-
   function majLigne() {
     if (!meta) return '';
     const parts: string[] = [];
@@ -1617,10 +1224,9 @@ import Layout from '../layouts/Layout.astro';
       envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
       const fd = new FormData(f);
       const d = model.derniere;
-      // Charge utile destinée à /api/lead. Le backend est migré vers Cloudflare
-      // Pages Functions à l'itération suivante : ce format reste stable.
+      // Synthèse et coordonnées transmises uniquement après accord explicite.
       const payload = {
-        type: 'votre-rue',
+        type: 'votre-rue', consentement: !!f.querySelector<HTMLInputElement>('#vr-consent')?.checked,
         source: 'QR /votre-rue',
         adresseRecherchee: selection?.label || '',
         commune: d?.co || '',
@@ -1637,15 +1243,15 @@ import Layout from '../layouts/Layout.astro';
         },
       };
       try {
-        const rep = await fetch('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (rep.ok) {
+        const {response:rep,data} = await requestJson<any>('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (rep.ok && data?.ok === true) {
           panneau.innerHTML = `
             <div class="vr-panneau">
               <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">Mouaad prépare votre analyse personnalisée et vous l'envoie sous 24 à 48 h ouvrées. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
+              <p class="font-sans text-[15px] text-brun leading-relaxed">Votre demande et le récapitulatif des ventes ont été transmis à Mouaad. Il pourra vous répondre au sujet de votre situation. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
             </div>`;
         } else {
-          const data = await rep.json().catch(() => null);
+
           err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
           err.classList.remove('hidden');
         }
@@ -1680,29 +1286,25 @@ import Layout from '../layouts/Layout.astro';
     const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-analyse-step'));
     const activer = (i: number) => steps.forEach((s, j) => { s.classList.toggle('is-active', j === i); s.classList.toggle('is-done', j < i); });
 
-    activer(0); await wait(450);
+    activer(0);
     const model = computeModel(lat, lon); // calcul réel
     steps[0].classList.add('is-done');
-    activer(1); await wait(450);
-    activer(2); await wait(450);
+    activer(1);
+    activer(2);
     steps.forEach((s) => { s.classList.remove('is-active'); s.classList.add('is-done'); });
-    await wait(200);
+
 
     if (!model) { afficherAucun(selection?.label || input.value); return; }
     lastModel = model;
-    // Motion : séquence cinématographique épinglée. Sinon : repli empilé lisible.
-    if (reduced) {
-      construireStack(model);
-      const head = scene.querySelector<HTMLElement>('.vr-head');
-      if (head) head.scrollIntoView({ block: 'start' });
-    } else {
-      construireCine(model);
-    }
+    construireStack(model);
+    const head=scene.querySelector<HTMLElement>('.vr-head');
+    if(head){head.tabIndex=-1;head.focus({preventScroll:true});head.scrollIntoView({block:'start',behavior:'instant'});}
+
   }
 
   // ——— Autocomplétion ———
   let debounce = 0, activeIdx = -1, currentSugs: any[] = [];
-  const fermerSug = () => { sugList.hidden = true; input.setAttribute('aria-expanded', 'false'); activeIdx = -1; };
+  const fermerSug = () => { sugList.hidden = true; input.setAttribute('aria-expanded', 'false'); activeIdx = -1; input.removeAttribute('aria-activedescendant'); };
   function rendreSug(feats: any[]) {
     currentSugs = feats;
     if (!feats.length) { fermerSug(); return; }
@@ -1713,13 +1315,13 @@ import Layout from '../layouts/Layout.astro';
     const f = currentSugs[i]; if (!f) return;
     const [lon, lat] = f.geometry.coordinates;
     selection = { lon, lat, label: f.properties?.label || input.value };
-    input.value = selection.label; fermerSug(); lancer();
+    input.value = selection.label; window.clearTimeout(debounce); fermerSug(); lancer();
   }
   input.addEventListener('input', () => {
     selection = null; geoErreur.classList.add('hidden');
     const q = input.value.trim(); window.clearTimeout(debounce);
     if (q.length < 3) { fermerSug(); return; }
-    debounce = window.setTimeout(async () => { try { rendreSug(await geocoder(q, true, 6)); } catch { fermerSug(); } }, 260);
+    debounce = window.setTimeout(async () => { try { const choices=await geocoder(q,true,6); if(input.value.trim()===q&&!selection)rendreSug(choices); } catch { fermerSug(); } }, 260);
   });
   input.addEventListener('keydown', (e) => {
     if (sugList.hidden) return;
@@ -1729,14 +1331,14 @@ import Layout from '../layouts/Layout.astro';
     else if (e.key === 'Enter' && activeIdx >= 0) { e.preventDefault(); choisir(activeIdx); return; }
     else if (e.key === 'Escape') { fermerSug(); return; } else return;
     items.forEach((el, i) => el.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false'));
-    if (items[activeIdx]) items[activeIdx].scrollIntoView({ block: 'nearest' });
+    if (items[activeIdx]) {input.setAttribute('aria-activedescendant',items[activeIdx].id);items[activeIdx].scrollIntoView({ block: 'nearest' });}
   });
   sugList.addEventListener('click', (e) => { const li = (e.target as HTMLElement).closest('li'); if (li) choisir(Number((li as HTMLElement).dataset.idx)); });
   document.addEventListener('click', (e) => { if (!form.contains(e.target as Node)) fermerSug(); });
 
   // ——— Lancement ———
   async function lancer() {
-    if (cineCleanup) { cineCleanup(); cineCleanup = null; } // détacher un moteur précédent
+    geoErreur.classList.add('hidden');
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-analyse"><div class="vr-analyse-step is-active"><span class="vr-analyse-dot"></span><span>Recherche des ventes autour de chez vous…</span></div></div>`;
     try { await chargerDonnees(); } catch {
@@ -1749,11 +1351,19 @@ import Layout from '../layouts/Layout.astro';
     if (!coords) {
       const q = input.value.trim();
       if (q.length < 3) { scene.hidden = true; geoErreur.textContent = "Indiquez d'abord votre rue ou votre adresse."; geoErreur.classList.remove('hidden'); return; }
-      try { const feats = await geocoder(q, false, 1); if (!feats.length) { afficherAucun(q); return; } const [lon, lat] = feats[0].geometry.coordinates; coords = { lon, lat, label: feats[0].properties?.label || q }; selection = coords; }
+      try { const feats = await geocoder(q, false, 6); if (!feats.length) { afficherAucun(q); return; } scene.hidden=true; rendreSug(feats); input.focus(); geoErreur.textContent='Choisissez l’adresse à explorer dans la liste.'; geoErreur.classList.remove('hidden'); return; }
       catch { geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.'; geoErreur.classList.remove('hidden'); scene.hidden = true; return; }
     }
     await jouerAnalyseEtRendre(coords.lat, coords.lon);
   }
 
   form.addEventListener('submit', (e) => { e.preventDefault(); fermerSug(); lancer(); });
+  const initialQuery=new URLSearchParams(location.search).get('q');
+  if(initialQuery&&initialQuery.length>=3&&initialQuery.length<=180){
+    input.value=initialQuery;
+    if(new URLSearchParams(location.search).get('confirmee')==='1'){
+      (async()=>{try{const choices=await geocoder(initialQuery,false,6);const exact=choices.find(f=>f.properties?.label===initialQuery);if(exact){const [lon,lat]=exact.geometry.coordinates;selection={lon,lat,label:initialQuery};lancer();}else{rendreSug(choices);input.focus();}}catch{geoErreur.textContent='La recherche est momentanément indisponible. Réessayez.';geoErreur.classList.remove('hidden');}})();
+    }else{input.dispatchEvent(new Event('input',{bubbles:true}));input.focus();}
+  }
+
 </script>

@@ -26,7 +26,14 @@ pnpm-debug.log*
 .vscode/
 .gstack/
 .wrangler/
-.impeccable/
+.impeccable/*
+!.impeccable/design.json
 .astro/content-assets.mjs
 .astro/content-modules.mjs
 .astro/content.d.ts
+
+# Astro generated runtime metadata
+.astro/
+
+# Local QA evidence and generated delivery captures
+artifacts/

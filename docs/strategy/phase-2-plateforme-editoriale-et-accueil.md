@@ -1,3 +1,9 @@
+# ARCHIVE — ne plus utiliser comme autorité visuelle
+
+La direction miniature / Satoshi / cobalt a été validée le 6 septembre 2026. Seuls DESIGN.md et src/styles/tokens.css font autorité pour le site public. Le contenu ci-dessous conserve l’historique ; ses recommandations visuelles sont remplacées. Les règles métier restent à vérifier dans le code.
+
+---
+
 # LEVOIS — Phase 2 — Plateforme éditoriale et accueil
 
 **Statut :** **VALIDÉE ET CLÔTURÉE** le 31 août 2026, sans code et sans publication.

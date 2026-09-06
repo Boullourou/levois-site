@@ -17,24 +17,25 @@
  */
 import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
-import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 ---
 
 <Layout
   title="Lecture de votre recherche"
   description="Clarifiez votre projet d'achat immobilier. Cette lecture deviendra le point de départ des recherches et des échanges avec Mouaad."
-  noindex={true}
   headerTransparent={false}
 >
-  <JourneyImmersion
-    world="buying"
-    title="Voir plus de biens ne suffit pas. Savoir choisir, oui."
-    text="Quand vos priorités sont claires, vous visitez mieux, vous comparez mieux et vous négociez avec de vraies raisons."
-    action="Mettre de l’ordre dans ma recherche"
-    target="#mr-root"
-  />
+  <div class="rp-journey-heading"><a href="/">Accueil</a><span aria-hidden="true">/</span><span>Ma recherche</span><span class="rp-journey-promise">Votre situation avant vos coordonnées</span></div>
+  <div class="rp-journey-layout">
+    <aside class="rp-journey-aside" aria-label="Repères de votre recherche">
+      <div class="rp-aside-top"><span class="rp-target" aria-hidden="true"></span><p>Votre projet<br /><strong>prend forme.</strong></p></div>
+      <ol class="rp-phases"><li data-phase="1" aria-current="step"><span>01</span>Votre point de départ</li><li data-phase="2"><span>02</span>Vos possibilités</li><li data-phase="3"><span>03</span>Vos choix</li><li data-phase="4"><span>04</span>Votre première lecture</li></ol>
+      <details class="rp-live-summary" open><summary>Votre fil conducteur <span id="rp-summary-count">0</span></summary><dl id="rp-live-answers"><div><dt>Votre situation</dt><dd>À préciser ensemble</dd></div></dl></details>
+      <p class="rp-aside-note">Vous pouvez revenir sur chaque réponse. Rien n’est transmis à ce stade.</p>
+      <button type="button" id="mr-reset" class="mr-retour">Effacer mes réponses et recommencer</button>
+      <img class="rp-aside-image" src="/images/levois-quartier-680.avif" width="1672" height="941" alt="Illustration d’un quartier de maisons et de jardins." loading="lazy" />
+    </aside>
   <div id="mr-root" class="mr-root">
-    <div class="mr-barre-wrap" aria-hidden="true">
+    <div class="mr-barre-wrap">
       <div class="mr-barre" id="mr-barre" style="width:0%" role="progressbar"
         aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progression"></div>
     </div>
@@ -47,22 +48,23 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         Retour
       </button>
     </div>
-    <div id="mr-ecran" class="mr-ecran" role="main" aria-live="polite"></div>
+    <div id="mr-ecran" class="mr-ecran" aria-live="polite"></div>
   </div>
+</div>
 </Layout>
 
 <style is:global>
   .mr-root {
     min-height: calc(100vh - var(--site-header-h));
     display: flex; flex-direction: column;
-    background: #F2F5EF;
+    background: var(--levois-paper);
   }
   .mr-barre-wrap {
     position: fixed; top: 0; left: 0; right: 0; height: 3px;
     z-index: 200; background: rgba(36,60,255,0.12);
   }
   .mr-barre {
-    height: 100%; background: #243CFF;
+    height: 100%; background: var(--levois-accent);
     transition: width 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
   }
   /*
@@ -84,8 +86,8 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     top: 8px;
     left: clamp(1rem, 4vw, 2.5rem);
     display: inline-flex; align-items: center; gap: 0.4rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem; font-weight: 500;
-    color: #58615B;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.875rem; font-weight: 500;
+    color: var(--levois-muted);
     background: rgba(247,244,240,0.90);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
@@ -95,7 +97,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     transition: color 0.15s ease;
     pointer-events: auto;
   }
-  .mr-retour:hover { color: #111522; }
+  .mr-retour:hover { color: var(--levois-ink); }
   .mr-ecran {
     flex: 1; display: flex; align-items: flex-start; justify-content: center;
     padding: clamp(3.5rem,8vw,5.5rem) clamp(1rem,5vw,2.5rem) clamp(2rem,5vw,4rem);
@@ -119,12 +121,12 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     transition: background 0.2s ease, width 0.25s cubic-bezier(0.22,1,0.36,1);
   }
   .mr-pas-done { background: rgba(36,60,255,0.35); }
-  .mr-pas-cur  { background: #243CFF; width: 20px; border-radius: 3px; }
+  .mr-pas-cur  { background: var(--levois-accent); width: 20px; border-radius: 3px; }
 
   /* ——— Typographie ——— */
   .mr-kicker {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.71rem; font-weight: 600;
-    letter-spacing: 0.22em; text-transform: uppercase; color: #243CFF;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.71rem; font-weight: 600;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--levois-accent);
     display: inline-flex; align-items: center; gap: 0.55rem; margin-bottom: 1rem;
   }
   .mr-kicker::before {
@@ -132,36 +134,36 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     background: currentColor; opacity: 0.7;
   }
   .mr-titre-xl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(2rem,6vw,3rem); line-height: 1.1;
-    letter-spacing: -0.022em; color: #111522; margin: 0 0 1.25rem;
+    letter-spacing: -0.022em; color: var(--levois-ink); margin: 0 0 1.25rem;
   }
   .mr-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.5rem,4.5vw,2.1rem); line-height: 1.15;
-    letter-spacing: -0.018em; color: #111522; margin: 0 0 0.25rem;
+    letter-spacing: -0.018em; color: var(--levois-ink); margin: 0 0 0.25rem;
   }
   .mr-question {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.25rem,3.5vw,1.65rem); line-height: 1.22;
-    letter-spacing: -0.015em; color: #111522; margin: 0 0 0.4rem;
+    letter-spacing: -0.015em; color: var(--levois-ink); margin: 0 0 0.4rem;
   }
   .mr-lede {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: clamp(1rem,2.5vw,1.1rem);
-    line-height: 1.6; color: #58615B; margin: 0 0 0.7rem; max-width: 38rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: clamp(1rem,2.5vw,1.1rem);
+    line-height: 1.6; color: var(--levois-muted); margin: 0 0 0.7rem; max-width: 38rem;
   }
   .mr-lede-s {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem;
-    line-height: 1.55; color: #58615B; margin: 0 0 2rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.875rem;
+    line-height: 1.55; color: var(--levois-muted); margin: 0 0 2rem;
   }
   .mr-sous-q {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
-    line-height: 1.5; color: #58615B; margin: 0 0 1.75rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.93rem;
+    line-height: 1.5; color: var(--levois-muted); margin: 0 0 1.75rem;
   }
   .mr-auto-hint {
     margin: -0.95rem 0 1.55rem;
-    color: #243CFF;
-    font-family: 'Public Sans', system-ui, sans-serif;
+    color: var(--levois-accent);
+    font-family: Satoshi, system-ui, sans-serif;
     font-size: 0.8rem;
     font-weight: 700;
     line-height: 1.4;
@@ -173,10 +175,10 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   .mr-choice-group { margin: 0 0 1.45rem; }
   .mr-choice-group-title {
     margin: 0 0 0.65rem;
-    font-family: 'Public Sans', system-ui, sans-serif;
+    font-family: Satoshi, system-ui, sans-serif;
     font-size: 0.82rem;
     font-weight: 750;
-    color: #111522;
+    color: var(--levois-ink);
   }
   .mr-choice-group .mr-grille { margin-bottom: 0; }
   .mr-choix {
@@ -193,8 +195,8 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     right: 1.25rem;
     width: 10px;
     height: 10px;
-    border-top: 2px solid #243CFF;
-    border-right: 2px solid #243CFF;
+    border-top: 2px solid var(--levois-accent);
+    border-right: 2px solid var(--levois-accent);
     animation: mr-choice-cue 2.8s cubic-bezier(.16,1,.3,1) infinite;
   }
   .mr-choix:hover {
@@ -202,63 +204,63 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     box-shadow: none;
   }
   .mr-choix:focus-visible {
-    outline: 2.5px solid #243CFF; outline-offset: 2px;
+    outline: 2.5px solid var(--levois-accent); outline-offset: 2px;
   }
   .mr-choix.actif {
-    border-color: #243CFF; background: rgba(36,60,255,0.04);
+    border-color: var(--levois-accent); background: rgba(36,60,255,0.04);
     box-shadow: none;
   }
   .mr-choix.actif::before { opacity: 0; animation: none; }
   .mr-choix.actif::after {
     content: ''; position: absolute; top: 10px; right: 12px;
     width: 20px; height: 20px; border-radius: 50%;
-    background-color: #243CFF;
+    background-color: var(--levois-accent);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: center; background-size: 12px;
   }
   .mr-grille--max .mr-choix:not(.actif) { opacity: 0.38; pointer-events: none; }
   .mr-choix-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.97rem; font-weight: 600;
-    color: #111522; margin-bottom: 0.15rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.97rem; font-weight: 600;
+    color: var(--levois-ink); margin-bottom: 0.15rem;
   }
   .mr-choix-desc {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.825rem;
-    line-height: 1.4; color: #58615B;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.825rem;
+    line-height: 1.4; color: var(--levois-muted);
   }
 
   /* ——— Saisie ——— */
   .mr-saisie { margin-bottom: 1.75rem; }
   .mr-label {
-    display: block; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.875rem; font-weight: 600; color: #111522; margin-bottom: 0.5rem;
+    display: block; font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.875rem; font-weight: 600; color: var(--levois-ink); margin-bottom: 0.5rem;
   }
   .mr-input-wrap { position: relative; display: flex; align-items: center; }
   .mr-input {
     width: 100%; padding: 0.875rem 3.5rem 0.875rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1.1rem; font-weight: 500;
-    color: #111522; background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08);
+    font-family: Satoshi, system-ui, sans-serif; font-size: 1.1rem; font-weight: 500;
+    color: var(--levois-ink); background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08);
     border-radius: 0; outline: none;
     transition: border-color 0.18s ease, box-shadow 0.18s ease;
     -webkit-appearance: none; appearance: none;
   }
   .mr-input:focus {
-    border-color: #243CFF; outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none;
+    border-color: var(--levois-accent); outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none;
   }
   .mr-input-unite {
-    position: absolute; right: 1rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.9rem; color: #58615B; pointer-events: none;
+    position: absolute; right: 1rem; font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.9rem; color: var(--levois-muted); pointer-events: none;
   }
   .mr-input-aide {
-    margin-top: 0.5rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.82rem; color: #58615B;
+    margin-top: 0.5rem; font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.82rem; color: var(--levois-muted);
   }
 
   /* ——— Boutons ——— */
   .mr-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
   .mr-btn {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    min-height: 52px; padding: 0.9rem 1.8rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.97rem; font-weight: 600; color: #FFFFFF; background: #243CFF;
+    min-height: 52px; padding: 0.9rem 1.8rem; font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.97rem; font-weight: 600; color: #FFFFFF; background: var(--levois-accent);
     border: none; border-radius: 999px; cursor: pointer;
     transition: background 0.18s ease, color 0.18s ease, transform 0.15s ease;
     box-shadow: none; text-decoration: none;
@@ -267,10 +269,10 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   .mr-btn svg { transition: transform 0.2s cubic-bezier(0.22,1,0.36,1); flex-shrink: 0; }
   .mr-btn:hover:not(:disabled) svg { transform: translateX(3px); }
   .mr-btn:hover:not(:disabled) {
-    background: #111522; color: #D7FF42; transform: translateY(-1px);
+    background: var(--levois-ink); color: var(--levois-selected); transform: translateY(-1px);
     box-shadow: none;
   }
-  .mr-btn:focus-visible { outline: 2.5px solid #243CFF; outline-offset: 3px; }
+  .mr-btn:focus-visible { outline: 2.5px solid var(--levois-accent); outline-offset: 3px; }
   .mr-btn:disabled { opacity: 0.42; cursor: default; box-shadow: none; transform: none; }
 
   @keyframes mr-button-cue {
@@ -286,12 +288,12 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   }
   .mr-btn-ghost {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.75rem 1.4rem; font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.92rem; font-weight: 500; color: #58615B; background: transparent;
+    padding: 0.75rem 1.4rem; font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.92rem; font-weight: 500; color: var(--levois-muted); background: transparent;
     border: 1.5px solid rgba(17,21,34,0.1); border-radius: 999px; cursor: pointer;
     transition: all 0.18s ease;
   }
-  .mr-btn-ghost:hover { border-color: rgba(36,60,255,0.3); color: #111522; }
+  .mr-btn-ghost:hover { border-color: rgba(36,60,255,0.3); color: var(--levois-ink); }
   .mr-btn-ghost:focus-visible { outline: 2.5px solid rgba(36,60,255,0.5); outline-offset: 2px; }
 
   /* ——— Positionnement DVF (hero) ——— */
@@ -302,20 +304,20 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     border: 1px solid rgba(36,60,255,0.14);
   }
   .mr-pos-badge {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #243CFF; margin-bottom: 0.4rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--levois-accent); margin-bottom: 0.4rem;
   }
   .mr-pos-row { display: flex; align-items: baseline; gap: 0.3rem; }
   .mr-pos-val {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(2.2rem,5vw,3rem); line-height: 1;
-    letter-spacing: -0.025em; color: #111522;
+    letter-spacing: -0.025em; color: var(--levois-ink);
   }
   .mr-pos-unit {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; font-weight: 500; color: #58615B;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 1rem; font-weight: 500; color: var(--levois-muted);
   }
   .mr-pos-ctx {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-top: 0.35rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.85rem; color: var(--levois-muted); margin-top: 0.35rem;
   }
 
   /* ——— Lecture de marché ——— */
@@ -325,20 +327,20 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     box-shadow: none;
   }
   .mr-carte-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 1rem; letter-spacing: -0.01em; color: #111522; margin: 0 0 0.75rem;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
+    font-size: 1rem; letter-spacing: -0.01em; color: var(--levois-ink); margin: 0 0 0.75rem;
   }
   .mr-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
   .mr-stat {
-    padding: 0.6rem 0.75rem; background: #F2F5EF; border-radius: 0;
+    padding: 0.6rem 0.75rem; background: var(--levois-paper); border-radius: 0;
   }
   .mr-stat-v {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700; font-size: 1.25rem;
-    color: #111522; letter-spacing: -0.02em; display: block;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700; font-size: 1.25rem;
+    color: var(--levois-ink); letter-spacing: -0.02em; display: block;
   }
   .mr-stat-l {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.78rem;
-    color: #58615B; display: block; margin-top: 0.1rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.78rem;
+    color: var(--levois-muted); display: block; margin-top: 0.1rem;
   }
 
   /* ——— Règle de prix ——— */
@@ -353,40 +355,40 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   }
   .mr-regle-med {
     position: absolute; top: -5px; bottom: -5px; width: 3px;
-    border-radius: 2px; background: #243CFF; transform: translateX(-50%);
+    border-radius: 2px; background: var(--levois-accent); transform: translateX(-50%);
   }
   .mr-regle-bud {
     position: absolute; top: -7px; bottom: -7px; width: 4px;
-    border-radius: 2px; background: #111522; transform: translateX(-50%);
+    border-radius: 2px; background: var(--levois-ink); transform: translateX(-50%);
   }
   .mr-regle-bud::after {
     content: attr(data-lbl); position: absolute; top: -24px; left: 50%;
-    transform: translateX(-50%); font-family: 'Public Sans', system-ui, sans-serif;
-    font-size: 0.72rem; font-weight: 600; color: #111522; white-space: nowrap;
-    background: #F2F5EF; padding: 1px 6px; border-radius: 0;
+    transform: translateX(-50%); font-family: Satoshi, system-ui, sans-serif;
+    font-size: 0.72rem; font-weight: 600; color: var(--levois-ink); white-space: nowrap;
+    background: var(--levois-paper); padding: 1px 6px; border-radius: 0;
     box-shadow: none;
   }
   .mr-regle-labs {
     display: flex; justify-content: space-between;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.75rem; color: #58615B;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.75rem; color: var(--levois-muted);
   }
 
   /* ——— Signaux ——— */
   .mr-signal {
     display: flex; align-items: flex-start; gap: 0.6rem;
     padding: 0.75rem 1rem; border-radius: 0; margin-top: 0.75rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.88rem; line-height: 1.45;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.88rem; line-height: 1.45;
   }
-  .mr-signal.ok  { background: rgba(215,255,66,0.22); color: #111522; border: 1px solid #C9CEC8; }
+  .mr-signal.ok  { background: rgba(215,255,66,0.22); color: var(--levois-ink); border: 1px solid var(--levois-line); }
   .mr-signal.warn { background: rgba(36,60,255,0.08); color: #202635; border: 1px solid rgba(36,60,255,0.2); }
   .mr-signal-ico { flex: 0 0 auto; margin-top: 1px; }
 
   /* ——— Tension / conséquences ——— */
   .mr-tension-intro {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem;
-    line-height: 1.5; color: #58615B; margin: 0 0 1.5rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.93rem;
+    line-height: 1.5; color: var(--levois-muted); margin: 0 0 1.5rem;
     padding: 0.75rem 1rem; background: rgba(36,60,255,0.05);
-    border-left: 1px solid #243CFF; border-radius: 0;
+    border-left: 1px solid var(--levois-accent); border-radius: 0;
   }
   .mr-chemin {
     background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 16px;
@@ -395,11 +397,11 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     font-family: inherit; width: 100%;
   }
   .mr-chemin:hover { border-color: rgba(36,60,255,0.3); box-shadow: none; }
-  .mr-chemin.actif { border-color: #243CFF; background: rgba(36,60,255,0.03); }
-  .mr-ch-titre { font-family:'Public Sans',system-ui,sans-serif; font-size:0.96rem; font-weight:700; color:#111522; margin:0 0 0.5rem; }
-  .mr-ch-plus  { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:#243CFF; margin:0 0 0.2rem; }
-  .mr-ch-moins { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:#58615B; margin:0 0 0.2rem; }
-  .mr-ch-txt   { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; margin:0 0 0.4rem; }
+  .mr-chemin.actif { border-color: var(--levois-accent); background: rgba(36,60,255,0.03); }
+  .mr-ch-titre { font-family:Satoshi,system-ui,sans-serif; font-size:0.96rem; font-weight:700; color:var(--levois-ink); margin:0 0 0.5rem; }
+  .mr-ch-plus  { font-family:Satoshi,system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:var(--levois-accent); margin:0 0 0.2rem; }
+  .mr-ch-moins { font-family:Satoshi,system-ui,sans-serif; font-size:0.85rem; font-weight:600; color:var(--levois-muted); margin:0 0 0.2rem; }
+  .mr-ch-txt   { font-family:Satoshi,system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:var(--levois-muted); margin:0 0 0.4rem; }
 
   /* ——— Relecture ——— */
   .mr-relecture {
@@ -409,30 +411,30 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   }
   .mr-rel-header { margin-bottom: 0.9rem; }
   .mr-rel-eyebrow {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #58615B; margin: 0;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--levois-muted); margin: 0;
   }
   .mr-rel-body {
     display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 0.5rem;
   }
   .mr-rel-titre {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
-    font-size: 1rem; color: #111522; margin: 0 0 0.75rem; letter-spacing: -0.01em;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
+    font-size: 1rem; color: var(--levois-ink); margin: 0 0 0.75rem; letter-spacing: -0.01em;
   }
   .mr-rel-liste { list-style: none; padding: 0; margin: 0 0 0.5rem; }
   .mr-rel-liste li {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.93rem; color: #111522;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.93rem; color: var(--levois-ink);
     padding: 0.3rem 0 0.3rem 1.25rem; position: relative;
   }
-  .mr-rel-liste li::before { content: '•'; position: absolute; left: 0; color: #243CFF; }
+  .mr-rel-liste li::before { content: '•'; position: absolute; left: 0; color: var(--levois-accent); }
   .mr-sep { border: none; border-top: 1px solid rgba(17,21,34,0.07); margin: 1rem 0; }
   .mr-rel-flex-lbl {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.8rem; font-weight: 600;
-    color: #58615B; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.5rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.8rem; font-weight: 600;
+    color: var(--levois-muted); text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.5rem;
   }
   .mr-rel-note {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5;
-    color: #58615B; margin-top: 1rem; padding-top: 0.75rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.5;
+    color: var(--levois-muted); margin-top: 1rem; padding-top: 0.75rem;
     border-top: 1px solid rgba(17,21,34,0.07); font-style: italic;
   }
 
@@ -444,24 +446,24 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     height: 6px; width: 32px; border-radius: 99px; background: rgba(17,21,34,0.1);
     transition: background 0.25s cubic-bezier(0.22,1,0.36,1);
   }
-  .mr-slot--filled { background: #243CFF; }
+  .mr-slot--filled { background: var(--levois-accent); }
   .mr-pr-cpt {
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 0.85rem; color: #58615B; margin-bottom: 1rem;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 0.85rem; color: var(--levois-muted); margin-bottom: 1rem;
   }
-  .mr-pr-cpt span { color: #243CFF; font-weight: 600; }
+  .mr-pr-cpt span { color: var(--levois-accent); font-weight: 600; }
 
   /* ——— Contact ——— */
   .mr-cg { margin-bottom: 1.25rem; }
   .mr-ci {
     width: 100%; box-sizing: border-box; padding: 0.875rem 1rem;
-    font-family: 'Public Sans', system-ui, sans-serif; font-size: 1rem; color: #111522;
+    font-family: Satoshi, system-ui, sans-serif; font-size: 1rem; color: var(--levois-ink);
     background: #FFFFFF; border: 1.5px solid rgba(17,21,34,0.08); border-radius: 0;
     outline: none; transition: border-color 0.18s ease, outline-color 0.18s ease;
     -webkit-appearance: none; appearance: none;
   }
-  .mr-ci:focus { border-color: #243CFF; outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none; }
+  .mr-ci:focus { border-color: var(--levois-accent); outline: 3px solid rgba(36,60,255,0.16); outline-offset: 2px; box-shadow: none; }
   .mr-ci-ta { min-height: 90px; resize: vertical; }
-  .mr-ci-aide { font-family:'Public Sans',system-ui,sans-serif; font-size:0.82rem; color:#58615B; margin-top:0.35rem; }
+  .mr-ci-aide { font-family:Satoshi,system-ui,sans-serif; font-size:0.82rem; color:var(--levois-muted); margin-top:0.35rem; }
   .mr-consent { display:flex; align-items:flex-start; gap:0.65rem; margin:1.25rem 0; }
   .mr-consent--option {
     margin: 0 0 0.75rem;
@@ -469,40 +471,40 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     background: #FFFFFF;
     border: 1.5px solid rgba(17,21,34,0.08);
   }
-  .mr-consent input[type=checkbox] { margin-top:3px; flex:0 0 auto; accent-color:#243CFF; width:16px; height:16px; cursor:pointer; }
-  .mr-consent-lbl { font-family:'Public Sans',system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:#58615B; }
+  .mr-consent input[type=checkbox] { margin-top:3px; flex:0 0 auto; accent-color:var(--levois-accent); width:16px; height:16px; cursor:pointer; }
+  .mr-consent-lbl { font-family:Satoshi,system-ui,sans-serif; font-size:0.85rem; line-height:1.5; color:var(--levois-muted); }
   .mr-hp { display:none !important; }
   .mr-erreur {
-    background: rgba(36,60,255,0.07); border-left: 1px solid #243CFF;
+    background: rgba(36,60,255,0.07); border-left: 1px solid var(--levois-accent);
     border-radius: 0; padding: 0.75rem 1rem; margin-top: 0.75rem;
-    font-family:'Public Sans',system-ui,sans-serif; font-size:0.88rem; line-height:1.5; color:#202635;
+    font-family:Satoshi,system-ui,sans-serif; font-size:0.88rem; line-height:1.5; color:#202635;
   }
 
   /* ——— Conclusion ——— */
   .mr-conc-done {
-    width: 48px; height: 48px; border-radius: 50%; background: #243CFF;
+    width: 48px; height: 48px; border-radius: 50%; background: var(--levois-accent);
     display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;
   }
   .mr-conc-pivot {
-    font-family: 'Public Sans', system-ui, sans-serif; font-weight: 700;
+    font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.3rem,4vw,1.75rem); line-height: 1.32;
-    color: #111522; letter-spacing: -0.015em; margin: 1rem 0 1.5rem;
+    color: var(--levois-ink); letter-spacing: -0.015em; margin: 1rem 0 1.5rem;
   }
   .mr-conc-corps {
-    font-family:'Public Sans',system-ui,sans-serif; font-size:1rem; line-height:1.65;
-    color:#58615B; margin:0 0 1.25rem;
+    font-family:Satoshi,system-ui,sans-serif; font-size:1rem; line-height:1.65;
+    color:var(--levois-muted); margin:0 0 1.25rem;
   }
   .mr-conc-liens { display:flex; flex-direction:column; gap:0.5rem; margin-top:1.5rem; }
   .mr-lien {
     display:inline-flex; align-items:center; gap:0.65rem;
-    font-family:'Public Sans',system-ui,sans-serif; font-size:0.98rem; font-weight:500;
+    font-family:Satoshi,system-ui,sans-serif; font-size:0.98rem; font-weight:500;
     color:#202635; text-decoration:none; padding:0.5rem 0;
     border-bottom:1px solid rgba(17,21,34,0.08);
     transition:color 0.15s ease, border-color 0.15s ease;
   }
-  .mr-lien:hover { color:#243CFF; border-color:rgba(36,60,255,0.3); }
-  .mr-lien svg { color:#58615B; flex:0 0 auto; }
-  .mr-lien:hover svg { color:#243CFF; }
+  .mr-lien:hover { color:var(--levois-accent); border-color:rgba(36,60,255,0.3); }
+  .mr-lien svg { color:var(--levois-muted); flex:0 0 auto; }
+  .mr-lien:hover svg { color:var(--levois-accent); }
   .mr-lien b { font-weight:600; }
 
   /* ——— Spinner ——— */
@@ -530,6 +532,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 </script>
 
 <script>
+import {requestJson} from '../lib/request-json';
   // ——— Types ———
   interface Tx {
     id:string; d:string; v:number; t:string; lat:number; lon:number;
@@ -576,14 +579,14 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     { id:'30_plus', label:'30 minutes ou plus', desc:'La zone peut s’ouvrir largement' },
   ];
   const FINANCEMENTS = [
-    { id:'accord', label:'Financement déjà cadré', desc:'Banque, courtier ou accord de principe déjà avancé' },
+    { id:'accord', label:'Budget vérifié avec une banque ou un courtier', desc:'Banque, courtier ou accord de principe déjà avancé' },
     { id:'estime', label:'Budget estimé', desc:'J’ai une enveloppe crédible, mais elle reste à confirmer' },
     { id:'a_preciser', label:'À préciser', desc:'Je veux d’abord comprendre ce que mon projet demande' },
   ];
   const VENTES_PREALABLES = [
     { id:'non', label:'Non', desc:'Mon achat ne dépend pas de la vente d’un autre bien' },
     { id:'oui', label:'Oui', desc:'Je dois vendre ou sécuriser une vente pour acheter' },
-    { id:'possible', label:'Peut-être', desc:'Cela dépendra du bien, du timing ou du financement' },
+    { id:'possible', label:'Peut-être', desc:'Cela dépendra du bien, du calendrier ou du financement' },
   ];
   const HORIZONS = [
     { id:'0_3', label:'0 à 3 mois', desc:'Je dois pouvoir agir rapidement' },
@@ -596,6 +599,8 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   const num = new Intl.NumberFormat('fr-FR');
 
   // ——— État ———
+  let notificationSent=true;
+  let buyerSending=false;
   const E: Etat = {
     step:0, situation:null, type:null, secteurContraint:null, secteur:null,
     communesAcceptables:'', tempsMax:null,
@@ -606,13 +611,35 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     src: new URLSearchParams(window.location.search).get('src')??'',
   };
 
+  const SESSION_KEY='levois.buyer.v2';
+  const initialState=structuredClone(E);
+  function saveAnswers(){
+    if(E.step>=12)return;
+    const {prenom,contact,commentaire,consentLecture,consentMatching,consentContact,...answers}=E;
+    try{sessionStorage.setItem(SESSION_KEY,JSON.stringify({version:2,answers}));}catch{}
+  }
+  function restoreAnswers(){try{
+    const saved=JSON.parse(sessionStorage.getItem(SESSION_KEY)||'null');if(saved?.version!==2||!saved.answers)return;
+    const a=saved.answers;if(!Number.isInteger(a.step)||a.step<0||a.step>11||!Array.isArray(a.preserves))return;
+    for(const key of Object.keys(initialState) as (keyof Etat)[]){
+      if(['prenom','contact','commentaire','consentLecture','consentMatching','consentContact','lecture'].includes(key))continue;
+      const value=a[key],sample=initialState[key];
+      if(value===null||typeof value===typeof sample||sample===null&&(typeof value==='string'||typeof value==='number'||typeof value==='boolean'))(E as any)[key]=value;
+    }
+    // Recalculate market information from the source before showing it again.
+    if(E.step>=7)E.step=6;
+  }catch{}}
+  restoreAnswers();
+  window.addEventListener('pagehide',saveAnswers);
+  document.getElementById('mr-reset')?.addEventListener('click',()=>{Object.assign(E,structuredClone(initialState));buyerSending=false;try{sessionStorage.removeItem(SESSION_KEY)}catch{}avancer(0);});
+
   // ——— DVF ———
   let dvf: Tx[]|null = null;
   let dvfP: Promise<Tx[]>|null = null;
   function loadDvf(): Promise<Tx[]> {
     if (dvf) return Promise.resolve(dvf);
     if (dvfP) return dvfP;
-    dvfP = fetch('/data/dvf-secteur.json').then(r=>r.json()).then((d:Tx[])=>{ dvf=d; return d; });
+    dvfP = requestJson<Tx[]>('/data/dvf-secteur.json').then(({response,data})=>{if(!response.ok||!Array.isArray(data))throw Error('DVF unavailable');return data;}).then((d:Tx[])=>{ dvf=d; return d; }).catch(error=>{dvfP=null;throw error;});
     return dvfP;
   }
 
@@ -671,6 +698,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
       journeyEvent('journey_step_completed',{step:E.step,step_name:`ma-recherche-${E.step}`});
     }
     E.step=n;
+    if(n>=12){try{sessionStorage.removeItem(SESSION_KEY)}catch{}}else saveAnswers();
     const b=document.getElementById('mr-barre');
     if(b){ const p=n<=0?0:Math.round((n/TOTAL)*100); b.style.width=p+'%'; b.setAttribute('aria-valuenow',String(p)); }
     const ret=document.getElementById('mr-retour');
@@ -692,7 +720,35 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     c.innerHTML='';
     const w=document.createElement('div'); w.className='mr-ecran-int';
     w.innerHTML=html(s); c.appendChild(w);
+    w.dataset.step=String(s);
     bind(s,w);
+    updateRepere(s);
+    const evidence=w.querySelector<HTMLDetailsElement>('.rp-reading-evidence');
+    if(evidence) evidence.open=!matchMedia('(max-width:600px)').matches;
+    const heading=w.querySelector<HTMLElement>('h1,h2');
+    if(heading&&s>0){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+    w.querySelectorAll<HTMLElement>('.mr-choix,.mr-chemin').forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('actif'))));
+    w.addEventListener('click',()=>{w.querySelectorAll<HTMLElement>('.mr-choix,.mr-chemin').forEach(b=>b.setAttribute('aria-pressed',String(b.classList.contains('actif'))));updateRepere(E.step);saveAnswers();});
+    w.addEventListener('input',()=>{updateRepere(E.step);saveAnswers();});
+  }
+
+  function updateRepere(s:number){
+    const phase=s<=3?1:s<=7?2:s<=9?3:4;
+    document.querySelectorAll<HTMLElement>('[data-phase]').forEach(el=>{const n=Number(el.dataset.phase);el.classList.toggle('is-done',n<phase);if(n===phase)el.setAttribute('aria-current','step');else el.removeAttribute('aria-current');});
+    const items:[string,string,number][]=[];
+    if(E.situation)items.push(['Situation',situationLbl(),1]);
+    if(E.type)items.push(['Bien',E.type==='Indifferent'?'Maison ou appartement':E.type,2]);
+    if(E.secteurContraint!==null)items.push(['Secteur',E.communesAcceptables||zoneLbl(),3]);
+    if(E.financement)items.push(['Financement',financementLbl(),4]);
+    if(E.budget)items.push(['Budget pour le bien',eur.format(E.budget),5]);
+    if(E.surface)items.push(['Surface minimale',num.format(E.surface)+' m²',6]);
+    if(E.preserves.length)items.push(['À préserver',PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.label).join(', '),8]);
+    const target=document.getElementById('rp-live-answers');
+    if(target)target.innerHTML=items.length?items.map(([title,value,step])=>'<div><dt>'+title+'</dt><dd>'+esc(value)+'<button type="button" data-revisit="'+step+'" aria-label="Modifier : '+title+'">Modifier</button></dd></div>').join(''):'<div><dt>Votre situation</dt><dd>À préciser ensemble</dd></div>';
+    target?.querySelectorAll<HTMLElement>('[data-revisit]').forEach(b=>b.addEventListener('click',()=>avancer(Number(b.dataset.revisit))));
+    const count=document.getElementById('rp-summary-count');if(count)count.textContent=String(items.length);
+    const summary=document.querySelector<HTMLDetailsElement>('.rp-live-summary');if(summary&&s===0&&matchMedia('(max-width:900px)').matches)summary.open=false;
+    document.querySelector('.rp-journey-layout')?.setAttribute('data-current-step',String(s));
   }
 
   function html(s:number): string {
@@ -717,12 +773,11 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   // ——— Écrans HTML ———
   function h0() {
     return `
-      <p class="mr-kicker">LEVOIS · Parcours acquéreur</p>
-      <h1 class="mr-titre-xl">Votre recherche doit devenir une stratégie.</h1>
-      <p class="mr-lede">Ce parcours confronte budget, surface, secteur et priorités aux ventes réellement enregistrées. Vous obtenez une première lecture avant de transmettre la moindre coordonnée.</p>
-      <p class="mr-lede">À la fin, le site vous dira clairement ce qu’il peut conclure et ce qui exige encore un échange. Si vous choisissez de poursuivre, Mouaad partira de cette synthèse pour construire la stratégie avec vous.</p>
-      <p class="mr-lede-s">Gratuit · aucune coordonnée demandée avant votre première lecture.</p>
-      <div class="mr-actions"><button class="mr-btn" id="mr-start">Commencer ${ICO_ARR}</button></div>
+      <h1 class="mr-titre-xl">Votre futur chez-vous<br/><span>se précise ici.</span></h1>
+      <p class="mr-lede">Que votre idée soit encore floue ou qu’un bien vous intéresse déjà, commencez par ce qui compte pour vous.</p>
+      <p class="mr-lede">Nous rapprochons vos réponses des ventes locales pour faire apparaître vos possibilités. Vous obtenez votre première lecture avant toute demande de coordonnées.</p>
+      <div class="mr-actions"><button class="mr-btn" id="mr-start">Dessiner ma recherche ${ICO_ARR}</button></div>
+      <p class="mr-lede-s">Gratuit · modifiable à chaque étape · à votre rythme</p>
     `;
   }
 
@@ -767,8 +822,8 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     return `
       ${pas(3)}
       <p class="mr-kicker">Étape 3 sur 11</p>
-      <h2 class="mr-question">Quel territoire est réellement acceptable&nbsp;?</h2>
-      <p class="mr-sous-q">On ne cherche pas encore une adresse parfaite. On clarifie la zone dans laquelle votre décision reste possible.</p>
+      <h2 class="mr-question">Dans quelles communes pourriez-vous vivre&nbsp;?</h2>
+      <p class="mr-sous-q">Indiquez les endroits où vous accepteriez vraiment d’habiter.</p>
       <div class="mr-grille" id="mr-cont">
         <button class="mr-choix${E.secteurContraint===true?' actif':''}" data-id="oui"><span class="mr-choix-lbl">Oui, j'ai un secteur précis</span><span class="mr-choix-desc">Une contrainte géographique oriente ma recherche</span></button>
         <button class="mr-choix${E.secteurContraint===false?' actif':''}" data-id="non"><span class="mr-choix-lbl">Je suis ouvert au secteur</span><span class="mr-choix-desc">Je choisis selon les biens, sans ancrage fixe</span></button>
@@ -779,10 +834,10 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         <div class="mr-input-wrap">
           <input id="mr-communes" type="text" class="mr-input" placeholder="Chartres, Lèves, Champhol…" value="${esc(E.communesAcceptables)}"/>
         </div>
-        <p class="mr-input-aide">Liste libre. Elle servira à distinguer une zone vraiment acceptable d'une zone seulement théorique.</p>
+        <p class="mr-input-aide">Facultatif. Ces communes seront reprises dans votre synthèse. Les calculs portent sur Chartres ou sur les sept communes indiquées, selon votre choix ci-dessus.</p>
       </div>
       <div class="mr-choice-group">
-        <p class="mr-choice-group-title">Temps maximal autour du point important</p>
+        <p class="mr-choice-group-title">Trajet maximal vers votre travail ou vos proches</p>
         <div class="mr-grille mr-grille-2" id="mr-temps">
           ${TEMPS_MAX.map(t=>`<button class="mr-choix${E.tempsMax===t.id?' actif':''}" data-id="${t.id}"><span class="mr-choix-lbl">${t.label}</span><span class="mr-choix-desc">${t.desc}</span></button>`).join('')}
         </div>
@@ -797,7 +852,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
       ${pas(4)}
       <p class="mr-kicker">Étape 4 sur 11</p>
       <h2 class="mr-question">Votre projet est-il prêt à avancer&nbsp;?</h2>
-      <p class="mr-sous-q">Ces réponses changent la stratégie : vitesse, crédibilité en visite, capacité à se positionner et marge de négociation.</p>
+      <p class="mr-sous-q">Ces réponses aident à voir ce qui reste à préparer avant de faire une offre.</p>
       <div class="mr-choice-group">
         <p class="mr-choice-group-title">Financement</p>
         <div class="mr-grille" id="mr-fin">
@@ -805,13 +860,13 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         </div>
       </div>
       <div class="mr-choice-group">
-        <p class="mr-choice-group-title">Achat conditionné à une vente</p>
+        <p class="mr-choice-group-title">Devez-vous vendre un bien pour acheter ?</p>
         <div class="mr-grille" id="mr-vente">
           ${VENTES_PREALABLES.map(v=>`<button class="mr-choix${E.ventePrealable===v.id?' actif':''}" data-id="${v.id}"><span class="mr-choix-lbl">${v.label}</span><span class="mr-choix-desc">${v.desc}</span></button>`).join('')}
         </div>
       </div>
       <div class="mr-choice-group">
-        <p class="mr-choice-group-title">Horizon</p>
+        <p class="mr-choice-group-title">Quand aimeriez-vous acheter ?</p>
         <div class="mr-grille mr-grille-2" id="mr-horizon">
           ${HORIZONS.map(h=>`<button class="mr-choix${E.horizon===h.id?' actif':''}" data-id="${h.id}"><span class="mr-choix-lbl">${h.label}</span><span class="mr-choix-desc">${h.desc}</span></button>`).join('')}
         </div>
@@ -824,15 +879,15 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     return `
       ${pas(5)}
       <p class="mr-kicker">Étape 5 sur 11</p>
-      <h2 class="mr-question">Quel est votre budget global&nbsp;?</h2>
-      <p class="mr-sous-q">Le montant que vous ne dépasserez pas — frais de notaire et éventuels travaux inclus, quelles que soient les circonstances.</p>
+      <h2 class="mr-question">Quel est votre budget pour le bien&nbsp;?</h2>
+      <p class="mr-sous-q">Le montant prévu pour le bien, hors frais d’acquisition et travaux à prévoir. Il peut être provisoire : ce calcul ne valide pas votre financement.</p>
       <div class="mr-saisie">
-        <label class="mr-label" for="mr-bgt">Budget total</label>
+        <label class="mr-label" for="mr-bgt">Budget pour le bien</label>
         <div class="mr-input-wrap">
           <input id="mr-bgt" type="number" inputmode="numeric" class="mr-input" placeholder="280 000" value="${E.budget??''}" min="1" max="9999999"/>
           <span class="mr-input-unite">€</span>
         </div>
-        <p class="mr-input-aide">Votre budget sera positionné dans la distribution des prix réels du marché chartrain.</p>
+        <p class="mr-input-aide">Ce montant sera comparé aux ventes passées du secteur. Prévoyez séparément les frais d’acquisition et les travaux.</p>
       </div>
       <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.budget?'disabled':''}>Continuer ${ICO_ARR}</button></div>
     `;
@@ -850,7 +905,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
           <input id="mr-surf" type="number" inputmode="numeric" class="mr-input" placeholder="80" value="${E.surface??''}" min="1" max="1000"/>
           <span class="mr-input-unite">m²</span>
         </div>
-        <p class="mr-input-aide">Cette surface croisée avec votre budget révèle votre position réelle dans le marché.</p>
+        <p class="mr-input-aide">Avec votre budget, cette surface permet une comparaison indicative avec les ventes passées.</p>
       </div>
       <div class="mr-actions"><button class="mr-btn" id="mr-nxt" ${!E.surface?'disabled':''}>Voir la lecture de marché ${ICO_ARR}</button></div>
     `;
@@ -890,7 +945,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
           <div class="mr-stat"><span class="mr-stat-v">${num.format(l.q1)} – ${num.format(l.q3)}</span><span class="mr-stat-l">fourchette centrale (€/m²)</span></div>
           <div class="mr-stat"><span class="mr-stat-v">${num.format(l.median)}</span><span class="mr-stat-l">repère central (€/m²)</span></div>
         </div>
-        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.82rem;color:#58615B;margin:0 0 0.5rem">La moitié des ventes se situe entre ${num.format(l.q1)} et ${num.format(l.q3)} €/m².</p>
+        <p style="font-family:Satoshi,system-ui,sans-serif;font-size:0.82rem;color:#58615B;margin:0 0 0.5rem">La moitié des ventes se situe entre ${num.format(l.q1)} et ${num.format(l.q3)} €/m².</p>
         <div class="mr-regle">
           <div class="mr-regle-piste">
             <div class="mr-regle-iqr" style="left:${iL}%;width:${iW}%"></div>
@@ -969,55 +1024,59 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
       les_deux:'Tenir les deux — recherche plus longue, réactivité forte',
     };
     const l=E.lecture;
-    const decision=E.decisionTension?decMap[E.decisionTension]:'Aucun arbitrage forcé par les données à ce stade.';
+    const decision=E.decisionTension?decMap[E.decisionTension]:'Les chiffres ne justifient pas, à eux seuls, de modifier vos priorités.';
     const communes=E.communesAcceptables.trim() || (E.secteur==='chartres'?'Chartres intramuros':'Zone chartraine ouverte');
-    const marche=l?`${num.format(l.budgetPPM2)} €/m² pour votre couple budget/surface ; fourchette centrale ${num.format(l.q1)} à ${num.format(l.q3)} €/m² sur ${num.format(l.n)} ventes.`:'Données DVF insuffisantes pour produire un repère fiable.';
+    const marche=l?`${num.format(l.budgetPPM2)} €/m² pour votre budget rapporté à la surface souhaitée ; fourchette centrale ${num.format(l.q1)} à ${num.format(l.q3)} €/m² sur ${num.format(l.n)} ventes.`:'Données DVF insuffisantes pour produire un repère fiable.';
     const evolution=l?.position==='sous_q1'
       ? `Ajuster la surface, élargir la zone ou accepter un délai plus long. Au prix médian observé, votre budget correspond plutôt à ${num.format(l.surfaceAuMedian)} m².`
       : l?.position==='au_dessus_q3'
       ? 'Votre budget donne une marge de choix, mais il faut éviter de confondre marge financière et bon achat.'
       : 'Le couple budget/surface semble cohérent avec la fourchette centrale ; la différence se jouera surtout sur les priorités et le terrain.';
-    const prochaineAction=E.ventePrealable==='oui'
-      ? 'Sécuriser le calendrier de vente avant de se positionner fortement sur un achat.'
+    const prochaineAction=E.ventePrealable==='possible'
+      ? 'Vérifier si votre achat dépend d’une vente, puis préparer le calendrier si nécessaire.'
+      : E.ventePrealable==='oui'
+      ? 'Préparer le calendrier de votre vente avant de vous engager sur un achat.'
       : E.financement==='a_preciser'
       ? 'Valider la capacité de financement avant de multiplier les visites.'
-      : 'Construire une veille courte sur les communes acceptables et comparer chaque bien avec vos priorités réellement préservées.';
+      : 'Suivre les nouvelles annonces dans vos communes et comparer les biens avec vos priorités.';
     return `
       ${pas(10)}
       <p class="mr-kicker">Étape 10 sur 11</p>
-      <h2 class="mr-question">Lecture du projet</h2>
+      <h2 class="mr-question">Votre recherche,<br/>en perspective.</h2>
       <p class="mr-sous-q">Voici ce que vos réponses permettent déjà de comprendre avant tout contact. Ce n’est pas une sélection de biens : c’est une base de décision.</p>
+      <section class="rp-reading-conclusion" aria-labelledby="rp-reading-next">
+        <h3 id="rp-reading-next">Votre prochaine action utile</h3>
+        <p>${prochaineAction}</p>
+        <div class="rp-reading-arbitrage"><strong>Ce qu’il reste à choisir</strong><p>${decision}</p></div>
+      </section>
+      <details class="rp-reading-evidence" open>
+      <summary>Relire les faits et les repères de marché</summary>
       <div class="mr-relecture">
         <div class="mr-rel-header">
-          <p class="mr-rel-eyebrow">1 · Situation</p>
+          <p class="mr-rel-eyebrow">Votre situation</p>
           <p class="mr-rel-titre">${situationLbl()} · ${typeLbl()} · ${zoneLbl()}</p>
-          <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#58615B;margin:0">Communes acceptables : ${esc(communes)}. Temps maximal : ${tempsLbl()}. Horizon : ${horizonLbl()}.</p>
+          <p style="font-family:Satoshi,system-ui,sans-serif;font-size:0.93rem;color:#58615B;margin:0">Communes acceptables : ${esc(communes)}. Temps maximal : ${tempsLbl()}. Horizon : ${horizonLbl()}.</p>
         </div>
         <hr class="mr-sep"/>
         <div class="mr-rel-body">
           <div>
-            <p class="mr-rel-flex-lbl">2 · Décisions prises</p>
-            <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0 0 0.75rem">Budget ${eur.format(E.budget!)} · surface cible ${num.format(E.surface!)} m² · financement : ${financementLbl()} · vente préalable : ${ventePrealableLbl()}.</p>
+            <p class="mr-rel-flex-lbl">Vos décisions</p>
+            <p style="font-family:Satoshi,system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0 0 0.75rem">Budget ${eur.format(E.budget!)} · surface cible ${num.format(E.surface!)} m² · financement : ${financementLbl()} · vente préalable : ${ventePrealableLbl()}.</p>
             <ul class="mr-rel-liste">${pL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
           </div>
           <div>
-            <p class="mr-rel-flex-lbl">3 · Axes d’évolution</p>
+            <p class="mr-rel-flex-lbl">Ce qui peut évoluer</p>
             <ul class="mr-rel-liste">${fL.map(l=>`<li>${l} ;</li>`).join('')}</ul>
-            <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0.65rem 0 0">${evolution}</p>
+            <p style="font-family:Satoshi,system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0.65rem 0 0">${evolution}</p>
           </div>
         </div>
         <hr class="mr-sep"/>
-        <p class="mr-rel-flex-lbl">4 · Arbitrage restant</p>
-        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${decision}</p>
-        <hr class="mr-sep"/>
-        <p class="mr-rel-flex-lbl">5 · Repère DVF et limite</p>
-        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0">${marche} Les DVF décrivent des ventes passées ; ils ne prouvent ni la disponibilité d’un bien ni la demande actuelle.</p>
-        <hr class="mr-sep"/>
-        <p class="mr-rel-flex-lbl">6 · Prochaine action utile</p>
-        <p style="font-family:'Public Sans',system-ui,sans-serif;font-size:0.93rem;color:#202635;margin:0">${prochaineAction}</p>
-        <p class="mr-rel-note"><strong>Le calcul s’arrête ici.</strong> Le terrain, les biens disponibles, votre capacité réelle à arbitrer et le bon rythme de recherche exigent maintenant un regard humain.</p>
+        <p class="mr-rel-flex-lbl">Repère DVF et limite</p>
+        <p style="font-family:Satoshi,system-ui,sans-serif;font-size:0.88rem;color:#58615B;margin:0">${marche} Les DVF décrivent des ventes passées ; ils ne prouvent ni la disponibilité d’un bien ni la demande actuelle.</p>
+        <p class="mr-rel-note"><strong>Le calcul s’arrête ici.</strong> Le terrain, les biens disponibles, les concessions que vous accepteriez et le bon rythme de recherche exigent maintenant un regard humain.</p>
       </div>
-      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Choisir la suite ${ICO_ARR}</button></div>
+      </details>
+      <div class="mr-actions"><button class="mr-btn" id="mr-nxt">Choisir la suite ${ICO_ARR}</button><button type="button" class="mr-retour" id="mr-print">Imprimer ou garder en PDF</button><a class="mr-retour" href="/votre-rue">Continuer sans transmettre mes coordonnées</a></div>
     `;
   }
 
@@ -1025,7 +1084,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     return `
       ${pas(11)}
       <p class="mr-kicker">Étape 11 sur 11</p>
-      <h2 class="mr-question">Que souhaitez-vous activer&nbsp;?</h2>
+      <h2 class="mr-question">Quelle suite souhaitez-vous donner&nbsp;?</h2>
       <p class="mr-sous-q">Votre lecture est déjà affichée. La suite est volontaire : recevoir une copie, être averti d’un rapprochement pertinent ou demander un échange avec Mouaad.</p>
       <form id="mr-form" novalidate autocomplete="off">
         <input type="text" name="site_web" class="mr-hp" tabindex="-1" aria-hidden="true" autocomplete="off"/>
@@ -1035,7 +1094,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         </div>
         <div class="mr-cg">
           <label class="mr-label" for="mr-contact">Téléphone ou e-mail</label>
-          <input id="mr-contact" name="contact" type="text" class="mr-ci" placeholder="07 XX XX XX XX ou nom@exemple.fr" value="${esc(E.contact)}"/>
+          <input id="mr-contact" name="contact" type="text" required maxlength="200" class="mr-ci" placeholder="07 XX XX XX XX ou nom@exemple.fr" value="${esc(E.contact)}"/>
           <p class="mr-ci-aide">L'un ou l'autre suffit selon l'activation choisie.</p>
         </div>
         <div class="mr-cg">
@@ -1044,7 +1103,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         </div>
         <div class="mr-consent mr-consent--option">
           <input type="checkbox" id="mr-consent-lecture" name="consent_lecture" ${E.consentLecture?'checked':''}/>
-          <label class="mr-consent-lbl" for="mr-consent-lecture"><strong>Recevoir ma lecture.</strong><br/>J'accepte que cette synthèse me soit envoyée et conservée pour ce projet.</label>
+          <label class="mr-consent-lbl" for="mr-consent-lecture"><strong>Recevoir ma lecture.</strong><br/>J’accepte que Mouaad conserve ma synthèse et me la transmette. Cet envoi n’est pas automatique.</label>
         </div>
         <div class="mr-consent mr-consent--option">
           <input type="checkbox" id="mr-consent-matching" name="consent_matching" ${E.consentMatching?'checked':''}/>
@@ -1056,7 +1115,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         </div>
         <div id="mr-err" hidden></div>
         <div class="mr-actions">
-          <button type="submit" class="mr-btn" id="mr-sub" disabled>Valider ma suite ${ICO_ARR}</button>
+          <button type="submit" class="mr-btn" id="mr-sub" disabled>Transmettre mes choix à Mouaad ${ICO_ARR}</button>
         </div>
       </form>
     `;
@@ -1070,11 +1129,10 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
           <path d="M5 11.5l4.5 4.5L17 6" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <p class="mr-kicker">Lecture transmise</p>
-      <h2 class="mr-titre">Votre recherche a changé de nature.</h2>
-      <p class="mr-conc-pivot">Au début de ce parcours, vous aviez une idée de votre futur bien. À présent, nous comprenons ce qui compte réellement pour vous, ce qui peut évoluer et les décisions qui restent à prendre.</p>
-      <p class="mr-conc-corps">Votre recherche n'est plus une liste de critères. Elle est devenue une base de décision. Mouaad reprendra cette lecture avec vous pour comparer les options, leurs conséquences et le rythme le plus cohérent.</p>
-      <p class="mr-conc-corps">Vous garderez la décision. Si vous choisissez de poursuivre, il pourra ensuite activer le réseau SAFTI et vous signaler certains biens avant leur diffusion lorsqu'ils correspondent à votre projet.</p>
+      <p class="mr-kicker">Recherche enregistrée</p>
+      <h2 class="mr-titre">Votre demande est enregistrée.</h2>
+      <p class="mr-conc-pivot">${notificationSent?'Mouaad a reçu une notification avec votre synthèse et les suites que vous avez choisies.':'La notification à Mouaad n’a pas abouti. Votre recherche est bien enregistrée : inutile de renvoyer le formulaire. Vous pouvez aussi le joindre directement.'}</p>
+      <p class="mr-conc-corps">${E.consentLecture?'Vous avez demandé à recevoir votre synthèse. Mouaad pourra vous la transmettre ; ce n’est pas un email automatique.':''} ${E.consentContact?'Vous avez demandé un échange sur votre projet.':''} ${E.consentMatching?'Vous avez accepté d’être averti d’une opportunité correspondant à votre recherche.':''}</p>
       <div class="mr-conc-liens">
         <a class="mr-lien" href="tel:${lv_.tel||'+33781380121'}">
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M3.5 2.5h2l1 3-1.5 1a8 8 0 0 0 3.5 3.5l1-1.5 3 1v2A1.5 1.5 0 0 1 11 13 8 8 0 0 1 2 4a1.5 1.5 0 0 1 1.5-1.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1097,12 +1155,12 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     if(s===7)  b7(el);
     if(s===8)  b8(el);
     if(s===9)  b9(el);
-    if(s===10) b10(el);
+    if(s===10){b10(el);el.querySelector('#mr-print')?.addEventListener('click',()=>window.print());}
     if(s===11) b11(el);
   }
 
   function b0(el:HTMLElement) {
-    el.querySelector('#mr-start')?.addEventListener('click',()=>{ journeyEvent('journey_started',{step:0,step_name:'ma-recherche-start'}); loadDvf(); avancer(1); });
+    el.querySelector('#mr-start')?.addEventListener('click',()=>{ journeyEvent('journey_started',{step:0,step_name:'ma-recherche-start'}); void loadDvf().catch(()=>{}); avancer(1); });
   }
 
   function choix(el:HTMLElement, sel:string, key:string, cb?:(id:string)=>void) {
@@ -1161,7 +1219,12 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
     inp?.addEventListener('input',()=>{
       const v=Number(inp.value);
-      (E as any)[key]=v>=min?v:null;
+      const valid=inp.value!==''&&Number.isFinite(v)&&v>=min&&inp.checkValidity();
+      (E as any)[key]=valid?v:null;
+      inp.setAttribute('aria-invalid',String(inp.value!==''&&!valid));
+      let error=el.querySelector<HTMLElement>('.rp-number-error');
+      if(!valid&&inp.value!==''){if(!error){error=document.createElement('p');error.className='mr-erreur rp-number-error';error.id='rp-number-error';error.setAttribute('role','alert');inp.closest('.mr-saisie')?.appendChild(error);}error.textContent='Indiquez une valeur entre '+min+' et '+Number(inp.max).toLocaleString('fr-FR')+'.';inp.setAttribute('aria-describedby','rp-number-error');}
+      else {error?.remove();inp.removeAttribute('aria-describedby');}
       if(btn) btn.disabled=!(E as any)[key];
     });
     return inp;
@@ -1194,9 +1257,16 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
       if(!E.surface||!E.budget) return;
       const btn=el.querySelector('#mr-nxt') as HTMLButtonElement;
       if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Calcul en cours…`; }
-      const data=await loadDvf();
-      E.lecture=analyser(data,E.type,E.secteur,E.budget,E.surface);
-      avancer(7);
+      try {
+        const data=await loadDvf();
+        E.lecture=analyser(data,E.type,E.secteur,E.budget,E.surface);
+        if(E.lecture.position!=='sous_q1') E.decisionTension=null;
+        avancer(7);
+      } catch {
+        let error=el.querySelector<HTMLElement>('.rp-data-error');if(!error){error=document.createElement('p');error.className='mr-erreur rp-data-error';error.setAttribute('role','alert');el.appendChild(error);}
+        error.textContent='Les données ne sont pas accessibles pour le moment. Vos réponses sont conservées. Réessayez.';
+        if(btn){btn.disabled=false;btn.innerHTML='Réessayer '+ICO_ARR;}
+      }
     });
   }
   function b7(el:HTMLElement) {
@@ -1257,13 +1327,15 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
       if(btn) btn.disabled=!E.prenom||!E.contact||!(E.consentLecture||E.consentMatching||E.consentContact);
     };
     prenom?.addEventListener('input',valider);
-    contact?.addEventListener('input',valider);
+    contact?.addEventListener('input',()=>{const value=contact.value.trim();contact.setCustomValidity(!value||/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)||/^\+?[\d ().-]{8,24}$/.test(value)?'':'Indiquez un email complet ou un numéro de téléphone valide.');valider();});
     cbLecture?.addEventListener('change',valider);
     cbMatching?.addEventListener('change',valider);
     cbContact?.addEventListener('change',valider);
     el.querySelector('#mr-form')?.addEventListener('submit',async(e:Event)=>{
       e.preventDefault(); valider();
-      if(!E.prenom||!E.contact||!(E.consentLecture||E.consentMatching||E.consentContact)) return;
+      if(!(e.currentTarget as HTMLFormElement).reportValidity())return;
+      if(buyerSending||!E.prenom||!E.contact||!(E.consentLecture||E.consentMatching||E.consentContact)) return;
+      buyerSending=true;
       const errEl=el.querySelector('#mr-err') as HTMLElement;
       if(btn){ btn.disabled=true; btn.innerHTML=`<span class="mr-spin"></span> Transmission…`; }
       const pL=PRIORITES.filter(p=>E.preserves.includes(p.id)).map(p=>p.output);
@@ -1296,19 +1368,18 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
         decisionTension:E.decisionTension, lecture:E.lecture, project, consents,
       };
       try {
-        const r=await fetch('/api/recherche',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
-        const d=await r.json() as {ok:boolean;message?:string};
-        if(!d.ok) throw new Error(d.message??'Erreur');
+        const {response:r,data:d}=await requestJson<{ok:boolean;message?:string;notificationSent?:boolean}>('/api/recherche',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
+        if(!r.ok||!d.ok) throw new Error(d.message??'Erreur');
+        notificationSent=d.notificationSent!==false;
         if(E.consentLecture) journeyEvent('reading_consent_submitted',{consent_type:'reading'});
         if(E.consentMatching) journeyEvent('matching_consent_submitted',{consent_type:'matching'});
         if(E.consentContact) journeyEvent('contact_consent_submitted',{consent_type:'contact'});
         journeyEvent('journey_completed',{step:11,step_name:'buyer_activation'});
         avancer(12);
       } catch(err:any) {
+        buyerSending=false;
         if(errEl){ errEl.hidden=false; errEl.className='mr-erreur';
-          errEl.textContent=err.message?.includes('dry-run')
-            ?`Configuration en cours — vos informations ont bien été reçues. Vous pouvez aussi écrire à ${lv().email||'mouaad@levois.fr'}.`
-            :`L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à ${lv().email||'mouaad@levois.fr'}.`; }
+          errEl.textContent=(err instanceof Error?err.message:'La transmission n’a pas abouti.')+' Vos réponses restent disponibles. Vous pouvez réessayer ou écrire à mouaad@levois.fr.'; }
         if(btn){ btn.disabled=false; btn.innerHTML=`Réessayer ${ICO_ARR}`; }
       }
     });
@@ -1316,5 +1387,5 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 
   // ——— Init ———
   document.getElementById('mr-retour')?.addEventListener('click',reculer);
-  avancer(0);
+  avancer(E.step);
 </script>

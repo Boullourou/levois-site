@@ -7,7 +7,7 @@ import Layout from '../../layouts/Layout.astro';
   description="Le résultat de votre parcours LEVOIS : reformulation, écart probable, limites et prochaine décision utile."
   noindex={true}
 >
-  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section">
+  <div class="world-seller-result max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section">
 
     <!-- État vide : arrivée directe sans parcours -->
     <section id="resultat-vide" class="hidden text-center py-20">
@@ -92,7 +92,7 @@ import Layout from '../../layouts/Layout.astro';
       <div class="flex flex-wrap gap-3 mb-16 font-sans text-sm">
         <button id="btn-copier" class="btn-secondaire !py-2.5 !px-5">Copier mon résumé</button>
         <button id="btn-imprimer" class="btn-secondaire !py-2.5 !px-5">Imprimer / enregistrer en PDF</button>
-        <span id="copie-ok" class="hidden self-center text-argile">Résumé copié.</span>
+        <span id="copie-ok" class="hidden self-center text-argile" role="status">Résumé copié.</span>
       </div>
 
       <!-- 8 · Transmission à Mouaad — après la valeur, jamais avant -->
@@ -191,6 +191,7 @@ import Layout from '../../layouts/Layout.astro';
 </Layout>
 
 <script>
+import {requestJson} from '../../lib/request-json';
   import { situations, getSituation } from '../../data/situations';
   import { computeResult, NIVEAU_LABELS } from '../../lib/engine';
   import { getResource } from '../../data/resources';
@@ -208,15 +209,17 @@ import Layout from '../../layouts/Layout.astro';
       if (situation) {
         const reponses: Record<string, string> = {};
         situation.questions.forEach((q, i) => {
-          const n = parseInt(idx[i] ?? 'x', 10);
+          const n = /^\d+$/.test(idx[i]??'') ? Number(idx[i]) : NaN;
           if (!Number.isNaN(n) && q.options[n]) reponses[q.id] = q.options[n].value;
         });
-        if (Object.keys(reponses).length > 0) return computeResult(situation, reponses);
+        if (idx.length===situation.questions.length && Object.keys(reponses).length===situation.questions.length) return computeResult(situation, reponses);
       }
+      return null;
     }
     try {
-      const raw = sessionStorage.getItem('levois.resultat');
-      if (raw) return JSON.parse(raw) as ComputedResult;
+      const saved=JSON.parse(sessionStorage.getItem('levois.parcours')||'null');
+      const situation=situations.find(s=>s.id===saved?.situationId);
+      if(situation&&saved.reponses&&situation.questions.every(q=>q.options.some(o=>o.value===saved.reponses[q.id])))return computeResult(situation,saved.reponses);
     } catch {}
     return null;
   }
@@ -282,9 +285,13 @@ import Layout from '../../layouts/Layout.astro';
     $('btn-copier').addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(resumeTexte());
+        $('copie-ok').textContent='Résumé copié.';
         $('copie-ok').classList.remove('hidden');
         setTimeout(() => $('copie-ok').classList.add('hidden'), 2500);
-      } catch {}
+      } catch {
+        $('copie-ok').textContent='La copie est bloquée par votre navigateur. Vous pouvez utiliser « Imprimer / enregistrer en PDF » ou sélectionner le texte du résumé.';
+        $('copie-ok').classList.remove('hidden');
+      }
     });
     $('btn-imprimer').addEventListener('click', () => window.print());
 
@@ -311,7 +318,7 @@ import Layout from '../../layouts/Layout.astro';
 
       const donnees = new FormData(form);
       const corps = {
-        type: 'parcours',
+        type: 'parcours', consentement: donnees.get('consentement') === 'on',
         prenom: donnees.get('prenom'),
         nom: donnees.get('nom'),
         email: donnees.get('email'),
@@ -335,16 +342,16 @@ import Layout from '../../layouts/Layout.astro';
       };
 
       try {
-        const rep = await fetch('/api/lead', {
+        const {response:rep,data} = await requestJson<any>('/api/lead', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(corps),
         });
-        if (rep.ok) {
+        if (rep.ok && data?.ok === true) {
           form.classList.add('hidden');
           $('form-succes').classList.remove('hidden');
         } else {
-          const data = await rep.json().catch(() => null);
+
           afficherErreur(data?.message);
         }
       } catch {

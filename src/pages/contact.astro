@@ -7,16 +7,14 @@ import { site } from '../config/site';
   title="Contact"
   description="Écrire directement à Mouaad Boullourou — email, téléphone, ou message via le formulaire."
 >
-  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+  <div class="world-contact-page">
 
     <header class="mb-10">
       <p class="eyebrow mb-4">Contact</p>
-      <h1 class="text-display text-encre mb-4">Écrire à Mouaad</h1>
+      <h1 class="text-display text-encre mb-4">Parlons de<br/>votre projet.</h1>
       <p class="font-sans text-body-lg text-brun max-w-prose">
-        Le chemin le plus utile reste le parcours
-        <a href="/situer-ma-vente" class="text-argile underline underline-offset-2 hover:text-encre">« Situer ma vente »</a> —
-        Mouaad reçoit alors tout votre contexte. Mais cette page est là pour tout le reste :
-        une question, une précision, un autre sujet.
+        Une question, une envie, un projet qui se précise.
+        Dites-moi ce qui vous amène. Je vous réponds personnellement.
       </p>
     </header>
 
@@ -86,13 +84,14 @@ import { site } from '../config/site';
 
       <div id="c-succes" class="hidden pt-2" role="status">
         <p class="font-display text-xl text-encre mb-1.5">Message bien envoyé.</p>
-        <p class="text-[15px] text-brun">Mouaad vous répondra personnellement, en général sous 24 à 48 h ouvrées.</p>
+        <p class="text-[15px] text-brun">Mouaad a reçu votre message et pourra vous répondre personnellement.</p>
       </div>
     </form>
   </div>
 </Layout>
 
 <script>
+import {requestJson} from '../lib/request-json';
   const form = document.getElementById('form-contact') as HTMLFormElement;
   const btn = document.getElementById('c-envoyer') as HTMLButtonElement;
   const erreur = document.getElementById('c-erreur')!;
@@ -115,11 +114,11 @@ import { site } from '../config/site';
     btn.textContent = 'Envoi en cours…';
     const d = new FormData(form);
     try {
-      const rep = await fetch('/api/lead', {
+      const {response:rep,data} = await requestJson<any>('/api/lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'contact',
+          type: 'contact', consentement: d.get('consentement') === 'on',
           prenom: d.get('prenom'),
           nom: d.get('nom'),
           email: d.get('email'),
@@ -129,11 +128,11 @@ import { site } from '../config/site';
           site_web: d.get('site_web') || '',
         }),
       });
-      if (rep.ok) {
+      if (rep.ok && data?.ok === true) {
         form.querySelectorAll('input, textarea, button[type="submit"], label').forEach((el) => el.classList.add('hidden'));
         document.getElementById('c-succes')!.classList.remove('hidden');
       } else {
-        const data = await rep.json().catch(() => null);
+
         erreur.textContent = data?.message ?? 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
         erreur.classList.remove('hidden');
       }

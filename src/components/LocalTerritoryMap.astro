@@ -1,0 +1,22 @@
+---
+import sourceSales from '../../public/data/dvf-secteur.json';
+const sales=sourceSales as {lat:number;lon:number;co:string}[];
+const points=sales.filter(s=>s.lat>48.40&&s.lat<48.51&&s.lon>1.40&&s.lon<1.56);
+const communes=['Lèves','Chartres','Mainvilliers','Lucé','Champhol','Le Coudray','Luisant'];
+const x=(lon:number)=>(lon-1.405)/.15*700;
+const y=(lat:number)=>(48.503-lat)/.104*600;
+const groups=communes.map(name=>{const p=points.filter(s=>s.co===name);return {name,path:p.map(s=>`M${x(s.lon).toFixed(1)},${y(s.lat).toFixed(1)}h.1`).join('')}});
+const labels=[{name:'Lèves',left:47,top:24},{name:'Chartres',left:60,top:53},{name:'Mainvilliers',left:28,top:46},{name:'Lucé',left:27,top:67},{name:'Champhol',left:77,top:29},{name:'Le Coudray',left:68,top:83},{name:'Luisant',left:42,top:85}];
+---
+<div class="world-territory-map">
+ <svg viewBox="0 0 700 600" role="img" aria-label={`Vue schématique des ${points.length} ventes géolocalisées dans les sept communes, de 2021 à 2025. Utilisez les boutons de communes pour changer les données.`}>{groups.map(g=><path d={g.path} data-map-commune={g.name} class:list={{'is-selected':g.name==='Lèves'}} fill="none" stroke-linecap="round"/>)}</svg>
+ <div class="world-map-labels">{labels.map(l=><button type="button" data-map-choice={l.name} aria-pressed={l.name==='Lèves'?'true':'false'} style={`left:${l.left}%;top:${l.top}%`}>{l.name}</button>)}</div>
+ <span class="world-map-north" aria-hidden="true">N ↑</span>
+ <p class="world-map-note">Chaque point est une vente.<br/>Positions DVF · vue schématique · 2021–2025</p>
+</div>
+<script>
+const select=document.querySelector<HTMLSelectElement>('#rp-commune');
+function mapUpdate(){document.querySelectorAll<HTMLElement>('[data-map-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapChoice===select?.value)));document.querySelectorAll<SVGElement>('[data-map-commune]').forEach(p=>p.classList.toggle('is-selected',p.dataset.mapCommune===select?.value));}
+document.querySelectorAll<HTMLElement>('[data-map-choice]').forEach(b=>b.addEventListener('click',()=>{if(select){select.value=b.dataset.mapChoice!;select.dispatchEvent(new Event('change',{bubbles:true}));}}));
+select?.addEventListener('change',mapUpdate);
+</script>

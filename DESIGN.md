@@ -1,358 +1,138 @@
 ---
-name: "LEVOIS"
-description: "Trois mondes vivants — une expérience humaine, photographique et organique qui commence là où chacun en est."
+name: LEVOIS — Une vie derrière chaque adresse
+description: Un quartier à explorer, des faits à comprendre, une relation à choisir.
 colors:
-  paper-day: "#f7f9f5"
-  white: "#ffffff"
-  ink-deep: "#0b1730"
-  blue-calm: "#2a6ff5"
-  cobalt: "#243cff"
-  lime: "#d7ff42"
-  coral: "#f56a5a"
-  portal-anticipate: "#377aca"
-  portal-selling: "#172c73"
-  portal-buying: "#d65d4f"
-  immersion-anticipate: "#102d5c"
-  immersion-selling: "#071329"
-  immersion-buying: "#6f2524"
-  buying-cream: "#fff6e8"
-  human-sky: "#e9f3ff"
-  connect-orange: "#ff5a1f"
-  connect-cream: "#fff9f2"
-  connect-ink: "#161616"
-  team-mist: "#eef0ff"
-  muted: "#526077"
+  accent: "#2545df"
+  accent-hover: "#1732b5"
+  human: "#f47b20"
+  ink: "#111a30"
+  paper: "#f5f6fa"
+  muted: "#596378"
+  line: "#dce0e9"
+  surface: "#ffffff"
+  selected: "#edf1ff"
+  dark: "#182447"
+  dark-field: "#223155"
+  on-dark: "#c6cfe5"
+  error: "#9c352c"
+  error-bg: "#ffefed"
+  success: "#286547"
+  success-bg: "#eaf4ee"
 typography:
-  display:
-    fontFamily: "Bricolage Grotesque, Public Sans, sans-serif"
-    fontSize: "clamp(64px, 9vw, 144px)"
-    fontWeight: 740
-    lineHeight: 0.94
-    letterSpacing: "-0.04em"
-  headline:
-    fontFamily: "Bricolage Grotesque, Public Sans, sans-serif"
-    fontSize: "clamp(54px, 6vw, 96px)"
-    fontWeight: 720
-    lineHeight: 0.98
-    letterSpacing: "-0.035em"
-  title:
-    fontFamily: "Bricolage Grotesque, Public Sans, sans-serif"
-    fontSize: "clamp(42px, 4.4vw, 70px)"
-    fontWeight: 720
-    lineHeight: 1
-    letterSpacing: "-0.03em"
-  lead:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "clamp(17px, 1.45vw, 21px)"
-    fontWeight: 400
-    lineHeight: 1.48
-    letterSpacing: "normal"
-  body:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "16px"
-    fontWeight: 400
-    lineHeight: 1.55
-    letterSpacing: "normal"
-  label:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "13px"
-    fontWeight: 780
-    lineHeight: 1.25
-    letterSpacing: "normal"
-  wordmark:
-    fontFamily: "Archivo Black, sans-serif"
-    fontSize: "clamp(24px, 2.2vw, 34px)"
-    fontWeight: 400
-    lineHeight: 1
-    letterSpacing: "-0.035em"
+  display: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(56px, 5.4vw, 82px)", fontWeight: 400, lineHeight: 1.04, letterSpacing: "-0.035em"}
+  headline: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(38px, 4.25vw, 62px)", fontWeight: 400, lineHeight: 1.12, letterSpacing: "-0.035em"}
+  page: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(36px, 4.2vw, 60px)", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.035em"}
+  question: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(30px, 3.25vw, 46px)", fontWeight: 400, lineHeight: 1.12, letterSpacing: "-0.03em"}
+  body: {fontFamily: "Satoshi, sans-serif", fontSize: "16px", fontWeight: 400, lineHeight: 1.6}
+  action: {fontFamily: "Satoshi, sans-serif", fontSize: "15px", fontWeight: 500, lineHeight: 1.4}
 rounded:
-  pill: "999px"
-  circle: "50%"
-  organic-orbit: "42% 58% 62% 38% / 50% 34% 66% 50%"
-  portal-left: "34px 8px 8px 34px"
-  portal-center: "8px"
-  portal-right: "8px 34px 34px 8px"
+  field: "8px"
+  action: "9px"
+  choice: "12px"
+  dock: "15px"
+  sheet: "16px"
 spacing:
-  micro: "4px"
-  xs: "8px"
-  sm: "12px"
-  md: "18px"
-  lg: "30px"
-  xl: "58px"
-  mobile-edge: "20px"
-  page-edge: "clamp(22px, 5vw, 76px)"
-  partner-edge: "clamp(24px, 8vw, 120px)"
-  scene-y: "clamp(100px, 14vh, 180px)"
+  edge: "clamp(24px, 4vw, 72px)"
+  mobile-edge: "22px"
 components:
-  home-header:
-    backgroundColor: "rgba(247, 249, 245, 0.88)"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.body}"
-    padding: "0 clamp(22px, 5vw, 76px)"
-    height: "78px"
-  home-contact-pill:
-    backgroundColor: "{colors.ink-deep}"
-    textColor: "{colors.white}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "0 20px"
-    height: "42px"
-  world-anticipate:
-    backgroundColor: "{colors.portal-anticipate}"
-    textColor: "{colors.white}"
-    typography: "{typography.title}"
-    rounded: "{rounded.portal-left}"
-    padding: "58px clamp(24px, 2.4vw, 42px)"
-    height: "500px"
-  world-selling:
-    backgroundColor: "{colors.portal-selling}"
-    textColor: "{colors.white}"
-    typography: "{typography.title}"
-    rounded: "{rounded.portal-center}"
-    padding: "58px clamp(24px, 2.4vw, 42px)"
-    height: "500px"
-  world-buying:
-    backgroundColor: "{colors.portal-buying}"
-    textColor: "{colors.white}"
-    typography: "{typography.title}"
-    rounded: "{rounded.portal-right}"
-    padding: "58px clamp(24px, 2.4vw, 42px)"
-    height: "500px"
-  human-handoff:
-    backgroundColor: "{colors.human-sky}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.headline}"
-    padding: "clamp(90px, 10vw, 150px) clamp(22px, 6vw, 94px)"
-  connect-primary:
-    backgroundColor: "{colors.connect-ink}"
-    textColor: "{colors.white}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: "18px 24px 18px 30px"
-  team-primary:
-    backgroundColor: "{colors.ink-deep}"
-    textColor: "{colors.white}"
-    typography: "{typography.body}"
-    rounded: "{rounded.pill}"
-    padding: "19px 28px"
-  factual-source:
-    backgroundColor: "transparent"
-    textColor: "{colors.muted}"
-    typography: "{typography.label}"
-    padding: "0"
+  button-primary: {backgroundColor: "{colors.accent}", textColor: "{colors.surface}", typography: "{typography.action}", rounded: "{rounded.action}", padding: "16px 24px"}
+  button-primary-hover: {backgroundColor: "{colors.accent-hover}", textColor: "{colors.surface}"}
+  button-secondary: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.action}", padding: "14px 24px"}
+  choice: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.choice}", padding: "20px 42px 20px 20px"}
+  choice-selected: {backgroundColor: "{colors.selected}", textColor: "{colors.ink}", rounded: "{rounded.choice}"}
+  address-dock: {backgroundColor: "rgba(255,255,255,0.97)", rounded: "{rounded.dock}", padding: "18px 20px 12px"}
 ---
 
 # Design System: LEVOIS
 
 ## Overview
 
-**Creative North Star: "Trois mondes vivants"**
+**Creative North Star: "Une vie derrière chaque adresse."**
 
-LEVOIS commence par trois situations humaines, jamais par un discours immobilier. La personne doit se reconnaître dans une phrase, une photographie et une sensation avant de rencontrer une méthode, une donnée ou un service. Le ton reste celui d’une personne ordinaire qui cherche à voir plus clair, pas celui d’une interface qui classe des prospects.
+Identité finale validée par l’utilisateur le **6 septembre 2026**, applicable à **tout le site public**. L’exploration artistique est close. Le quartier miniature, Satoshi et le cobalt relient une adresse, les faits du marché, le projet personnel et l’accompagnement de Mouaad.
 
-Les trois parcours principaux forment un seuil vivant : anticiper sans vendre, comprendre une annonce déjà publiée, ou clarifier une recherche. Chaque monde possède sa couleur, son image et son signal, mais la surface entière reste l’unique action. La suite élargit le récit vers une preuve locale datée, trois gestes simples, puis Mouaad comme relais humain lorsque l’écran ne suffit plus.
-
-Les mondes partenaires arrivent ensuite sans concurrencer ce seuil. SAFTI Connect adopte un orange chaleureux et direct ; le parcours équipe associe brume bleue, cobalt et lime, puis se termine par une conversation avec Mouaad. L’ensemble reste léger, plat, expressif et organique : grandes typographies Bricolage Grotesque, photographies humaines, géométries propres à chaque monde, ellipses et mouvement spatial plutôt que grilles de cartes.
+L’interface est lumineuse, calme et concrète. La composition, le rythme et les images portent l’émotion ; les outils et les textes longs gardent la même identité avec moins de mise en scène. La première compréhension précède les coordonnées facultatives.
 
 **Key Characteristics:**
 
-- Trois mondes clients dominants, chacun reconnaissable par une situation, une photographie, une couleur et un signal.
-- Langage humain et concret avant toute taxonomie immobilière.
-- Bricolage Grotesque pour l’expression et les accents français, Public Sans pour la lecture et Archivo Black uniquement pour le mot-symbole.
-- Surfaces entières comme actions, avec une destination unique et visible tôt.
-- Matières claires et plates, découpées par des masques organiques, des ellipses et des chevauchements.
-- Mondes partenaires distincts mais volontairement secondaires.
-- Trois portails égaux au repos, expansion mesurée sur ordinateur et défilement horizontal aimanté sur mobile, avec équivalent complet en réduction de mouvement.
+- Un quartier illustré reconnaissable et une action réelle immédiatement accessible.
+- Une seule famille de lecture ; des titres amples et réguliers.
+- Le cobalt pour agir ou sélectionner, l’encre pour comprendre.
+- Des surfaces sobres, des séparations fines et une présence humaine continue.
+
+**Autorité opérationnelle.** [tokens.css](src/styles/tokens.css) porte les valeurs normatives ; le frontmatter ci-dessus en est le relevé avec les rôles typographiques du code. [Layout.astro](src/layouts/Layout.astro) est l’unique layout public et charge, dans cet ordre, [public-base.css](src/styles/public-base.css), [levois.css](src/styles/levois.css), puis [editorial.css](src/styles/editorial.css). [tailwind.public.config.mjs](tailwind.public.config.mjs) est autonome. Le [sidecar](.impeccable/design.json) complète ce document sans ajouter de palette.
+
+**Frontière.** Les 24 routes publiques sont contrôlées par [verify-public.mjs](scripts/verify-public.mjs). Les noms historiques de classes ou d’alias (`rp-*`, `mr-*`, `vr-*`, `argile`, `papier`, `--rp-yellow`) assurent la compatibilité du code ; ils ne désignent pas une autre identité. `global.css` et `tailwind.config.mjs` appartiennent exclusivement au cockpit privé via `CockpitLayout.astro`. Les [anciennes autorités](docs/archive/visual-authorities/README.md) sont archivées et ne contraignent plus le public.
 
 ## Colors
 
-La couleur identifie un monde ou un signal précis ; elle n’est jamais ajoutée pour remplir une surface sans fonction.
+**Primary.** Le cobalt `accent` marque actions principales, sélections et mesures dominantes. `accent-hover` confirme le survol ; `selected` accompagne une sélection sans masquer son libellé ni son indicateur.
 
-### Primary
+**Neutral.** `paper` est le fond froid ; `surface` détache les commandes ; `ink`, `muted` et `line` hiérarchisent lecture, explications et séparations. `dark`, `dark-field` et `on-dark` servent les séquences de méthode et de transmission, avec leurs contrastes propres.
 
-- **Bleu calme** (#2a6ff5): signal et immersion de l’anticipation ; le portail photographique s’ancre sur un bleu plus posé (#377aca).
-- **Cobalt analytique** (#243cff): signal et immersion de l’annonce déjà publiée ; le portail emploie un bleu nuit distinct (#172c73).
-- **Corail humain** (#f56a5a): signal et immersion de l’achat ; le portail s’assombrit légèrement (#d65d4f) pour préserver le texte.
+**États métier.** Erreur et succès utilisent les couples sémantiques du frontmatter. Le parcours acheteur conserve aussi des signaux locaux vert discret et ocre, accompagnés d’un texte explicatif. Ces états ne deviennent jamais des accents de marque.
 
-### Secondary
-
-- **Lime décisif** (#d7ff42): action, point d’arrivée, sélection, signal actif et contraste de focus sur fond sombre.
-
-### Tertiary
-
-- **Orange SAFTI Connect** (#ff5a1f): monde de la recommandation, relation entre deux personnes et action partenaire officielle.
-- **Ciel humain** (#e9f3ff): fond du passage vers Mouaad, calme et non commercial.
-- **Brume équipe** (#eef0ff): point de départ rassurant du parcours candidat, toujours associé au cobalt et au lime.
-- **Crème Connect** (#fff9f2): respiration chaleureuse autour du monde orange.
-
-### Neutral
-
-- **Papier de jour** (#f7f9f5): surface principale, lumineuse, minérale et sans effet de matière lourd.
-- **Blanc direct** (#ffffff): texte sur couleurs fortes et surfaces franches dans les mondes partenaires.
-- **Encre profonde** (#0b1730): texte principal, navigation, contraste des scènes et matière sombre commune.
-- **Encre Connect** (#161616): ancrage presque noir du monde de recommandation.
-- **Bleu gris de contexte** (#526077): légendes, crédits, limites et textes secondaires sur surfaces claires.
-
-### Named Rules
-
-**The Three Worlds Rule.** Le bleu calme, le cobalt et le corail appartiennent d’abord aux trois parcours clients ; aucun monde partenaire ne doit diluer cette lecture initiale.
-
-**The Partner Distance Rule.** L’orange Connect et la brume bleu-lime de l’équipe apparaissent après le parcours principal, avec leur propre atmosphère, sans reprendre la place des trois mondes dominants.
-
-**The Meaningful Signal Rule.** Une couleur vive, une photographie ou un tracé doit identifier une situation, une action, une preuve ou un passage ; un signal sans sens est supprimé.
+**Accents maîtrisés.** Le cobalt reste la couleur des actions et des données principales. L’orange humain `human` (#f47b20) est le seul accent secondaire : point du i, détail du portrait, numéros sur fond nuit. Aucune grande surface ni bouton orange, aucun dégradé bleu-orange, aucun état communiqué par l’orange seul. Les bleus et neutres dominent ; l’orange reste nettement sous 10 % de la composition. Contraste mesuré : 5,57:1 sur `dark`, utilisable pour les petits numéros ; 2,53:1 sur `paper`, réservé aux éléments décoratifs et au point du logo.
 
 ## Typography
 
-**Display Font:** Bricolage Grotesque (avec Public Sans, sans-serif en repli)
-**Body Font:** Public Sans (avec system-ui, sans-serif en repli)
-**Wordmark Font:** Archivo Black (avec sans-serif en repli)
+**Display Font / Body Font:** Satoshi, repli `sans-serif`. Les trois WOFF2 auto-hébergés (`satoshi-400`, `satoshi-500`, `satoshi-700`) couvrent lecture, actions et emphases. Les grands titres sont réguliers ; les données gardent unités, période et effectif à proximité.
 
-**Character:** Bricolage Grotesque garde les accents français, les apostrophes et les retours de ligne naturels parfaitement lisibles tout en donnant aux phrases une présence expressive. Public Sans garde les actions, preuves, sources et explications immédiatement lisibles. Archivo Black signe uniquement LEVOIS.
+**Signature:** mot-symbole vectoriel « levois », encre et point orange, avec liaison v–o et contreforme fermée du o. Les cinq SVG normatifs sont dans [public/brand](public/brand/README.md) et [favicon.svg](public/favicon.svg). Le dessin est issu de contours DM Serif Display adaptés ; aucune police supplémentaire n’est chargée. Archivo Black et le signe de porte historiques ne doivent plus servir de logo public.
 
-### Hierarchy
-
-- **Display** (740, clamp(64px, 9vw, 144px), 0.94): thèse d’immersion et phrases qui portent un monde entier.
-- **Headline** (720, clamp(54px, 6vw, 96px), 0.98): grandes transitions, preuve locale et passage vers Mouaad.
-- **Title** (720, clamp(42px, 4.4vw, 70px), 1): promesse interne d’un portail ou d’une surface partenaire.
-- **Lead** (400, clamp(17px, 1.45vw, 21px), 1.48): contexte immédiat et explication courte sous une grande phrase.
-- **Body** (400, 16px, 1.55): lecture courante, limites et fonctionnement.
-- **Label** (780, 13px, 1.25): situation, étape, action courte, source et métadonnée.
-- **Wordmark** (400, clamp(24px, 2.2vw, 34px), 1): signature LEVOIS dans la navigation.
-
-### Named Rules
-
-**The Three-Role Type Rule.** Bricolage Grotesque exprime les phrases et les mondes, Public Sans explique et fait agir, Archivo Black ne sert qu’au mot-symbole.
-
-**The Human Sentence Rule.** Un grand titre doit pouvoir être prononcé naturellement par la personne concernée ; les noms de segments, de produits ou de statuts restent secondaires.
-
-**The French Clarity Rule.** Les titres expressifs conservent leurs accents, espaces insécables et retours naturels ; leur interligne reste proche de 0.94–1 plutôt que de comprimer les formes françaises.
+La hiérarchie du frontmatter distingue accueil, sections, pages, questions, corps et actions. Les articles utilisent des sous-titres en 500 et une lecture plus aérée ; les champs d’adresse mobiles restent à 16 px. Les légendes du quartier sont à 11 px minimum ; la réassurance, la légende humaine et les liens de footer sont à 12 px minimum.
 
 ## Layout
 
-La première vue associe une introduction généreuse à trois portails photographiques de même largeur au repos. Sur ordinateur, le monde actif passe à 1,32 part tandis que les deux autres gardent 0,84 part chacun ; l’expansion reste mesurée, les trois situations demeurent lisibles et chaque surface entière conserve son action. Les appels à l’action apparaissent dans la première vue de chaque monde, sans attendre une longue démonstration.
+Les largeurs de référence sont `--levois-wide` (1280 px) et `--levois-reading` (70 ch). Les familles existantes conservent leurs ajustements : panneau d’entrée de l’accueil (940 px, puis 680 px sous 900 px), article éditorial (840 px), parcours et données en colonnes. Le rythme provient des marges, de l’alternance image/texte et des traits, sans enfermer chaque paragraphe.
 
-À 980px et moins, l’en-tête passe de 78px à 68px et la navigation devient un menu explicite. À 900px et moins, les portails deviennent une bande horizontale de 84vw au maximum 430px par monde, avec défilement aimanté au centre ; leur action reste visible. À 720px et moins, les grandes scènes s’empilent, la marge principale devient 20px et les mondes partenaires passent d’un duo chevauché à une séquence verticale.
+Le header passe de 88 à 72 px sous 900 px ; les accès métier deviennent un menu avec état ouvert, Échap et retour du focus. Le logo garde 129 × 40 px sur desktop et 110 × 34 px dans l’en-tête mobile, sans augmenter la hauteur du header. Le nom et le portrait de Mouaad persistent. La fiche acheteur latérale devient un récapitulatif compact ; les colonnes de lecture, formulaires et cartes s’empilent selon leur contenu.
 
-Chaque destination ouvre ensuite sur une scène d’immersion plein écran : anticipation en bleu calme et forme organique, annonce publiée en cobalt sombre avec orbites carrées, achat en corail profond avec orbite pointillée et crème. La preuve locale visible sur l’accueil reste strictement géométrique et consacrée à Lèves : cercles, tracés de rues, nom LÈVES, millésime et échantillon DVF. Aucune photographie de Chartres ne doit accompagner un chiffre présenté comme propre à Lèves.
+Seuils effectivement utilisés : 1100, 900, 700, 600 et 359 px, complétés par les utilitaires responsives. Les marges générales passent à 28 px puis 22 px ; les panneaux ont leurs propres marges. À moins de 600 px, le dock empile saisie et action. Le titre d’accueil passe à 65, 43 puis 36 px selon les seuils 900, 600 et 359 px.
 
-Les trois mondes clients occupent toujours le premier niveau de lecture. Les portes prescripteur et équipe arrivent après la preuve locale et le relais humain, dans un duo secondaire. Le parcours de recrutement conserve sa propre progression, mais son dernier écran revient à Mouaad plutôt qu’à une promesse de réseau abstraite.
-
-**The Recognition Before Explanation Rule.** Le premier écran aide d’abord la personne à reconnaître sa situation ; les preuves, méthodes et qualifications viennent après le choix du monde.
-
-**The Whole Surface Action Rule.** Un portail entier mène vers une seule destination ; aucun bouton concurrent, sous-menu ou action secondaire ne fragmente cette décision.
-
-**The Evidence Geography Rule.** Un repère local visible doit porter la géographie qu’il mesure ; une image d’un autre territoire ne sert jamais d’illustration à la donnée.
+Toute évolution conserve une lecture sans débordement aux formats 1440 × 900, 768 px, 390 × 844, 320 px et au zoom réel de 200 %. Ces formats sont des contrôles de livraison, pas de nouveaux breakpoints. Les résultats de vérification restent dans les artefacts et le rapport de mission.
 
 ## Elevation & Depth
 
-Le système n’utilise pas d’ombre décorative. La profondeur naît des photographies, des changements d’échelle, des chevauchements, des masques et du mouvement entre plans. Les matières restent plates et lumineuses. Un voile progressif est permis uniquement au-dessus d’une photographie lorsqu’il garantit la lisibilité du texte ; il n’est jamais utilisé comme fond décoratif autonome. Le flou translucide de l’en-tête sticky sert de séparation fonctionnelle pendant le défilement.
+La profondeur vient d’abord du quartier illustré. Les contenus restent plats ; une ombre situe une commande ou une couche superposée. `--levois-shadow` porte le dock et la fenêtre de confidentialité ; la liste d’adresses dispose d’une ombre locale. Les cartes éditoriales sont des entrées séparées par un trait, sans ombre ni cadre arrondi.
 
-### Named Rules
-
-**The Flat Light Rule.** Les surfaces restent plates ; seuls l’espace, l’image, le contour et le mouvement créent de la profondeur, sans carte surélevée ni verre décoratif.
-
-**The Functional Scrim Rule.** Un dégradé n’est acceptable que comme voile de contraste sur une photographie significative et doit disparaître avec elle.
+Le mouvement accompagne un état ou une continuité : transition rapide commune (`--levois-fast`, 180 ms), survol d’action (200 ms), question (300 ms), navigation native (220 ms ; éléments partagés 350 ms, `--levois-ease`). Sous `prefers-reduced-motion: reduce`, animations, transitions et défilement doux sont désactivés ; le contenu reste complet.
 
 ## Shapes
 
-Les formes sont vivantes plutôt qu’administratives. Les trois portails forment un triptyque égal : extrémité gauche arrondie (34px), centre plus tendu (8px), extrémité droite arrondie (34px), avec 8–16px d’air entre les mondes. Les immersions de destination emploient une masse organique et des orbites propres à chaque situation ; les photographies humaines et les sorties de parcours sont découpées en ellipses. Les boutons explicites sont des pilules. Les rectangles à rayon nul restent réservés aux champs ou aux preuves structurées, jamais comme grille générique de contenu.
+Les rayons du frontmatter distinguent champs, actions, choix, dock et fenêtres. Les portraits et le territoire schématique peuvent former une arche ; cette silhouette ne s’applique pas à tous les conteneurs. Les ressources et textes légaux privilégient alignements, espace et séparations horizontales.
 
-**The Living Contour Rule.** Une grande surface doit avoir une silhouette liée à son mouvement ou à son rôle ; une collection de rectangles identiques n’est pas une composition LEVOIS.
+**Iconographie.** Réutiliser [WorldIcon.astro](src/components/WorldIcon.astro) : SVG 24 × 24, trait 1,5, `currentColor`, extrémités et jonctions arrondies. Les pictogrammes accompagnent un texte ou un nom accessible. Maison, clé et repère servent des actions précises, jamais un nouveau logo immobilier décoratif.
+
+**Images.** Le quartier est une illustration éditoriale, ni un bien réel, ni une carte factuelle, ni une preuve de transaction. Les cartes de données restent identifiées comme schématiques. Utiliser les portraits réels et les images existantes avec recadrage responsive et qualification adaptée ; aucun chiffre, bouton ou texte fonctionnel ne doit être rasterisé dans une image.
 
 ## Components
 
-Les composants publics ressemblent à des scènes et à des gestes. Ils donnent une destination claire, une présence forte et une réponse visible au focus comme au survol.
+- **Actions.** Primaire cobalt, secondaire blanche bordée, action texte cobalt et variante claire sur fond nuit. Le primaire courant mesure au moins 56 px de haut ; le secondaire au moins 48 px. Survol plus sombre, léger déplacement du primaire et de sa flèche ; focus visible cobalt. Le bouton acheteur désactivé devient gris et reste inactif.
+- **Navigation.** Lien courant et survol soulignés, cibles du header d’au moins 44 px, lien d’évitement, menus nommés et état annoncé. Les accès légaux, partenaires et confidentialité restent au footer.
+- **Champs et choix.** Libellé visible, aide associée, fond blanc et bord fin ; focus cobalt, erreur textuelle et `aria-invalid`. Choix inactif, survol et sélection se distinguent par bord, fond et indicateur. Un choix unique avance ; saisie, choix multiples et envoi demandent validation explicite. Le retour permet de corriger.
+- **Entrée de l’accueil.** « Qu’est-ce qui vous amène ? » précède trois portes visibles : « Je cherche un logement », « Je prépare ou je vends un bien », « Je consulte les ventes près de chez moi ». Achat et vente ouvrent leurs parcours ; seul le troisième choix révèle l’adresse, avec retour au projet. Sans JavaScript, les trois portes sont des liens utilisables. La révélation dure 220 ms avec mouvement autorisé et reste immédiate en mouvement réduit. Styles limités à `index.astro`.
+- **Adresse.** Après le choix des ventes locales, le dock et sa combobox rendent visibles suggestions, chargement, absence de correspondance et erreur. La personne choisit une adresse proposée ; le résultat ne retient pas silencieusement la première correspondance. L’extrait `address-dock` décrit cet état, pas l’entrée initiale.
+- **Données.** Filtres segmentés avec état sélectionné ; chiffres avec unité, périmètre, période, source, effectif et limites. État vide explicite. L’adresse confirmée et la référence communale restent distinctes ; les 6 318 mutations DVF du jeu réel ne sont pas une estimation individuelle.
+- **Conteneurs.** Choix et saisies peuvent être encadrés ; synthèses, ressources et résultats utilisent surtout l’espace et les traits. Les réserves disposent d’un encart à bord gauche cobalt. Une fenêtre narrative révèle une explication sans inventer une preuve.
+- **Formulaires.** Prévoir attente, validation, erreur, succès et indisponibilité avec messages compréhensibles et annonces accessibles. L’audit d’annonce conserve son parcours de secours et ses questions lorsque la lecture du lien échoue ; son résultat précède la transmission humaine facultative.
+- **Confidentialité.** Mesure d’audience désactivée par défaut ; la fenêtre optionnelle s’ouvre depuis « Mes choix de confidentialité » au footer. Refus et acceptation ont une importance visuelle comparable ; fermer ne vaut pas accepter.
 
-### World Gateway
-
-L’ouverture associe une thèse en Bricolage Grotesque, une phrase de contexte et trois portails photographiques égaux. Chaque portail porte une situation en langage courant, une promesse courte, une action et un signal distinct : ligne temporelle pour anticiper, pulsations pour l’annonce publiée, boussole pour l’achat. Le portail actif s’élargit modérément ; les deux autres restent lisibles et actionnables.
-
-### World Portals
-
-- **Anticiper:** photographie quotidienne, base bleu calme (#377aca), ligne temporelle et destination immersive bleu profond (#102d5c).
-- **Annonce publiée:** photographie d’un propriétaire en observation, base bleu nuit (#172c73), pulsations lime et immersion presque encre (#071329).
-- **Acheter:** photographie d’une recherche réelle, base corail assourdie (#d65d4f), boussole et immersion bordeaux-corail (#6f2524) avec accent crème (#fff6e8).
-- **Action:** toute la surface est un lien ; l’intitulé d’action et le focus restent visibles avant interaction.
-- **Focus:** contour lime de 4px décalé de 5px dans l’expérience principale ; le focus global reste cobalt de 3px sur les surfaces claires.
-
-### Navigation
-
-L’en-tête sticky associe le mot-symbole Archivo Black à quatre accès courts. « Me parler » devient une pilule d’encre sur ordinateur. À 980px, un bouton Menu explicite ouvre une grille de liens ; à 520px, la grille devient une liste. Les cibles interactives mesurent au moins 44px.
-
-### Destination Immersion
-
-Les trois routes commencent par la même structure plein écran — grande phrase, texte court, pilule d’action, masse vivante et orbites — tout en conservant une géométrie propre. L’anticipation est organique et respirante ; l’annonce publiée transforme les orbites et nœuds en carrés légèrement inclinés ; l’achat garde une orbite circulaire pointillée. Les animations cessent avec prefers-reduced-motion sans retirer la scène, la phrase ni l’action.
-
-### Local DVF Proof
-
-La preuve d’accueil est un paysage abstrait de Lèves, pas une photographie illustrative : anneaux, lignes de rues, nom du lieu, médiane signée, année et taille de l’échantillon. La source DVF/DGFiP reste visible et le texte dit explicitement « ni estimation ni prévision ».
-
-### Pill Actions
-
-Les actions explicites sont courtes, épaisses et arrondies (rayon 999px). Elles apparaissent tôt, montent légèrement au survol quand le mouvement est autorisé et conservent un focus très contrasté. Elles ne remplacent pas l’action-surface des portails.
-
-### Human Handoff
-
-Le passage vers Mouaad combine une vraie photographie découpée en ellipse, un ciel très clair, une grande phrase et une action textuelle fléchée. Il explique la limite de l’écran et rend la décision à la personne, sans posture commerciale.
-
-### Partner Worlds
-
-SAFTI Connect est un monde orange et crème, construit autour de deux personnes, d’un lien et d’une action officielle. Le « 10 % » est le repère visuel dominant, toujours immédiatement accompagné de la condition « si la vente se conclut » et d’une source SAFTI datée ; il n’est jamais formulé comme un gain garanti. Le monde équipe part d’une brume bleu pâle, traverse cobalt et lime, montre à la fois le cadre SAFTI et l’accompagnement concret, refuse toute promesse de revenu et se termine par une conversation avec Mouaad.
-
-### Sources & Credits
-
-Les preuves locales, conditions partenaires, crédits photographiques et limites tiennent dans des textes courts, visibles et datés. La date, l’auteur ou organisme, la source, la licence et les transformations sont indiqués dès qu’ils conditionnent la confiance ou les droits.
-
-### Motion
-
-Le mouvement explique une relation : élargir un monde, rapprocher une action, faire respirer une orbite ou guider un balayage. Avec prefers-reduced-motion, les transitions, pulsations, rotations et animations liées au défilement cessent ; les contenus, signaux et actions restent visibles dans leur état complet.
-
-### Prototype cockpit Phase 2.6 — Partition active (NON VALIDÉ)
-
-> **Frontière impérative.** Ce prototype cockpit n’a pas été validé par Mouaad. Il est limité à **Aujourd’hui**, à la **fiche client acquéreur** et à l’**Accord TIM**. Il ne remplace pas la charte publique décrite dans ce document et n’autorise aucune propagation au reste du cockpit ni au site public.
-
-**Direction :** Partition active. **Seed :** `bc058939`.
-
-Le prototype ordonne le travail selon **attention → décision → détail** : fond minéral, encre vert-noir, ultramarin réservé à l’action et à l’information active, règles fines, surfaces plates et Antonio pour les titres, temps et montants. Son activation reste explicite par page ; ses tokens demeurent dans la feuille cockpit scopée et ne sont pas promus dans le frontmatter normatif de la charte publique.
-
-**Key Characteristics:**
-
-- Une file continue remplace la grille de cartes sur Aujourd’hui.
-- La fiche acquéreur réunit situation, prochaine action et recherche lisible avant les métadonnées.
-- L’Accord TIM expose d’abord accord, opération, rémunération, prochaine action et solde utile.
-- Les détails, historiques et formulaires restent disponibles par divulgation progressive ou dialogue.
-- Le verdict final est **PASS WITH MINOR OPEN**, sans P0 ni P1 ; le seul P2 matériel encore ouvert est la restitution du focus après un rerender dynamique. La valeur brute `funds_received` dans le champ d’édition reste une dette mineure de microcopie.
-
-**The Prototype Boundary Rule.** Tant que Mouaad n’a pas validé cette direction et que le P2 focus n’est pas refermé sur un nouveau rendu clavier, aucun token, composant ou comportement de Partition active ne devient une règle globale LEVOIS.
-
-La spécification, les contrastes, les preuves et les conditions de propagation de ce prototype sont détaillés dans `docs/design/EXPERIENCE_SYSTEM.md`.
+**Applications de référence.** Page émotionnelle : `/`, quartier et choix de la situation ; adresse seulement après le choix des ventes locales ; ensuite un fait local expliqué, la méthode, Mouaad puis la prochaine action. La section « Un prix ne raconte jamais toute l’histoire » donne la médiane réelle et son contexte, avec un seul lien vers les ventes locales ; elle ne répète plus les trois portes. Formulaire : `/ma-recherche`, question lisible et fiche révisable, restitution avant coordonnées. Données : `/votre-rue`, adresse confirmée puis atlas communal, mesures et limites. Les ressources, pages légales, accompagnement et partenaires prolongent cette identité avec une composition plus sobre.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** commencer par « où vous en êtes » et employer des phrases que les personnes utilisent réellement.
-- **Do** laisser les trois mondes clients dominer la première vue et garder les mondes partenaires au second niveau.
-- **Do** faire de chaque portail entier une action unique, visible au clavier et compréhensible sans survol.
-- **Do** donner aux trois portails exactement la même largeur au repos et une expansion qui ne rend jamais les deux autres secondaires.
-- **Do** choisir des photographies humaines liées à la situation et des signaux graphiques qui expliquent quelque chose.
-- **Do** ouvrir chacune des trois destinations par son immersion cohérente avec la couleur et la géométrie du portail.
-- **Do** montrer tôt l’action principale de chaque monde, puis les preuves et limites qui permettent de décider.
-- **Do** représenter la preuve DVF de Lèves avec une géométrie de Lèves, son millésime, son échantillon et sa source visible.
-- **Do** dater et nommer les sources factuelles, conditions partenaires et crédits d’image.
-- **Do** afficher « 10 % » avec « si la vente se conclut » dans le même bloc de lecture et citer les conditions SAFTI en vigueur.
-- **Do** terminer le recrutement par Mouaad, décrire le métier comme libre et exigeant, et ne promettre aucun revenu.
-- **Do** conserver une version complète, contrastée et utilisable au clavier lorsque le mouvement est réduit.
+- **Do** reprendre les tokens publics, Satoshi et les composants existants pour toute route publique.
+- **Do** donner une première compréhension avant les coordonnées et conserver une sortie volontaire.
+- **Do** joindre aux chiffres leurs sources et limites, et aux états une explication indépendante de la couleur.
+- **Do** préserver clavier, focus visible, lecture mobile et fonctionnement sans mouvement.
 
 ### Don't:
 
-- **Don't** revenir à un héros immobilier générique, une grille de cartes ou des rectangles administratifs répétés.
-- **Don't** laisser l’orange Connect ou le monde équipe concurrencer les trois parcours clients dans la première lecture.
-- **Don't** employer une photographie, une couleur vive, une orbite ou une animation sans rôle compréhensible.
-- **Don't** cacher une action jusqu’au survol, réserver une information au mouvement ou utiliser la couleur comme seul signal.
-- **Don't** utiliser de dégradé décoratif ; seuls les voiles de contraste attachés à une photographie sont admis.
-- **Don't** associer une photographie de Chartres à une médiane présentée comme propre aux maisons de Lèves.
-- **Don't** remplacer le langage humain par des catégories telles que « lead vendeur », « prospect acquéreur » ou « candidat réseau ».
-- **Don't** promettre un revenu, une réussite automatique, un prix, un délai ou un résultat non sourcé.
-- **Don't** isoler « 10 % » de sa condition « si la vente se conclut » ni le présenter comme une récompense certaine.
-- **Don't** terminer un parcours humain sur une marque, un formulaire ou une récompense sans expliquer le rôle de Mouaad et la liberté de décision.
+- **Don't** rouvrir une direction, une palette ou une composition générale sans défaut concret d’usage, d’accessibilité ou de faisabilité.
+- **Don't** importer le thème privé ou appliquer une ancienne autorité visuelle au public.
+- **Don't** accumuler cartes, cadres arrondis, ombres, effets décoratifs ou familles typographiques.
+- **Don't** présenter une illustration, une maquette ou des données DVF comme une preuve commerciale individuelle.
+- **Don't** promettre une validation d’accessibilité ou une performance mesurée à partir de cette documentation.

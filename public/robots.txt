@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /merci
+Disallow: /cockpit
+Disallow: /composants
+Disallow: /situer-ma-vente/resultat
 
-Sitemap: https://levois.fr/sitemap.xml
+Sitemap: https://levois.fr/sitemap-index.xml

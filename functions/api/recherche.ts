@@ -18,7 +18,7 @@
  * — D1 absent ou insert échoué → erreur 503/500 explicite, aucun ok:true
  * — Resend échoué après insert D1 réussi → la lecture reste dans D1
  *   (email_envoye=0), réponse ok:true (donnée sûre, Mouaad consulte D1)
- * — RESEND_API_KEY absente → Formspree de secours ; erreur explicite si les deux voies échouent
+ * — Notification échouée après insertion → succès enregistré, notificationSent:false
  * — Aucun secret exposé au navigateur
  * — Aucun ok:true sans donnée persistée
  *
@@ -156,7 +156,7 @@ function formaterCorps(body: any, prenom: string, contact: string): string {
   l.push(`Type de bien     : ${body.type ?? '—'}`);
   const contraint = body.secteurContraint === true ? ' (contraint)' : body.secteurContraint === false ? ' (ouvert)' : '';
   l.push(`Secteur          : ${body.secteur ?? '—'}${contraint}`);
-  if (body.budget != null) l.push(`Budget           : ${Number(body.budget).toLocaleString('fr-FR')} €`);
+  if (body.budget != null) l.push(`Budget pour le bien (hors frais et travaux) : ${Number(body.budget).toLocaleString('fr-FR')} €`);
   if (body.surface != null) l.push(`Surface cible    : ${body.surface} m²`);
 
   const project = objetSimple(body.project);
@@ -232,6 +232,7 @@ async function notifierFormspree(env: Env, sujet: string, prenom: string, contac
     if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact)) formulaire.set('email', contact);
     const rep = await fetch(endpoint, {
       method: 'POST',
+      signal: AbortSignal.timeout(12000),
       headers: {
         accept: 'application/json',
         'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -247,6 +248,8 @@ async function notifierFormspree(env: Env, sujet: string, prenom: string, contac
 }
 
 export const onRequestPost = async (ctx: PagesContext<Env>) => {
+  const origin = ctx.request.headers.get('origin');
+  if (origin && origin !== new URL(ctx.request.url).origin) return json({ok:false,message:'Origine non autorisée.'},403);
   // ——— 1. Binding D1 obligatoire ———
   if (!ctx.env.RECHERCHE_DB) {
     return json(
@@ -269,12 +272,12 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
   }
 
   // ——— 2. Validation des champs ———
-  const prenom = texte(payload?.prenom, 80);
+  const prenom = texte(payload?.prenom, 80).replace(/[\r\n]+/g, ' ');
   const contact = texte(payload?.contact, 200);
   const consent = payload?.consent === true;
   if (!prenom) return json({ ok: false, message: 'Le prénom est requis.' }, 400);
-  if (!contact) return json({ ok: false, message: 'Un moyen de contact est requis.' }, 400);
-  if (!consent) return json({ ok: false, message: 'Le consentement est requis.' }, 400);
+  if (!estEmail(contact) && !/^\+?[\d ().-]{8,24}$/.test(contact)) return json({ ok: false, message: 'Indiquez un email complet ou un numéro de téléphone valide.' }, 400);
+  if (!consent || !objetSimple(payload.consents) || !['lecture','matching','contact'].some(k=>payload.consents[k]===true)) return json({ ok: false, message: 'Choisissez au moins une suite à donner à votre recherche.' }, 400);
 
   // ——— 3. Rate limit par IP ———
   const ip = ctx.request.headers.get('cf-connecting-ip') || ctx.request.headers.get('x-forwarded-for') || 'unknown';
@@ -300,13 +303,10 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
   if (!ctx.env.RESEND_API_KEY) {
     const formspreeOk = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
     if (formspreeOk) {
-      ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id));
-      return json({ ok: true });
+      ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id).catch(()=>{ console.error('[recherche] Statut de notification non actualisé.'); }));
+      return json({ ok: true, saved: true, notificationSent: true });
     }
-    return json(
-      { ok: false, message: "Votre recherche est bien enregistrée, mais la notification n'a pas abouti. Vous pouvez aussi écrire à mouaad@levois.fr." },
-      503,
-    );
+    return json({ ok: true, saved: true, notificationSent: false });
   }
 
   const from = ctx.env.LEAD_FROM || 'LEVOIS <contact@levois.fr>';
@@ -316,6 +316,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
   try {
     const rep = await fetch('https://api.resend.com/emails', {
       method: 'POST',
+      signal: AbortSignal.timeout(12000),
       headers: { Authorization: `Bearer ${ctx.env.RESEND_API_KEY}`, 'content-type': 'application/json' },
       body: JSON.stringify({
         from,
@@ -342,14 +343,14 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
   // ——— 6. Mise à jour statut de notification dans D1 ———
   // Lecture déjà persistée. On ne supprime jamais un insert D1 réussi.
   if (resendOk) {
-    ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id));
+    ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id).catch(()=>{ console.error('[recherche] Statut de notification non actualisé.'); }));
   }
   // Si Resend a échoué : email_envoye reste 0 dans D1. Mouaad consulte D1
   // pour identifier les lectures sans notification (email_envoye=0).
 
   // ——— 7. Réponse ———
   // ok:true même si Resend a échoué : la lecture est persistée dans D1.
-  return json({ ok: true });
+  return json({ ok: true, saved: true, notificationSent: resendOk });
 };
 
 export const onRequest = async (ctx: PagesContext<Env>) => {

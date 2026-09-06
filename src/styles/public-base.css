@@ -1,0 +1,29 @@
+@import "tailwindcss";
+@config "../../tailwind.public.config.mjs";
+@import "./tokens.css";
+@layer base{
+ html{font-family:Satoshi,sans-serif;-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+ body{margin:0;background:var(--levois-paper);color:var(--levois-ink)}
+ h1,h2,h3,h4{font-family:Satoshi,sans-serif}
+ ::selection{background:#dce4ff;color:var(--levois-ink)}
+ :focus-visible{outline:3px solid var(--levois-accent);outline-offset:4px}
+ button,input,select,textarea{font:inherit}
+ button:disabled{cursor:not-allowed}
+ a,button,input,textarea,select{touch-action:manipulation}
+ [hidden]{display:none!important}
+ @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+}
+@layer components{
+ .ligne-ecart{display:block;width:56px;height:1px;background:var(--levois-accent)}
+ .eyebrow,.eyebrow-brun{font:500 12px/1.6 Satoshi,sans-serif;color:var(--levois-muted)}
+ .btn-primaire,.btn-secondaire,.btn-sur-encre{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:14px 24px;border-radius:var(--levois-action-radius);font-weight:500;text-decoration:none;transition:background var(--levois-fast),transform var(--levois-fast)}
+ .btn-primaire{background:var(--levois-accent);color:white}.btn-primaire:hover{background:var(--levois-hover)}
+ .btn-secondaire{border:1px solid var(--levois-line);color:var(--levois-ink);background:white}.btn-secondaire:hover{border-color:var(--levois-accent);color:var(--levois-accent)}
+ .btn-sur-encre{background:#e3eaff;color:#152b7d}.btn-sur-encre:hover{background:white}
+ .carte{background:var(--levois-surface);border:1px solid var(--levois-line);border-radius:var(--levois-choice-radius)}
+ .encart-limite{border-left:2px solid var(--levois-accent);padding-left:20px;color:var(--levois-muted)}
+ .option-cue{display:inline-flex;flex-shrink:0}
+ .form-error{color:var(--levois-error);font-size:14px;line-height:1.5}
+ [aria-invalid=true]{border-color:var(--levois-error)!important}
+ .noscript-message{max-width:70ch;margin:24px auto;padding:20px;background:white;border:1px solid var(--levois-line)}
+}

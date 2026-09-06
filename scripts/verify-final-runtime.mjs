@@ -1,0 +1,8 @@
+import fs from 'node:fs/promises';import assert from 'node:assert/strict';
+const base='http://127.0.0.1:4338',report=[];
+for(const [route,target] of [['/le-projet','/mouaad'],['/guide','/ressources'],['/carnets-de-terrain','/ressources'],['/carnets-de-terrain/exemple','/ressources'],['/observatoire-immo','/'],['/vendre-a-leves','/situer-ma-vente'],['/lea','/mouaad'],['/merci','/']]){const r=await fetch(base+route,{redirect:'manual'});assert.equal(r.status,301);assert.equal(new URL(r.headers.get('location'),base).pathname,target);report.push({route,status:r.status,location:r.headers.get('location')})}
+for(const route of ['/carte','/votre-rue','/ma-recherche','/sitemap-index.xml','/sitemap-0.xml','/robots.txt']){const r=await fetch(base+route);assert.equal(r.status,200);report.push({route,status:r.status})}
+const missing=await fetch(base+'/page-totalement-absente');assert.equal(missing.status,404);assert.match(await missing.text(),/LEVOIS/);report.push({route:'/page-totalement-absente',status:404});
+// Intentionally invalid, without personal data: no notification can be sent.
+for(const route of ['/api/lead','/api/recherche']){const r=await fetch(base+route,{method:'POST',headers:{'content-type':'application/json',origin:base},body:'{}'});assert.equal(r.status,400);report.push({route,status:r.status,body:await r.json()});const bad=await fetch(base+route,{method:'POST',headers:{'content-type':'application/json',origin:'https://foreign.example'},body:'{}'});assert.equal(bad.status,403);report.push({route,status:bad.status,originRejected:true})}
+await fs.writeFile('artifacts/finalization/runtime.json',JSON.stringify(report,null,2));console.log(report);

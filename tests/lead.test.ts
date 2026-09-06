@@ -74,7 +74,7 @@ describe.sequential('Cloudflare /api/lead', () => {
 
   it('conserve les validations historiques, dont la commune pour un parcours', async () => {
     const response = await onRequest(
-      contexte({ type: 'parcours', prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' }),
+      contexte({ type: 'parcours', consentement: true, prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' }),
     );
 
     expect(response.status).toBe(400);
@@ -87,7 +87,7 @@ describe.sequential('Cloudflare /api/lead', () => {
 
     // Même forme que le payload construit dans src/pages/votre-rue.astro.
     const payload = {
-      type: 'votre-rue',
+      type: 'votre-rue', consentement: true,
       source: 'QR /votre-rue',
       adresseRecherchee: '8 rue de la République, 28300 Lèves',
       commune: 'Lèves',
@@ -145,7 +145,7 @@ describe.sequential('Cloudflare /api/lead', () => {
     const response = await onRequest(
       contexte(
         {
-          type: 'votre-rue',
+          type: 'votre-rue', consentement: true,
           prenom: 'Mouaad',
           email: 'mouaad@example.test',
           adresseRecherchee: '8 rue sûre\r\nBcc: tiers@example.test',
@@ -211,7 +211,7 @@ describe.sequential('Cloudflare /api/lead', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     const response = await onRequest(
-      contexte({ prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test', message: 'Bonjour' }),
+      contexte({ consentement:true, objet:'Contact', prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test', message: 'Bonjour' }),
     );
 
     expect(response.status).toBe(200);
@@ -226,7 +226,7 @@ describe.sequential('Cloudflare /api/lead', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('indisponible', { status: 503 })));
 
     const response = await onRequest(
-      contexte({ prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test', message: 'Bonjour' }),
+      contexte({ consentement:true, objet:'Contact', prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test', message: 'Bonjour' }),
     );
 
     expect(response.status).toBe(503);
@@ -240,7 +240,7 @@ describe.sequential('Cloudflare /api/lead', () => {
     const response = await onRequest(
       contexte(
         {
-          type: 'parcours',
+          type: 'parcours', consentement: true,
           prenom: 'Mouaad',
           nom: 'Boullourou',
           email: 'mouaad@example.test',
@@ -284,7 +284,7 @@ describe.sequential('Cloudflare /api/lead', () => {
 
     const response = await onRequest(
       contexte(
-        { prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' },
+        { type:'contact', consentement:true, objet:'Question', message:'Bonjour', prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' },
         { RESEND_API_KEY: 'test-key' },
       ),
     );
@@ -301,7 +301,7 @@ describe.sequential('Cloudflare /api/lead', () => {
     for (let i = 0; i < 5; i += 1) {
       const response = await onRequest(
         contexte(
-          { prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' },
+          { type:'contact', consentement:true, objet:'Question', message:'Bonjour', prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' },
           { RESEND_API_KEY: 'test-key' },
           { ip },
         ),
@@ -311,7 +311,7 @@ describe.sequential('Cloudflare /api/lead', () => {
 
     const response = await onRequest(
       contexte(
-        { prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' },
+        { type:'contact', consentement:true, objet:'Question', message:'Bonjour', prenom: 'Mouaad', nom: 'B.', email: 'mouaad@example.test' },
         { RESEND_API_KEY: 'test-key' },
         { ip },
       ),

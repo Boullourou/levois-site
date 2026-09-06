@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ImageSlot from '../components/ImageSlot.astro';
+
 import { site } from '../config/site';
 
 const engagements = [
@@ -15,21 +15,14 @@ const engagements = [
 <Layout
   title="Mouaad Boullourou"
   description="Mouaad Boullourou, conseiller immobilier indépendant SAFTI sur le bassin chartrain. Écouter, reformuler, comprendre — décider ensuite."
-  image="/images/mouaad-terrain-1022.webp"
+  image="/images/levois-mouaad.webp"
 >
   <div class="max-w-page mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
     <div class="grid md:grid-cols-12 gap-10 md:gap-14 mb-16">
       <div class="md:col-span-5">
-        <!-- Scène documentaire : deux images de Mouaad en léger décalage de profondeur -->
-        <div class="relative">
-          <ImageSlot slot="mouaad-terrain" ratio="4/5" loading="eager" sizes="(min-width:768px) 40vw, 100vw" class="shadow-[0_24px_60px_-30px_rgba(33,28,22,0.35)]" />
-          <div class="hidden sm:block absolute -bottom-8 -right-6 w-2/5 rounded-card overflow-hidden shadow-[0_24px_50px_-24px_rgba(33,28,22,0.5)] ring-4 ring-papier">
-            <ImageSlot slot="mouaad-rdv" ratio="1/1" sizes="20vw" rounded={false} />
-          </div>
-        </div>
+        <img class="editorial-portrait" src="/images/levois-mouaad.webp" width="800" height="1202" alt="Mouaad Boullourou" fetchpriority="high"/>
       </div>
-
       <div class="md:col-span-7">
         <p class="eyebrow mb-4">La continuité humaine</p>
         <h1 class="text-display text-encre mb-2">{site.mouaad.nom}</h1>

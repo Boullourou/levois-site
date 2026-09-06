@@ -272,7 +272,8 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   }
 
   const erreurs: string[] = [];
-  const type = texteLigne(body.type, 40);
+  const type = texteLigne(body.type, 40) || 'contact';
+  if (!['contact', 'parcours', 'votre-rue', 'audit-annonce'].includes(type)) erreurs.push('type de demande');
   const estVotreRue = type === 'votre-rue';
   const estAuditAnnonce = type === 'audit-annonce';
   const prenom = texteLigne(body.prenom, 80);
@@ -283,7 +284,9 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   if (!estVotreRue && !nom) erreurs.push('nom');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) erreurs.push('email');
   if (type === 'parcours' && !commune) erreurs.push('commune');
-  if (estAuditAnnonce && body.consentement !== true) erreurs.push('consentement');
+  if (body.consentement !== true) erreurs.push('consentement');
+  if (type === 'contact' && !texteLigne(body.objet, 200)) erreurs.push('objet');
+  if (type === 'contact' && !texte(body.message, 8000)) erreurs.push('message');
   if (erreurs.length) {
     return json({ ok: false, message: `Champs à vérifier : ${erreurs.join(', ')}.` }, 400);
   }
@@ -389,6 +392,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
       });
       const rep = await fetch(endpoint, {
         method: 'POST',
+        signal: AbortSignal.timeout(12000),
         headers: {
           accept: 'application/json',
           'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -413,6 +417,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   try {
     const rep = await fetch('https://api.resend.com/emails', {
       method: 'POST',
+        signal: AbortSignal.timeout(12000),
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'content-type': 'application/json',

@@ -11,15 +11,11 @@ import Layout from '../layouts/Layout.astro';
     <section class="team-hero" aria-labelledby="team-title">
       <div class="hero-copy">
         <p class="eyebrow">Changer de voie commence parfois par une question.</p>
-        <h1 id="team-title">Vous n’avez pas besoin de vous sentir prêt.</h1>
+        <h1 id="team-title">Et si l’immobilier<br/>était votre prochain métier ?</h1>
         <p class="lead">Vous avez peut-être l’envie. Pas encore la confiance, les codes ou le point de départ. C’est précisément pour cela qu’on peut en parler.</p>
         <a href="/contact?motif=equipe" data-journey="team_candidate" data-event="partner_cta_click">Parler avec Mouaad <span aria-hidden="true">→</span></a>
       </div>
-      <div class="path" aria-hidden="true">
-        <span class="start">?</span>
-        <i></i><i></i><i></i>
-        <span class="arrival">vous</span>
-      </div>
+
     </section>
 
     <section class="permission" aria-labelledby="permission-title">
@@ -41,7 +37,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="hand mouaad">
         <p class="eyebrow">À mes côtés</p>
         <h2>Un vrai démarrage.<br />Pas un numéro de plus.</h2>
-        <p>Nous construisons vos premières actions, votre présence locale et un système qui vous ressemble. Je reste disponible quand le terrain pose les vraies questions.</p>
+        <p>Nous parlons de vos premières actions, de la présence locale à construire et de l’accompagnement possible. Vous pouvez ensuite décider si ce métier vous correspond.</p>
       </div>
     </section>
 
@@ -61,60 +57,3 @@ import Layout from '../layouts/Layout.astro';
     </section>
   </div>
 </Layout>
-
-<style>
-  .team-world { --ink: #101526; --blue: #243cff; --lime: #d7ff42; --mist: #eef0ff; overflow: clip; background: var(--mist); color: var(--ink); font-family: 'Public Sans', system-ui, sans-serif; }
-  .eyebrow { margin: 0 0 22px; font-size: 13px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
-  h1, h2 { margin: 0; font-family: 'Antonio', 'Archivo Black', sans-serif; font-weight: 700; letter-spacing: -.045em; text-wrap: balance; }
-  .team-hero { position: relative; min-height: min(900px, calc(100svh - 70px)); display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; padding: clamp(76px, 9vw, 145px) clamp(24px, 8vw, 120px); background: var(--mist); }
-  .hero-copy { position: relative; z-index: 2; }
-  h1 { max-width: 980px; font-size: clamp(72px, 8.6vw, 136px); line-height: .84; }
-  .lead { max-width: 660px; margin: clamp(34px, 5vw, 58px) 0 0; font-size: clamp(20px, 2vw, 28px); line-height: 1.4; }
-  .hero-copy > a, .conversation > a { display: inline-flex; align-items: center; gap: 28px; margin-top: 36px; padding: 19px 28px; border-radius: 999px; background: var(--ink); color: white; font-size: 18px; font-weight: 850; text-decoration: none; transition: transform .25s ease, background .25s ease; }
-  .hero-copy > a:hover, .conversation > a:hover { transform: translateY(-4px); background: var(--blue); }
-  .path { position: relative; height: min(60vw, 620px); display: grid; place-items: center; }
-  .path::before { content: ''; position: absolute; width: 80%; aspect-ratio: 1; border: 2px solid var(--blue); border-radius: 42% 58% 62% 38% / 50% 34% 66% 50%; animation: orbit 12s linear infinite; }
-  .path span { position: absolute; display: grid; place-items: center; border-radius: 50%; font-weight: 900; }
-  .start { left: 6%; top: 19%; width: 78px; height: 78px; background: white; color: var(--blue); font-size: 36px; }
-  .arrival { right: 0; bottom: 17%; width: 128px; height: 128px; background: var(--lime); font-size: 23px; }
-  .path i { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--blue); }
-  .path i:nth-of-type(1) { left: 28%; top: 47%; }
-  .path i:nth-of-type(2) { left: 48%; top: 61%; width: 22px; height: 22px; }
-  .path i:nth-of-type(3) { right: 25%; top: 48%; width: 34px; height: 34px; background: var(--lime); }
-  .permission { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: clamp(110px, 15vw, 220px) clamp(24px, 8vw, 120px); background: var(--ink); color: white; }
-  .permission > p { margin: 0 0 50px; color: var(--lime); font-weight: 800; }
-  .permission h2 { display: grid; gap: 20px; font-family: 'Public Sans', sans-serif; font-size: clamp(32px, 5vw, 76px); line-height: 1.02; letter-spacing: -.04em; }
-  .permission h2 span { opacity: .45; transition: opacity .35s ease, transform .35s ease; }
-  .permission h2 span:nth-child(2) { opacity: .7; transform: translateX(4vw); }
-  .permission h2 span:nth-child(3) { opacity: 1; transform: translateX(8vw); color: var(--lime); }
-  .permission strong { align-self: flex-end; max-width: 650px; margin-top: clamp(80px, 12vw, 150px); font-size: clamp(24px, 3vw, 42px); line-height: 1.16; }
-  .two-hands { display: grid; grid-template-columns: 1fr 1fr; }
-  .hand { min-height: 760px; display: flex; flex-direction: column; justify-content: center; padding: clamp(85px, 10vw, 150px) clamp(24px, 6vw, 90px); }
-  .hand h2 { font-size: clamp(60px, 7vw, 112px); line-height: .88; }
-  .hand > p:last-child { max-width: 580px; margin: 38px 0 0; font-size: clamp(18px, 1.6vw, 23px); line-height: 1.55; }
-  .network { background: white; clip-path: polygon(0 0, 100% 4%, 96% 100%, 0 96%); }
-  .mouaad { background: var(--blue); color: white; clip-path: polygon(4% 4%, 100% 0, 100% 96%, 0 100%); }
-  .mouaad .eyebrow { color: var(--lime); }
-  .reality { min-height: 630px; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: clamp(50px, 9vw, 130px); padding: clamp(110px, 14vw, 200px) clamp(24px, 8vw, 120px); }
-  .reality h2 { max-width: 850px; font-size: clamp(68px, 8vw, 130px); line-height: .87; }
-  .reality > p { max-width: 540px; font-size: clamp(19px, 1.8vw, 25px); line-height: 1.55; }
-  .conversation { position: relative; min-height: 760px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(100px, 14vw, 200px) clamp(24px, 8vw, 120px); background: var(--lime); clip-path: ellipse(92% 54% at 50% 54%); }
-  .conversation > p { margin: 0 0 28px; font-size: 18px; font-weight: 800; }
-  .conversation h2 { max-width: 1080px; font-size: clamp(72px, 10vw, 160px); line-height: .84; }
-  .conversation small { max-width: 760px; margin-top: 30px; line-height: 1.55; }
-  @keyframes orbit { to { transform: rotate(360deg); } }
-  @media (max-width: 800px) {
-    .team-hero { grid-template-columns: 1fr; padding-top: 86px; }
-    h1 { font-size: clamp(64px, 17vw, 82px); }
-    .lead { margin-top: 25px; font-size: 18px; }
-    .hero-copy > a { margin-top: 24px; }
-    .path { height: 330px; }
-    .path::before { width: 82%; }
-    .permission h2 span:nth-child(2), .permission h2 span:nth-child(3) { transform: none; }
-    .two-hands, .reality { grid-template-columns: 1fr; }
-    .hand { min-height: 620px; }
-    .network, .mouaad { clip-path: none; }
-    .conversation { min-height: 760px; clip-path: ellipse(145% 54% at 50% 54%); }
-  }
-  @media (prefers-reduced-motion: reduce) { .path::before { animation: none; } .hero-copy > a, .conversation > a { transition: none; } }
-</style>

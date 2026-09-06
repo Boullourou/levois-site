@@ -1,157 +1,42 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import {site} from '../config/site';
 import Analytics from '../components/Analytics.astro';
-import { site } from '../config/site';
-import '../styles/global.css';
-
-export interface Props {
-  title: string;
-  description?: string;
-  image?: string;
-  /** Header intégré sur fond papier (Hero) ou solide dès l'arrivée. */
-  headerTransparent?: boolean;
-  /** Exclut la page de l'indexation (pages internes). */
-  noindex?: boolean;
-  /** Active le monde visuel LEVOIS V2, désormais commun à toutes les pages publiques. */
-  homeV2?: boolean;
-  /** Contrat de direction rendu dans le HTML pour rester auditable après build. */
-  designContract?: string;
-}
-
-const {
-  title,
-  description = site.description,
-  image = '/images/hero-chartres-evidence-1536.webp',
-  headerTransparent = false,
-  noindex = false,
-  homeV2 = true,
-  designContract,
-} = Astro.props;
-
-const fullTitle = title === 'Accueil' ? `LEVOIS · ${site.baseline}` : `${title} · LEVOIS`;
-const canonical = site.url + Astro.url.pathname;
-const ogImage = image.startsWith('http') ? image : site.url + image;
+import Icon from '../components/WorldIcon.astro';
+import '../styles/public-base.css';
+import '../styles/levois.css';
+import '../styles/editorial.css';
+interface Props{title:string;description?:string;image?:string;noindex?:boolean;headerTransparent?:boolean;homeV2?:boolean;designContract?:string}
+const {title,description=site.description,image='/images/levois-quartier-1672.webp',noindex=false}=Astro.props;
+const path=Astro.url.pathname.replace(/\/$/,'')||'/';
+const links=[{href:'/votre-rue',label:'Explorer les ventes'},{href:'/ma-recherche',label:'Acheter'},{href:'/situer-ma-vente',label:'Vendre'}];
 ---
-
-<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{fullTitle}</title>
-    <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex" />}
-    <link rel="canonical" href={canonical} />
-
-    <script is:inline>document.documentElement.classList.add('js');</script>
-
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="fr_FR" />
-    <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
-    <meta property="og:site_name" content="LEVOIS" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-
-    <script type="application/ld+json" set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@graph': [
-        {
-          '@type': 'WebSite',
-          '@id': `${site.url}/#website`,
-          url: site.url,
-          name: site.name,
-          description: site.description,
-          inLanguage: 'fr-FR',
-          publisher: { '@id': `${site.url}/#organization` },
-        },
-        {
-          '@type': 'Organization',
-          '@id': `${site.url}/#organization`,
-          name: site.name,
-          url: site.url,
-          founder: { '@id': `${site.url}/#mouaad-boullourou` },
-        },
-        {
-          '@type': 'Person',
-          '@id': `${site.url}/#mouaad-boullourou`,
-          name: site.mouaad.nom,
-          url: `${site.url}/mouaad`,
-          jobTitle: 'Conseiller immobilier indépendant',
-          worksFor: { '@type': 'Organization', name: 'SAFTI' },
-        },
-        {
-          '@type': 'RealEstateAgent',
-          '@id': `${site.url}/#service`,
-          name: site.name,
-          description: site.description,
-          url: site.url,
-          email: site.email,
-          telephone: site.phone,
-          founder: { '@id': `${site.url}/#mouaad-boullourou` },
-          areaServed: site.communes.map((c) => ({ '@type': 'City', name: c })),
-        },
-      ],
-    })} />
-  </head>
-
-  <body class:list={['min-h-screen flex flex-col', { 'home-shell': homeV2 }]}>
-    {designContract && <Fragment set:html={`<!--\n${designContract}\n-->`} />}
-    <a href="#contenu" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:bg-argile focus:text-papier-vif focus:px-4 focus:py-2 focus:rounded-full font-sans">
-      Aller au contenu
-    </a>
-
-    <Header transparent={headerTransparent} homeV2={homeV2} />
-    <main id="contenu" class="flex-1">
-      <slot />
-    </main>
-    <Footer homeV2={homeV2} flush={title === 'Accueil'} />
-    <Analytics />
-
-    <script>
-      // Révélation à l'entrée dans le viewport — famille A (narration).
-      // Avec prefers-reduced-motion, le CSS affiche tout directement.
-      const observer = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
-            }
-          }
-        },
-        { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-      );
-      document.querySelectorAll('.fade-up').forEach((el) => observer.observe(el));
-
-      // Filet de sécurité : quoi qu'il arrive, tout est visible après 2,5 s.
-      setTimeout(() => {
-        document.querySelectorAll('.fade-up:not(.is-visible)').forEach((el) => el.classList.add('is-visible'));
-      }, 2500);
-
-      // Parallaxe très légère (max 24px), désactivée si mouvement réduit.
-      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const parallaxEls = document.querySelectorAll<HTMLElement>('.parallax');
-      if (parallaxEls.length && !reduced && window.innerWidth > 768) {
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-          if (ticking) return;
-          ticking = true;
-          requestAnimationFrame(() => {
-            const y = Math.min(window.scrollY * 0.08, 24);
-            parallaxEls.forEach((el) => (el.style.transform = `translateY(${y}px)`));
-            ticking = false;
-          });
-        }, { passive: true });
-      }
-    </script>
-  </body>
-</html>
+<!doctype html><html lang="fr"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="color-scheme" content="light"/>{(noindex||path==='/composants'||path==='/404'||path==='/situer-ma-vente/resultat')&&<meta name="robots" content="noindex"/>}
+<title>{title==='Accueil'?'LEVOIS · Une vie derrière chaque adresse':title+' · LEVOIS'}</title>
+<meta name="description" content={description}/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="canonical" href={site.url+Astro.url.pathname}/>
+<link rel="preload" href="/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin/><link rel="preload" href="/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin/>
+<meta property="og:title" content={title+' · LEVOIS'}/><meta property="og:description" content={description}/><meta property="og:image" content={site.url+image}/><meta property="og:locale" content="fr_FR"/>
+<script type="application/ld+json" set:html={JSON.stringify({'@context':'https://schema.org','@type':'RealEstateAgent',name:'LEVOIS',url:site.url,email:site.email,telephone:site.phone,founder:{'@type':'Person',name:site.mouaad.nom},areaServed:site.communes.map(name=>({'@type':'City',name}))})}/>
+</head><body class:list={['reperes-shell',{'rp-home':path==='/', 'rp-recherche':path==='/ma-recherche','rp-territoire':path==='/votre-rue','rp-carte':path==='/carte','rp-extension':!['/','/ma-recherche','/votre-rue','/carte'].includes(path),'rp-editorial':!['/','/ma-recherche','/votre-rue','/carte','/situer-ma-vente','/situer-ma-vente/resultat','/contact','/audit-annonce','/recommander','/rejoindre'].includes(path)}]}>
+<!-- Identité validée le 06/09/2026. Source : DESIGN.md et styles/tokens.css. -->
+<a class="rp-skip" href="#contenu">Aller au contenu</a>
+<header class="rp-header"><a class="rp-brand" href="/" aria-label="LEVOIS, accueil"><img class="levois-wordmark" src="/brand/levois-horizontal.svg" width="129" height="40" alt="" fetchpriority="high"/></a>
+<nav class="rp-nav" aria-label="Navigation principale">{links.map(l=><a href={l.href} aria-current={path===l.href?'page':undefined}>{l.label}</a>)}</nav>
+<a class="rp-contact" href="/carte"><img src="/images/levois-mouaad-avatar.webp" width="34" height="34" alt=""/><span>Mouaad<small>SAFTI</small></span><Icon/></a>
+<button class="rp-menu-toggle" type="button" aria-expanded="false" aria-controls="rp-mobile-nav">Menu <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg></button>
+<nav id="rp-mobile-nav" aria-label="Navigation mobile" hidden>{links.map(l=><a href={l.href} aria-current={path===l.href?'page':undefined}>{l.label}<Icon/></a>)}<a href="/carte">Rencontrer Mouaad<Icon/></a><a href="/contact">Écrire à Mouaad<Icon/></a></nav></header>
+<main id="contenu" tabindex="-1"><slot/></main>
+<footer class="rp-footer"><div class="rp-footer-top"><p>Votre prochain chapitre<br/><span>commence par une question.</span></p><a class="world-button" href="/contact">Poser la mienne <Icon/></a></div>
+<div class="rp-footer-middle"><a class="rp-brand" href="/" aria-label="LEVOIS, accueil"><img class="levois-wordmark" src="/brand/levois-horizontal.svg" width="129" height="40" alt=""/></a><p>Mouaad Boullourou<br/>Conseiller immobilier indépendant SAFTI<br/>Lèves, Chartres et alentours</p><nav aria-label="Explorer LEVOIS"><a href="/votre-rue">Les ventes locales</a><a href="/ma-recherche">Votre recherche</a><a href="/situer-ma-vente">Votre vente</a><a href="/ressources">Les ressources</a><a href="/methode">Notre méthode</a><a href="/accompagnement">L’accompagnement</a><a href="/audit-annonce">Relire mon annonce</a></nav><a class="rp-footer-phone" href={`tel:${site.phone}`}>{site.phoneDisplay}</a></div>
+<div class="rp-footer-bottom"><span>© {new Date().getFullYear()} LEVOIS</span><nav aria-label="Informations"><a href="/mentions-legales">Mentions légales</a><a href="/confidentialite">Confidentialité</a><a href="/mouaad">À propos de Mouaad</a><a href="/recommander">Recommander Mouaad</a><a href="/rejoindre">Découvrir le métier</a><button type="button" data-analytics-settings>Mes choix de confidentialité</button></nav><span>Comprendre. Puis décider.</span></div></footer>
+<Analytics/><script>
+import '../scripts/public-forms';
+const toggle=document.querySelector<HTMLButtonElement>('.rp-menu-toggle'),nav=document.querySelector<HTMLElement>('#rp-mobile-nav');
+function closeMenu(){if(nav)nav.hidden=true;toggle?.setAttribute('aria-expanded','false');}
+toggle?.addEventListener('click',()=>{const opened=toggle.getAttribute('aria-expanded')==='true';if(nav)nav.hidden=opened;toggle.setAttribute('aria-expanded',String(!opened));});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!nav?.hidden){closeMenu();toggle?.focus();}});
+matchMedia('(min-width:901px)').addEventListener('change',e=>{if(e.matches)closeMenu()});
+const params=new URLSearchParams(location.search),provenance=params.get('src')||params.get('utm_source')||'';
+const safeSource=/^[a-zA-Z0-9_-]{1,60}$/.test(provenance)?provenance:'';
+if(safeSource){document.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach(a=>{const u=new URL(a.href);if(['/ma-recherche','/situer-ma-vente','/contact','/votre-rue','/carte'].includes(u.pathname)&&!u.searchParams.has('src')){u.searchParams.set('src',safeSource);a.href=u.pathname+u.search+u.hash;}});const source=document.querySelector<HTMLInputElement>('[data-world-address] input[name="src"]');if(source)source.value=safeSource;}
+</script></body></html>

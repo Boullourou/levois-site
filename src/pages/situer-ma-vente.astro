@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
+
 
 // Le parcours est une « île » interactive : tout le reste du site est statique.
 // Les données et le moteur sont importés par le script client ci-dessous.
@@ -10,13 +10,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   title="Situer ma vente"
   description="Choisissez votre situation, répondez à quelques questions, recevez une première lecture liée à vos réponses — sans coordonnées."
 >
-  <JourneyImmersion
-    world="anticipate"
-    title="Rien ne vous oblige à vendre. Mais demain peut tout accélérer."
-    text="Connaître la place de votre bien aujourd’hui, c’est éviter de devoir décider dans l’urgence si votre vie change demain."
-    action="Créer mon premier repère"
-    target="#parcours"
-  />
+
   <div id="parcours" class="max-w-editorial mx-auto px-edge md:px-edge-md pt-10 md:pt-16 pb-section min-h-[70vh]">
 
     <!-- Contexte : situation choisie + modifier -->
@@ -31,11 +25,11 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
 
     <!-- ——— Vue 1 · Sélecteur de situation ——— -->
     <section id="vue-selecteur" aria-labelledby="selecteur-titre">
-      <h1 id="selecteur-titre" class="text-display text-encre mb-3">Votre bien est-il déjà sur le marché — ou simplement dans un coin de votre tête ?</h1>
+      <h1 id="selecteur-titre" class="text-display text-encre mb-3">Votre vente.<br/>Le bon prochain pas.</h1>
       <p class="font-sans text-body-lg text-brun mb-8 max-w-prose">
-        Choisissez la situation qui se rapproche le plus de la vôtre : le parcours démarre immédiatement.
-        Trois à cinq questions suivront — vos réponses construisent le résultat,
-        et aucune coordonnée ne vous sera demandée avant. Même sans projet décidé, vous créez un premier repère utile pour plus tard.
+        Déjà en ligne, en préparation ou encore au stade de l’idée ?
+        Choisissez votre situation. Quelques questions suffisent pour obtenir
+        une première lecture, avant toute demande de coordonnées.
       </p>
       <div id="liste-situations" class="grid gap-3" role="radiogroup" aria-labelledby="selecteur-titre"></div>
       <p class="mt-5 font-sans text-sm font-semibold text-argile">Un choix suffit · l’étape suivante s’affiche automatiquement.</p>
@@ -48,7 +42,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
           <span id="q-compteur"></span>
           <span id="q-restant" class="text-brun/70"></span>
         </div>
-        <div class="h-px bg-beige relative" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="q-progress-track">
+        <div class="h-px bg-beige relative" role="progressbar" aria-label="Progression des questions" aria-valuemin="0" aria-valuemax="100" id="q-progress-track">
           <div id="q-progress" class="ligne-ecart !w-0 absolute left-0 top-0 transition-all duration-300 ease-out-soft"></div>
         </div>
       </div>
@@ -117,7 +111,13 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
   function restaurer(): Etat | null {
     try {
       const raw = sessionStorage.getItem(CLE);
-      return raw ? (JSON.parse(raw) as Etat) : null;
+      const saved=raw?JSON.parse(raw):null;
+      const s=situations.find(item=>item.id===saved?.situationId);
+      if(!s||!saved.reponses||typeof saved.reponses!=='object'||Array.isArray(saved.reponses))return null;
+      const reponses:Answers={};
+      for(const q of s.questions)if(q.options.some(o=>o.value===saved.reponses[q.id]))reponses[q.id]=saved.reponses[q.id];
+      const etape=Number.isInteger(saved.etape)?Math.max(0,Math.min(saved.etape,s.questions.length-1)):0;
+      return {situationId:s.id,etape,reponses};
     } catch { return null; }
   }
 
@@ -233,7 +233,7 @@ import JourneyImmersion from '../components/journeys/JourneyImmersion.astro';
     })].join('.');
     const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setTimeout(() => {
-      window.location.href = `/situer-ma-vente/resultat?r=${encodeURIComponent(code)}`;
+      const destination=new URL("/situer-ma-vente/resultat",location.origin);destination.searchParams.set("r",code);const source=new URLSearchParams(location.search).get("src");if(source&&/^[a-zA-Z0-9_-]{1,60}$/.test(source))destination.searchParams.set("src",source);window.location.href=destination.pathname+destination.search;
     }, reduit ? 150 : 1100);
   }
 

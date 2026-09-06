@@ -2,82 +2,22 @@
 import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
 ---
-
-<Layout title="Mentions légales" description="Mentions légales du site levois.fr.">
-  <article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
-
-    <header class="mb-12">
-      <p class="eyebrow mb-4">Légal</p>
-      <h1 class="text-display text-encre mb-4">Mentions légales</h1>
-    </header>
-
-    <div class="space-y-12 font-sans text-[15px] text-encre/85 leading-relaxed">
-
-      <section aria-labelledby="editeur">
-        <h2 id="editeur" class="text-h3 text-encre mb-4">Éditeur du site</h2>
-        <p>
-          <strong class="text-encre">Mouaad Boullourou</strong> — Entrepreneur individuel<br/>
-          SIRET : 824 194 419 00027<br/>
-          Email : <a href={`mailto:${site.email}`} class="text-argile underline underline-offset-2">{site.email}</a><br/>
-          Téléphone : <a href={`tel:${site.phone}`} class="text-argile underline underline-offset-2">{site.phoneDisplay}</a>
-        </p>
-        <p class="mt-3 text-brun text-sm">Directeur de la publication : Mouaad Boullourou</p>
-      </section>
-
-      <section aria-labelledby="activite">
-        <h2 id="activite" class="text-h3 text-encre mb-4">Activité immobilière</h2>
-        <p>
-          Mouaad Boullourou exerce une activité d’intermédiation immobilière en qualité de
-          <strong> conseiller immobilier indépendant</strong>, sous mandat de SAFTI.
-          LEVOIS est sa méthode de lecture, de pédagogie et d’accompagnement — LEVOIS
-          n’est ni une agence immobilière indépendante, ni un réseau.
-        </p>
-        <p class="mt-3">
-          <strong>SAFTI</strong> — Société par actions simplifiée<br/>
-          Siège social : 1 rue René Anjolvy, 94250 Gentilly<br/>
-          SIRET : 522 869 935 00026<br/>
-          Titulaire de la carte professionnelle « Transactions sur immeubles et fonds de commerce »
-          n° CPI 9401 2016 000 014 002 délivrée par la CCI de Paris Île-de-France<br/>
-          Garantie financière : GALIAN Assurances, 89 rue La Boétie, 75008 Paris<br/>
-          Mention « ne reçoit ni fonds, ni effets, ni valeurs »
-        </p>
-      </section>
-
-      <section aria-labelledby="hebergement">
-        <h2 id="hebergement" class="text-h3 text-encre mb-4">Hébergement</h2>
-        <p>
-          <strong>Cloudflare, Inc.</strong><br/>
-          101 Townsend Street, San Francisco, CA 94107, États-Unis<br/>
-          <a href="https://www.cloudflare.com" class="text-argile underline underline-offset-2">cloudflare.com</a>
-        </p>
-        <p class="mt-3">
-          <strong>Nom de domaine :</strong> OVHcloud — 2 rue Kellermann, 59100 Roubaix, France
-        </p>
-      </section>
-
-      <section aria-labelledby="pi">
-        <h2 id="pi" class="text-h3 text-encre mb-4">Propriété intellectuelle</h2>
-        <p>
-          L’ensemble du contenu de ce site (textes, photographies, méthode, code) est la
-          propriété de Mouaad Boullourou et protégé par le droit d’auteur. Toute reproduction,
-          même partielle, nécessite un accord écrit préalable.
-        </p>
-      </section>
-
-      <section aria-labelledby="credits">
-        <h2 id="credits" class="text-h3 text-encre mb-4">Crédits</h2>
-        <p>
-          Typographies : <a href="https://fonts.google.com/specimen/Archivo+Black" class="text-argile underline underline-offset-2">Archivo Black</a>
-          et <a href="https://fonts.google.com/specimen/Public+Sans" class="text-argile underline underline-offset-2">Public Sans</a> (SIL Open Font License).<br/>
-          Framework : <a href="https://astro.build" class="text-argile underline underline-offset-2">Astro</a> ·
-          <a href="https://tailwindcss.com" class="text-argile underline underline-offset-2">Tailwind CSS</a>.
-        </p>
-      </section>
-
-      <p class="text-brun text-sm">
-        Pour vos données personnelles, consultez la
-        <a href="/confidentialite" class="text-argile underline underline-offset-2">politique de confidentialité</a>.
-      </p>
-    </div>
-  </article>
-</Layout>
+<Layout title="Mentions légales" description="Éditeur, activité immobilière, hébergement et crédits de LEVOIS.">
+<article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
+<header class="mb-12"><p class="eyebrow">Informations légales</p><h1 class="text-display">Mentions légales</h1></header>
+<div class="space-y-12 font-sans text-[15px] leading-relaxed">
+<section aria-labelledby="editeur"><h2 id="editeur">Éditeur et directeur de la publication</h2>
+<p><strong>Mouaad Boullourou — Entrepreneur individuel</strong><br/>25 rue de la Butte Celtique, 28300 Lèves, France<br/>SIRET : 824 194 419 00027<br/>Agent commercial inscrit au RSAC de Chartres sous le n° 824 194 419.<br/><a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></p></section>
+<section aria-labelledby="activite"><h2 id="activite">Activité immobilière</h2>
+<p>Mouaad Boullourou est conseiller immobilier indépendant, mandataire du réseau SAFTI. LEVOIS désigne son site et sa démarche d’accompagnement. Les transactions sont réalisées dans le cadre du mandat SAFTI.</p>
+<p><strong>SAFTI — SAS au capital de 100 000 €</strong><br/>118 route d’Espagne, Immeuble Le Phénix, 31100 Toulouse<br/>SIRET : 523 964 328 00026 — RCS Toulouse<br/>Carte professionnelle « Transactions sur immeubles et fonds de commerce » : CPI 3101 2018 000 025 936, délivrée par la CCI de Toulouse.<br/>Assurance de responsabilité civile professionnelle : GENERALI IARD, 7 boulevard Haussmann, 75009 Paris.</p>
+<p>Retrouvez la <a href="https://www.safti.fr/votre-conseiller-safti/mouaad-boullourou">fiche professionnelle de Mouaad</a>, les <a href="https://bareme.safti.fr">barèmes d’honoraires SAFTI</a> et les <a href="https://www.safti.fr/cms/mentions-legales">informations légales du réseau</a>.</p></section>
+<section aria-labelledby="mediation"><h2 id="mediation">Médiation de la consommation</h2>
+<p>Après une réclamation écrite restée sans solution, vous pouvez saisir gratuitement le médiateur indiqué par SAFTI : MED CONSO DEV, Centre d’Affaires Stéphanois SAS, Immeuble L’Horizon, Esplanade de France, 3 rue J. Constant Milleret, 42000 Saint-Étienne. Les conditions et modalités de saisine figurent sur <a href="https://medconsodev.eu">medconsodev.eu</a>.</p></section>
+<section aria-labelledby="hebergement"><h2 id="hebergement">Hébergement</h2>
+<p>Cloudflare, Inc. — 101 Townsend Street, San Francisco, CA 94107, États-Unis. <a href="https://www.cloudflare.com">Site de Cloudflare</a>.<br/>Nom de domaine : OVHcloud, 2 rue Kellermann, 59100 Roubaix, France.</p></section>
+<section aria-labelledby="credits"><h2 id="credits">Contenus, images et données</h2>
+<p>Les textes et la présentation de LEVOIS sont édités par Mouaad Boullourou. Les éléments de tiers restent soumis à leurs licences respectives. Le quartier miniature est une illustration : il ne représente ni un bien à vendre ni une rue réelle. Les ventes consultables proviennent des données publiques DVF ; elles ne constituent pas une estimation d’un logement.</p>
+<p>Typographie principale : <a href="https://www.fontshare.com/fonts/satoshi">Satoshi, Indian Type Foundry / Fontshare</a>. Le mot-symbole utilise Archivo Black. Les polices sont hébergées sur le site.</p></section>
+<p>Pour comprendre ce qui est conservé ou transmis, consultez la <a href="/confidentialite">politique de confidentialité</a>. Mise à jour : 6 septembre 2026.</p>
+</div></article></Layout>

@@ -20,10 +20,10 @@ export const resourceContents: ResourceContent[] = [
   {
     id: 'lancement-coherent',
     reponseCourte:
-      'Un bon lancement suit un ordre précis : documents, préparation du bien, prise de vues, comparaison locale — et seulement ensuite, l’hypothèse de prix. Inverser cet ordre coûte des semaines.',
+      'Un bon lancement suit un ordre précis : documents, préparation du bien, prise de vues, comparaison locale — et seulement ensuite, le prix envisagé. Inverser cet ordre peut retarder le lancement.',
     explication: [
       'Les premières semaines d’une annonce concentrent l’essentiel de son attention : les acheteurs actifs du secteur la découvrent, la comparent et la classent. Cette fenêtre ne se rejoue pas. Un lancement précipité — photos faites avant la préparation, prix choisi avant la comparaison — expose le bien à un accueil tiède qu’aucune retouche ultérieure ne rattrape complètement.',
-      'La logique du lancement cohérent est simple : chaque décision s’appuie sur la précédente. Les documents révèlent parfois des éléments qui changent la présentation (surface réelle, diagnostics). L’état du bien conditionne les photographies. Les photographies et la comparaison locale fondent l’hypothèse de positionnement. Décider dans cet ordre, c’est décider une seule fois.',
+      'La logique du lancement cohérent est simple : chaque décision s’appuie sur la précédente. Les documents révèlent parfois des éléments qui changent la présentation (surface réelle, diagnostics). L’état du bien conditionne les photographies. Les photographies et la comparaison locale fondent le prix envisagé face aux biens comparables. Cet ordre aide à limiter les décisions à reprendre.',
       'Le calendrier compte aussi : mieux vaut retarder une publication de deux semaines que publier un bien qui n’est pas prêt. Le marché ne récompense pas la vitesse — il récompense la cohérence entre la promesse, le prix et ce que la visite confirme.',
     ],
     exemple: {
@@ -45,7 +45,7 @@ export const resourceContents: ResourceContent[] = [
         'Points à corriger traités — ou assumés et intégrés à la présentation.',
         'Prise de vues faite dans un bien préparé, à la bonne lumière.',
         'Les 5 à 8 annonces concurrentes de la même recherche listées et regardées.',
-        'Hypothèse de positionnement posée face à ces alternatives — pas dans l’absolu.',
+        'Prix envisagé face aux biens comparables posée face à ces alternatives — pas dans l’absolu.',
         'Calendrier écrit : publication, période d’observation, premier point de lecture à J+14.',
       ],
     },
