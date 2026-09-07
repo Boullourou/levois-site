@@ -34,6 +34,18 @@ interface RateEntry {
   ts: number;
 }
 
+type NotificationProvider = 'resend' | 'formspree';
+
+interface NotificationAttempt {
+  provider: NotificationProvider;
+  startedAt: string;
+  completedAt: string;
+  ok: boolean;
+  status?: number;
+  reason?: string;
+  messageId?: string;
+}
+
 interface KVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
@@ -43,6 +55,50 @@ const rate = new Map<string, RateEntry>();
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_TTL_SECONDS = Math.ceil(RATE_WINDOW_MS / 1000);
+
+function raisonSure(value: unknown): string | undefined {
+  const raw = typeof value === 'string' ? value : '';
+  if (!raw) return undefined;
+  return raw
+    .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, '[email masqué]')
+    .replace(/Bearer\s+\S+/gi, 'Bearer [masqué]')
+    .slice(0, 240);
+}
+
+async function empreinte(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value.trim().toLowerCase()));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function journaliserNotification(
+  requestId: string,
+  type: string,
+  to: string,
+  formspreeEndpoint: string,
+  attempts: NotificationAttempt[],
+): Promise<void> {
+  const accepted = attempts.find((attempt) => attempt.ok);
+  const recipientDomain = to.includes('@') ? to.split('@').pop()?.toLowerCase() : undefined;
+  console.log('[lead] notification_result', JSON.stringify({
+    event: 'notification_result',
+    requestId,
+    formType: type,
+    acceptedProvider: accepted?.provider ?? null,
+    acceptedAt: accepted?.completedAt ?? null,
+    attempts,
+    fallbackFormspreeTriggered: attempts.some((attempt) => attempt.provider === 'resend')
+      && attempts.some((attempt) => attempt.provider === 'formspree'),
+    resendRecipient: {
+      configured: Boolean(to),
+      domain: recipientDomain,
+      fingerprintSha256: await empreinte(to),
+    },
+    formspreeRoute: {
+      fingerprintSha256: await empreinte(formspreeEndpoint),
+      recipientObservableByWorker: false,
+    },
+  }));
+}
 
 function json(data: unknown, status = 200, headers?: HeadersInit): Response {
   return new Response(JSON.stringify(data), {
@@ -302,6 +358,9 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   const apiKey = ctx.env.RESEND_API_KEY;
   const to = ctx.env.LEAD_TO_EMAIL || ctx.env.LEAD_TO || 'mouaad@levois.fr';
   const from = ctx.env.LEAD_FROM_EMAIL || ctx.env.LEAD_FROM || 'LEVOIS <onboarding@resend.dev>';
+  const formspreeEndpoint = ctx.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+  const requestId = crypto.randomUUID();
+  const attempts: NotificationAttempt[] = [];
 
   const sujet = sujetTexte(
     type === 'parcours'
@@ -381,7 +440,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   }
 
   if (!apiKey) {
-    const endpoint = ctx.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+    const startedAt = new Date().toISOString();
     try {
       const formulaire = new URLSearchParams({
         _subject: sujet,
@@ -390,7 +449,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
         telephone,
         message: lignes.filter((ligne) => ligne !== '').join('\n'),
       });
-      const rep = await fetch(endpoint, {
+      const rep = await fetch(formspreeEndpoint, {
         method: 'POST',
         signal: AbortSignal.timeout(12000),
         headers: {
@@ -399,11 +458,23 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
         },
         body: formulaire.toString(),
       });
-      if (rep.ok) return json({ ok: true });
-      console.error('[lead] Échec Formspree :', rep.status);
+      const completedAt = new Date().toISOString();
+      if (rep.ok) {
+        attempts.push({ provider: 'formspree', startedAt, completedAt, ok: true, status: rep.status });
+        await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
+        return json({ ok: true });
+      }
+      attempts.push({ provider: 'formspree', startedAt, completedAt, ok: false, status: rep.status });
     } catch (error) {
-      console.error('[lead] Erreur Formspree :', error);
+      attempts.push({
+        provider: 'formspree',
+        startedAt,
+        completedAt: new Date().toISOString(),
+        ok: false,
+        reason: raisonSure(error instanceof Error ? error.message : String(error)),
+      });
     }
+    await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
     return json(
       {
         ok: false,
@@ -414,6 +485,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     );
   }
 
+  const resendStartedAt = new Date().toISOString();
   try {
     const rep = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -433,7 +505,15 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
 
     if (!rep.ok) {
       const erreur = await rep.text().catch(() => '');
-      console.error('[lead] Échec Resend :', rep.status, erreur.slice(0, 200));
+      attempts.push({
+        provider: 'resend',
+        startedAt: resendStartedAt,
+        completedAt: new Date().toISOString(),
+        ok: false,
+        status: rep.status,
+        reason: raisonSure(erreur),
+      });
+      await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
       return json(
         {
           ok: false,
@@ -444,9 +524,26 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
       );
     }
 
+    const resendBody = await rep.json().catch(() => null) as { id?: unknown } | null;
+    attempts.push({
+      provider: 'resend',
+      startedAt: resendStartedAt,
+      completedAt: new Date().toISOString(),
+      ok: true,
+      status: rep.status,
+      messageId: typeof resendBody?.id === 'string' ? resendBody.id.slice(0, 128) : undefined,
+    });
+    await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
     return json({ ok: true });
   } catch (error) {
-    console.error('[lead] Erreur d’envoi :', error);
+    attempts.push({
+      provider: 'resend',
+      startedAt: resendStartedAt,
+      completedAt: new Date().toISOString(),
+      ok: false,
+      reason: raisonSure(error instanceof Error ? error.message : String(error)),
+    });
+    await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
     return json(
       {
         ok: false,

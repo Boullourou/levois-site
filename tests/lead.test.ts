@@ -235,6 +235,7 @@ describe.sequential('Cloudflare /api/lead', () => {
 
   it('envoie la synthèse complète avec les bindings Cloudflare historiques', async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response('{"id":"email_test"}', { status: 200 }));
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.stubGlobal('fetch', fetchMock);
 
     const response = await onRequest(
@@ -277,9 +278,23 @@ describe.sequential('Cloudflare /api/lead', () => {
     });
     expect(email.text).toContain('Téléphone : 07 00 00 00 00');
     expect(email.text).toContain('· Quand ? → Dans six mois');
+
+    expect(logSpy).toHaveBeenCalledOnce();
+    const journal = String(logSpy.mock.calls[0][1]);
+    expect(journal).not.toContain('destination@example.test');
+    expect(journal).not.toContain('mouaad@example.test');
+    expect(JSON.parse(journal)).toMatchObject({
+      event: 'notification_result',
+      formType: 'parcours',
+      acceptedProvider: 'resend',
+      fallbackFormspreeTriggered: false,
+      attempts: [{ provider: 'resend', ok: true, status: 200, messageId: 'email_test' }],
+      resendRecipient: { configured: true, domain: 'example.test' },
+    });
   });
 
   it('renvoie 502 quand Resend refuse le message', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('refus', { status: 422 })));
 
     const response = await onRequest(
@@ -291,6 +306,11 @@ describe.sequential('Cloudflare /api/lead', () => {
 
     expect(response.status).toBe(502);
     expect(await donnees(response)).toMatchObject({ ok: false });
+    expect(JSON.parse(String(logSpy.mock.calls[0][1]))).toMatchObject({
+      acceptedProvider: null,
+      fallbackFormspreeTriggered: false,
+      attempts: [{ provider: 'resend', ok: false, status: 422, reason: 'refus' }],
+    });
   });
 
   it('bloque la sixième tentative de la fenêtre de dix minutes', async () => {
