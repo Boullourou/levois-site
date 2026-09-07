@@ -1,0 +1,55 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const connectUrl = 'https://application-connect.safti.fr/telecharger-appli';
+---
+
+<Layout
+  title="Recommander un proche"
+  description="Vous connaissez un proche qui souhaite acheter ou vendre ? Découvrez SAFTI Connect avec Mouaad Boullourou, conseiller immobilier à Lèves et Chartres."
+  designContract="LEVOIS_CONNECT — Un geste humain, trois étapes, un seul appel à l’action. Aucun revenu promis."
+>
+  <div class="connect-world">
+    <section class="connect-hero" aria-labelledby="connect-title">
+      <div class="connect-copy">
+        <p class="eyebrow">Une recommandation utile. Une règle claire.</p>
+        <h1 id="connect-title">Un proche a un projet.<br /><em>Faites le lien.</em></h1>
+        <p class="lead">Vous me recommandez auprès d’une personne qui veut acheter ou vendre. Si la vente se conclut, vous recevez 10&nbsp;% des honoraires d’agence.</p>
+
+        <a class="primary-action" href={connectUrl} rel="noopener noreferrer" data-journey="prescriber" data-event="partner_cta_click">
+          <span>Télécharger SAFTI Connect</span>
+          <i aria-hidden="true">↗</i>
+        </a>
+        <p class="micro">Mon code conseiller : <strong>813785</strong></p>
+      </div>
+
+      <div class="ten-stage" aria-hidden="true"><b>10</b><span>%</span><small>si la vente se conclut</small></div>
+
+    </section>
+
+    <section class="gesture" aria-labelledby="gesture-title">
+      <p class="section-number">01 — 03</p>
+      <h2 id="gesture-title">Trois gestes.<br />Rien de compliqué.</h2>
+      <ol>
+        <li><span>01</span><strong>Téléchargez l’application.</strong></li>
+        <li><span>02</span><strong>Choisissez Mouaad avec le code <mark>813785</mark>.</strong></li>
+        <li><span>03</span><strong>Partagez l’information avec l’accord de votre proche.</strong></li>
+      </ol>
+    </section>
+
+    <section class="reward" aria-label="Fonctionnement de la recommandation">
+      <div class="reward-copy">
+        <p class="eyebrow">Et si le projet aboutit ?</p>
+        <h2>Votre coup de pouce compte aussi pour vous.</h2>
+        <p>La règle est simple : quand la vente issue de votre recommandation se conclut, vous recevez 10&nbsp;% des honoraires d’agence, selon les conditions du dispositif SAFTI Connect en vigueur.</p>
+      </div>
+      <div class="reward-signal" aria-hidden="true">
+        <span>une mise en relation</span>
+        <b>→</b>
+        <span>un projet suivi</span>
+      </div>
+      <a href={connectUrl} rel="noopener noreferrer">Commencer avec Mouaad <span aria-hidden="true">↗</span></a>
+      <small>Source : SAFTI Connect, consultée le 6 septembre 2026. La récompense dépend de la réalisation effective de la transaction et des conditions SAFTI en vigueur.</small>
+    </section>
+  </div>
+</Layout>

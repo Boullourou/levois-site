@@ -1,299 +1,138 @@
 ---
-name: "LEVOIS"
-description: "Mise au point — un système éditorial franc qui rend les signaux immobiliers lisibles des deux côtés du marché."
+name: LEVOIS — Une vie derrière chaque adresse
+description: Un quartier à explorer, des faits à comprendre, une relation à choisir.
 colors:
-  paper-mineral: "#f2f5ef"
-  white: "#ffffff"
-  ink-deep: "#111522"
-  ink-soft: "#202635"
-  cobalt: "#243cff"
-  lime: "#d7ff42"
-  terracotta: "#a84531"
-  structural-line: "#c9cec8"
-  muted: "#58615b"
-  muted-on-ink: "#d5dad4"
+  accent: "#2545df"
+  accent-hover: "#1732b5"
+  human: "#f47b20"
+  ink: "#111a30"
+  paper: "#f5f6fa"
+  muted: "#596378"
+  line: "#dce0e9"
+  surface: "#ffffff"
+  selected: "#edf1ff"
+  dark: "#182447"
+  dark-field: "#223155"
+  on-dark: "#c6cfe5"
+  error: "#9c352c"
+  error-bg: "#ffefed"
+  success: "#286547"
+  success-bg: "#eaf4ee"
 typography:
-  display:
-    fontFamily: "Archivo Black, sans-serif"
-    fontSize: "clamp(56px, 7vw, 96px)"
-    fontWeight: 400
-    lineHeight: 0.9
-    letterSpacing: "-0.035em"
-  wordmark:
-    fontFamily: "Archivo Black, sans-serif"
-    fontSize: "clamp(24px, 2.2vw, 34px)"
-    fontWeight: 400
-    lineHeight: 1
-    letterSpacing: "-0.035em"
-  headline:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "clamp(42px, 5.5vw, 76px)"
-    fontWeight: 800
-    lineHeight: 0.98
-    letterSpacing: "-0.03em"
-  title:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "clamp(28px, 3vw, 42px)"
-    fontWeight: 700
-    lineHeight: 1.02
-    letterSpacing: "-0.025em"
-  lead:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "clamp(18px, 1.65vw, 22px)"
-    fontWeight: 400
-    lineHeight: 1.58
-    letterSpacing: "normal"
-  body:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "16px"
-    fontWeight: 400
-    lineHeight: 1.55
-    letterSpacing: "normal"
-  label:
-    fontFamily: "Public Sans, system-ui, sans-serif"
-    fontSize: "12px"
-    fontWeight: 500
-    lineHeight: 1.35
-    letterSpacing: "normal"
+  display: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(56px, 5.4vw, 82px)", fontWeight: 400, lineHeight: 1.04, letterSpacing: "-0.035em"}
+  headline: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(38px, 4.25vw, 62px)", fontWeight: 400, lineHeight: 1.12, letterSpacing: "-0.035em"}
+  page: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(36px, 4.2vw, 60px)", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.035em"}
+  question: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(30px, 3.25vw, 46px)", fontWeight: 400, lineHeight: 1.12, letterSpacing: "-0.03em"}
+  body: {fontFamily: "Satoshi, sans-serif", fontSize: "16px", fontWeight: 400, lineHeight: 1.6}
+  action: {fontFamily: "Satoshi, sans-serif", fontSize: "15px", fontWeight: 500, lineHeight: 1.4}
 rounded:
-  sharp: "0px"
+  field: "8px"
+  action: "9px"
+  choice: "12px"
+  dock: "15px"
+  sheet: "16px"
 spacing:
-  micro: "4px"
-  xs: "8px"
-  sm: "12px"
-  md: "18px"
-  lg: "30px"
-  xl: "38px"
-  page-edge: "clamp(22px, 5vw, 76px)"
-  section-y: "clamp(80px, 9vw, 138px)"
+  edge: "clamp(24px, 4vw, 72px)"
+  mobile-edge: "22px"
 components:
-  home-header:
-    backgroundColor: "{colors.paper-mineral}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.label}"
-    rounded: "{rounded.sharp}"
-    padding: "0 clamp(22px, 5vw, 76px)"
-    height: "78px"
-  route-light:
-    backgroundColor: "{colors.cobalt}"
-    textColor: "{colors.paper-mineral}"
-    typography: "{typography.body}"
-    rounded: "{rounded.sharp}"
-    padding: "15px 20px"
-    height: "82px"
-  route-light-hover:
-    backgroundColor: "{colors.lime}"
-    textColor: "{colors.ink-deep}"
-  route-dark:
-    backgroundColor: "{colors.ink-deep}"
-    textColor: "{colors.lime}"
-    typography: "{typography.body}"
-    rounded: "{rounded.sharp}"
-    padding: "15px 20px"
-    height: "82px"
-  route-dark-hover:
-    backgroundColor: "{colors.lime}"
-    textColor: "{colors.ink-deep}"
-  story-facts:
-    backgroundColor: "{colors.cobalt}"
-    textColor: "{colors.paper-mineral}"
-    typography: "{typography.title}"
-    rounded: "{rounded.sharp}"
-    padding: "clamp(24px, 3vw, 42px)"
-  story-market:
-    backgroundColor: "{colors.ink-soft}"
-    textColor: "{colors.paper-mineral}"
-    typography: "{typography.title}"
-    rounded: "{rounded.sharp}"
-    padding: "clamp(24px, 3vw, 42px)"
-  story-decision:
-    backgroundColor: "{colors.lime}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.title}"
-    rounded: "{rounded.sharp}"
-    padding: "clamp(24px, 3vw, 42px)"
-  principle-cell:
-    backgroundColor: "{colors.paper-mineral}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.label}"
-    rounded: "{rounded.sharp}"
-    padding: "15px clamp(22px, 5vw, 76px)"
-    height: "66px"
-  method-row:
-    backgroundColor: "{colors.paper-mineral}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.body}"
-    rounded: "{rounded.sharp}"
-    padding: "30px clamp(28px, 5vw, 68px)"
-  method-row-emphasis:
-    backgroundColor: "{colors.lime}"
-    textColor: "{colors.ink-deep}"
-  proof-metric:
-    backgroundColor: "{colors.paper-mineral}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.label}"
-    rounded: "{rounded.sharp}"
-    padding: "19px 18px"
-  home-footer:
-    backgroundColor: "{colors.lime}"
-    textColor: "{colors.ink-deep}"
-    typography: "{typography.label}"
-    rounded: "{rounded.sharp}"
-    padding: "28px clamp(22px, 5vw, 76px)"
-    height: "132px"
+  button-primary: {backgroundColor: "{colors.accent}", textColor: "{colors.surface}", typography: "{typography.action}", rounded: "{rounded.action}", padding: "16px 24px"}
+  button-primary-hover: {backgroundColor: "{colors.accent-hover}", textColor: "{colors.surface}"}
+  button-secondary: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.action}", padding: "14px 24px"}
+  choice: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.choice}", padding: "20px 42px 20px 20px"}
+  choice-selected: {backgroundColor: "{colors.selected}", textColor: "{colors.ink}", rounded: "{rounded.choice}"}
+  address-dock: {backgroundColor: "rgba(255,255,255,0.97)", rounded: "{rounded.dock}", padding: "18px 20px 12px"}
 ---
 
 # Design System: LEVOIS
 
 ## Overview
 
-**Creative North Star: "Mise au point"**
+**Creative North Star: "Une vie derrière chaque adresse."**
 
-LEVOIS emprunte au geste de calibration : un papier minéral posé à plat, une encre profonde qui fixe la structure, puis des aplats cobalt et lime qui isolent un signal jusqu’à le rendre évident. Le système doit paraître direct, précis et contemporain, avec la franchise d’une feuille de travail éditoriale plutôt que les codes aspirationnels de l’immobilier.
+Identité finale validée par l’utilisateur le **6 septembre 2026**, applicable à **tout le site public**. L’exploration artistique est close. Le quartier miniature, Satoshi et le cobalt relient une adresse, les faits du marché, le projet personnel et l’accompagnement de Mouaad.
 
-La composition traite acheteurs et vendeurs comme les deux lectures d’un même marché. Les grilles partagées, les actions jumelles et les séquences fait → perception → décision rendent cette égalité visible sans dépendre d’un discours commercial. La terre cuite intervient seulement comme contrepoint humain, local ou prudent.
-
-Le monde visuel est plat, structuré et volontaire : grands caractères, aplats francs, lignes utiles, photographie pleine surface et mouvement explicatif. Il rejette les gradients, les ombres décoratives, les cartes génériques et les symboles immobiliers convenus.
+L’interface est lumineuse, calme et concrète. La composition, le rythme et les images portent l’émotion ; les outils et les textes longs gardent la même identité avec moins de mise en scène. La première compréhension précède les coordonnées facultatives.
 
 **Key Characteristics:**
 
-- Grilles bilatérales et lignes structurelles qui rendent les relations visibles.
-- Typographie massive mais disciplinée, réservant Archivo Black au mot-symbole et au héros.
-- Cobalt analytique, lime décisif et terre cuite employée comme accent mineur.
-- Profondeur produite par l’adjacence des aplats, jamais par une ombre décorative.
-- Mouvement informatif sur ordinateur, contenu complet et statique sur mobile ou en réduction de mouvement.
+- Un quartier illustré reconnaissable et une action réelle immédiatement accessible.
+- Une seule famille de lecture ; des titres amples et réguliers.
+- Le cobalt pour agir ou sélectionner, l’encre pour comprendre.
+- Des surfaces sobres, des séparations fines et une présence humaine continue.
+
+**Autorité opérationnelle.** [tokens.css](src/styles/tokens.css) porte les valeurs normatives ; le frontmatter ci-dessus en est le relevé avec les rôles typographiques du code. [Layout.astro](src/layouts/Layout.astro) est l’unique layout public et charge, dans cet ordre, [public-base.css](src/styles/public-base.css), [levois.css](src/styles/levois.css), puis [editorial.css](src/styles/editorial.css). [tailwind.public.config.mjs](tailwind.public.config.mjs) est autonome. Le [sidecar](.impeccable/design.json) complète ce document sans ajouter de palette.
+
+**Frontière.** Les 24 routes publiques sont contrôlées par [verify-public.mjs](scripts/verify-public.mjs). Les noms historiques de classes ou d’alias (`rp-*`, `mr-*`, `vr-*`, `argile`, `papier`, `--rp-yellow`) assurent la compatibilité du code ; ils ne désignent pas une autre identité. `global.css` et `tailwind.config.mjs` appartiennent exclusivement au cockpit privé via `CockpitLayout.astro`. Les [anciennes autorités](docs/archive/visual-authorities/README.md) sont archivées et ne contraignent plus le public.
 
 ## Colors
 
-La palette oppose un fond minéral calme à des couleurs de calibration très franches ; chaque accent porte une fonction lisible.
+**Primary.** Le cobalt `accent` marque actions principales, sélections et mesures dominantes. `accent-hover` confirme le survol ; `selected` accompagne une sélection sans masquer son libellé ni son indicateur.
 
-### Primary
+**Neutral.** `paper` est le fond froid ; `surface` détache les commandes ; `ink`, `muted` et `line` hiérarchisent lecture, explications et séparations. `dark`, `dark-field` et `on-dark` servent les séquences de méthode et de transmission, avec leurs contrastes propres.
 
-- **Cobalt de calibration** (#243cff): isole l’analyse, la méthode, les transitions de lecture et les états actifs à forte intensité.
+**États métier.** Erreur et succès utilisent les couples sémantiques du frontmatter. Le parcours acheteur conserve aussi des signaux locaux vert discret et ocre, accompagnés d’un texte explicatif. Ces états ne deviennent jamais des accents de marque.
 
-### Secondary
-
-- **Lime de décision** (#d7ff42): marque une conclusion, une progression aboutie, un survol positif ou une zone de sortie claire.
-
-### Tertiary
-
-- **Terre cuite locale** (#a84531): signale l’humain, le territoire ou une limite à lire avec attention ; elle reste un accent mineur.
-
-### Neutral
-
-- **Papier minéral** (#f2f5ef): surface principale, contrechamp calme et texte clair sur les aplats sombres.
-- **Blanc net** (#ffffff): surface ponctuelle autour de la présence humaine et texte sur terre cuite.
-- **Encre profonde** (#111522): texte principal, structure, cadres et grands aplats sombres.
-- **Encre assouplie** (#202635): état intermédiaire entre fait et décision dans le récit.
-- **Ligne minérale** (#c9cec8): séparateurs secondaires et maintien de la structure lorsque l’encre serait trop forte.
-- **Gris de contexte** (#58615b): métadonnées, limites, source et informations de second niveau sur fond clair.
-- **Brume sur encre** (#d5dad4): texte secondaire lisible sur les surfaces sombres.
-
-### Named Rules
-
-**The Calibration Rule.** Le cobalt et le lime doivent faire comprendre un état, une étape ou une décision ; ils ne servent jamais à remplir un vide décoratif.
-
-**The Terracotta Counterpoint Rule.** La terre cuite reste rare et attachée à l’humain, au local ou aux limites ; sa rareté lui donne son autorité.
+**Accents maîtrisés.** Le cobalt reste la couleur des actions et des données principales. L’orange humain `human` (#f47b20) est le seul accent secondaire : point du i, détail du portrait, numéros sur fond nuit. Aucune grande surface ni bouton orange, aucun dégradé bleu-orange, aucun état communiqué par l’orange seul. Les bleus et neutres dominent ; l’orange reste nettement sous 10 % de la composition. Contraste mesuré : 5,57:1 sur `dark`, utilisable pour les petits numéros ; 2,53:1 sur `paper`, réservé aux éléments décoratifs et au point du logo.
 
 ## Typography
 
-**Display Font:** Archivo Black (avec `sans-serif` en repli)
-**Body Font:** Public Sans (avec `system-ui, sans-serif` en repli)
+**Display Font / Body Font:** Satoshi, repli `sans-serif`. Les trois WOFF2 auto-hébergés (`satoshi-400`, `satoshi-500`, `satoshi-700`) couvrent lecture, actions et emphases. Les grands titres sont réguliers ; les données gardent unités, période et effectif à proximité.
 
-**Character:** Archivo Black produit une promesse compacte, frontale et mémorable. Public Sans apporte ensuite la précision, la continuité et la neutralité nécessaires à une lecture factuelle.
+**Signature:** mot-symbole vectoriel « levois », encre et point orange, avec liaison v–o et contreforme fermée du o. Les cinq SVG normatifs sont dans [public/brand](public/brand/README.md) et [favicon.svg](public/favicon.svg). Le dessin est issu de contours DM Serif Display adaptés ; aucune police supplémentaire n’est chargée. Archivo Black et le signe de porte historiques ne doivent plus servir de logo public.
 
-### Hierarchy
-
-- **Display** (400, `clamp(56px, 7vw, 96px)`, 0.9): titre héro uniquement, très serré et composé sur peu de lignes.
-- **Wordmark** (400, `clamp(24px, 2.2vw, 34px)`, 1): signature LEVOIS dans l’en-tête et le pied de page.
-- **Headline** (800, `clamp(42px, 5.5vw, 76px)`, 0.98): titres de sections majeures en Public Sans, denses mais nettement distincts du héros.
-- **Title** (700, `clamp(28px, 3vw, 42px)`, 1.02): états du récit et messages structurants à l’intérieur d’un aplat.
-- **Lead** (400, `clamp(18px, 1.65vw, 22px)`, 1.58): explications de premier niveau, limitées à une largeur confortable de lecture.
-- **Body** (400, 16px, 1.55): texte courant, descriptions et arguments explicatifs.
-- **Label** (500, 12px, 1.35): rôles, territoire, sources et métadonnées ; la casse reste naturelle.
-
-### Named Rules
-
-**The Two-Voice Rule.** Archivo Black est réservé au mot-symbole LEVOIS et au titre héro ; tous les autres titres, textes, contrôles et données utilisent Public Sans.
+La hiérarchie du frontmatter distingue accueil, sections, pages, questions, corps et actions. Les articles utilisent des sous-titres en 500 et une lecture plus aérée ; les champs d’adresse mobiles restent à 16 px. Les légendes du quartier sont à 11 px minimum ; la réassurance, la légende humaine et les liens de footer sont à 12 px minimum.
 
 ## Layout
 
-La grille est éditoriale et bord à bord. La marge horizontale suit `clamp(22px, 5vw, 76px)` et les grandes sections respirent sur un rythme vertical proche de `clamp(80px, 9vw, 138px)`. Le héros associe une promesse compacte, une photographie réelle du territoire et un rail de preuves DVF ; les sections suivantes alternent deux colonnes, rangées structurées et médias pleine hauteur. Les divisions sont matérialisées par des lignes de 1px, tandis que les deux parcours sont réunis dans un cadre d’encre de 2px avec un interstice de 2px.
+Les largeurs de référence sont `--levois-wide` (1280 px) et `--levois-reading` (70 ch). Les familles existantes conservent leurs ajustements : panneau d’entrée de l’accueil (940 px, puis 680 px sous 900 px), article éditorial (840 px), parcours et données en colonnes. Le rythme provient des marges, de l’alternance image/texte et des traits, sans enfermer chaque paragraphe.
 
-Sur grand écran, la photographie du héros passe progressivement de la couleur au monochrome pendant que la courbe et les repères deviennent dominants. L'en-tête sticky mesure 78px. À 980px et moins, les grilles majeures s'empilent, l'en-tête passe à 68px et toutes les preuves sont immédiatement visibles ; la photographie reste en couleur lorsqu'elle entre dans l'écran puis devient monochrome à mesure qu'elle le traverse. À 720px et moins, les deux parcours apparaissent immédiatement après le manifeste — avant la photographie et les chiffres — puis s'empilent sans changer de hiérarchie. La marge devient 20px et les rangées complexes passent à une colonne. Le pied de page se réorganise à 820px et la preuve chiffrée à 1100px.
+Le header passe de 88 à 72 px sous 900 px ; les accès métier deviennent un menu avec état ouvert, Échap et retour du focus. Le logo garde 129 × 40 px sur desktop et 110 × 34 px dans l’en-tête mobile, sans augmenter la hauteur du header. Le nom et le portrait de Mouaad persistent. La fiche acheteur latérale devient un récapitulatif compact ; les colonnes de lecture, formulaires et cartes s’empilent selon leur contenu.
 
-**The Equal Weight Rule.** Toute double entrée acheteur/vendeur conserve des dimensions, une présence et une proximité identiques ; la couleur distingue les chemins sans établir de priorité.
+Seuils effectivement utilisés : 1100, 900, 700, 600 et 359 px, complétés par les utilitaires responsives. Les marges générales passent à 28 px puis 22 px ; les panneaux ont leurs propres marges. À moins de 600 px, le dock empile saisie et action. Le titre d’accueil passe à 65, 43 puis 36 px selon les seuils 900, 600 et 359 px.
 
-**The Complete Static Rule.** Le mouvement enrichit la lecture sur grand écran, mais chaque information et chaque état restent visibles sans animation sur mobile et avec `prefers-reduced-motion`.
+Toute évolution conserve une lecture sans débordement aux formats 1440 × 900, 768 px, 390 × 844, 320 px et au zoom réel de 200 %. Ces formats sont des contrôles de livraison, pas de nouveaux breakpoints. Les résultats de vérification restent dans les artefacts et le rapport de mission.
 
 ## Elevation & Depth
 
-Le système n’utilise aucune ombre. La profondeur vient de la juxtaposition des aplats, des cadres d’encre, des lignes de séparation, des changements d’échelle typographique et du recadrage photographique. La légère translucidité et le flou de 12px de l’en-tête sticky servent uniquement à préserver sa lisibilité pendant le défilement ; ils ne deviennent pas un effet de surface réutilisable.
+La profondeur vient d’abord du quartier illustré. Les contenus restent plats ; une ombre situe une commande ou une couche superposée. `--levois-shadow` porte le dock et la fenêtre de confidentialité ; la liste d’adresses dispose d’une ombre locale. Les cartes éditoriales sont des entrées séparées par un trait, sans ombre ni cadre arrondi.
 
-### Named Rules
-
-**The Flat-by-Default Rule.** Une surface reste plate à tous ses états ; les changements de couleur, de ligne et de position racontent la hiérarchie sans ombre ni gradient.
+Le mouvement accompagne un état ou une continuité : transition rapide commune (`--levois-fast`, 180 ms), survol d’action (200 ms), question (300 ms), navigation native (220 ms ; éléments partagés 350 ms, `--levois-ease`). Sous `prefers-reduced-motion: reduce`, animations, transitions et défilement doux sont désactivés ; le contenu reste complet.
 
 ## Shapes
 
-La forme de base est le rectangle franc à angles droits (rayon 0px). Les cellules, contrôles, panneaux et légendes s’assemblent bord à bord ; la silhouette naît de la grille, pas d’un rayon de carte. Les flèches sont construites avec un trait horizontal et une pointe géométrique, et les marqueurs d’étape sont de courtes lignes qui s’allongent lorsque l’état devient actif. Les photographies restent rectangulaires, recadrées en pleine surface et accompagnées d’une légende en aplat.
+Les rayons du frontmatter distinguent champs, actions, choix, dock et fenêtres. Les portraits et le territoire schématique peuvent former une arche ; cette silhouette ne s’applique pas à tous les conteneurs. Les ressources et textes légaux privilégient alignements, espace et séparations horizontales.
 
-**The Structural Line Rule.** Chaque ligne doit séparer, relier, mesurer ou signaler une progression ; aucune ligne n’est ajoutée comme ornement autonome.
+**Iconographie.** Réutiliser [WorldIcon.astro](src/components/WorldIcon.astro) : SVG 24 × 24, trait 1,5, `currentColor`, extrémités et jonctions arrondies. Les pictogrammes accompagnent un texte ou un nom accessible. Maison, clé et repère servent des actions précises, jamais un nouveau logo immobilier décoratif.
+
+**Images.** Le quartier est une illustration éditoriale, ni un bien réel, ni une carte factuelle, ni une preuve de transaction. Les cartes de données restent identifiées comme schématiques. Utiliser les portraits réels et les images existantes avec recadrage responsive et qualification adaptée ; aucun chiffre, bouton ou texte fonctionnel ne doit être rasterisé dans une image.
 
 ## Components
 
-Les composants ont une présence tactile et précise : grandes zones d’action, contrastes francs, angles droits et états exprimés par la couleur plutôt que par un effet de relief.
+- **Actions.** Primaire cobalt, secondaire blanche bordée, action texte cobalt et variante claire sur fond nuit. Le primaire courant mesure au moins 56 px de haut ; le secondaire au moins 48 px. Survol plus sombre, léger déplacement du primaire et de sa flèche ; focus visible cobalt. Le bouton acheteur désactivé devient gris et reste inactif.
+- **Navigation.** Lien courant et survol soulignés, cibles du header d’au moins 44 px, lien d’évitement, menus nommés et état annoncé. Les accès légaux, partenaires et confidentialité restent au footer.
+- **Champs et choix.** Libellé visible, aide associée, fond blanc et bord fin ; focus cobalt, erreur textuelle et `aria-invalid`. Choix inactif, survol et sélection se distinguent par bord, fond et indicateur. Un choix unique avance ; saisie, choix multiples et envoi demandent validation explicite. Le retour permet de corriger.
+- **Entrée de l’accueil.** « Qu’est-ce qui vous amène ? » précède trois portes visibles : « Je cherche un logement », « Je prépare ou je vends un bien », « Je consulte les ventes près de chez moi ». Achat et vente ouvrent leurs parcours ; seul le troisième choix révèle l’adresse, avec retour au projet. Sans JavaScript, les trois portes sont des liens utilisables. La révélation dure 220 ms avec mouvement autorisé et reste immédiate en mouvement réduit. Styles limités à `index.astro`.
+- **Adresse.** Après le choix des ventes locales, le dock et sa combobox rendent visibles suggestions, chargement, absence de correspondance et erreur. La personne choisit une adresse proposée ; le résultat ne retient pas silencieusement la première correspondance. L’extrait `address-dock` décrit cet état, pas l’entrée initiale.
+- **Données.** Filtres segmentés avec état sélectionné ; chiffres avec unité, périmètre, période, source, effectif et limites. État vide explicite. L’adresse confirmée et la référence communale restent distinctes ; les 6 318 mutations DVF du jeu réel ne sont pas une estimation individuelle.
+- **Conteneurs.** Choix et saisies peuvent être encadrés ; synthèses, ressources et résultats utilisent surtout l’espace et les traits. Les réserves disposent d’un encart à bord gauche cobalt. Une fenêtre narrative révèle une explication sans inventer une preuve.
+- **Formulaires.** Prévoir attente, validation, erreur, succès et indisponibilité avec messages compréhensibles et annonces accessibles. L’audit d’annonce conserve son parcours de secours et ses questions lorsque la lecture du lien échoue ; son résultat précède la transmission humaine facultative.
+- **Confidentialité.** Mesure d’audience désactivée par défaut ; la fenêtre optionnelle s’ouvre depuis « Mes choix de confidentialité » au footer. Refus et acceptation ont une importance visuelle comparable ; fermer ne vaut pas accepter.
 
-### Buttons
-
-- **Shape:** sélecteurs de parcours rectangulaires (rayon 0px), réunis dans un cadre de 2px et hauts d’au moins 82px sur grand écran.
-- **Primary / Acheteur:** lime sur encre profonde, avec 15px × 20px de padding ; le survol inverse en lime et encre.
-- **Primary / Vendeur:** papier minéral sur aplat cobalt, avec les mêmes dimensions et une flèche lime ; le survol inverse en lime et encre. Le cobalt empêche cette sortie de se confondre avec les surfaces claires qui la suivent.
-- **Focus:** contour cobalt de 3px décalé de 4px ; la variante sombre utilise le lime pour rester visible.
-- **Internal structure:** rôle en 12px, action en 15px semi-gras et flèche linéaire de 29px.
-
-**The Bilateral Control Rule.** Les contrôles acheteur et vendeur sont toujours conçus, placés et testés comme une paire indissociable. Ils gardent exactement le même poids géométrique ; leur contraste propre garantit que ni l’un ni l’autre ne disparaisse dans la surface adjacente.
-
-### Navigation
-
-L’en-tête sticky garde le mot-symbole à gauche, six accès centrés — Marché local, Acheter, Vendre, Méthode, Ressources, Mouaad — et le territoire à droite. Les liens ont une cible minimale de 44px et se soulignent au survol ; à 980px, ils basculent dans un menu explicite et accessible. Le mot-symbole reste en Archivo Black, tout le reste en Public Sans.
-
-### Hero de preuve
-
-Le héros utilise une photographie réelle de Chartres, jamais une image immobilière générique. Les sélecteurs commune/type affichent d’abord une tendance dominante « hausse / baisse / stable », puis la variation qui la justifie, la médiane en €/m², les quartiles et l’échantillon. Le passage couleur → noir et blanc améliore la lisibilité des données ; `prefers-reduced-motion` reçoit directement l'état complet. Le crédit de la photographie tient dans une mention discrète et dépliable donnant l'auteur, la source, la licence et les transformations. Le rail ne formule jamais une estimation individuelle ni un verdict « favorable acheteur / vendeur » sans données d'offre et de demande actives ; il annonce franchement la frontière entre diagnostic automatique et analyse personnalisée.
-
-### Parcours et avancement
-
-Une option à choix unique agit immédiatement et passe à l'étape suivante après un retour visuel bref. Les étapes à choix multiples conservent un bouton de validation afin que l'utilisateur puisse composer et relire sa sélection. Les saisies numériques, les synthèses et l'envoi final gardent également une action explicite. Cette règle réduit les validations inutiles sans créer de navigation surprise.
-
-### Principle, Method & Proof Rows
-
-Le rail de principes aligne trois cellules égales de 66px minimum. La méthode emploie trois rangées avec libellé et résultat, la dernière étant entièrement lime. La preuve DVF utilise des cellules chiffrées séparées par des lignes d’encre ; les libellés restent discrets et les valeurs dominantes.
-
-Le récit de la page suit un tunnel pédagogique : verdict, justification, limites, méthode, application au projet, puis regard humain. Le rendez-vous n’est jamais présenté comme une faveur ou une pression commerciale ; il devient l’étape nécessaire pour confronter les premières hypothèses au terrain et comparer les conséquences de chaque scénario.
-
-### Cards / Containers
-
-Il n’existe pas de carte générique dans ce monde. Les conteneurs sont des régions de page bord à bord, définies par un aplat, une ligne ou une photographie pleine surface, sans rayon ni ombre.
-
-### Footer
-
-Le pied de page est un aplat lime de 132px minimum qui rassemble marque, contacts et mentions dans trois colonnes. Il passe à deux colonnes à 820px puis à une colonne à 520px ; ses liens épaississent simplement leur soulignement au survol.
+**Applications de référence.** Page émotionnelle : `/`, quartier et choix de la situation ; adresse seulement après le choix des ventes locales ; ensuite un fait local expliqué, la méthode, Mouaad puis la prochaine action. La section « Un prix ne raconte jamais toute l’histoire » donne la médiane réelle et son contexte, avec un seul lien vers les ventes locales ; elle ne répète plus les trois portes. Formulaire : `/ma-recherche`, question lisible et fiche révisable, restitution avant coordonnées. Données : `/votre-rue`, adresse confirmée puis atlas communal, mesures et limites. Les ressources, pages légales, accompagnement et partenaires prolongent cette identité avec une composition plus sobre.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** donner exactement le même poids visuel aux parcours acheteur et vendeur.
-- **Do** réserver Archivo Black au mot-symbole et au titre héro, puis utiliser Public Sans partout ailleurs.
-- **Do** employer le cobalt, le lime et la terre cuite pour exprimer une fonction ou un changement de lecture.
-- **Do** construire la hiérarchie avec des aplats, des lignes structurelles, des échelles typographiques et des images pleine surface.
-- **Do** livrer une version statique complète dès que le défilement piloté ou les transitions sont réduits.
+- **Do** reprendre les tokens publics, Satoshi et les composants existants pour toute route publique.
+- **Do** donner une première compréhension avant les coordonnées et conserver une sortie volontaire.
+- **Do** joindre aux chiffres leurs sources et limites, et aux états une explication indépendante de la couleur.
+- **Do** préserver clavier, focus visible, lecture mobile et fonctionnement sans mouvement.
 
 ### Don't:
 
-- **Don't** utiliser de gradient, d’ombre décorative, de verre décoratif ou de carte générique.
-- **Don't** transformer la terre cuite en couleur dominante ni multiplier les accents dans une même zone.
-- **Don't** employer Archivo Black pour les titres de section, le corps, les contrôles ou les données.
-- **Don't** représenter l’immobilier avec une maison, un toit, une clé, une poignée de main ou un luxe beige-or générique.
-- **Don't** cacher une information essentielle derrière une animation, une couleur seule ou un état interactif.
+- **Don't** rouvrir une direction, une palette ou une composition générale sans défaut concret d’usage, d’accessibilité ou de faisabilité.
+- **Don't** importer le thème privé ou appliquer une ancienne autorité visuelle au public.
+- **Don't** accumuler cartes, cadres arrondis, ombres, effets décoratifs ou familles typographiques.
+- **Don't** présenter une illustration, une maquette ou des données DVF comme une preuve commerciale individuelle.
+- **Don't** promettre une validation d’accessibilité ou une performance mesurée à partir de cette documentation.

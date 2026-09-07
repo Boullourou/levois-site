@@ -1,0 +1,62 @@
+---
+import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import { BUYER_STAGES, CONTACT_ORIGINS, PROJECT_STATUSES, PROJECT_TYPES, SELLER_STAGES } from '../../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="Clients"
+  active="clients"
+  eyebrow="Dossiers accompagnés"
+  description="Les contacts uniquement liés à un Accord TIM sont exclus de cette vue par défaut."
+>
+  <a slot="actions" class="cockpit-button cockpit-button-primary" href="/cockpit/clients/nouveau">Nouveau dossier</a>
+
+  <form class="cockpit-filter-bar" data-client-filters aria-label="Filtrer les clients">
+    <label class="cockpit-search-field">
+      <span class="cockpit-visually-hidden">Rechercher</span>
+      <input name="q" type="search" autocomplete="off" placeholder="Nom, coordonnées ou synthèse…" />
+    </label>
+    <label>
+      <span>Projet</span>
+      <select name="projectType">
+        <option value="">Tous</option>
+        {PROJECT_TYPES.filter((option) => option.value !== 'linked_purchase_sale').map((option) => <option value={option.value}>{option.label}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Statut</span>
+      <select name="status">
+        <option value="">Tous</option>
+        {PROJECT_STATUSES.map((option) => <option value={option.value}>{option.label}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Stade</span>
+      <select name="stage">
+        <option value="">Tous</option>
+        {[...BUYER_STAGES, ...SELLER_STAGES.filter((seller) => !BUYER_STAGES.some((buyer) => buyer.value === seller.value))].map((option) => <option value={option.value}>{option.label}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Origine</span>
+      <select name="origin">
+        <option value="">Toutes</option>
+        {CONTACT_ORIGINS.map((option) => <option value={option.value}>{option.label}</option>)}
+      </select>
+    </label>
+    <label class="cockpit-check-filter"><input name="overdue" type="checkbox" /> <span>En retard</span></label>
+    <label class="cockpit-check-filter"><input name="missingNextAction" type="checkbox" /> <span>Sans prochaine action</span></label>
+    <button class="cockpit-button cockpit-button-secondary" type="submit">Filtrer</button>
+  </form>
+
+  <section class="cockpit-list-root" data-client-list aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status">
+      <span class="cockpit-spinner" aria-hidden="true"></span>
+      <p>Chargement des clients…</p>
+    </div>
+  </section>
+</CockpitLayout>
+
+<script>
+  import '../../../scripts/cockpit/clients';
+</script>

@@ -1,0 +1,44 @@
+---
+import CockpitLayout from '../../layouts/CockpitLayout.astro';
+import { LAB_STATUSES } from '../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="LEVOIS Lab"
+  active="lab"
+  eyebrow="Mémoire produit"
+  description="Transformer un cas en enseignement sans recopier de donnée personnelle."
+>
+  <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-dialog-open="lab-dialog">Nouvelle observation</button>
+
+  <aside class="cockpit-privacy-callout">
+    <span aria-hidden="true">◇</span>
+    <div><strong>Anonymiser avant d’enregistrer</strong><p>Décrivez le problème et l’enseignement produit. Aucun nom, coordonnée, adresse ou détail financier réel.</p></div>
+  </aside>
+
+  <section class="cockpit-list-root" data-lab-list aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status"><span class="cockpit-spinner" aria-hidden="true"></span><p>Chargement des observations…</p></div>
+  </section>
+
+  <dialog class="cockpit-dialog" id="lab-dialog" aria-labelledby="lab-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame cockpit-dialog-wide" data-lab-form>
+      <header><div><p class="cockpit-kicker">Observation manuelle</p><h2 id="lab-dialog-title">Nourrir LEVOIS Lab</h2></div><button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button></header>
+      <div class="cockpit-dialog-body cockpit-fields cockpit-fields-two">
+        <label class="cockpit-field-wide"><span>Observation</span><textarea name="observation" rows="3" maxlength="1200" required placeholder="Un comportement ou une situation, rendue anonyme"></textarea></label>
+        <label class="cockpit-field-wide"><span>Problème constaté</span><textarea name="problem" rows="3" maxlength="1200" required></textarea></label>
+        <label class="cockpit-field-wide"><span>Enseignement</span><textarea name="learning" rows="3" maxlength="1200" required></textarea></label>
+        <label class="cockpit-field-wide"><span>Proposition d’amélioration</span><textarea name="proposal" rows="3" maxlength="1200" required></textarea></label>
+        <label><span>État</span><select name="status">{LAB_STATUSES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Date</span><input name="observedAt" type="date" required /></label>
+        <label class="cockpit-field-wide"><span>Référence interne facultative</span><input name="internalReference" maxlength="100" /></label>
+        <label class="cockpit-confirm-risk cockpit-field-wide"><input name="privacyConfirmed" type="checkbox" required /><span>Je confirme que ce brouillon ne contient aucune donnée personnelle.</span></label>
+      </div>
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer><button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button><button class="cockpit-button cockpit-button-primary" type="submit">Enregistrer l’observation</button></footer>
+    </form>
+  </dialog>
+</CockpitLayout>
+
+<script>
+  import '../../scripts/cockpit/lab';
+</script>

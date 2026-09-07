@@ -1,0 +1,15 @@
+/* LEVOIS public — valeurs normatives de l’identité validée le 6 septembre 2026. */
+:root {
+  --levois-paper:#f5f6fa; --levois-surface:#fff; --levois-ink:#111a30;
+  --levois-muted:#596378; --levois-line:#dce0e9; --levois-accent:#2545df;
+  --levois-human:#f47b20; /* Accent humain : détails et numéros sur fond nuit ; jamais action principale. */
+  --levois-hover:#1732b5; --levois-selected:#edf1ff; --levois-dark:#182447;
+  --levois-dark-field:#223155; --levois-on-dark:#c6cfe5;
+  --levois-error:#9c352c; --levois-error-bg:#ffefed;
+  --levois-success:#286547; --levois-success-bg:#eaf4ee;
+  --levois-field-radius:8px; --levois-action-radius:9px; --levois-choice-radius:12px;
+  --levois-dock-radius:15px; --levois-sheet-radius:16px;
+  --levois-edge:clamp(24px,4vw,72px); --levois-reading:70ch; --levois-wide:1280px;
+  --levois-fast:180ms; --levois-ease:cubic-bezier(.16,1,.3,1);
+  --levois-shadow:0 16px 48px -16px #23345744;
+}

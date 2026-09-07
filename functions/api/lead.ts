@@ -1,13 +1,13 @@
-import { PayloadTooLargeError, readBoundedJson, readBoundedText } from '../lib/bounded-json';
-
 /**
  * POST /api/lead — Cloudflare Pages Function.
  *
- * Validation serveur, honeypot, limitation pseudonymisée et envoi Resend.
+ * Port Cloudflare de netlify/functions/lead.mts. Le contrat navigateur reste
+ * inchangé : validation serveur, honeypot, limitation par IP et envoi Resend.
  * Un succès n'est renvoyé que lorsque Resend a confirmé l'envoi.
  *
  * Bindings Cloudflare Pages (Dashboard → Settings → Functions) :
  *   RESEND_API_KEY  : secret Resend (voie principale)
+ *   FORMSPREE_ENDPOINT : secours sans secret (défaut : formulaire historique)
  *   LEAD_TO_EMAIL   : destinataire (défaut : mouaad@levois.fr)
  *   LEAD_FROM_EMAIL : expéditeur vérifié (défaut : onboarding@resend.dev)
  *   LEAD_TO / LEAD_FROM : alias partagés avec /api/recherche, si déjà définis
@@ -16,6 +16,7 @@ import { PayloadTooLargeError, readBoundedJson, readBoundedText } from '../lib/b
 
 interface Env {
   RESEND_API_KEY?: string;
+  FORMSPREE_ENDPOINT?: string;
   LEAD_TO_EMAIL?: string;
   LEAD_FROM_EMAIL?: string;
   LEAD_TO?: string;
@@ -33,6 +34,18 @@ interface RateEntry {
   ts: number;
 }
 
+type NotificationProvider = 'resend' | 'formspree';
+
+interface NotificationAttempt {
+  provider: NotificationProvider;
+  startedAt: string;
+  completedAt: string;
+  ok: boolean;
+  status?: number;
+  reason?: string;
+  messageId?: string;
+}
+
 interface KVNamespace {
   get(key: string): Promise<string | null>;
   put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
@@ -42,31 +55,50 @@ const rate = new Map<string, RateEntry>();
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_TTL_SECONDS = Math.ceil(RATE_WINDOW_MS / 1000);
-const TYPES_CONTENU_AUTORISES = new Set([
-  'application/json',
-  'application/x-www-form-urlencoded',
-]);
-const CHAMPS_AUTORISES = new Set([
-  'type', 'consentement', 'prenom', 'nom', 'email', 'commune', 'objet', 'message',
-  'adresseRecherchee', 'typeBien', 'periodeDu', 'periodeAu', 'telephone', 'annonce',
-  'detail', 'contexte', 'attribution', 'source', 'intention', 'intentionKey', 'profil',
-  'qualification', 'contexteInfographie', 'audit', 'site_web',
-]);
-const CHEMINS_ATTRIBUTION = new Set([
-  '/', '/other', '/404', '/accompagnement', '/audit-annonce', '/carte', '/composants',
-  '/confidentialite', '/contact', '/ma-recherche', '/mentions-legales', '/methode', '/mouaad',
-  '/recommander', '/rejoindre', '/ressources', '/ressources/lancement-coherent',
-  '/ressources/premiere-impression-annonce', '/ressources/annonce-vue-peu-de-contacts',
-  '/ressources/retours-de-visite', '/ressources/verifier-avant-baisse-prix',
-  '/ressources/reprendre-commercialisation', '/situer-ma-vente',
-  '/situer-ma-vente/resultat', '/votre-rue',
-]);
-const CHEMINS_RETOUR_FORMULAIRE: Record<string, string> = {
-  contact: '/contact',
-  parcours: '/situer-ma-vente',
-  'votre-rue': '/votre-rue',
-  'audit-annonce': '/audit-annonce',
-};
+
+function raisonSure(value: unknown): string | undefined {
+  const raw = typeof value === 'string' ? value : '';
+  if (!raw) return undefined;
+  return raw
+    .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, '[email masqué]')
+    .replace(/Bearer\s+\S+/gi, 'Bearer [masqué]')
+    .slice(0, 240);
+}
+
+async function empreinte(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value.trim().toLowerCase()));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function journaliserNotification(
+  requestId: string,
+  type: string,
+  to: string,
+  formspreeEndpoint: string,
+  attempts: NotificationAttempt[],
+): Promise<void> {
+  const accepted = attempts.find((attempt) => attempt.ok);
+  const recipientDomain = to.includes('@') ? to.split('@').pop()?.toLowerCase() : undefined;
+  console.log('[lead] notification_result', JSON.stringify({
+    event: 'notification_result',
+    requestId,
+    formType: type,
+    acceptedProvider: accepted?.provider ?? null,
+    acceptedAt: accepted?.completedAt ?? null,
+    attempts,
+    fallbackFormspreeTriggered: attempts.some((attempt) => attempt.provider === 'resend')
+      && attempts.some((attempt) => attempt.provider === 'formspree'),
+    resendRecipient: {
+      configured: Boolean(to),
+      domain: recipientDomain,
+      fingerprintSha256: await empreinte(to),
+    },
+    formspreeRoute: {
+      fingerprintSha256: await empreinte(formspreeEndpoint),
+      recipientObservableByWorker: false,
+    },
+  }));
+}
 
 function json(data: unknown, status = 200, headers?: HeadersInit): Response {
   return new Response(JSON.stringify(data), {
@@ -78,84 +110,6 @@ function json(data: unknown, status = 200, headers?: HeadersInit): Response {
       ...headers,
     },
   });
-}
-
-function estFormulaireNatif(request: Request): boolean {
-  const typeContenu = request.headers.get('content-type')?.split(';', 1)[0]?.trim().toLowerCase() ?? '';
-  return typeContenu === 'application/x-www-form-urlencoded';
-}
-
-function echapperHtml(v: string): string {
-  return v.replace(/[&<>"']/g, (caractere) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-  })[caractere] ?? caractere);
-}
-
-function cheminRetourFormulaire(type: unknown): string {
-  const clef = typeof type === 'string' ? type.trim() : '';
-  return CHEMINS_RETOUR_FORMULAIRE[clef] ?? '/';
-}
-
-function htmlFormulaire(
-  data: { ok: boolean; delivered?: boolean; message?: string },
-  status: number,
-  cheminRetour: string,
-): Response {
-  const livraisonConfirmee = data.ok === true && data.delivered === true;
-  const titre = livraisonConfirmee
-    ? 'Votre demande a bien été transmise à Mouaad.'
-    : status >= 400
-      ? 'La transmission n’a pas abouti.'
-      : 'La transmission ne peut pas être confirmée.';
-  const message = livraisonConfirmee
-    ? 'Vous pouvez revenir au site.'
-    : status >= 500
-      ? 'Votre demande n’a pas été transmise. Revenez au formulaire pour réessayer ou contactez Mouaad directement.'
-      : data.message || 'Merci de revenir au formulaire et de réessayer.';
-  const retourAutorise = Object.values(CHEMINS_RETOUR_FORMULAIRE).includes(cheminRetour)
-    ? cheminRetour
-    : '/';
-  const corps = `<!doctype html>
-<html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${echapperHtml(titre)} · LEVOIS</title>
-  </head>
-  <body>
-    <main>
-      <h1>${echapperHtml(titre)}</h1>
-      <p>${echapperHtml(message)}</p>
-      <p><a href="${retourAutorise}">Revenir à la page d’origine</a></p>
-    </main>
-  </body>
-</html>`;
-  return new Response(corps, {
-    status,
-    headers: {
-      'content-type': 'text/html; charset=utf-8',
-      'cache-control': 'no-store',
-      'content-security-policy': "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
-      'referrer-policy': 'no-referrer',
-      'x-content-type-options': 'nosniff',
-    },
-  });
-}
-
-function repondre(
-  request: Request,
-  data: { ok: boolean; delivered?: boolean; message?: string },
-  status = 200,
-  cheminRetour = '/',
-  headers?: HeadersInit,
-): Response {
-  return estFormulaireNatif(request)
-    ? htmlFormulaire(data, status, cheminRetour)
-    : json(data, status, headers);
 }
 
 function texte(v: unknown, max: number): string {
@@ -273,11 +227,9 @@ function formaterAudit(v: unknown): string[] {
   return lignes;
 }
 
-async function cleRateLimit(request: Request): Promise<string> {
+function adresseIp(request: Request): string {
   const forwarded = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
-  const adresse = (request.headers.get('cf-connecting-ip') || forwarded || 'inconnue').slice(0, 128);
-  const empreinte = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(adresse));
-  return Array.from(new Uint8Array(empreinte), (octet) => octet.toString(16).padStart(2, '0')).join('');
+  return (request.headers.get('cf-connecting-ip') || forwarded || 'inconnue').slice(0, 128);
 }
 
 function estOrigineAutorisee(request: Request): boolean {
@@ -345,171 +297,73 @@ function estObjet(v: unknown): v is Record<string, any> {
   return Boolean(v) && typeof v === 'object' && !Array.isArray(v);
 }
 
-class TypeContenuNonAutoriseError extends Error {}
-class ChampAmbiguError extends Error {}
-
-function normaliserObjet(body: Record<string, any>): Record<string, any> {
-  const normalise: Record<string, any> = Object.create(null);
-  for (const [clef, valeur] of Object.entries(body)) {
-    if (!CHAMPS_AUTORISES.has(clef)) continue;
-    normalise[clef] = valeur;
-  }
-  return normalise;
-}
-
-function normaliserFormulaire(raw: string): Record<string, any> {
-  const normalise: Record<string, any> = Object.create(null);
-  const dejaVus = new Set<string>();
-  for (const [clef, valeur] of new URLSearchParams(raw)) {
-    if (dejaVus.has(clef)) throw new ChampAmbiguError();
-    dejaVus.add(clef);
-    if (!CHAMPS_AUTORISES.has(clef)) continue;
-    normalise[clef] = clef === 'consentement' && valeur === 'on' ? true : valeur;
-  }
-  return normalise;
-}
-
-async function lireCorpsNormalise(request: Request): Promise<Record<string, any>> {
-  const typeContenu = request.headers.get('content-type')?.split(';', 1)[0]?.trim().toLowerCase() ?? '';
-  if (!TYPES_CONTENU_AUTORISES.has(typeContenu)) throw new TypeContenuNonAutoriseError();
-
-  if (typeContenu === 'application/json') {
-    const inconnu = await readBoundedJson(request);
-    if (!estObjet(inconnu)) throw new SyntaxError('INVALID_BODY');
-    return normaliserObjet(inconnu);
-  }
-
-  return normaliserFormulaire(await readBoundedText(request));
-}
-
-function jetonAttribution(v: unknown): string {
-  const valeur = texteLigne(v, 80).toLowerCase();
-  return /^[a-z0-9][a-z0-9._/-]{0,79}$/.test(valeur) && !/\d{7,}/.test(valeur) ? valeur : '';
-}
-
-function hoteAttribution(v: unknown): string {
-  const valeur = texteLigne(v, 253).toLowerCase().replace(/\.$/, '');
-  if (!valeur || !/^[a-z0-9.-]+$/.test(valeur)) return '';
-  try {
-    const hote = new URL(`https://${valeur}`).hostname;
-    return hote === valeur ? hote : '';
-  } catch {
-    return '';
-  }
-}
-
-function cheminAttribution(v: unknown): string {
-  if (typeof v !== 'string' || !v.startsWith('/')) return '';
-  try {
-    const brut = new URL(v, 'https://levois.fr').pathname.replace(/\/{2,}/g, '/');
-    const chemin = brut === '/' ? '/' : brut.replace(/\/$/, '');
-    return CHEMINS_ATTRIBUTION.has(chemin) ? chemin : '/other';
-  } catch {
-    return '';
-  }
-}
-
-function formaterAttribution(v: unknown): string[] {
-  if (!estObjet(v)) return [];
-  const source = jetonAttribution(v.source);
-  const medium = jetonAttribution(v.medium);
-  const referrerHost = hoteAttribution(v.referrerHost);
-  const entryPath = cheminAttribution(v.entryPath);
-  return [
-    source ? `Source : ${source}` : '',
-    medium ? `Support : ${medium}` : '',
-    referrerHost ? `Référent : ${referrerHost}` : '',
-    entryPath ? `Page d’entrée : ${entryPath}` : '',
-  ].filter(Boolean);
-}
-
 export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> => {
   // Les formulaires sont servis sur le même domaine. Ne pas publier de CORS
   // évite les soumissions cross-site ; la vérification bloque aussi les POST
   // no-cors dont la réponse serait autrement opaque pour le site appelant.
   if (!estOrigineAutorisee(ctx.request)) {
-    return repondre(ctx.request, { ok: false, message: 'Origine non autorisée.' }, 403);
+    return json({ ok: false, message: 'Origine non autorisée.' }, 403);
   }
 
   // Limitation avant analyse du corps, comme sur l'endpoint Netlify historique.
-  const empreinteIp = await cleRateLimit(ctx.request);
-  if (await estRateLimited(empreinteIp, ctx.env)) {
-    return repondre(ctx.request, { ok: false, message: 'Trop de tentatives. Merci de réessayer dans quelques minutes.' }, 429);
+  const ip = adresseIp(ctx.request);
+  if (await estRateLimited(ip, ctx.env)) {
+    return json({ ok: false, message: 'Trop de tentatives. Merci de réessayer dans quelques minutes.' }, 429);
   }
 
-  let body: Record<string, any>;
+  let inconnu: unknown;
   try {
-    body = await lireCorpsNormalise(ctx.request);
-  } catch (error) {
-    if (error instanceof PayloadTooLargeError) {
-      return repondre(ctx.request, { ok: false, message: 'Requête trop volumineuse.' }, 413);
-    }
-    if (error instanceof TypeContenuNonAutoriseError) {
-      return repondre(ctx.request, { ok: false, message: 'Type de contenu non autorisé.' }, 415);
-    }
-    if (error instanceof ChampAmbiguError) {
-      return repondre(ctx.request, { ok: false, message: 'Requête ambiguë.' }, 400);
-    }
-    return repondre(ctx.request, { ok: false, message: 'Requête invalide.' }, 400);
+    inconnu = await ctx.request.json();
+  } catch {
+    return json({ ok: false, message: 'Requête invalide.' }, 400);
   }
-
-  const cheminRetour = cheminRetourFormulaire(body.type);
+  if (!estObjet(inconnu)) {
+    return json({ ok: false, message: 'Requête invalide.' }, 400);
+  }
+  const body = inconnu;
 
   // Honeypot : réponse volontairement neutre, sans appel à Resend.
   if (typeof body.site_web === 'string' && body.site_web.trim() !== '') {
-    return repondre(ctx.request, { ok: true, delivered: false }, 200, cheminRetour);
+    return json({ ok: true });
   }
 
   const erreurs: string[] = [];
-  const type = texteLigne(body.type, 40);
-  const estContact = type === 'contact';
-  const estParcours = type === 'parcours';
+  const type = texteLigne(body.type, 40) || 'contact';
+  if (!['contact', 'parcours', 'votre-rue', 'audit-annonce'].includes(type)) erreurs.push('type de demande');
   const estVotreRue = type === 'votre-rue';
   const estAuditAnnonce = type === 'audit-annonce';
-  const typeAutorise = estContact || estParcours || estVotreRue || estAuditAnnonce;
   const prenom = texteLigne(body.prenom, 80);
   const nom = texteLigne(body.nom, 80);
   const email = texteLigne(body.email, 200);
   const commune = texteLigne(body.commune, 120);
-  const objet = texteLigne(body.objet, 200);
-  const message = texte(body.message, 8000);
-  const adresseRecherchee = texteLigne(body.adresseRecherchee, 500);
-  const typeBien = texteLigne(body.typeBien, 20);
-  const periodeDu = texteLigne(body.periodeDu, 10);
-  const periodeAu = texteLigne(body.periodeAu, 10);
-  if (!typeAutorise) erreurs.push('type');
   if (!prenom) erreurs.push('prénom');
   if (!estVotreRue && !nom) erreurs.push('nom');
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) erreurs.push('email');
-  if (estParcours && !commune) erreurs.push('commune');
-  if (estVotreRue && !adresseRecherchee) erreurs.push('adresse confirmée');
-  if (estVotreRue && typeBien !== 'Maison' && typeBien !== 'Appartement') erreurs.push('type de bien');
-  if (estVotreRue && (!/^\d{4}-\d{2}-\d{2}$/.test(periodeDu) || !/^\d{4}-\d{2}-\d{2}$/.test(periodeAu))) erreurs.push('période');
-  if (typeAutorise && body.consentement !== true) erreurs.push('consentement');
-  if (estContact && !objet) erreurs.push('objet');
-  if (estContact && !message) erreurs.push('message');
+  if (type === 'parcours' && !commune) erreurs.push('commune');
+  if (body.consentement !== true) erreurs.push('consentement');
+  if (type === 'contact' && !texteLigne(body.objet, 200)) erreurs.push('objet');
+  if (type === 'contact' && !texte(body.message, 8000)) erreurs.push('message');
   if (erreurs.length) {
-    return repondre(
-      ctx.request,
-      { ok: false, message: `Champs à vérifier : ${erreurs.join(', ')}.` },
-      400,
-      cheminRetour,
-    );
+    return json({ ok: false, message: `Champs à vérifier : ${erreurs.join(', ')}.` }, 400);
   }
 
   const telephone = texteLigne(body.telephone, 40);
   const annonce = texteLigne(body.annonce, 500);
   const detail = texte(body.detail, 4000);
-  const contexte = estObjet(body.contexte) ? body.contexte : null;
-  const attribution = formaterAttribution(body.attribution);
+  const objet = texteLigne(body.objet, 200);
+  const message = texte(body.message, 8000);
+  const contexte = body.contexte && typeof body.contexte === 'object' ? body.contexte as Record<string, any> : null;
   const nomComplet = [prenom, nom].filter(Boolean).join(' ');
 
   const apiKey = ctx.env.RESEND_API_KEY;
   const to = ctx.env.LEAD_TO_EMAIL || ctx.env.LEAD_TO || 'mouaad@levois.fr';
   const from = ctx.env.LEAD_FROM_EMAIL || ctx.env.LEAD_FROM || 'LEVOIS <onboarding@resend.dev>';
+  const formspreeEndpoint = ctx.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+  const requestId = crypto.randomUUID();
+  const attempts: NotificationAttempt[] = [];
 
   const sujet = sujetTexte(
-    estParcours
+    type === 'parcours'
       ? `LEVOIS · ${nomComplet} — ${texteLigne(contexte?.situation, 160) || 'Parcours'} (${commune})`
       : estAuditAnnonce
         ? `LEVOIS · Audit d’annonce — ${nomComplet}${commune ? ` (${commune})` : ''}`
@@ -524,17 +378,15 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     `${nom ? 'Nom' : 'Prénom'} : ${nomComplet}`,
     `Email : ${email}`,
     telephone ? `Téléphone : ${telephone}` : '',
-    `Consentement de transmission : confirmé le ${new Date().toISOString()}`,
-    (estParcours || estAuditAnnonce || estVotreRue) && commune ? `Commune du bien : ${commune}` : '',
-    (estParcours || estAuditAnnonce) && annonce ? `Annonce : ${annonce}` : '',
-    (estParcours || estAuditAnnonce) && detail ? `Détail ajouté : ${detail}` : '',
-    estContact && message ? `Message : ${message}` : '',
+    commune ? `Commune du bien : ${commune}` : '',
+    annonce ? `Annonce : ${annonce}` : '',
+    detail ? `Détail ajouté : ${detail}` : '',
+    message ? `Message : ${message}` : '',
   ];
-
-  if (attribution.length) lignes.push('', '————— Attribution bornée —————', ...attribution);
 
   if (estVotreRue) {
     const source = texteLigne(body.source, 120);
+    const adresseRecherchee = texteLigne(body.adresseRecherchee, 500);
     const intention = texteLigne(body.intention, 240);
     const intentionKey = texteLigne(body.intentionKey, 80);
     const profil = texteLigne(body.profil, 160);
@@ -545,9 +397,7 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
       '',
       '————— Demande « Votre rue » —————',
       source ? `Source : ${source}` : '',
-      `Adresse confirmée : ${adresseRecherchee}`,
-      `Type de bien : ${typeBien}`,
-      `Période de l’échantillon : ${periodeDu} → ${periodeAu}`,
+      adresseRecherchee ? `Adresse recherchée : ${adresseRecherchee}` : '',
       intention ? `Intention : ${intention}` : '',
       intentionKey ? `Clé d’intention : ${intentionKey}` : '',
       profil ? `Profil : ${profil}` : '',
@@ -561,53 +411,85 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     lignes.push('', '————— Audit d’annonce —————', ...audit);
   }
 
-  if (estParcours && contexte) {
+  if (contexte) {
     lignes.push(
       '',
       '————— Synthèse du parcours —————',
-      `Situation : ${texteLigne(contexte.situation, 160) || '—'}`,
-      `Date : ${texteLigne(contexte.date, 80) || '—'}`,
+      `Situation : ${contexte.situation ?? '—'}`,
+      `Date : ${contexte.date ?? '—'}`,
       '',
-      `Reformulation : ${texteLigne(contexte.reformulation, 1200) || '—'}`,
+      `Reformulation : ${contexte.reformulation ?? '—'}`,
       '',
-      `Écart probable : ${texteLigne(contexte.ecart, 500) || '—'}`,
-      `Niveau : ${texteLigne(contexte.niveau, 120) || '—'}`,
-      contexte.secondePiste ? `Seconde piste : ${texteLigne(contexte.secondePiste, 500)}` : '',
+      `Écart probable : ${contexte.ecart ?? '—'}`,
+      `Niveau : ${contexte.niveau ?? '—'}`,
+      contexte.secondePiste ? `Seconde piste : ${contexte.secondePiste}` : '',
       '',
-      `Limite affichée : ${texteLigne(contexte.limite, 1200) || '—'}`,
-      `Prochaine action recommandée : ${texteLigne(contexte.action, 1200) || '—'}`,
-      `Ressource recommandée : ${texteLigne(contexte.ressource, 300) || '—'}`,
+      `Limite affichée : ${contexte.limite ?? '—'}`,
+      `Prochaine action recommandée : ${contexte.action ?? '—'}`,
+      `Ressource recommandée : ${contexte.ressource ?? '—'}`,
       '',
       'Réponses détaillées :',
     );
     if (Array.isArray(contexte.reponses)) {
-      for (const reponse of contexte.reponses.slice(0, 20)) {
-        if (estObjet(reponse)) {
-          const question = texteLigne(reponse.question, 240) || '—';
-          const reponseBornee = texteLigne(reponse.reponse, 500) || '—';
-          lignes.push(`  · ${question} → ${reponseBornee}`);
+      for (const reponse of contexte.reponses) {
+        if (reponse && typeof reponse === 'object') {
+          lignes.push(`  · ${reponse.question ?? '—'} → ${reponse.reponse ?? '—'}`);
         }
       }
     }
   }
 
   if (!apiKey) {
-    console.error('[lead] RESEND_API_KEY absente — transmission suspendue.');
-    return repondre(
-      ctx.request,
+    const startedAt = new Date().toISOString();
+    try {
+      const formulaire = new URLSearchParams({
+        _subject: sujet,
+        nom: nomComplet,
+        email,
+        telephone,
+        message: lignes.filter((ligne) => ligne !== '').join('\n'),
+      });
+      const rep = await fetch(formspreeEndpoint, {
+        method: 'POST',
+        signal: AbortSignal.timeout(12000),
+        headers: {
+          accept: 'application/json',
+          'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: formulaire.toString(),
+      });
+      const completedAt = new Date().toISOString();
+      if (rep.ok) {
+        attempts.push({ provider: 'formspree', startedAt, completedAt, ok: true, status: rep.status });
+        await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
+        return json({ ok: true });
+      }
+      attempts.push({ provider: 'formspree', startedAt, completedAt, ok: false, status: rep.status });
+    } catch (error) {
+      attempts.push({
+        provider: 'formspree',
+        startedAt,
+        completedAt: new Date().toISOString(),
+        ok: false,
+        reason: raisonSure(error instanceof Error ? error.message : String(error)),
+      });
+    }
+    await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
+    return json(
       {
         ok: false,
         message:
           'La transmission est momentanément indisponible. Vos réponses restent affichées — vous pouvez contacter Mouaad directement : mouaad@levois.fr · 07 81 38 01 21.',
       },
       503,
-      cheminRetour,
     );
   }
 
+  const resendStartedAt = new Date().toISOString();
   try {
     const rep = await fetch('https://api.resend.com/emails', {
       method: 'POST',
+        signal: AbortSignal.timeout(12000),
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'content-type': 'application/json',
@@ -622,31 +504,53 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     });
 
     if (!rep.ok) {
-      console.error('[lead] Échec Resend :', rep.status);
-      return repondre(
-        ctx.request,
+      const erreur = await rep.text().catch(() => '');
+      attempts.push({
+        provider: 'resend',
+        startedAt: resendStartedAt,
+        completedAt: new Date().toISOString(),
+        ok: false,
+        status: rep.status,
+        reason: raisonSure(erreur),
+      });
+      await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
+      return json(
         {
           ok: false,
           message:
             'La transmission n’a pas abouti. Vos réponses restent affichées — vous pouvez réessayer ou contacter Mouaad directement.',
         },
         502,
-        cheminRetour,
       );
     }
 
-    return repondre(ctx.request, { ok: true, delivered: true }, 200, cheminRetour);
-  } catch {
-    console.error('[lead] Erreur d’envoi Resend.');
-    return repondre(
-      ctx.request,
+    const resendBody = await rep.json().catch(() => null) as { id?: unknown } | null;
+    attempts.push({
+      provider: 'resend',
+      startedAt: resendStartedAt,
+      completedAt: new Date().toISOString(),
+      ok: true,
+      status: rep.status,
+      messageId: typeof resendBody?.id === 'string' ? resendBody.id.slice(0, 128) : undefined,
+    });
+    await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
+    return json({ ok: true });
+  } catch (error) {
+    attempts.push({
+      provider: 'resend',
+      startedAt: resendStartedAt,
+      completedAt: new Date().toISOString(),
+      ok: false,
+      reason: raisonSure(error instanceof Error ? error.message : String(error)),
+    });
+    await journaliserNotification(requestId, type, to, formspreeEndpoint, attempts);
+    return json(
       {
         ok: false,
         message:
           'La transmission n’a pas abouti. Vos réponses restent affichées — vous pouvez réessayer ou contacter Mouaad directement.',
       },
       502,
-      cheminRetour,
     );
   }
 };

@@ -18,7 +18,7 @@
  * — D1 absent ou insert échoué → erreur 503/500 explicite, aucun ok:true
  * — Resend échoué après insert D1 réussi → la lecture reste dans D1
  *   (email_envoye=0), réponse ok:true (donnée sûre, Mouaad consulte D1)
- * — RESEND_API_KEY absente → Formspree de secours ; erreur explicite si les deux voies échouent
+ * — Notification échouée après insertion → succès enregistré, notificationSent:false
  * — Aucun secret exposé au navigateur
  * — Aucun ok:true sans donnée persistée
  *
@@ -46,6 +46,60 @@ interface PagesContext<E> {
   request: Request;
   env: E;
   waitUntil(promise: Promise<unknown>): void;
+}
+
+type NotificationProvider = 'resend' | 'formspree';
+
+interface NotificationAttempt {
+  provider: NotificationProvider;
+  startedAt: string;
+  completedAt: string;
+  ok: boolean;
+  status?: number;
+  reason?: string;
+  messageId?: string;
+}
+
+function raisonSure(value: unknown): string | undefined {
+  const raw = typeof value === 'string' ? value : '';
+  if (!raw) return undefined;
+  return raw
+    .replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g, '[email masqué]')
+    .replace(/Bearer\s+\S+/gi, 'Bearer [masqué]')
+    .slice(0, 240);
+}
+
+async function empreinte(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value.trim().toLowerCase()));
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function journaliserNotification(
+  id: string,
+  createdAt: string,
+  to: string,
+  formspreeEndpoint: string,
+  attempts: NotificationAttempt[],
+): Promise<void> {
+  const accepted = attempts.find((attempt) => attempt.ok);
+  const recipientDomain = to.includes('@') ? to.split('@').pop()?.toLowerCase() : undefined;
+  console.log('[recherche] notification_result', JSON.stringify({
+    event: 'notification_result',
+    requestId: id,
+    recordCreatedAt: createdAt,
+    acceptedProvider: accepted?.provider ?? null,
+    acceptedAt: accepted?.completedAt ?? null,
+    attempts,
+    resendRecipient: {
+      configured: Boolean(to),
+      domain: recipientDomain,
+      fingerprintSha256: await empreinte(to),
+    },
+    formspreeRoute: {
+      fingerprintSha256: await empreinte(formspreeEndpoint),
+      recipientObservableByWorker: false,
+    },
+  }));
 }
 
 const memoire: Map<string, number[]> = new Map();
@@ -84,11 +138,24 @@ function texte(v: unknown, max: number): string {
   return v.trim().slice(0, max);
 }
 
+function objetSimple(v: unknown): Record<string, unknown> | null {
+  return v && typeof v === 'object' && !Array.isArray(v) ? (v as Record<string, unknown>) : null;
+}
+
 function estEmail(s: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(s);
 }
 
-async function insererD1(db: D1Database, id: string, body: any, prenom: string, contact: string): Promise<void> {
+async function insererD1(db: D1Database, id: string, createdAt: string, body: any, prenom: string, contact: string): Promise<void> {
+  const lecture = objetSimple(body.lecture);
+  const lectureJson = lecture
+    ? JSON.stringify({
+        ...lecture,
+        projet: objetSimple(body.project),
+        consentements: objetSimple(body.consents),
+      })
+    : null;
+
   await db
     .prepare(
       `INSERT INTO lectures_recherche (
@@ -100,7 +167,7 @@ async function insererD1(db: D1Database, id: string, body: any, prenom: string, 
     )
     .bind(
       id,
-      new Date().toISOString(),
+      createdAt,
       texte(body.src, 100) || null,
       prenom,
       contact,
@@ -116,7 +183,7 @@ async function insererD1(db: D1Database, id: string, body: any, prenom: string, 
       JSON.stringify(Array.isArray(body.flexibles) ? body.flexibles : []),
       JSON.stringify(Array.isArray(body.flexiblesLabels) ? body.flexiblesLabels : []),
       body.decisionTension ?? null,
-      body.lecture ? JSON.stringify(body.lecture) : null,
+      lectureJson,
     )
     .run();
 }
@@ -143,8 +210,22 @@ function formaterCorps(body: any, prenom: string, contact: string): string {
   l.push(`Type de bien     : ${body.type ?? '—'}`);
   const contraint = body.secteurContraint === true ? ' (contraint)' : body.secteurContraint === false ? ' (ouvert)' : '';
   l.push(`Secteur          : ${body.secteur ?? '—'}${contraint}`);
-  if (body.budget != null) l.push(`Budget           : ${Number(body.budget).toLocaleString('fr-FR')} €`);
+  if (body.budget != null) l.push(`Budget pour le bien (hors frais et travaux) : ${Number(body.budget).toLocaleString('fr-FR')} €`);
   if (body.surface != null) l.push(`Surface cible    : ${body.surface} m²`);
+
+  const project = objetSimple(body.project);
+  if (project) {
+    const communes = texte(project.communesAcceptables, 500);
+    const temps = texte(project.tempsMaxLabel, 100);
+    const financement = texte(project.financementLabel, 120);
+    const ventePrealable = texte(project.ventePrealableLabel, 120);
+    const horizon = texte(project.horizonLabel, 120);
+    if (communes) l.push(`Communes acceptées : ${communes}`);
+    if (temps) l.push(`Temps maximal      : ${temps}`);
+    if (financement) l.push(`Financement        : ${financement}`);
+    if (ventePrealable) l.push(`Vente préalable    : ${ventePrealable}`);
+    if (horizon) l.push(`Horizon            : ${horizon}`);
+  }
 
   const lm = body.lecture;
   if (lm && typeof lm === 'object') {
@@ -181,13 +262,21 @@ function formaterCorps(body: any, prenom: string, contact: string): string {
 
   l.push('');
   l.push('————— Consentement —————');
-  l.push("L'utilisateur a accepté d'être recontacté par Mouaad Boullourou au sujet de sa recherche immobilière.");
+  const consents = objetSimple(body.consents);
+  if (consents) {
+    l.push(`Recevoir la lecture      : ${consents.lecture === true ? 'oui' : 'non'}`);
+    l.push(`Alerte rapprochement     : ${consents.matching === true ? 'oui' : 'non'}`);
+    l.push(`Demander un échange      : ${consents.contact === true ? 'oui' : 'non'}`);
+  } else {
+    l.push("L'utilisateur a accepté d'être recontacté par Mouaad Boullourou au sujet de sa recherche immobilière.");
+  }
 
   return l.join('\n');
 }
 
-async function notifierFormspree(env: Env, sujet: string, prenom: string, contact: string, corps: string): Promise<boolean> {
+async function notifierFormspree(env: Env, sujet: string, prenom: string, contact: string, corps: string): Promise<NotificationAttempt> {
   const endpoint = env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+  const startedAt = new Date().toISOString();
   try {
     const formulaire = new URLSearchParams({
       _subject: sujet,
@@ -198,21 +287,33 @@ async function notifierFormspree(env: Env, sujet: string, prenom: string, contac
     if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(contact)) formulaire.set('email', contact);
     const rep = await fetch(endpoint, {
       method: 'POST',
+      signal: AbortSignal.timeout(12000),
       headers: {
         accept: 'application/json',
         'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
       body: formulaire.toString(),
     });
-    if (!rep.ok) console.error('[recherche] Formspree error:', rep.status);
-    return rep.ok;
+    const completedAt = new Date().toISOString();
+    const responseText = await rep.text().catch(() => '');
+    const reason = rep.ok ? undefined : raisonSure(responseText) || `HTTP ${rep.status}`;
+    if (!rep.ok) console.error('[recherche] Formspree error:', rep.status, reason);
+    return {provider: 'formspree', startedAt, completedAt, ok: rep.ok, status: rep.status, reason};
   } catch (e) {
     console.error('[recherche] Formspree fetch error:', e);
-    return false;
+    return {
+      provider: 'formspree',
+      startedAt,
+      completedAt: new Date().toISOString(),
+      ok: false,
+      reason: raisonSure(e instanceof Error ? e.message : String(e)),
+    };
   }
 }
 
 export const onRequestPost = async (ctx: PagesContext<Env>) => {
+  const origin = ctx.request.headers.get('origin');
+  if (origin && origin !== new URL(ctx.request.url).origin) return json({ok:false,message:'Origine non autorisée.'},403);
   // ——— 1. Binding D1 obligatoire ———
   if (!ctx.env.RECHERCHE_DB) {
     return json(
@@ -235,12 +336,12 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
   }
 
   // ——— 2. Validation des champs ———
-  const prenom = texte(payload?.prenom, 80);
+  const prenom = texte(payload?.prenom, 80).replace(/[\r\n]+/g, ' ');
   const contact = texte(payload?.contact, 200);
   const consent = payload?.consent === true;
   if (!prenom) return json({ ok: false, message: 'Le prénom est requis.' }, 400);
-  if (!contact) return json({ ok: false, message: 'Un moyen de contact est requis.' }, 400);
-  if (!consent) return json({ ok: false, message: 'Le consentement est requis.' }, 400);
+  if (!estEmail(contact) && !/^\+?[\d ().-]{8,24}$/.test(contact)) return json({ ok: false, message: 'Indiquez un email complet ou un numéro de téléphone valide.' }, 400);
+  if (!consent || !objetSimple(payload.consents) || !['lecture','matching','contact'].some(k=>payload.consents[k]===true)) return json({ ok: false, message: 'Choisissez au moins une suite à donner à votre recherche.' }, 400);
 
   // ——— 3. Rate limit par IP ———
   const ip = ctx.request.headers.get('cf-connecting-ip') || ctx.request.headers.get('x-forwarded-for') || 'unknown';
@@ -250,8 +351,9 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
 
   // ——— 4. Insertion D1 (obligatoire avant tout envoi) ———
   const id = crypto.randomUUID();
+  const createdAt = new Date().toISOString();
   try {
-    await insererD1(ctx.env.RECHERCHE_DB, id, payload, prenom, contact);
+    await insererD1(ctx.env.RECHERCHE_DB, id, createdAt, payload, prenom, contact);
   } catch (e) {
     console.error('[recherche] D1 insert failed:', e);
     return json(
@@ -263,25 +365,27 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
   // ——— 5. Notification — Resend, puis Formspree de secours ———
   const sujet = `LEVOIS · Lecture de recherche — ${prenom}`;
   const corps = formaterCorps(payload, prenom, contact);
+  const to = ctx.env.LEAD_TO || 'mouaad@levois.fr';
+  const formspreeEndpoint = ctx.env.FORMSPREE_ENDPOINT || 'https://formspree.io/f/xnjynroj';
+  const attempts: NotificationAttempt[] = [];
   if (!ctx.env.RESEND_API_KEY) {
-    const formspreeOk = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
-    if (formspreeOk) {
-      ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id));
-      return json({ ok: true });
+    const formspree = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
+    attempts.push(formspree);
+    await journaliserNotification(id, createdAt, to, formspreeEndpoint, attempts);
+    if (formspree.ok) {
+      ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id).catch(()=>{ console.error('[recherche] Statut de notification non actualisé.'); }));
+      return json({ ok: true, saved: true, notificationSent: true });
     }
-    return json(
-      { ok: false, message: "Votre recherche est bien enregistrée, mais la notification n'a pas abouti. Vous pouvez aussi écrire à mouaad@levois.fr." },
-      503,
-    );
+    return json({ ok: true, saved: true, notificationSent: false });
   }
 
   const from = ctx.env.LEAD_FROM || 'LEVOIS <contact@levois.fr>';
-  const to = ctx.env.LEAD_TO || 'mouaad@levois.fr';
-
   let resendOk = false;
+  const resendStartedAt = new Date().toISOString();
   try {
     const rep = await fetch('https://api.resend.com/emails', {
       method: 'POST',
+      signal: AbortSignal.timeout(12000),
       headers: { Authorization: `Bearer ${ctx.env.RESEND_API_KEY}`, 'content-type': 'application/json' },
       body: JSON.stringify({
         from,
@@ -291,31 +395,51 @@ export const onRequestPost = async (ctx: PagesContext<Env>) => {
         ...(estEmail(contact) ? { reply_to: contact } : {}),
       }),
     });
+    const completedAt = new Date().toISOString();
+    const responseText = await rep.text().catch(() => '');
     if (rep.ok) {
       resendOk = true;
+      let messageId: string | undefined;
+      try {
+        const parsed = JSON.parse(responseText);
+        if (typeof parsed?.id === 'string') messageId = parsed.id;
+      } catch {}
+      attempts.push({provider: 'resend', startedAt: resendStartedAt, completedAt, ok: true, status: rep.status, messageId});
     } else {
-      const err = await rep.text().catch(() => '');
-      console.error('[recherche] Resend error:', rep.status, err.slice(0, 200));
+      const reason = raisonSure(responseText) || `HTTP ${rep.status}`;
+      attempts.push({provider: 'resend', startedAt: resendStartedAt, completedAt, ok: false, status: rep.status, reason});
+      console.error('[recherche] Resend error:', rep.status, reason);
     }
   } catch (e) {
     console.error('[recherche] Resend fetch error:', e);
+    attempts.push({
+      provider: 'resend',
+      startedAt: resendStartedAt,
+      completedAt: new Date().toISOString(),
+      ok: false,
+      reason: raisonSure(e instanceof Error ? e.message : String(e)),
+    });
   }
 
   if (!resendOk) {
-    resendOk = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
+    const formspree = await notifierFormspree(ctx.env, sujet, prenom, contact, corps);
+    attempts.push(formspree);
+    resendOk = formspree.ok;
   }
+
+  await journaliserNotification(id, createdAt, to, formspreeEndpoint, attempts);
 
   // ——— 6. Mise à jour statut de notification dans D1 ———
   // Lecture déjà persistée. On ne supprime jamais un insert D1 réussi.
   if (resendOk) {
-    ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id));
+    ctx.waitUntil(marquerEmailEnvoye(ctx.env.RECHERCHE_DB, id).catch(()=>{ console.error('[recherche] Statut de notification non actualisé.'); }));
   }
   // Si Resend a échoué : email_envoye reste 0 dans D1. Mouaad consulte D1
   // pour identifier les lectures sans notification (email_envoye=0).
 
   // ——— 7. Réponse ———
   // ok:true même si Resend a échoué : la lecture est persistée dans D1.
-  return json({ ok: true });
+  return json({ ok: true, saved: true, notificationSent: resendOk });
 };
 
 export const onRequest = async (ctx: PagesContext<Env>) => {

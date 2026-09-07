@@ -10,10 +10,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.codex-dev-server.*.log
 
 # environment variables
 .env
 .env.production
+.dev.vars
+.dev.vars.*
 
 # macOS
 .DS_Store
@@ -23,4 +26,14 @@ pnpm-debug.log*
 .vscode/
 .gstack/
 .wrangler/
-.impeccable/
+.impeccable/*
+!.impeccable/design.json
+.astro/content-assets.mjs
+.astro/content-modules.mjs
+.astro/content.d.ts
+
+# Astro generated runtime metadata
+.astro/
+
+# Local QA evidence and generated delivery captures
+artifacts/

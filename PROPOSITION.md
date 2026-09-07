@@ -1,5 +1,10 @@
 # LEVOIS — Proposition de conception
 
+> Archive de cadrage. Ce document est conservé pour l'historique, mais il n'est plus
+> la source active de décision. La direction en vigueur depuis le 17 août 2026 est :
+> architecture buyer-first, Mouaad seul interlocuteur humain visible, valeur avant
+> coordonnées, spots précédents rejetés.
+
 **Réponse au cahier des charges du 24 juillet 2026 · Document de cadrage avant prototypage**
 
 ---
@@ -84,7 +89,7 @@ Les deux systèmes de cartes sont visuellement distincts : **situations** = gran
 6. **Ressources** — les six cartes avec question, bénéfice, durée réelle.
 7. **Preuves** — uniquement le vérifiable ; si les témoignages manquent, la crédibilité vient de la précision (engagements de transparence, méthode explicite, cadre SAFTI).
 8. **Territoire** — composition documentaire des sept communes, sans fausse carte interactive.
-9. **Léa puis Mouaad** — deux traitements distincts reflétant leurs rôles.
+9. **Mouaad comme relais humain** — un seul interlocuteur visible, après la valeur donnée par le site.
 10. **CTA final** — « Vous n'avez pas besoin de tout changer… » + « Situer ma vente ».
 
 ---
@@ -102,12 +107,11 @@ Les deux systèmes de cartes sont visuellement distincts : **situations** = gran
 /ressources/[slug]                  6 pages ressources
 /accompagnement                     Ce que change un accompagnement
 /mouaad                             Page Mouaad
-/lea                                Présentation de Léa (courte, peut vivre dans /ressources)
 /contact                            Contact simple (solution de secours)
 /mentions-legales · /confidentialite · 404 utile
 ```
 
-Le questionnaire vit sur une **route dédiée** (`/situer-ma-vente?s=peu-de-contacts`) : les cinq situations sont pré-sélectionnables par lien direct — indispensable pour les contenus de Léa et les publications de Mouaad (§10.3). L'accueil embarque le sélecteur et passe la main à la route.
+Le questionnaire vit sur une **route dédiée** (`/situer-ma-vente?s=peu-de-contacts`) : les cinq situations sont pré-sélectionnables par lien direct — indispensable pour les contenus et publications de Mouaad (§10.3). L'accueil embarque le sélecteur et passe la main à la route.
 
 **Restaurable et partageable sans données personnelles** : réponses en `sessionStorage` (jamais les coordonnées), et un état de résultat encodable en paramètre compact (`?r=3.ab2c`) qui ne contient que les identifiants de réponses — rechargeable, imprimable, transmissible.
 
@@ -149,10 +153,10 @@ Le CdC recommande Next.js mais laisse la stack au choix du développeur (§28). 
 
 ## 5. Améliorations proposées au-delà du cahier des charges
 
-1. **Le motif « même image, deux lectures »** (§2.1 ci-dessus) — le CdC demande une interprétation graphique de l'écart ; celle-ci est démontrable en cinq secondes, sans effet coûteux, et devient un asset de marque réutilisable dans les contenus de Léa.
+1. **Le motif « même image, deux lectures »** (§2.1 ci-dessus) — le CdC demande une interprétation graphique de l'écart ; celle-ci est démontrable en cinq secondes, sans effet coûteux, et devient un asset de marque réutilisable dans les contenus LEVOIS.
 2. **Résumé imprimable/copiable du résultat** dès la V1 (version simple, sans génération PDF) : le propriétaire « repart avec quelque chose » de tangible même sans contact — cela renforce la priorité n°1.
 3. **Les trois exemples du §17 en tests automatisés** : la personnalisation réelle est garantie par la CI à chaque modification de contenu, pas seulement à la recette.
-4. **Liens profonds instrumentés** pour les réseaux (`/situer-ma-vente?s=…&from=…`) : chaque vidéo de Léa peut mesurer son parcours complet jusqu'au lead, dans le respect du consentement.
+4. **Liens profonds instrumentés** pour les réseaux (`/situer-ma-vente?s=…&from=…`) : chaque contenu LEVOIS peut mesurer son parcours complet jusqu'au lead, dans le respect du consentement.
 5. **Email de synthèse à double destinataire** (option) : le propriétaire peut choisir de *recevoir lui aussi* son résumé — de la valeur ajoutée, et une raison légitime et transparente de donner son email.
 6. **Une question d'ouverture par le microcopy** : chaque écran de question affiche « pourquoi nous posons cette question » en une ligne — le CdC le demande ; j'en fais un élément de design visible, car c'est précisément ce qui déclenche « on cherche à me comprendre ».
 
@@ -163,7 +167,7 @@ Le CdC recommande Next.js mais laisse la stack au choix du développeur (§28). 
 **Bloquant pour la phase DA (prototypes) :**
 - les **19 images** en haute définition — l'audit (qualité, cadrages possibles, visages, droits) conditionne la Hero et la répartition §24.2 ;
 - le **logo LEVOIS** dans les formats disponibles ;
-- photos de **Mouaad** et de **Léa** (le dépôt contient des portraits — sont-ils les bons ?).
+- photos de **Mouaad** (le dépôt contient des portraits — sont-ils les bons ?).
 
 **Bloquant pour le développement du noyau :**
 - **destination des leads** : simple email à Mouaad ? copie dans un tableau (Airtable/Notion) ? CRM SAFTI ? — cela fixe l'intégration serveur ;
@@ -189,7 +193,7 @@ Conforme au processus §37, avec des **jalons de validation** — rien n'est dé
 | **1 · Architecture & UX** | sitemap final, flux, logique de résultats, wireframes desktop/mobile, inventaire des états | prototype basse fidélité cliquable | 4–6 jours |
 | **2 · Direction artistique** | tokens, paire typo, et **quatre écrans seulement** : Hero, sélecteur, question, résultat | **DA approuvée sur prototype haute fidélité navigable** (dans le vrai navigateur, pas une image figée) | 6–8 jours |
 | **3 · Noyau fonctionnel** | structure globale, sélecteur, questionnaire, moteur de règles + tests §17, résultat, formulaire serveur | parcours complet fonctionnel de bout en bout | 10–14 jours |
-| **4 · Contenus & pages** | 6 ressources, méthode, accompagnement, Mouaad, Léa, contact, légales, 404, intégration des 19 images, SEO/OG | site complet en prévisualisation | 6–8 jours |
+| **4 · Contenus & pages** | 6 ressources, méthode, accompagnement, Mouaad, contact, légales, 404, intégration des 19 images, SEO/OG | site complet en prévisualisation | 6–8 jours |
 | **5 · Recette & mise en ligne** | grille §39, accessibilité WCAG 2.2 AA, Lighthouse mobile+desktop, tests 5 utilisateurs (§40), ajustements, déploiement, test réel du formulaire | mise en production + handoff §36.4 | 4–6 jours |
 
 **Total : environ 32 à 45 jours de travail, soit 6 à 9 semaines calendaires** en incluant vos temps de validation et les tests utilisateurs.

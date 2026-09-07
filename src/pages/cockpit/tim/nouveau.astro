@@ -1,0 +1,101 @@
+---
+import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import {
+  PRIORITIES,
+  TIM_AGREEMENT_STATUSES,
+  TIM_AGREEMENT_TYPES,
+  TIM_COMPENSATION_STATUSES,
+  TIM_INFORMATION_NATURES,
+  TIM_OPERATION_STATUSES,
+  TIM_TRANSACTION_TYPES,
+} from '../../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="Nouvel Accord TIM"
+  active="tim"
+  eyebrow="Collaboration interne"
+  description="Les termes restent configurables et ne créent jamais automatiquement une rémunération due."
+  pageId="new-tim"
+>
+  <a slot="actions" class="cockpit-button cockpit-button-quiet" href="/cockpit/tim">Annuler</a>
+
+  <form class="cockpit-form-flow" data-new-tim-form novalidate>
+    <section class="cockpit-form-section" aria-labelledby="tim-identity-title">
+      <div class="cockpit-section-number" aria-hidden="true">01</div>
+      <div class="cockpit-section-copy"><h2 id="tim-identity-title">Accord et opportunité</h2><p>La personne concernée n’est pas ajoutée au pipeline Clients sans projet directement accompagné.</p></div>
+      <div class="cockpit-fields cockpit-fields-two">
+        <label><span>Référence interne <b aria-hidden="true">*</b></span><input name="reference" maxlength="80" required placeholder="Ex. TIM-DEMO-001" /></label>
+        <label><span>Libellé <b aria-hidden="true">*</b></span><input name="label" maxlength="240" required /></label>
+        <label><span>Type d’accord</span><select name="agreementType" data-tim-agreement-type>{TIM_AGREEMENT_TYPES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Type d’opération</span><select name="operationType" data-tim-operation-type>{TIM_TRANSACTION_TYPES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Nature de l’information</span><select name="informationNature">{TIM_INFORMATION_NATURES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+        <label><span>Personne concernée (libellé minimisé)</span><input name="subjectLabel" maxlength="160" placeholder="Facultatif" /></label>
+        <label class="cockpit-field-wide"><span>Bien ou projet concerné</span><input name="assetLabel" maxlength="240" placeholder="Sans adresse exacte si elle n’est pas nécessaire" /></label>
+        <label><span>Date de transmission</span><input name="transmittedAt" type="date" required /></label>
+        <label><span>Date de formalisation</span><input name="formalizedAt" type="date" /></label>
+        <label class="cockpit-check-field"><input name="formSigned" type="checkbox" /><span>Formulaire signé</span></label>
+        <label class="cockpit-check-field"><input name="omegaUploaded" type="checkbox" /><span>Formulaire déposé dans OMEGA</span></label>
+        <label class="cockpit-check-field"><input name="mandateObtained" type="checkbox" /><span>Mandat obtenu</span></label>
+        <label><span>Référence mandat</span><input name="mandateReference" maxlength="100" /></label>
+      </div>
+    </section>
+
+    <section class="cockpit-form-section" aria-labelledby="tim-advisors-title">
+      <div class="cockpit-section-number" aria-hidden="true">02</div>
+      <div class="cockpit-section-copy"><h2 id="tim-advisors-title">Conseillers</h2><p>Choisissez l’apporteur et le conseiller qui traite l’opération.</p></div>
+      <div class="cockpit-fields cockpit-fields-two" data-advisor-fields>
+        <label><span data-first-advisor-label>Conseiller apporteur</span><select name="referrerAdvisorId" required data-advisor-select><option value="">Chargement…</option></select></label>
+        <label><span data-second-advisor-label>Conseiller traitant</span><select name="handlingAdvisorId" required data-advisor-select><option value="">Chargement…</option></select></label>
+      </div>
+      <div class="cockpit-inline-alert" data-advisor-error role="alert" hidden></div>
+    </section>
+
+    <section class="cockpit-form-section" aria-labelledby="tim-terms-title">
+      <div class="cockpit-section-number" aria-hidden="true">03</div>
+      <div class="cockpit-section-copy"><h2 id="tim-terms-title">Termes versionnés</h2><p>Les pourcentages sont saisis en %, puis enregistrés en points de base entiers.</p></div>
+      <aside class="cockpit-recommendation" data-allocation-recommendation hidden>
+        <div><strong data-recommendation-title>Répartition recommandée</strong><p data-recommendation-copy></p></div>
+        <button class="cockpit-button cockpit-button-secondary" type="button" data-apply-recommendation>Utiliser ces valeurs</button>
+      </aside>
+      <aside class="cockpit-inline-alert is-warning" data-rental-warning hidden><strong>Location : aucune règle automatique.</strong> Saisissez manuellement la répartition et le fait générateur, ou laissez-les à confirmer.</aside>
+      <div class="cockpit-fields cockpit-fields-two">
+        <label><span>Assiette</span><select name="feeBasis"><option value="unknown">À confirmer</option><option value="ht">HT</option><option value="ttc">TTC</option><option value="other">Autre</option></select></label>
+        <label><span>Devise</span><input name="currency" value="EUR" pattern="[A-Z]{3}" maxlength="3" required /></label>
+        <label class="cockpit-field-wide"><span>Fait générateur</span><input name="triggerEvent" maxlength="300" placeholder="unknown ou condition convenue" value="unknown" /></label>
+        <label><span>Part apporteur (%)</span><input name="referrerPercent" type="number" min="0" max="100" step="0.01" inputmode="decimal" /></label>
+        <label><span>Part conseiller traitant (%)</span><input name="handlerPercent" type="number" min="0" max="100" step="0.01" inputmode="decimal" /></label>
+        <label class="cockpit-check-field cockpit-field-wide"><input name="allocationsConfirmed" type="checkbox" /><span>Je confirme explicitement ces termes, leur éventuelle répartition et leur enregistrement dans la version 1.</span></label>
+      </div>
+    </section>
+
+    <section class="cockpit-form-section" aria-labelledby="tim-states-title">
+      <div class="cockpit-section-number" aria-hidden="true">04</div>
+      <div class="cockpit-section-copy"><h2 id="tim-states-title">Trois états indépendants</h2><p>Modifier un axe ne modifiera jamais automatiquement les deux autres.</p></div>
+      <div class="cockpit-fields cockpit-fields-three">
+        <label><span>Accord</span><select name="agreementStatus">{TIM_AGREEMENT_STATUSES.map((option) => <option value={option.value} selected={option.value === 'to_formalize'}>{option.label}</option>)}</select></label>
+        <label><span>Opération</span><select name="operationStatus">{TIM_OPERATION_STATUSES.map((option) => <option value={option.value} selected={option.value === 'information_transmitted'}>{option.label}</option>)}</select></label>
+        <label><span>Rémunération</span><select name="compensationStatus">{TIM_COMPENSATION_STATUSES.map((option) => <option value={option.value} selected={option.value === 'not_due'}>{option.label}</option>)}</select></label>
+      </div>
+    </section>
+
+    <section class="cockpit-form-section" aria-labelledby="tim-action-title">
+      <div class="cockpit-section-number" aria-hidden="true">05</div>
+      <div class="cockpit-section-copy"><h2 id="tim-action-title">Prochaine action</h2><p>Un accord actif sans action restera visible dans Aujourd’hui.</p></div>
+      <div class="cockpit-fields cockpit-fields-two">
+        <label class="cockpit-field-wide"><span>Action</span><input name="taskTitle" maxlength="240" /></label>
+        <label><span>Échéance</span><input name="taskDueAt" type="datetime-local" /></label>
+        <label><span>Priorité</span><select name="taskPriority">{PRIORITIES.map((option) => <option value={option.value} selected={option.value === 'normal'}>{option.label}</option>)}</select></label>
+        <label class="cockpit-field-wide"><span>Notes</span><textarea name="notes" rows="3" maxlength="1200"></textarea></label>
+        <label class="cockpit-confirm-risk cockpit-field-wide" data-tim-missing-confirm hidden><input name="allowMissingNextAction" type="checkbox" /><span>Je confirme créer cet accord actif sans prochaine action. Il apparaîtra dans les anomalies.</span></label>
+      </div>
+    </section>
+
+    <div class="cockpit-form-error" data-form-error role="alert" hidden></div>
+    <footer class="cockpit-form-submit"><p>Les montants et paiements seront enregistrés depuis la fiche de l’accord.</p><button class="cockpit-button cockpit-button-primary" type="submit" data-submit>Créer l’Accord TIM</button></footer>
+  </form>
+</CockpitLayout>
+
+<script>
+  import '../../../scripts/cockpit/new-tim';
+</script>

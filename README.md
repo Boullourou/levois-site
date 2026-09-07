@@ -1,10 +1,11 @@
 # LEVOIS — levois.fr
 
-**Une expérience numérique de décision immobilière.** Le propriétaire choisit sa
-situation, répond à trois à cinq questions, reçoit une lecture réellement liée à
-ses réponses — et ne transmet ses coordonnées que s'il le souhaite, après la valeur.
+**Une expérience numérique de décision immobilière.** L'acheteur clarifie sa
+recherche, le vendeur lit ses signaux, puis chacun reçoit une première lecture
+utile avant de transmettre ses coordonnées, seulement s'il le souhaite.
 
-Voir `PROPOSITION.md` pour la vision, la direction artistique et l'architecture.
+Voir `PRODUCT.md` et `DESIGN.md` pour l'état actif. `PROPOSITION.md` est une
+archive de cadrage supersédée.
 
 ## Stack
 
@@ -17,12 +18,32 @@ Voir `PROPOSITION.md` pour la vision, la direction artistique et l'architecture.
 ## Démarrer
 
 ```bash
-npm install
+npx --yes npm@10.9.2 ci
 npm run dev        # http://localhost:4321
 npm test           # moteur de signaux + formulaires Cloudflare
 npm run test:market # calculs et filtres du résumé DVF
 npm run build      # production dans dist/
 ```
+
+## Cockpit privé V1
+
+Le cockpit est une tranche privée séparée des parcours publics : Astro sans donnée
+métier dans le HTML, Pages Functions, services métier et binding D1 `COCKPIT_DB`.
+La configuration locale ne contient aucun identifiant D1 distant et la preview
+reste fermée tant que Cloudflare Access et une D1 preview séparée ne sont pas
+configurés.
+
+```bash
+npm run test:cockpit          # domaine, D1/SQLite, BFF, sécurité et export
+npm run test:cockpit:security # frontière Access + CSRF + erreurs BFF
+
+npm run db:cockpit:migrate:local
+npm run db:cockpit:seed:local # fixtures exclusivement fictives
+npm run dev:cockpit           # build puis Pages Functions local
+```
+
+La documentation d’installation, de sécurité, de sauvegarde/restauration et de
+recette est dans [`docs/cockpit/README.md`](docs/cockpit/README.md).
 
 ## Architecture du contenu (administrable sans toucher aux composants)
 
@@ -60,22 +81,15 @@ Variables d'environnement à définir dans Cloudflare Pages :
 
 | Variable | Rôle |
 |---|---|
-| `RESEND_API_KEY` | Clé API [Resend](https://resend.com) — requise par `/api/lead`, voie principale de `/api/recherche` |
-| `FORMSPREE_ENDPOINT` | Secours du seul parcours `/ma-recherche` (B04, inchangé dans ce chantier) |
+| `RESEND_API_KEY` | Clé API [Resend](https://resend.com) — voie principale lorsqu’elle est configurée |
+| `FORMSPREE_ENDPOINT` | Endpoint Formspree de secours (défaut : formulaire historique `xnjynroj`) |
 | `LEAD_TO_EMAIL` | Destinataire (défaut : mouaad@levois.fr) |
 | `LEAD_FROM_EMAIL` | Expéditeur vérifié Resend (défaut : onboarding@resend.dev) |
 | `RECHERCHE_DB` | Binding D1 requis par `/api/recherche` |
 | `RATE_LIMIT` | Binding KV optionnel pour partager la limitation de `/api/lead` |
-| `AUDIT_ALLOWED_HOSTS` | Réservée à une revue future de l'extraction ; sans effet dans le checkpoint V1 verrouillé en mode questionnaire |
-| `AUDIT_STRICT_PUBLIC_CONFIRMED` | Réservée à une revue future de Cloudflare ; sans effet dans le checkpoint V1 verrouillé en mode questionnaire |
 
-Sans clé Resend, `/api/lead` suspend la transmission et affiche les coordonnées directes. Aucun endpoint de secours
-implicite ne reçoit les coordonnées via `/api/lead`. Une demande n’est confirmée que lorsque Resend a accepté le message.
-Le parcours `/ma-recherche` conserve son chemin distinct Resend/Formspree ; il est réservé au chantier B04.
-Dans ce checkpoint V1, `/api/audit-url` renvoie immédiatement vers le questionnaire et n’effectue aucun appel
-sortant, quelles que soient les variables configurées. Le candidat technique sécurisé est conservé pour revue,
-mais il n’est pas relié au parcours public. Sa réactivation exigera un changement de code explicite après validation
-de Cloudflare, de l’allowlist et des tests de sécurité en Production et Preview.
+Sans clé Resend, le serveur utilise le Formspree historique. Il ne confirme la demande que si l’un des deux services
+a réellement accepté la notification ; sinon, il affiche les coordonnées directes sans fausse confirmation.
 
 ## Déploiement
 

@@ -1,0 +1,38 @@
+---
+import CockpitLayout from '../../../layouts/CockpitLayout.astro';
+import {
+  TIM_AGREEMENT_STATUSES,
+  TIM_COMPENSATION_STATUSES,
+  TIM_OPERATION_STATUSES,
+  TIM_TRANSACTION_TYPES,
+} from '../../../scripts/cockpit/options';
+---
+
+<CockpitLayout
+  title="Accords TIM"
+  active="tim"
+  eyebrow="Taux Inter Mandataire"
+  description="Collaboration, opération et rémunération suivies sur trois axes indépendants."
+>
+  <a slot="actions" class="cockpit-button cockpit-button-primary" href="/cockpit/tim/nouveau">Nouvel accord</a>
+
+  <form class="cockpit-filter-bar" data-tim-filters aria-label="Filtrer les Accords TIM">
+    <label class="cockpit-search-field"><span class="cockpit-visually-hidden">Rechercher</span><input name="q" type="search" autocomplete="off" placeholder="Référence, libellé ou conseiller…" /></label>
+    <label><span>Opération</span><select name="operationType"><option value="">Toutes</option>{TIM_TRANSACTION_TYPES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+    <label><span>Accord</span><select name="agreementStatus"><option value="">Tous</option>{TIM_AGREEMENT_STATUSES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+    <label><span>Opération</span><select name="operationStatus"><option value="">Tous les états</option>{TIM_OPERATION_STATUSES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+    <label><span>Rémunération</span><select name="compensationStatus"><option value="">Tous les états</option>{TIM_COMPENSATION_STATUSES.map((option) => <option value={option.value}>{option.label}</option>)}</select></label>
+    <label><span>Conseiller</span><select name="advisorId" data-tim-advisor-filter><option value="">Tous</option></select></label>
+    <label class="cockpit-check-filter"><input name="dueSoon" type="checkbox" /> <span>Échéance proche</span></label>
+    <label class="cockpit-check-filter"><input name="missingNextAction" type="checkbox" /> <span>Sans prochaine action</span></label>
+    <button class="cockpit-button cockpit-button-secondary" type="submit">Filtrer</button>
+  </form>
+
+  <section class="cockpit-list-root" data-tim-list aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status"><span class="cockpit-spinner" aria-hidden="true"></span><p>Chargement des accords…</p></div>
+  </section>
+</CockpitLayout>
+
+<script>
+  import '../../../scripts/cockpit/tim-list';
+</script>

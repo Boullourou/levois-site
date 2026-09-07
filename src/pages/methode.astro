@@ -5,50 +5,45 @@ import { situations } from '../data/situations';
 const etapes = [
   {
     nom: 'Comprendre',
-    teinte: '#F2F5EF',
-    texte: 'Distinguer ce qui est observé de ce qui est supposé. Un fait : « l’annonce reçoit des vues mais pas de contacts ». Une supposition : « le prix est trop élevé ». La méthode commence par séparer les deux — parce que toutes les mauvaises décisions commencent par les confondre.',
+    texte: 'Distinguer ce qui est observé de ce qui est supposé. Un fait : « l’annonce reçoit des vues mais pas de contacts ». Une supposition : « le prix est trop élevé ». La méthode commence par séparer les deux : les confondre peut conduire à modifier le mauvais élément.',
   },
   {
     nom: 'Aligner',
-    teinte: '#F0E2D8',
     texte: 'Faire coïncider le projet, le calendrier et les contraintes réelles. Une vente sert un projet de vie ; quand le projet est flou ou que le calendrier a changé, aucun réglage d’annonce ne peut compenser. L’alignement précède le positionnement.',
   },
   {
     nom: 'Positionner',
-    teinte: '#E5CDBB',
-    texte: 'Présenter le bien face aux alternatives que l’acheteur compare — pas face à un marché abstrait. Les acheteurs voient votre annonce entre cinq et huit autres, au même budget, au même moment. C’est cette comparaison réelle qui définit la position, jamais une moyenne.',
+    texte: 'Présenter le bien face aux alternatives que l’acheteur compare — pas face à un marché abstrait. Les acheteurs comparent votre annonce avec d’autres biens disponibles dans leur budget. C’est cette comparaison réelle qui définit la position, jamais une moyenne.',
   },
   {
     nom: 'Piloter',
-    teinte: '#D3A98C',
     texte: 'Modifier un levier à la fois et lire les réactions. Changer le prix, les photos et le texte en même temps, c’est renoncer à comprendre. Le pilotage, c’est la discipline du levier unique : un changement, une période d’observation, une lecture.',
   },
   {
     nom: 'Apprendre',
-    teinte: '#C08157',
     texte: 'Utiliser les signaux pour décider sans précipitation. Chaque période d’observation produit un enseignement — même le silence. La décision suivante se construit sur ces acquis, pas sur l’inquiétude du moment ni sur l’avis le plus fort de l’entourage.',
   },
 ];
 ---
 
 <Layout
-  title="Le Système des Écarts"
+  title="Comprendre ce qui bloque et choisir quoi faire"
   description="La méthode LEVOIS en cinq temps : Comprendre, Aligner, Positionner, Piloter, Apprendre. Sans jargon, avec ses limites."
 >
   <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
 
     <header class="mb-14">
       <p class="eyebrow mb-4">La méthode</p>
-      <h1 class="text-display text-encre mb-5">Le Système des Écarts</h1>
+      <h1 class="text-display text-encre mb-5">Comprendre ce qui bloque.<br/>Choisir quoi faire.</h1>
       <p class="font-sans text-body-lg text-brun">
         Une manière de lire une vente — pas une recette automatique.
         Cinq temps, des règles simples, et l’honnêteté de dire ce que la méthode ne peut pas conclure.
       </p>
     </header>
 
-    <!-- 1 · Le problème des deux lectures -->
+    <!-- 1 · Ce que vous voyez. Ce que les acheteurs perçoivent. -->
     <section class="mb-14" aria-labelledby="deux-lectures">
-      <h2 id="deux-lectures" class="text-h2 text-encre mb-4">Le problème des deux lectures</h2>
+      <h2 id="deux-lectures" class="text-h2 text-encre mb-4">Ce que vous connaissez. Ce que l’acheteur découvre.</h2>
       <div class="space-y-4 font-sans text-body-lg text-encre/85 leading-relaxed">
         <p>
           Vous connaissez intimement votre logement : son histoire, ses qualités, ce qu’il vous a coûté.
@@ -65,7 +60,7 @@ const etapes = [
     <!-- 2 · Définition d'un écart -->
     <section class="mb-14 carte bg-argile-pale/40 p-6 md:p-8" aria-labelledby="def-ecart">
       <span class="ligne-ecart mb-5"></span>
-      <h2 id="def-ecart" class="text-h3 text-encre mb-3">Ce qu’est un écart</h2>
+      <h2 id="def-ecart" class="text-h3 text-encre mb-3">Quand les attentes et les réactions ne se rejoignent pas</h2>
       <p class="font-sans text-body-lg text-encre/85 leading-relaxed">
         Un écart est la distance entre ce que vous pensez montrer et ce que le marché perçoit.
         Il ne signifie pas que votre bien a un problème — il indique qu’une information mérite
@@ -74,14 +69,13 @@ const etapes = [
       </p>
     </section>
 
-    <!-- 3 · Les cinq temps -->
+    <!-- 3 · Cinq étapes pour avancer -->
     <section class="mb-14" aria-labelledby="cinq-temps">
       <h2 id="cinq-temps" class="text-h2 text-encre mb-8">Les cinq temps</h2>
       <ol class="space-y-4 list-none">
         {etapes.map((e, i) => (
           <li class="carte overflow-hidden fade-up">
             <div class="flex">
-              <div class="w-1.5 shrink-0" style={`background: ${e.teinte};`}></div>
               <div class="p-6 md:p-7">
                 <p class="font-sans text-xs text-brun/70 tracking-widest mb-2">TEMPS {i + 1}</p>
                 <h3 class="font-display text-2xl text-encre mb-3">{e.nom}</h3>
@@ -162,7 +156,7 @@ const etapes = [
       </p>
       <div class="flex flex-wrap gap-3">
         <a href="/situer-ma-vente" class="btn-sur-encre">Situer ma vente</a>
-        <a href="/mouaad" class="btn-secondaire !border-papier/30 !text-papier hover:!border-argile-lum hover:!text-argile-lum">Faire connaissance avec Mouaad</a>
+        <a href="/mouaad" class="btn-sur-encre">Faire connaissance avec Mouaad</a>
       </div>
     </section>
   </div>

@@ -1,607 +1,146 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ResponsiveImage from '../components/ResponsiveImage.astro';
-import EvidenceHero from '../components/home/EvidenceHero.astro';
-import marketSummary from '../data/dvf-market-summary.json';
-
-const designContract = `LEVOIS_HOME_V2
-THESIS: Rendre l’écart entre le bien, sa perception et la décision immédiatement visible ; refuser le hero immobilier centré sur le conseiller ou la maison idéale.
-OWN-WORLD: Papier minéral, encre, cobalt et citron structurent des aplats de calibration ; la terre cuite n’apparaît qu’en contrepoint humain et local.
-STORY: Le visiteur comprend les trois lectures, voit acheteurs et vendeurs former une même boucle, vérifie la preuve locale puis choisit son parcours.
-FIRST VIEWPORT: Manifeste typographique, photographie réelle de Chartres, rail de preuves DVF et deux actions de même poids — acheteur en encre/citron, vendeur en cobalt/minéral.
-FORM: Composition 2 approuvée ; la photographie passe de la couleur au monochrome pendant que les preuves locales deviennent lisibles.
-FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md`;
-
-const marketDatasetSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Dataset',
-  '@id': 'https://levois.fr/#dvf-market-dataset',
-  name: 'Repères DVF de Lèves et Chartres — maisons et appartements',
-  description:
-    'Synthèse locale des ventes immobilières passées à Lèves et Chartres : médiane du prix observé au m², quartiles, évolution annuelle et taille des échantillons.',
-  url: 'https://levois.fr/#territoire',
-  inLanguage: 'fr-FR',
-  license: 'https://www.etalab.gouv.fr/licence-ouverte-open-licence/',
-  isAccessibleForFree: true,
-  temporalCoverage: '2021/2025',
-  spatialCoverage: [
-    { '@type': 'Place', name: 'Lèves, Eure-et-Loir, France' },
-    { '@type': 'Place', name: 'Chartres, Eure-et-Loir, France' },
-  ],
-  creator: { '@id': 'https://levois.fr/#organization' },
-  isBasedOn: 'https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres-geolocalisees/',
-  distribution: {
-    '@type': 'DataDownload',
-    encodingFormat: 'application/json',
-    contentUrl: 'https://levois.fr/data/dvf-market-summary.json',
-  },
-};
-
-const coveredYears = marketSummary.period.toYear - marketSummary.period.fromYear + 1;
-const annualLocalMutations = Math.round(marketSummary.source.datasetMutationCount / coveredYears);
-const localMutationCount = marketSummary.source.datasetMutationCount;
+import WorldScene from '../components/WorldScene.astro';
+import Icon from '../components/WorldIcon.astro';
+import summary from '../data/dvf-market-summary.json';
+const houses=summary.series.find(s=>s.commune==='Lèves'&&s.propertyType==='Maison')!;
 ---
-
-<Layout
-  title="Accueil"
-  description="LEVOIS rend la valeur immobilière plus lisible pour les acheteurs comme pour les vendeurs de Lèves, Chartres et du bassin chartrain."
-  image="/images/hero-chartres-evidence-1536.webp"
-  homeV2={true}
-  designContract={designContract}
->
-  <script type="application/ld+json" set:html={JSON.stringify(marketDatasetSchema)} />
-  <div class="home-v2" data-home-v2>
-    <EvidenceHero summary={marketSummary} />
-
-    <div class="principles" aria-label="Ce que permet LEVOIS">
-      <span>Voir ce que le marché a réellement signé</span>
-      <span>Clarifier le besoin avant de chercher</span>
-      <span>Préparer une vente avant l’urgence</span>
-    </div>
-
-    <section class="local-proof" id="territoire" aria-labelledby="territory-title">
-      <div class="local-copy">
-        <h2 id="territory-title">Les prix du marché sont stables. Votre projet, lui, est unique.</h2>
-        <p class="local-lead">
-          À Lèves, les maisons comparables se sont vendues autour de 2 353 €/m² en 2025.
-          Ce chiffre donne un repère simple : il aide à situer un budget, une recherche ou un prix de départ.
-          Il ne suffit pas à décider seul.
-        </p>
-
-        <dl class="proof-line" aria-label="Lecture simple des données locales">
-          <div><dt>Ce que ça veut dire</dt><dd>Le marché local n’a presque pas bougé entre 2024 et 2025.</dd></div>
-          <div><dt>À quoi sert le €/m²</dt><dd>Comparer un bien avec des ventes réellement signées, pas avec une impression.</dd></div>
-          <div><dt>Ce qu’il manque</dt><dd>L’état du bien, la concurrence actuelle et les acheteurs actifs.</dd></div>
-        </dl>
-
-        <p class="proof-note">
-          Source : Demandes de valeurs foncières, DGFiP — données géolocalisées par Etalab.
-          Années civiles 2021–2025. Une vente voisine est un repère, jamais une estimation individuelle.
-        </p>
-        <div class="local-actions">
-          <a class="text-link" href="/votre-rue">Voir les ventes autour de mon adresse <span class="direction-mark" aria-hidden="true"></span></a>
-          <a class="text-link" href="/situer-ma-vente">Situer ma vente <span class="direction-mark" aria-hidden="true"></span></a>
-        </div>
-      </div>
-
-      <aside class="data-boundary" aria-labelledby="boundary-title">
-        <h3 id="boundary-title">Le chiffre donne le repère. Le rendez-vous donne le sens.</h3>
-        <p class="boundary-intro">Un prix au mètre carré répond à “où se situe le marché ?”. Il ne répond pas encore à “quoi faire pour mon projet ?”.</p>
-        <dl>
-          <div><dt>Y a-t-il des acheteurs actifs maintenant ?</dt><dd>À vérifier</dd></div>
-          <div><dt>Votre bien est-il mieux ou moins bien placé que les autres ?</dt><dd>À comparer</dd></div>
-          <div><dt>Que verra un acheteur en premier ?</dt><dd>À tester</dd></div>
-          <div><dt>Quelle décision change vraiment le résultat ?</dt><dd>À choisir</dd></div>
-        </dl>
-        <p class="boundary-conclusion">
-          C’est la suite logique : partir du repère public, ajouter votre situation, puis comparer les options.
-          Vous ne recevez pas une consigne. Vous comprenez ce que chaque choix implique.
-        </p>
-      </aside>
-    </section>
-
-    <section class="method" id="methode" aria-labelledby="method-title">
-      <div class="method-copy">
-        <h2 id="method-title">La méthode commence là où le chiffre s’arrête.</h2>
-        <p>
-          Je ne vous donne pas une consigne à suivre. Nous séparons les faits des suppositions, comparons les options
-          et rendons leurs conséquences lisibles. Vous gardez la décision ; elle devient simplement mieux informée.
-        </p>
-        <a class="text-link method-link" href="/methode">Comprendre la méthode complète <span class="direction-mark" aria-hidden="true"></span></a>
-      </div>
-      <div class="method-list" aria-label="Les trois gestes de la méthode">
-        <div class="method-row"><strong>Constater</strong><span>Ce que les données et le terrain montrent réellement.</span></div>
-        <div class="method-row"><strong>Interpréter</strong><span>Ce que ces signaux signifient pour votre situation.</span></div>
-        <div class="method-row"><strong>Décider</strong><span>Le scénario dont vous comprenez les bénéfices et les renoncements.</span></div>
-      </div>
-    </section>
-
-    <section class="checkpoints" id="marche" aria-labelledby="checkpoints-title">
-      <header class="checkpoints-intro">
-        <h2 id="checkpoints-title">Appliquer cette méthode à votre situation.</h2>
-        <p>
-          Le parcours organise d’abord vos faits, vos priorités et vos contraintes. Vous obtenez une première lecture.
-          Si vous souhaitez aller plus loin, cette synthèse devient directement la base de notre échange : vous ne repartez pas de zéro.
-        </p>
-      </header>
-
-      <div class="checkpoint-grid">
-        <article class="checkpoint checkpoint-buyer">
-          <div class="checkpoint-heading">
-            <span>Acheteur</span>
-            <strong>Clarifier ma recherche</strong>
-          </div>
-          <h3>Une recherche comprise ouvre plus de portes.</h3>
-          <p>
-            Budget, surface, secteur et priorités sont confrontés aux ventes réellement enregistrées.
-            Vous voyez ce qui est cohérent, ce qui demande un arbitrage et ce qui doit encore être vérifié sur le terrain.
-          </p>
-          <div class="checkpoint-proof">
-            <strong>+ 6 000</strong>
-            <span>
-              conseillers SAFTI en France. Si vous choisissez de poursuivre, Mouaad peut faire circuler une recherche
-              devenue précise et vous signaler certains biens avant leur diffusion lorsqu’ils sont partagés dans le réseau.
-            </span>
-          </div>
-          <a class="checkpoint-action" href="/ma-recherche">
-            <span><strong>Clarifier ma recherche</strong><small>Première lecture gratuite · coordonnées demandées seulement à la fin</small></span>
-            <span class="direction-mark" aria-hidden="true"></span>
-          </a>
-          <p class="checkpoint-source">
-            Taille du réseau : <a href="https://www.safti.fr/qui-sommes-nous" rel="noopener noreferrer">SAFTI, chiffres officiels 2026</a>.
-          </p>
-        </article>
-
-        <article class="checkpoint checkpoint-seller">
-          <div class="checkpoint-heading">
-            <span>Propriétaire</span>
-            <strong>Comprendre mon point de départ</strong>
-          </div>
-          <h3>Le meilleur moment pour préparer une vente, c’est avant d’avoir à vendre.</h3>
-          <p>
-            Vous clarifiez votre calendrier, les signaux déjà reçus et ce qui mérite réellement une décision.
-            Le résultat ne vous dicte rien : il montre ce que les données suggèrent et ce qu’un professionnel doit encore vérifier avec vous.
-          </p>
-          <div class="checkpoint-proof">
-            <strong>{annualLocalMutations.toLocaleString('fr-FR')}</strong>
-            <span>
-              mutations par an en moyenne dans les sept communes suivies, soit {localMutationCount.toLocaleString('fr-FR')}
-              ventes recensées par DVF entre {marketSummary.period.fromYear} et {marketSummary.period.toYear}.
-            </span>
-          </div>
-          <a class="checkpoint-action" href="/situer-ma-vente">
-            <span><strong>Comprendre ma situation</strong><small>Maintenant, dans quelques mois ou simplement pour anticiper</small></span>
-            <span class="direction-mark" aria-hidden="true"></span>
-          </a>
-          <a class="checkpoint-audit" href="/audit-annonce">Mon annonce est déjà en ligne&nbsp;: l’auditer →</a>
-          <p class="checkpoint-source">Une première lecture n’est ni une estimation automatique ni une obligation de vendre.</p>
-        </article>
-      </div>
-
-      <p class="checkpoint-bridge">
-        La stratégie de recherche ou de commercialisation vient après le diagnostic, jamais avant.
-        <strong>Vous comprenez chaque choix avant de le prendre.</strong>
-      </p>
-    </section>
-
-    <section class="human" id="mouaad" aria-labelledby="human-title">
-      <figure class="human-media">
-        <ResponsiveImage
-          slot="mouaad-rdv"
-          ratio="none"
-          sizes="(min-width: 900px) 44vw, 100vw"
-          class="home-human-image"
-        />
-      </figure>
-      <div class="human-copy">
-        <h2 id="human-title">Vous gardez la décision.<br />Je rends chaque choix lisible.</h2>
-        <p class="statement">
-          Au rendez-vous, je reprends la synthèse déjà construite, la confronte au terrain et vous présente les scénarios possibles,
-          leurs bénéfices, leurs risques et leurs renoncements. Rien n’est imposé : la stratégie retenue découle de ce que vous avez compris.
-        </p>
-        <p class="privacy-promise">La stratégie de commercialisation ou de recherche n’est proposée qu’après cette analyse.</p>
-        <div class="route-pair" aria-label="Choisir votre parcours avec Mouaad">
-          <a class="route route-buyer" href="/ma-recherche">
-            <span class="route-copy"><small>Acheteur</small><strong>Clarifier ma recherche</strong></span>
-            <span class="direction-mark" aria-hidden="true"></span>
-          </a>
-          <a class="route route-seller" href="/situer-ma-vente">
-            <span class="route-copy"><small>Propriétaire</small><strong>Créer mon repère</strong></span>
-            <span class="direction-mark" aria-hidden="true"></span>
-          </a>
-        </div>
-        <p class="role">
-          Mouaad Boullourou<br />
-          Conseiller immobilier SAFTI<br />
-          Lèves et alentours
-        </p>
-      </div>
-    </section>
+<Layout title="Accueil" description="Il y a une vie derrière chaque adresse. Explorez les ventes du bassin chartrain, clarifiez votre projet et avancez avec Mouaad Boullourou, conseiller immobilier SAFTI.">
+<section class="world-home-hero" aria-labelledby="world-home-title">
+  <WorldScene />
+  <div class="world-hero-heading">
+    <h1 id="world-home-title">Il y a une vie derrière<br /><span>chaque adresse.</span></h1>
+    <p>Acheter, vendre ou comprendre les ventes locales : commencez par votre situation.</p>
   </div>
+  <div class="world-marker world-marker-right">
+    <button type="button" aria-expanded="false" aria-controls="world-marker-detail"><span class="world-marker-dot"><Icon name="plus"/></span><span>Et derrière les prix ?</span></button>
+    <div id="world-marker-detail" class="world-marker-detail" hidden><strong>Des ventes, vraiment signées.</strong><p>Un premier repère pour comprendre ce qui se passe autour de vous.</p><a href="/votre-rue">Voir les faits <Icon /></a></div>
+  </div>
+  <div class="world-dock world-entry">
+    <div id="home-projects">
+      <h2 id="home-entry-title">Qu’est-ce qui vous amène ?</h2>
+      <nav class="world-entry-choices" aria-labelledby="home-entry-title">
+        <a href="/ma-recherche"><Icon name="home"/><span>Je cherche un logement</span><Icon /></a>
+        <a href="/situer-ma-vente"><Icon name="key"/><span>Je prépare ou je vends un bien</span><Icon /></a>
+        <a id="home-explore" href="/votre-rue"><Icon name="pin"/><span>Je consulte les ventes près de chez moi</span><Icon /></a>
+      </nav>
+    </div>
+    <div id="home-place" hidden>
+      <button id="home-project-back" class="world-entry-back" type="button"><Icon /><span>Changer de projet</span></button>
+      <form action="/votre-rue" method="get" data-world-address>
+        <div class="world-dock-input"><Icon name="pin"/><div><label for="home-adresse">Quelle adresse vous intéresse ?</label><input id="home-adresse" name="q" type="text" autocomplete="off" placeholder="Une rue, une adresse, une commune…" required minlength="3" maxlength="180" role="combobox" aria-expanded="false" aria-controls="home-address-list" aria-autocomplete="list"/><ul id="home-address-list" class="world-address-list" role="listbox" aria-label="Adresses proposées" hidden></ul></div></div>
+        <input type="hidden" name="src" value="accueil" />
+        <button type="submit" class="world-button">Voir les ventes <Icon /></button>
+      </form>
+      <p id="home-address-status" class="world-address-status" role="status" hidden></p>
+      <a class="world-entry-direct" href="/votre-rue">Accéder directement aux ventes locales <Icon /></a>
+    </div>
+    <p class="world-dock-trust"><Icon name="lock"/> Un premier éclairage. Sans coordonnées.</p>
+  </div>
+  <p class="world-scene-caption">Quartier illustré · une invitation à explorer le vôtre</p>
+  <a href="/carte" class="world-hero-person"><img src="/images/levois-mouaad-avatar.webp" alt="" width="44" height="44"/><span>Mouaad Boullourou<small>Votre conseiller SAFTI · bassin chartrain</small></span></a>
+</section>
+<div class="world-local-strip"><span>Lèves. Chartres. Et la vie autour.</span><a href="#votre-projet">Un premier fait local <span aria-hidden="true">↓</span></a></div>
+<section class="world-project" id="votre-projet" aria-labelledby="world-project-title">
+  <div class="world-section-opening"><h2 id="world-project-title">Un prix ne raconte<br /><span>jamais toute l’histoire.</span></h2><p>Les ventes récentes donnent un repère. L’adresse, l’état du bien et votre projet changent la lecture.</p></div>
+  <div class="world-local-reading">
+    <div class="world-local-fact">
+      <p>Maisons à Lèves · {houses.latest.year}</p>
+      <p class="world-local-price"><strong>{houses.latest.pricePerSqm.median.toLocaleString('fr-FR')}</strong><span>€/m² médian</span></p>
+      <p class="world-local-source">{houses.latest.count} ventes observées · source DVF</p>
+      <p class="world-local-boundary">Ce chiffre décrit les ventes observées.<br/>Il ne donne pas le prix de votre logement.</p>
+    </div>
+    <div class="world-local-context">
+      <h3>Ce que le chiffre ne dit pas.</h3>
+      <dl>
+        <div><dt>L’adresse</dt><dd>La rue, les trajets, la vie autour du logement.</dd></div>
+        <div><dt>L’état du bien</dt><dd>Ce qui est déjà prêt, ce qu’il faudra prévoir.</dd></div>
+        <div><dt>Votre projet</dt><dd>Vos priorités, votre calendrier et votre marge de choix.</dd></div>
+      </dl>
+    </div>
+  </div>
+  <div class="world-local-follow"><p>Une vente voisine n’est pas une estimation de votre bien.</p><a class="world-text-action" href="/votre-rue">Explorer les ventes locales <Icon /></a></div>
+</section>
+<section class="world-method" aria-labelledby="world-method-title">
+  <div class="world-method-title"><h2 id="world-method-title">Moins de flou.<br /><span>Plus de perspectives.</span></h2><p>Le chiffre n’est que le début.<br />Ce qui compte, c’est ce qu’il change pour vous.</p></div>
+  <div class="world-method-steps">
+    <article><span aria-hidden="true">01</span><div><h3>Voir les faits.</h3><p>Des ventes enregistrées, des sources accessibles et les limites de ce qu’on peut en déduire.</p></div></article>
+    <article><span aria-hidden="true">02</span><div><h3>Poser vos priorités.</h3><p>Votre budget, vos contraintes, les choses auxquelles vous tenez. Un projet prend forme.</p></div></article>
+    <article><span aria-hidden="true">03</span><div><h3>Choisir la suite.</h3><p>Vous repartez avec une lecture. Si vous le souhaitez, nous la confrontons ensemble au terrain.</p></div></article>
+  </div>
+</section>
+<section class="world-human" aria-labelledby="world-human-title">
+  <div class="world-human-photo"><img src="/images/levois-mouaad.webp" width="800" height="1202" loading="lazy" alt="Mouaad Boullourou"/><span>Mouaad Boullourou · Conseiller immobilier SAFTI</span></div>
+  <div class="world-human-copy"><h2 id="world-human-title">Et derrière LEVOIS,<br /><span>il y a Mouaad.</span></h2><p>Un outil peut rapprocher des chiffres. Pour comprendre ce que votre projet représente, il faut une conversation.</p><p>Je vous accompagne à Lèves, à Chartres et dans les communes voisines. Avec une lecture locale, des options expliquées et de la place pour vos questions.</p><a href="/carte" class="world-button world-button-dark">Faisons connaissance <Icon /></a><small>Votre rythme. Votre décision.</small></div>
+</section>
 </Layout>
-
 <style>
-  .home-v2 {
-    --paper: #f2f5ef;
-    --white: #ffffff;
-    --ink: #111522;
-    --ink-soft: #202635;
-    --blue: #243cff;
-    --lime: #d7ff42;
-    --terra: #a84531;
-    --line: #c9cec8;
-    --muted: #58615b;
-    --display: 'Archivo Black', sans-serif;
-    --sans: 'Public Sans', system-ui, sans-serif;
-    --header-h: 78px;
-    --page-pad: clamp(22px, 5vw, 76px);
-    overflow: clip;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    -webkit-font-smoothing: antialiased;
+  .world-local-reading { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; align-items: center; }
+  .world-local-fact { padding: 18px 0; }
+  .world-local-fact > p:first-child { font-size: 15px; color: var(--rp-muted); }
+  .world-local-price { display: flex; flex-wrap: wrap; gap: 8px 15px; align-items: baseline; margin: 14px 0 8px; }
+  .world-local-price strong { font-size: clamp(64px, 6.3vw, 88px); font-weight: 400; letter-spacing: -.04em; line-height: 1.1; color: var(--rp-accent); }
+  .world-local-price span { font-size: 17px; color: var(--rp-muted); }
+  .world-local-source { font-size: 13px; color: var(--rp-muted); }
+  .world-local-boundary { margin-top: 27px; color: var(--rp-muted); font-size: 14px; line-height: 1.8; }
+  .world-local-context { border-left: 1px solid var(--rp-line); padding-left: 40px; }
+  .world-local-context h3 { margin: 0 0 22px; font-size: 25px; line-height: 1.3; font-weight: 500; letter-spacing: -.02em; }
+  .world-local-context dl { margin: 0; }
+  .world-local-context dl > div + div { margin-top: 20px; }
+  .world-local-context dt { font-size: 15px; font-weight: 500; }
+  .world-local-context dd { margin: 4px 0 0; color: var(--rp-muted); font-size: 14px; line-height: 1.6; }
+  .world-local-follow { margin-top: 40px; padding-top: 23px; border-top: 1px solid var(--rp-line); display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+  .world-local-follow p { color: var(--rp-muted); font-size: 13px; }
+  @media (max-width: 700px) {
+    .world-local-reading { grid-template-columns: 1fr; gap: 36px; }
+    .world-local-fact { padding: 0; }
+    .world-local-context { border-left: 0; padding-left: 0; }
+    .world-local-context h3 { font-size: 23px; }
+    .world-local-follow { display: block; margin-top: 30px; }
+    .world-local-follow .world-text-action { margin-top: 12px; font-size: 14px; }
   }
-
-  .home-v2 *, .home-v2 *::before, .home-v2 *::after { box-sizing: border-box; }
-  .home-v2 a { color: inherit; }
-  .home-v2 h1, .home-v2 h2, .home-v2 p, .home-v2 figure, .home-v2 dl, .home-v2 dd { margin: 0; }
-
-  .route-pair {
-    width: 100%;
-    max-width: 680px;
-    margin-top: 38px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2px;
-    border: 2px solid var(--ink);
-    background: var(--ink);
+  /* Accueil uniquement : la situation précède l’adresse. */
+  .world-hero-heading > p { max-width: 690px; padding-inline: 12px; }
+  .world-entry.world-dock { width: min(940px, calc(100% - 48px)); padding: 22px 22px 15px; }
+  .world-entry h2 { margin: 0 0 17px; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -.02em; }
+  .world-entry-choices { display: grid; grid-template-columns: 1fr 1fr 1.12fr; gap: 8px; }
+  .world-entry-choices > :is(a, button) { display: grid; grid-template-columns: 22px 1fr 18px; align-items: center; gap: 11px; min-height: 92px; padding: 15px 14px; border: 0; border-radius: var(--levois-action-radius); background: transparent; color: var(--rp-ink); font: 500 15px/1.4 Satoshi, sans-serif; text-align: left; text-decoration: none; transition: background 180ms; }
+  .world-entry-choices > :first-child { background: var(--levois-selected); }
+  .world-entry-choices > :is(a, button):hover { background: var(--levois-selected); }
+  .world-entry-choices > :is(a, button) > :global(svg) { color: var(--rp-accent); }
+  .world-entry-choices > :is(a, button) > :global(svg:last-child) { width: 18px; height: 18px; }
+  .world-entry-choices > :is(a, button):focus-visible { outline-offset: 2px; }
+  .world-entry .world-dock-trust { margin-top: 15px; }
+  .world-entry-back { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0; margin: -6px 0 10px; border: 0; background: transparent; color: var(--rp-accent); font-size: 13px; }
+  .world-entry-back > :global(svg) { width: 17px; transform: rotate(180deg); }
+  .world-entry-direct { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; margin-top: 5px; color: var(--rp-accent); font-size: 12px; text-decoration: none; }
+  .world-entry-direct > :global(svg) { width: 16px; }
+  .world-entry-direct:hover, .world-entry-back:hover { text-decoration: underline; }
+  @media (max-width: 900px) {
+    .world-entry.world-dock { width: min(680px, calc(100% - 48px)); }
+    .world-entry-choices { grid-template-columns: 1fr; gap: 0; }
+    .world-entry-choices > :is(a, button) { min-height: 62px; padding: 12px 14px; }
+    .world-entry-choices > :last-child { border-top: 1px solid var(--rp-line); border-radius: 0; }
   }
-
-  .route {
-    min-height: 82px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 15px 20px;
-    background: var(--paper);
-    text-decoration: none;
-    transition: background-color .2s ease-out, color .2s ease-out;
+  @media (max-width: 600px) {
+    .world-entry.world-dock { width: calc(100% - 32px); padding: 18px 16px 14px; }
+    .world-entry h2 { font-size: 20px; margin-bottom: 12px; }
+    .world-entry-choices > :is(a, button) { min-height: 61px; gap: 10px; padding: 12px 10px; font-size: 14px; }
+    .world-entry .world-dock-trust { margin-top: 12px; }
   }
-  .route-buyer { background: var(--ink); color: var(--lime) !important; }
-  .route-buyer:hover { background: var(--lime); color: var(--ink) !important; }
-  .route-seller { background: var(--blue); color: var(--paper) !important; }
-  .route-seller:hover { background: var(--ink); color: var(--lime) !important; }
-  .route-copy { display: grid; gap: 4px; }
-  .route-copy small { color: currentColor; font-size: 12px; line-height: 1; opacity: .66; }
-  .route-copy strong { font-size: 15px; line-height: 1.25; font-weight: 650; }
-  .route .direction-mark,
-  .checkpoint-action .direction-mark { animation: cta-cue 2.8s cubic-bezier(.16,1,.3,1) infinite; }
-
-  .direction-mark {
-    position: relative;
-    width: 29px;
-    height: 12px;
-    flex: 0 0 29px;
+  @media (max-width: 359px) {
+    .world-entry.world-dock { width: calc(100% - 24px); padding-inline: 12px; }
+    .world-entry h2 { font-size: 19px; }
+    .world-entry-choices > :is(a, button) { grid-template-columns: 20px 1fr 16px; gap: 8px; padding-inline: 8px; }
   }
-  .direction-mark::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 2px;
-    top: 5px;
-    height: 2px;
-    background: currentColor;
+  @media (prefers-reduced-motion: no-preference) {
+    #home-place:not([hidden]) { animation: home-place-reveal 220ms var(--levois-ease) both; }
+    @keyframes home-place-reveal { from { opacity: .5; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
   }
-  .direction-mark::after {
-    content: '';
-    position: absolute;
-    right: 1px;
-    top: 1px;
-    width: 8px;
-    height: 8px;
-    border-top: 2px solid currentColor;
-    border-right: 2px solid currentColor;
-    transform: rotate(45deg);
-  }
-
-  @keyframes cta-cue {
-    0%, 68%, 100% { transform: translateX(0); }
-    76% { transform: translateX(7px); }
-    84% { transform: translateX(2px); }
-    90% { transform: translateX(7px); }
-  }
-
-  .principles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-top: 1px solid var(--ink);
-    border-bottom: 1px solid var(--ink);
-  }
-  .principles span {
-    min-height: 66px;
-    display: flex;
-    align-items: center;
-    padding: 15px var(--page-pad);
-    border-right: 1px solid var(--ink);
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-  .principles span:nth-child(2) { color: var(--terra); }
-  .principles span:last-child { border-right: 0; }
-
-  .checkpoints {
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .checkpoints,
-  .method,
-  .local-proof,
-  .human { scroll-margin-top: calc(var(--header-h) + 1px); }
-  .checkpoints h2,
-  .method h2,
-  .local-copy h2,
-  .human-copy h2 {
-    max-width: 920px;
-    font-family: var(--sans);
-    font-size: clamp(42px, 5.5vw, 76px);
-    font-weight: 800;
-    line-height: .98;
-    letter-spacing: -.03em;
-    text-wrap: balance;
-  }
-  .checkpoints-intro {
-    display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
-    align-items: end;
-    gap: clamp(48px, 8vw, 130px);
-    padding: clamp(78px, 8vw, 124px) var(--page-pad);
-    border-bottom: 1px solid rgba(242,245,239,.38);
-  }
-  .checkpoints-intro p {
-    max-width: 560px;
-    color: #d5dad4;
-    font-size: clamp(18px, 1.7vw, 23px);
-    line-height: 1.55;
-  }
-  .checkpoint-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .checkpoint {
-    min-height: 650px;
-    display: flex;
-    flex-direction: column;
-    padding: clamp(50px, 5vw, 78px) var(--page-pad);
-  }
-  .checkpoint-buyer { background: var(--ink-soft); color: var(--paper); }
-  .checkpoint-seller { background: var(--blue); color: var(--paper); }
-  .checkpoint-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid currentColor;
-    font-size: 12px;
-    line-height: 1.25;
-  }
-  .checkpoint-heading span { font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-  .checkpoint-heading strong { font-weight: 500; opacity: .72; }
-  .checkpoint h3 {
-    max-width: 720px;
-    margin: clamp(34px, 4.3vw, 62px) 0 0;
-    font-size: clamp(35px, 3.8vw, 58px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -.03em;
-    text-wrap: balance;
-  }
-  .checkpoint > p:not(.checkpoint-source) {
-    max-width: 680px;
-    margin-top: 28px;
-    color: rgba(242,245,239,.82);
-    font-size: clamp(17px, 1.45vw, 21px);
-    line-height: 1.55;
-  }
-  .checkpoint-proof {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(20px, 3vw, 44px);
-    margin-top: auto;
-    padding: 28px 0;
-    border-top: 1px solid currentColor;
-    border-bottom: 1px solid currentColor;
-  }
-  .checkpoint-proof > strong {
-    color: var(--lime);
-    font-family: var(--display);
-    font-size: clamp(42px, 4.5vw, 68px);
-    font-weight: 400;
-    line-height: .9;
-    letter-spacing: -.04em;
-    white-space: nowrap;
-  }
-  .checkpoint-proof span { font-size: 14px; line-height: 1.5; }
-  .checkpoint-action {
-    min-height: 92px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    margin-top: 26px;
-    padding: 18px 22px;
-    background: var(--lime);
-    color: var(--ink) !important;
-    text-decoration: none;
-    transition: background-color .2s ease-out, color .2s ease-out;
-  }
-  .checkpoint-seller .checkpoint-action { background: var(--paper); color: var(--blue) !important; }
-  .checkpoint-action:hover,
-  .checkpoint-seller .checkpoint-action:hover { background: var(--ink); color: var(--lime) !important; }
-  .checkpoint-action > span:first-child { display: grid; gap: 4px; }
-  .checkpoint-action strong { font-size: clamp(18px, 1.65vw, 24px); line-height: 1.1; }
-  .checkpoint-action small { font-size: 12px; opacity: .72; }
-  .checkpoint-audit {
-    width: max-content;
-    max-width: 100%;
-    min-height: 44px;
-    margin-top: 10px;
-    display: inline-flex;
-    align-items: center;
-    color: var(--paper);
-    font-size: 14px;
-    font-weight: 700;
-    text-underline-offset: 4px;
-  }
-  .checkpoint-audit:hover { color: var(--lime); }
-  .checkpoint-source {
-    margin-top: 14px !important;
-    color: rgba(242,245,239,.67);
-    font-size: 10px;
-    line-height: 1.5;
-  }
-  .checkpoint-source a { text-underline-offset: 3px; }
-  .checkpoint-bridge {
-    padding: 30px var(--page-pad);
-    background: var(--lime);
-    color: var(--ink);
-    font-size: clamp(18px, 1.75vw, 25px);
-    line-height: 1.4;
-    text-align: center;
-  }
-
-  .method { min-height: 560px; display: grid; grid-template-columns: .86fr 1.14fr; background: var(--paper); color: var(--ink); }
-  .method-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(64px, 8vw, 112px) var(--page-pad); }
-  .method-copy p { max-width: 580px; margin-top: 30px; color: var(--muted); font-size: 19px; line-height: 1.58; }
-  .method-link { width: max-content; max-width: 100%; margin-top: 28px; }
-  .method-list { display: grid; grid-template-rows: repeat(3, 1fr); }
-  .method-row { display: grid; grid-template-columns: minmax(120px, .45fr) 1fr; align-items: center; gap: 28px; padding: 30px clamp(28px, 5vw, 68px); border-bottom: 1px solid var(--ink); }
-  .method-row:nth-child(1) { background: var(--blue); color: var(--paper); }
-  .method-row:nth-child(2) { background: var(--ink-soft); color: var(--paper); }
-  .method-row:last-child { border-bottom: 0; background: var(--lime); color: var(--ink); }
-  .method-row strong { font-size: 16px; font-weight: 700; }
-  .method-row span { font-size: clamp(19px, 2vw, 28px); font-weight: 600; line-height: 1.25; }
-
-  .local-proof { min-height: 700px; display: grid; grid-template-columns: 1fr 1fr; background: var(--paper); }
-  .local-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(76px, 8vw, 122px) var(--page-pad); }
-  .local-lead { max-width: 680px; margin-top: 32px; font-size: clamp(18px, 1.65vw, 22px); line-height: 1.58; }
-  .proof-line { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 48px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
-  .proof-line div { padding: 19px 18px 19px 0; border-right: 1px solid var(--ink); }
-  .proof-line div + div { padding-left: 18px; }
-  .proof-line div:last-child { border-right: 0; }
-  .proof-line dt { color: var(--muted); font-size: 12px; line-height: 1.35; }
-  .proof-line dd { margin-top: 8px; font-size: clamp(17px, 1.55vw, 23px); font-weight: 700; line-height: 1.18; letter-spacing: -.02em; }
-  .proof-note { max-width: 660px; margin-top: 26px; padding-left: 16px; border-left: 1px solid var(--terra); color: var(--muted); font-size: 13px; line-height: 1.6; }
-  .local-actions { display: flex; flex-wrap: wrap; gap: 18px 30px; margin-top: 30px; }
-  .text-link { min-height: 44px; display: inline-flex; align-items: center; gap: 16px; font-size: 14px; font-weight: 650; text-underline-offset: 5px; }
-  .text-link:hover { color: var(--blue); }
-  .text-link .direction-mark { width: 24px; flex-basis: 24px; }
-
-  .data-boundary {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(70px, 8vw, 120px) var(--page-pad);
-    background: var(--ink);
-    color: var(--paper);
-  }
-  .data-boundary h3 {
-    max-width: 680px;
-    margin: 0;
-    font-size: clamp(34px, 4vw, 58px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -.03em;
-    text-wrap: balance;
-  }
-  .boundary-intro { max-width: 620px; margin-top: 22px !important; color: #d5dad4; font-size: 16px; line-height: 1.5; }
-  .data-boundary dl { margin: 36px 0 0; border-top: 1px solid rgba(242,245,239,.5); }
-  .data-boundary dl div {
-    min-height: 74px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 24px;
-    border-bottom: 1px solid rgba(242,245,239,.35);
-  }
-  .data-boundary dt { font-size: clamp(16px, 1.55vw, 22px); line-height: 1.25; }
-  .data-boundary dd { color: var(--lime); font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
-  .boundary-conclusion {
-    max-width: 590px;
-    margin-top: 42px !important;
-    padding: 24px;
-    background: var(--blue);
-    font-size: clamp(18px, 1.7vw, 24px);
-    font-weight: 700;
-    line-height: 1.35;
-    letter-spacing: -.02em;
-  }
-
-  .human { min-height: 700px; display: grid; grid-template-columns: minmax(360px, .88fr) 1.12fr; background: var(--white); }
-  .human-media { min-height: 700px; overflow: hidden; background: var(--ink); }
-  :global(.home-human-image) { width: 100%; height: 100%; }
-  :global(.home-human-image img) { filter: saturate(.9) contrast(1.03); }
-  .human-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(70px, 8vw, 120px) var(--page-pad); }
-  .human-copy .statement { max-width: 710px; margin-top: 34px; font-size: clamp(20px, 2vw, 28px); line-height: 1.45; }
-  .privacy-promise { max-width: 600px; margin-top: 22px; padding-left: 16px; border-left: 1px solid var(--terra); color: var(--muted); font-size: 14px; line-height: 1.55; }
-  .human-copy .route-pair { margin-top: 38px; }
-  .human-copy .role { margin-top: 28px; color: var(--muted); font-size: 13px; line-height: 1.55; }
-
-  .home-v2 :focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
-  .home-v2 .route-seller:focus-visible,
-  .home-v2 .route-buyer:focus-visible { outline-color: var(--lime); }
-
-  @media (max-width: 1100px) {
-    .proof-line { grid-template-columns: 1fr; }
-    .proof-line div,
-    .proof-line div + div { padding: 14px 0; border-right: 0; border-bottom: 1px solid var(--line); }
-    .proof-line div:last-child { border-bottom: 0; }
-  }
-
-  @media (max-width: 980px) {
-    .home-v2 { --header-h: 68px; }
-    .principles { grid-template-columns: 1fr; }
-    .principles span { border-right: 0; border-bottom: 1px solid var(--ink); }
-    .principles span:last-child { border-bottom: 0; }
-    .checkpoints-intro,
-    .checkpoint-grid { grid-template-columns: 1fr; }
-    .checkpoints-intro { align-items: start; }
-    .checkpoint { min-height: 620px; }
-    .method,
-    .local-proof,
-    .human { grid-template-columns: 1fr; }
-    .method-list { min-height: 440px; }
-    .data-boundary { min-height: 580px; }
-    .human-media { min-height: 600px; max-height: 760px; }
-  }
-
-  @media (max-width: 620px) {
-    .home-v2 { --page-pad: 20px; }
-    .route-pair { grid-template-columns: 1fr; }
-    .route { min-height: 70px; }
-    .checkpoints-intro,
-    .method-copy,
-    .local-copy,
-    .human-copy { padding-left: 20px; padding-right: 20px; }
-    .checkpoints h2,
-    .method h2,
-    .local-copy h2,
-    .human-copy h2 { font-size: clamp(40px, 12vw, 56px); }
-    .method-row { grid-template-columns: 1fr; align-content: center; gap: 8px; padding: 26px 20px; }
-    .checkpoint { min-height: auto; padding: 52px 20px; }
-    .checkpoint-proof { grid-template-columns: 1fr; margin-top: 44px; }
-    .checkpoint-action { min-height: 88px; padding: 16px 18px; }
-    .data-boundary { min-height: 0; padding: 70px 20px; }
-    .human-media { min-height: 520px; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .route .direction-mark,
-    .checkpoint-action .direction-mark { animation: none; }
-  }
-
 </style>
+<script>
+  import '../scripts/home-address';
+  const marker=document.querySelector<HTMLButtonElement>('.world-marker button');const detail=document.getElementById('world-marker-detail');
+  marker?.addEventListener('click',()=>{const opened=marker.getAttribute('aria-expanded')==='true';marker.setAttribute('aria-expanded',String(!opened));if(detail)detail.hidden=opened;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&detail&&!detail.hidden){detail.hidden=true;marker?.setAttribute('aria-expanded','false');marker?.focus();}});
+</script>

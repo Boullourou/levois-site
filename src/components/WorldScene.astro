@@ -1,0 +1,10 @@
+---
+interface Props { compact?: boolean; }
+const {compact=false}=Astro.props;
+---
+<div class:list={['world-scene',{'world-scene-compact':compact}]}>
+  <picture>
+    <source type="image/avif" srcset="/images/levois-quartier-680.avif 680w, /images/levois-quartier-1000.avif 1000w, /images/levois-quartier-1672.avif 1672w" sizes="100vw" />
+    <img src="/images/levois-quartier-1672.webp" width="1672" height="941" alt="Illustration d’un quartier miniature : maisons de pierre, jardins et rues arborées." fetchpriority="high" decoding="async" />
+  </picture>
+</div>

@@ -1,0 +1,67 @@
+---
+import CockpitLayout from '../../layouts/CockpitLayout.astro';
+---
+
+<CockpitLayout
+  title="Réglages"
+  active="settings"
+  eyebrow="Configuration privée"
+  description="Gérer les profils conseillers nécessaires aux Accords TIM."
+>
+  <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-dialog-open="advisor-dialog">
+    Ajouter un conseiller
+  </button>
+
+  <aside class="cockpit-privacy-callout">
+    <span aria-hidden="true">●</span>
+    <div>
+      <strong>Profils internes au cockpit</strong>
+      <p>Le profil opérateur courant représente Mouaad dans les répartitions TIM. Ne créez qu’un seul profil opérateur courant actif.</p>
+    </div>
+  </aside>
+
+  <section class="cockpit-list-root" data-advisor-list aria-live="polite" aria-busy="true">
+    <div class="cockpit-screen-state is-loading" role="status">
+      <span class="cockpit-spinner" aria-hidden="true"></span>
+      <p>Chargement des profils conseillers…</p>
+    </div>
+  </section>
+
+  <dialog class="cockpit-dialog" id="advisor-dialog" aria-labelledby="advisor-dialog-title">
+    <form method="dialog" class="cockpit-dialog-frame" data-advisor-form>
+      <header>
+        <div>
+          <p class="cockpit-kicker">Profil conseiller</p>
+          <h2 id="advisor-dialog-title">Ajouter un conseiller</h2>
+        </div>
+        <button class="cockpit-icon-button" type="button" data-dialog-close aria-label="Fermer">×</button>
+      </header>
+
+      <div class="cockpit-dialog-body cockpit-fields">
+        <label>
+          <span>Nom affiché <b aria-hidden="true">*</b></span>
+          <input name="displayName" maxlength="200" autocomplete="off" required />
+        </label>
+        <label>
+          <span>Réseau facultatif</span>
+          <input name="network" maxlength="100" autocomplete="organization" placeholder="SAFTI" />
+        </label>
+        <label class="cockpit-check-field">
+          <input name="isCurrentOperator" type="checkbox" />
+          <span><strong>Mon profil / opérateur courant</strong><br />Utiliser ce conseiller comme profil de Mouaad dans les Accords TIM.</span>
+        </label>
+        <p class="cockpit-form-hint">Les profils sont privés et ne sont jamais intégrés aux pages publiques.</p>
+      </div>
+
+      <div class="cockpit-form-error" data-dialog-error role="alert" hidden></div>
+      <footer>
+        <button class="cockpit-button cockpit-button-quiet" type="button" data-dialog-close>Annuler</button>
+        <button class="cockpit-button cockpit-button-primary" type="submit">Ajouter le conseiller</button>
+      </footer>
+    </form>
+  </dialog>
+</CockpitLayout>
+
+<script>
+  import '../../scripts/cockpit/settings';
+</script>

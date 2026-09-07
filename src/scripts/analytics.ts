@@ -1,103 +1,46 @@
-import posthog from 'posthog-js/dist/module.slim';
+import {ANALYTICS_CONSENT_KEY,readAnalyticsChoice,writeAnalyticsChoice,type AnalyticsChoice} from '../lib/analytics-consent';
 import {
+  cleanAnalyticsUrl,
   cleanPath,
   isAuditEvent,
-  isFormResultEvent,
   journeyForPath,
   linkPlacement,
   safeAuditProperties,
-  safeFormResultProperties,
-  sanitizeAutomaticProperties,
 } from '../lib/analytics';
-import {
-  ATTRIBUTION_STORAGE_KEY,
-  attributionFromVisit,
-  mergeAttribution,
-  parseStoredAttribution,
-} from '../lib/attribution';
 
 const config = document.querySelector<HTMLElement>('[data-levois-analytics]');
 const token = config?.dataset.token?.trim();
 const apiHost = config?.dataset.host?.trim() || 'https://eu.i.posthog.com';
-const consentKey = 'levois_analytics_consent_v1';
-const legacyOptOutKey = 'levois_analytics_opt_out';
-const globalPrivacyControl = (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true;
-
-type AnalyticsConsent = 'accepted' | 'refused' | 'unset';
-
-function readConsent(): AnalyticsConsent {
-  if (globalPrivacyControl) return 'refused';
-  try {
-    if (localStorage.getItem(legacyOptOutKey) === '1') return 'refused';
-    const value = localStorage.getItem(consentKey);
-    return value === 'accepted' || value === 'refused' ? value : 'unset';
-  } catch {
-    return 'refused';
-  }
+const dialog=document.getElementById('analytics-preferences') as HTMLDialogElement|null;
+const privacySignal=()=>navigator.doNotTrack==='1'||(navigator as Navigator&{globalPrivacyControl?:boolean}).globalPrivacyControl===true;
+let memoryChoice:AnalyticsChoice|null=null;
+const getChoice=()=>{try{const raw=localStorage.getItem(ANALYTICS_CONSENT_KEY);return raw===null?memoryChoice:readAnalyticsChoice(raw)}catch{return memoryChoice}};
+let started=false, posthogInstance:typeof import('posthog-js/dist/module.slim').default|null=null;
+function allowed(){return Boolean(token)&&getChoice()==='accepted'&&!privacySignal()}
+function setPreferenceStatus(){
+ const active=allowed();
+ document.querySelectorAll<HTMLElement>('[data-analytics-status]').forEach(el=>{el.textContent=privacySignal()?'Votre navigateur demande de ne pas être suivi. La mesure reste désactivée.':!token?'La mesure d’audience n’est pas configurée sur cette version.':active?'La mesure d’audience est activée. Vous pouvez retirer votre accord à tout moment.':'La mesure d’audience est désactivée.'});
+ document.querySelectorAll<HTMLButtonElement>('[data-analytics-choice]').forEach(el=>{el.setAttribute('aria-pressed',String(el.dataset.analyticsChoice===getChoice()));el.disabled=el.dataset.analyticsChoice==='accepted'&&(!token||privacySignal())});
 }
-
-function writeConsent(value: Exclude<AnalyticsConsent, 'unset'>) {
-  try {
-    localStorage.setItem(consentKey, value);
-    if (value === 'refused') localStorage.setItem(legacyOptOutKey, '1');
-    else localStorage.removeItem(legacyOptOutKey);
-  } catch {
-    // Sans stockage de la préférence, la mesure reste désactivée.
-  }
+async function choose(choice:AnalyticsChoice){
+ memoryChoice=choice;try{localStorage.setItem(ANALYTICS_CONSENT_KEY,writeAnalyticsChoice(choice));localStorage.removeItem('levois_analytics_opt_out')}catch{}
+ // Cookieless always ignores SDK opt-in/out: the application consent gate owns capture.
+ setPreferenceStatus();if(allowed())await startAnalytics();
 }
-
-try {
-  const current = attributionFromVisit(window.location.href, document.referrer);
-  const first = parseStoredAttribution(sessionStorage.getItem(ATTRIBUTION_STORAGE_KEY));
-  sessionStorage.setItem(ATTRIBUTION_STORAGE_KEY, JSON.stringify(mergeAttribution(first, current)));
-} catch {
-  // L'attribution bornée est facultative et n'empêche jamais la navigation.
-}
-
-function setPreferenceStatus() {
-  const preference = readConsent();
-  document.querySelectorAll<HTMLElement>('[data-analytics-status]').forEach((node) => {
-    node.textContent = !token
-      ? 'La mesure d’audience n’est pas active sur ce site.'
-      : globalPrivacyControl
-      ? 'La mesure d’audience est désactivée par votre signal de confidentialité.'
-      : preference === 'accepted'
-      ? 'La mesure d’audience est activée avec votre accord sur cet appareil.'
-      : preference === 'refused'
-      ? 'La mesure d’audience est refusée sur cet appareil.'
-      : 'La mesure d’audience reste désactivée tant que vous ne l’acceptez pas.';
-  });
-  document.querySelectorAll<HTMLButtonElement>('[data-analytics-accept]').forEach((button) => {
-    button.disabled = !token || globalPrivacyControl || preference === 'accepted';
-  });
-  document.querySelectorAll<HTMLButtonElement>('[data-analytics-refuse]').forEach((button) => {
-    button.disabled = globalPrivacyControl || preference === 'refused';
-  });
-}
-
-document.addEventListener('click', (event) => {
-  const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-analytics-accept], [data-analytics-refuse]');
-  if (!button) return;
-  if (button.matches('[data-analytics-accept]')) {
-    writeConsent('accepted');
-    window.location.reload();
-  } else {
-    const wasActive = readConsent() === 'accepted';
-    writeConsent('refused');
-    // En mode cookieless "always", PostHog ignore opt_out_capturing(). Le
-    // rechargement détruit donc l'instance après que le garde de capture a été
-    // fermé ; aucun événement de sortie n'est émis pendant ce rechargement.
-    if (token && wasActive) {
-      window.location.reload();
-      return;
-    }
-    setPreferenceStatus();
-  }
+document.addEventListener('click',event=>{const el=event.target as Element|null;
+ if(el?.closest('[data-analytics-settings]')){setPreferenceStatus();dialog?.showModal();}
+ const button=el?.closest<HTMLElement>('[data-analytics-choice]');if(button){void choose(button.dataset.analyticsChoice as AnalyticsChoice);}
 });
-
-setPreferenceStatus();
-
-if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
+window.addEventListener('storage',event=>{if(event.key===ANALYTICS_CONSENT_KEY){memoryChoice=null;setPreferenceStatus();if(allowed())void startAnalytics();}});
+setPreferenceStatus();if(allowed())void startAnalytics();
+async function startAnalytics(){
+ if(!allowed())return;
+ if(started)return;
+ started=true;
+ let posthog:typeof import('posthog-js/dist/module.slim').default;
+ try{posthog=(await import('posthog-js/dist/module.slim')).default;}catch{started=false;return}
+ if(!allowed()){started=false;return}
+ posthogInstance=posthog;
   posthog.init(token, {
     api_host: apiHost,
     ui_host: 'https://eu.posthog.com',
@@ -106,7 +49,7 @@ if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
     person_profiles: 'never',
     autocapture: false,
     capture_pageview: true,
-    capture_pageleave: false,
+    capture_pageleave: true,
     capture_dead_clicks: false,
     capture_exceptions: false,
     capture_heatmaps: false,
@@ -117,14 +60,28 @@ if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
     mask_all_text: true,
     mask_all_element_attributes: true,
     before_send(event) {
+      if (!allowed()) return null;
       if (!event?.properties) return event;
-      event.properties = sanitizeAutomaticProperties(event.properties, window.location.pathname);
+      const currentUrl = cleanAnalyticsUrl(event.properties.$current_url);
+      const referrer = cleanAnalyticsUrl(event.properties.$referrer);
+      if (currentUrl) event.properties.$current_url = currentUrl;
+      else delete event.properties.$current_url;
+      if (referrer) event.properties.$referrer = referrer;
+      else delete event.properties.$referrer;
+      delete event.properties.$referring_domain;
+      // Explicit allowlist: SDK acquisition metadata can otherwise include query strings.
+      const permitted=new Set(['token','distinct_id','$session_id','$window_id','$insert_id','$lib','$lib_version','$browser','$browser_version','$os','$os_version','$device_type','$screen_height','$screen_width','$viewport_height','$viewport_width','$current_url','$referrer','$timestamp','page_path','journey','source','signal','result','step','step_name','selected_journey','consent_type','placement','destination_path','link_type','form_name','active_seconds','scroll_percent','max_scroll_percent','duration_seconds','exit_reason']);
+      for(const key of Object.keys(event.properties))if(!permitted.has(key))delete event.properties[key];
+      event.properties.$cookieless_mode = true;
+      event.properties.$process_person_profile = false;
+      event.properties.page_path = cleanPath(window.location.pathname);
+      event.properties.journey = journeyForPath(window.location.pathname);
       return event;
     },
   });
 
   const capture = (event: string, properties: Record<string, unknown> = {}) => {
-    if (readConsent() !== 'accepted' || globalPrivacyControl) return;
+    if(!allowed())return;
     posthog.capture(event, {
       ...properties,
       page_path: cleanPath(window.location.pathname),
@@ -138,10 +95,25 @@ if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
     capture(detail.event, safeAuditProperties(detail.event, detail));
   });
 
-  window.addEventListener('levois:form-result', (rawEvent) => {
+  window.addEventListener('levois:journey', (rawEvent) => {
     const detail = (rawEvent as CustomEvent<Record<string, unknown>>).detail ?? {};
-    if (!isFormResultEvent(detail.event)) return;
-    capture(detail.event, safeFormResultProperties(detail));
+    const event = typeof detail.event === 'string' ? detail.event : '';
+    const allowed = new Set([
+      'journey_started',
+      'journey_step_completed',
+      'journey_completed',
+      'result_viewed',
+      'contact_consent_submitted',
+      'matching_consent_submitted',
+      'reading_consent_submitted',
+    ]);
+    if (!allowed.has(event)) return;
+    const safe: Record<string, string | number | boolean> = {};
+    if (typeof detail.step === 'number') safe.step = detail.step;
+    if (typeof detail.step_name === 'string') safe.step_name = detail.step_name.slice(0, 80);
+    if (typeof detail.selected_journey === 'string') safe.selected_journey = detail.selected_journey.slice(0, 40);
+    if (typeof detail.consent_type === 'string') safe.consent_type = detail.consent_type.slice(0, 40);
+    capture(event, safe);
   });
 
   document.addEventListener('click', (event) => {
@@ -156,6 +128,16 @@ if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
       return;
     }
     const isInternal = destination.origin === window.location.origin;
+    const selectedJourney = link.dataset.journey;
+    if (selectedJourney) {
+      const routeProperties = {
+        selected_journey: selectedJourney,
+        placement: linkPlacement(link),
+        destination_path: isInternal ? cleanPath(destination.pathname) : destination.hostname,
+      };
+      capture('route_selected', routeProperties);
+      capture('levois_journey_selected', routeProperties);
+    }
     capture('levois_navigation_clicked', {
       placement: linkPlacement(link),
       link_type: isInternal ? 'internal' : destination.protocol.replace(':', ''),
@@ -173,7 +155,7 @@ if (token && readConsent() === 'accepted' && !globalPrivacyControl) {
   document.addEventListener('submit', (event) => {
     const form = event.target as HTMLFormElement | null;
     if (!form?.matches('form')) return;
-    capture('levois_form_attempted', { form_name: form.dataset.analyticsForm || cleanPath(window.location.pathname) });
+    capture('levois_form_submitted', { form_name: form.dataset.analyticsForm || cleanPath(window.location.pathname) });
   });
 
   let activeMilliseconds = 0;

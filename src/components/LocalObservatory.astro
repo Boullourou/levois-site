@@ -1,0 +1,62 @@
+---
+import summary from '../data/dvf-market-summary.json';
+import LocalTerritoryMap from './LocalTerritoryMap.astro';
+const initial = summary.series[0];
+const fmt = (n: number) => n.toLocaleString('fr-FR');
+---
+<section class="rp-observatory" aria-labelledby="rp-local-title">
+  <header class="rp-observatory-head">
+    <h2 id="rp-local-title">Le marché, à hauteur de quartier.</h2>
+    <p>Ventes enregistrées · {summary.period.fromYear}–{summary.period.toYear}<br />Source DVF · DGFiP / Etalab</p>
+  </header>
+  <div class="rp-data-controls">
+    <div><label for="rp-commune">Commune</label><select id="rp-commune">{summary.selectors.communes.map(c=><option>{c}</option>)}</select></div>
+    <fieldset><legend>Type de bien</legend><div class="rp-segment"><button type="button" data-local-type="Maison" aria-pressed="true">Maisons</button><button type="button" data-local-type="Appartement" aria-pressed="false">Appartements</button></div></fieldset>
+    <p class="rp-data-scope">Un repère communal.<br /><a href="#vr-adresse">Affiner à mon adresse <span aria-hidden="true">↗</span></a></p>
+  </div>
+  <div class="world-atlas-layout"><LocalTerritoryMap /><div class="rp-data-board" id="rp-data-board" aria-live="polite" aria-atomic="true">
+    <div class="rp-data-reading">
+      <p id="rp-local-context">Maisons · Lèves · {initial.latest.year}</p>
+      <div class="rp-price"><strong id="rp-local-median">{fmt(initial.latest.pricePerSqm.median)}</strong><span>€/m²<br />médian</span></div>
+      <p id="rp-local-interval">La moitié des ventes entre <strong>{fmt(initial.latest.pricePerSqm.q1)} et {fmt(initial.latest.pricePerSqm.q3)} €/m².</strong></p>
+      <dl><div><dt>Ventes observées en 2025</dt><dd id="rp-local-count">{initial.latest.count}</dd></div><div><dt>Évolution 2024–2025</dt><dd id="rp-local-change">+1 %</dd></div></dl>
+      <p id="rp-local-quality" class="rp-quality">Échantillon de 30 ventes ou plus.</p>
+    </div>
+    <figure class="rp-chart">
+      <figcaption><strong>Des ventes passées. Une trajectoire.</strong><span>Médiane annuelle en €/m² · échelle depuis zéro</span></figcaption>
+      <div class="rp-chart-bars" id="rp-local-bars" role="img" aria-label="Médianes annuelles des maisons à Lèves de 2021 à 2025">
+        {initial.annual.map(a=><div class:list={['rp-chart-year', {'is-latest':a.year===2025}]}><span>{fmt(a.pricePerSqm.median)}</span><div style={`--bar-height:${a.pricePerSqm.median/3500*100}%`}></div><b>{a.year}</b></div>)}
+      </div>
+      <details class="rp-chart-table"><summary>Lire les valeurs et les effectifs</summary><table><caption id="rp-table-caption">Maisons à Lèves · DVF</caption><thead><tr><th scope="col">Année</th><th scope="col">Médiane €/m²</th><th scope="col">Ventes</th></tr></thead><tbody id="rp-local-table">{initial.annual.map(a=><tr><th scope="row">{a.year}</th><td>{fmt(a.pricePerSqm.median)}</td><td>{a.count}</td></tr>)}</tbody></table></details>
+    </figure>
+  </div>
+  </div><div class="rp-data-boundary"><span class="rp-status-square" aria-hidden="true"></span><strong>Ce que ce repère ne dit pas</strong><p>L’état du bien, sa disponibilité, les acheteurs actifs et la valeur de votre logement restent à vérifier. Une vente voisine n’est pas une estimation.</p></div>
+  <p class="rp-source">Base produite le {new Date(summary.source.sourceGeneratedAt).toLocaleDateString('fr-FR')} · {fmt(summary.source.datasetMutationCount)} mutations recensées dans les 7 communes · <a href="#vr-methode">Méthode et limites</a></p>
+</section>
+<script>
+  import summary from '../data/dvf-market-summary.json';
+  const select=document.querySelector<HTMLSelectElement>('#rp-commune');
+  let type='Maison';
+  const fmt=(n:number|null)=>n===null?'Non calculable':n.toLocaleString('fr-FR');
+  const text=(id:string,value:string)=>{const el=document.getElementById(id);if(el)el.textContent=value;};
+  function update(){
+    const series=summary.series.find(s=>s.commune===select?.value&&s.propertyType===type);if(!series)return;
+    const year=series.latest; const ctx=`${type==='Maison'?'Maisons':'Appartements'} · ${series.commune}`;
+    text('rp-local-context',`${ctx} · ${year.year}`);
+    text('rp-local-median',fmt(year.pricePerSqm.median));
+    text('rp-local-interval',year.pricePerSqm.median===null?'Aucune vente comparable dans cet échantillon en 2025. Choisissez un autre type de bien ou consultez les années disponibles.':`La moitié des ventes entre ${fmt(year.pricePerSqm.q1)} et ${fmt(year.pricePerSqm.q3)} €/m².`);
+    document.querySelector('.rp-price')?.classList.toggle('is-empty',year.pricePerSqm.median===null);
+    text('rp-local-count',fmt(year.count));
+    const change=series.changeFromPreviousYearPct;
+    text('rp-local-change',change===null?'Non calculable':`${change>0?'+':''}${fmt(change)} %`);
+    text('rp-local-quality',year.count===0?'Aucun prix affiché sans observation.':year.count<30?`Échantillon de ${year.count} ventes : lecture à manier avec prudence.`:'Échantillon de 30 ventes ou plus.');
+    const bars=document.getElementById('rp-local-bars');
+    const scale=Math.max(3500,...series.annual.map(a=>a.pricePerSqm.median??0));
+    if(bars){bars.setAttribute('aria-label',`${ctx}. ${series.annual.map(a=>`${a.year} : ${a.pricePerSqm.median===null?'non calculable':a.pricePerSqm.median+' euros par mètre carré'}, ${a.count} ventes`).join('. ')}`); bars.innerHTML=series.annual.map(a=>`<div class="rp-chart-year ${a.year===2025?'is-latest':''}"><span>${a.pricePerSqm.median===null?'—':fmt(a.pricePerSqm.median)}</span><div style="--bar-height:${(a.pricePerSqm.median??0)/scale*100}%"></div><b>${a.year}</b></div>`).join('');}
+    text('rp-table-caption',`${ctx} · DVF`);
+    const table=document.getElementById('rp-local-table');if(table)table.innerHTML=series.annual.map(a=>`<tr><th scope="row">${a.year}</th><td>${fmt(a.pricePerSqm.median)}</td><td>${a.count}</td></tr>`).join('');
+    document.querySelectorAll<HTMLElement>('[data-local-type]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.localType===type)));
+  }
+  select?.addEventListener('change',update);
+  document.querySelectorAll<HTMLElement>('[data-local-type]').forEach(b=>b.addEventListener('click',()=>{type=b.dataset.localType!;update();}));
+</script>

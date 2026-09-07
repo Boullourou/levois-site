@@ -1,0 +1,105 @@
+---
+import ResponsiveImage from '../ResponsiveImage.astro';
+
+const worlds = [
+  {
+    id: 'buying', journey: 'buyer', href: '/ma-recherche', image: 'hero-marche',
+    prompt: 'Je veux acheter autour de Chartres.', title: 'Voir si ma recherche tient debout.', action: 'Clarifier ma recherche',
+  },
+  {
+    id: 'anticipate', journey: 'seller_future', href: '/situer-ma-vente', image: 'profil-femme',
+    prompt: 'Je possède un bien.', title: 'Savoir où j’en suis avant l’urgence.', action: 'Situer ma vente',
+  },
+  {
+    id: 'selling', journey: 'listing_live', href: '/audit-annonce', image: 'situation-publiee',
+    prompt: 'Mon annonce est déjà en ligne.', title: 'Comprendre ce que les signaux disent.', action: 'Auditer mon annonce',
+  },
+];
+---
+
+<section class="world-gateway" id="situations" aria-labelledby="gateway-title" data-world-gateway>
+  <header class="gateway-intro">
+    <h1 id="gateway-title">Clarifiez votre recherche,<br /><span>avant de courir les annonces.</span></h1>
+    <p>Vous achetez&nbsp;? Commencez ici. Vous vendez&nbsp;? Les deux portes vendeurs restent juste à côté.</p>
+  </header>
+
+  <div class="world-stage" data-world-stage data-active="buying">
+    {worlds.map((world) => (
+      <a class:list={['world', `world--${world.id}`]} href={world.href} data-world={world.id} data-journey={world.journey}>
+        <ResponsiveImage slot={world.image} ratio="none" sizes="(min-width: 900px) 40vw, 88vw" class="world-image" />
+        <span class="world-shade" aria-hidden="true"></span>
+        <span class="world-symbol" aria-hidden="true">
+          {world.id === 'anticipate' && <span class="timeline"><i></i><i></i><i></i></span>}
+          {world.id === 'selling' && <span class="pulse"><i></i><i></i><i></i></span>}
+          {world.id === 'buying' && <span class="compass"><i></i><i></i><i></i></span>}
+        </span>
+        <span class="world-copy">
+          <small>{world.prompt}</small>
+          <strong>{world.title}</strong>
+          <span class="world-action">{world.action}<i aria-hidden="true"></i></span>
+        </span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .world-gateway { --ink:#0b1730; min-height:100svh; padding:clamp(32px,5vw,72px) clamp(14px,2vw,30px) clamp(18px,3vw,42px); background:#f7f9f5; color:var(--ink); }
+  .gateway-intro { min-height:clamp(220px,30vh,350px); display:grid; grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr); align-items:end; gap:40px; padding:0 clamp(12px,3vw,42px) clamp(34px,5vh,64px); }
+  .gateway-intro h1 { margin:0; max-width:900px; font-family:'Bricolage Grotesque','Public Sans',sans-serif; font-size:clamp(60px,8vw,120px); font-weight:700; line-height:.92; letter-spacing:-.035em; text-wrap:balance; }
+  .gateway-intro h1 span { color:#243cff; }
+  .gateway-intro p { max-width:390px; margin:0 0 8px; font-size:clamp(18px,1.6vw,23px); line-height:1.45; }
+  .world-stage { min-height:clamp(560px,65vh,760px); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(8px,1vw,16px); transition:grid-template-columns .75s cubic-bezier(.16,1,.3,1); }
+  .world-stage[data-active='buying'] { grid-template-columns:1.32fr .84fr .84fr; }
+  .world-stage[data-active='anticipate'] { grid-template-columns:.84fr 1.32fr .84fr; }
+  .world-stage[data-active='selling'] { grid-template-columns:.84fr .84fr 1.32fr; }
+  .world { position:relative; min-width:0; overflow:hidden; isolation:isolate; color:white; text-decoration:none; outline-offset:5px; }
+  .world--buying { border-radius:34px 8px 8px 34px; background:#d65d4f; }
+  .world--anticipate { border-radius:8px; background:#377aca; }
+  .world--selling { border-radius:8px 34px 34px 8px; background:#172c73; }
+  :global(.world-image) { position:absolute; inset:0; width:100%; height:100%; }
+  :global(.world-image img) { width:100%; height:100%; object-fit:cover; transform:scale(1.04); transition:transform 1s cubic-bezier(.16,1,.3,1),filter .6s ease; }
+  .world--anticipate :global(.world-image img) { object-position:center 24%; }
+  .world--selling :global(.world-image img) { object-position:center 30%; }
+  .world--buying :global(.world-image img) { object-position:38% center; }
+  .world-shade { position:absolute; inset:0; z-index:1; background:linear-gradient(to top,rgba(5,13,34,.94) 0%,rgba(5,13,34,.45) 48%,rgba(5,13,34,.08) 78%); }
+  .world--anticipate .world-shade { background:linear-gradient(to top,rgba(7,33,73,.94),rgba(42,111,245,.24) 64%); }
+  .world--selling .world-shade { background:linear-gradient(to top,rgba(4,11,35,.97),rgba(20,43,115,.56) 70%); }
+  .world--buying .world-shade { background:linear-gradient(to top,rgba(61,18,16,.95),rgba(245,106,90,.35) 68%); }
+  .world-copy { position:absolute; z-index:3; inset:auto clamp(22px,2.8vw,44px) clamp(30px,5vh,58px); display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+  .world-copy small { min-height:2.6em; font-size:clamp(14px,1.15vw,18px); font-weight:650; line-height:1.3; }
+  .world-copy strong { max-width:620px; min-height:2.15em; font-family:'Bricolage Grotesque','Public Sans',sans-serif; font-size:clamp(36px,3.4vw,58px); font-weight:720; line-height:1.02; letter-spacing:-.03em; text-wrap:balance; }
+  .world-action { display:inline-flex; align-items:center; gap:15px; margin-top:8px; color:#d7ff42; font-size:15px; font-weight:820; }
+  .world-action i { position:relative; width:32px; height:12px; }
+  .world-action i::before { content:''; position:absolute; left:0; top:5px; width:30px; height:2px; background:currentColor; }
+  .world-action i::after { content:''; position:absolute; right:0; top:1px; width:9px; height:9px; border:solid currentColor; border-width:2px 2px 0 0; transform:rotate(45deg); }
+  .world-symbol { position:absolute; z-index:3; top:30px; right:30px; width:92px; height:92px; opacity:.88; }
+  .timeline,.pulse,.compass { position:absolute; inset:0; display:block; }
+  .timeline::before { content:''; position:absolute; left:6px; right:6px; top:44px; height:2px; background:white; transform:rotate(-10deg); }
+  .timeline i { position:absolute; width:12px; height:12px; border-radius:50%; background:#d7ff42; box-shadow:0 0 0 5px rgba(215,255,66,.18); animation:world-breathe 2.8s ease-in-out infinite; }
+  .timeline i:nth-child(1){left:5px;top:51px}.timeline i:nth-child(2){left:40px;top:37px;animation-delay:.3s}.timeline i:nth-child(3){right:4px;top:23px;animation-delay:.6s}
+  .pulse i { position:absolute; inset:50%; width:18px; height:18px; margin:-9px; border:2px solid #d7ff42; border-radius:50%; animation:world-pulse 3s ease-out infinite; }
+  .pulse i:nth-child(2){animation-delay:.7s}.pulse i:nth-child(3){animation-delay:1.4s}
+  .compass { border:1px solid rgba(255,255,255,.72); border-radius:50%; animation:world-spin 16s linear infinite; }
+  .compass::before,.compass::after { content:''; position:absolute; background:#d7ff42; border-radius:50%; width:11px; height:11px; }
+  .compass::before{left:-5px;top:40px}.compass::after{right:7px;top:8px}.compass i{position:absolute;left:45px;top:15px;width:2px;height:62px;background:white;transform:rotate(32deg)}
+  .world:hover :global(.world-image img),.world:focus-visible :global(.world-image img){transform:scale(1)}
+  .world-stage[data-active] .world:not(:hover):not(:focus-visible) :global(.world-image img){filter:saturate(.84)}
+  @keyframes world-breathe{50%{transform:scale(1.35)}} @keyframes world-pulse{0%{transform:scale(.5);opacity:1}100%{transform:scale(5);opacity:0}} @keyframes world-spin{to{transform:rotate(360deg)}}
+  @media(max-width:900px){
+    .world-gateway{min-height:auto;padding:24px 0 20px}.gateway-intro{min-height:auto;grid-template-columns:1fr;padding:28px 20px 42px}.gateway-intro h1{font-size:clamp(54px,16vw,82px)}.gateway-intro p{font-size:18px}
+    .world-stage,.world-stage[data-active]{display:flex;min-height:590px;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px 10px;scrollbar-width:none}.world-stage::-webkit-scrollbar{display:none}
+    .world{flex:0 0 min(84vw,430px);min-height:570px;scroll-snap-align:center;border-radius:26px}.world-copy{inset:auto 24px 34px}.world-copy strong{min-height:0;font-size:clamp(42px,12vw,58px)}.world-copy small{min-height:0}.world-symbol{top:24px;right:24px}
+  }
+  @media(prefers-reduced-motion:reduce){.world-stage,:global(.world-image img){transition:none}.timeline i,.pulse i,.compass{animation:none}}
+</style>
+
+<script>
+  const stage = document.querySelector<HTMLElement>('[data-world-stage]');
+  const cards = stage?.querySelectorAll<HTMLElement>('[data-world]') ?? [];
+  cards.forEach((card) => {
+    const activate = () => { if (stage && card.dataset.world) stage.dataset.active = card.dataset.world; };
+    card.addEventListener('pointerenter', activate);
+    card.addEventListener('focus', activate);
+  });
+</script>
