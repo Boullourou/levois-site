@@ -25,6 +25,16 @@ describe('Contrats publics : stockage réel SQLite, transports isolés',()=>{
   const {binding}=database();const transport=vi.fn().mockResolvedValueOnce(new Response('{}',{status:502})).mockResolvedValueOnce(new Response('{}'));vi.stubGlobal('fetch',transport);
   const ctx=context(valid,{RECHERCHE_DB:binding,RESEND_API_KEY:'test-only'});const r=await recherche(ctx as any);await Promise.all(ctx.pending);expect((await r.json() as any).notificationSent).toBe(true);expect(transport).toHaveBeenCalledTimes(2);
  });
+ it('journalise le fournisseur accepté sans adresse ni secret',async()=>{
+  const {binding}=database();const logs=vi.spyOn(console,'log').mockImplementation(()=>{});vi.stubGlobal('fetch',vi.fn().mockResolvedValue(new Response('{"id":"provider-message-test"}',{headers:{'content-type':'application/json'}})));
+  const ctx=context(valid,{RECHERCHE_DB:binding,RESEND_API_KEY:'secret-test-only',LEAD_TO:'destination@example.test'});const r=await recherche(ctx as any);await Promise.all(ctx.pending);expect((await r.json() as any).notificationSent).toBe(true);
+  const line=logs.mock.calls.find(call=>call[0]==='[recherche] notification_result')?.[1] as string;const entry=JSON.parse(line);expect(entry).toMatchObject({event:'notification_result',acceptedProvider:'resend',resendRecipient:{configured:true,domain:'example.test'},attempts:[{provider:'resend',ok:true,status:200,messageId:'provider-message-test'}]});expect(entry.recordCreatedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);expect(entry.acceptedAt).toMatch(/^\d{4}-\d{2}-\d{2}T/);expect(line).not.toContain('destination@');expect(line).not.toContain('secret-test-only');
+ });
+ it('journalise la cause Resend et le relais Formspree',async()=>{
+  const {binding}=database();const logs=vi.spyOn(console,'log').mockImplementation(()=>{});vi.spyOn(console,'error').mockImplementation(()=>{});const transport=vi.fn().mockResolvedValueOnce(new Response('{"message":"recipient destination@example.test refused"}',{status:403})).mockResolvedValueOnce(new Response('{}'));vi.stubGlobal('fetch',transport);
+  const ctx=context(valid,{RECHERCHE_DB:binding,RESEND_API_KEY:'secret-test-only',LEAD_TO:'destination@example.test'});const r=await recherche(ctx as any);await Promise.all(ctx.pending);expect((await r.json() as any).notificationSent).toBe(true);
+  const line=logs.mock.calls.find(call=>call[0]==='[recherche] notification_result')?.[1] as string;const entry=JSON.parse(line);expect(entry.acceptedProvider).toBe('formspree');expect(entry.attempts).toMatchObject([{provider:'resend',ok:false,status:403,reason:'{"message":"recipient [email masqué] refused"}'},{provider:'formspree',ok:true,status:200}]);expect(line).not.toContain('destination@');
+ });
  it.each([{contact:'incorrect'},{consent:false},{consents:{lecture:false,matching:false,contact:false}},{prenom:''}])('rejette les données incomplètes avant insertion : %j',async patch=>{
   const {db,binding}=database();const transport=vi.fn();vi.stubGlobal('fetch',transport);const r=await recherche(context({...valid,...patch},{RECHERCHE_DB:binding}) as any);expect(r.status).toBe(400);expect((db.prepare('SELECT count(*) AS n FROM lectures_recherche').get() as any).n).toBe(0);expect(transport).not.toHaveBeenCalled();
  });
