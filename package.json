@@ -22,7 +22,9 @@
     "data:market": "node scripts/build-market-summary.mjs",
     "test:market": "node --test tests/market-summary.node.mjs",
     "data:verify": "node scripts/verify-dvf.mjs",
-    "test:public": "node scripts/verify-public.mjs"
+    "test:public": "node scripts/verify-public.mjs",
+    "test:delivery": "node scripts/qa-delivery.mjs",
+    "dev:experience": "node scripts/dev-experience.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.2.1",

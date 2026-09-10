@@ -1,65 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { resources } from '../../data/resources';
-
-const listSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'ItemList',
-  name: 'Ressources immobilières LEVOIS',
-  itemListElement: resources.map((resource, index) => ({
-    '@type': 'ListItem',
-    position: index + 1,
-    name: resource.titre,
-    url: `https://levois.fr/ressources/${resource.slug}`,
-  })),
-};
+import {resources} from '../../data/resources';
+const decisions=['Préparer la publication','Vérifier ce qui est perçu','Comprendre le passage au contact','Recueillir une information utile','Décider d’un ajustement','Choisir comment poursuivre'];
 ---
-
-<Layout
-  title="Ressources"
-  description="Six ressources gratuites pour comprendre les signaux de votre vente avant d'ajuster quoi que ce soit. Sans inscription."
->
-  <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />
-  <div class="max-w-page mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
-
-    <header class="max-w-2xl mb-12 md:mb-16">
-      <p class="eyebrow mb-4">Ressources gratuites</p>
-      <h1 class="text-display text-encre mb-4">Comprendre avant d'ajuster.</h1>
-      <p class="font-sans text-body-lg text-brun">
-        Chaque ressource répond à une seule question — celle que se posent réellement
-        les propriétaires. Sans inscription, sans contrepartie : la valeur d'abord.
-      </p>
-    </header>
-
-    <div class="resource-grid mb-16">
-      {resources.map((r, index) => (
-        <a
-          href={`/ressources/${r.slug}`}
-          class="resource-entry group"
-        >
-          <span class="resource-index">{String(index + 1).padStart(2, '0')}</span>
-          <p class="resource-question">{r.question}</p>
-          <h2>{r.titre}</h2>
-          <p class="resource-benefit">{r.benefice}</p>
-          <p class="resource-meta"><span>{r.duree}</span><strong>{r.cta} →</strong></p>
-        </a>
-      ))}
-    </div>
-
-    <div class="resource-chooser md:flex items-center justify-between gap-8">
-      <div class="max-w-xl">
-        <h2 class="font-display text-2xl text-encre mb-2">Vous ne savez pas par laquelle commencer ?</h2>
-        <p class="font-sans text-[15px] text-brun leading-relaxed">
-          Le parcours « Situer ma vente » identifie la ressource la plus utile
-          pour votre situation précise — en trois minutes, sans coordonnées.
-        </p>
-      </div>
-      <a href="/situer-ma-vente" class="btn-primaire mt-5 md:mt-0 shrink-0">Situer ma vente</a>
-    </div>
-
-    <p class="font-sans text-sm text-brun/80 mt-10 max-w-prose">
-      Mouaad conçoit ces contenus à partir des questions rencontrées sur le terrain et des données disponibles sur le bassin chartrain.
-      L’objectif : vous être utile bien avant qu’une décision immobilière devienne urgente.
-    </p>
-  </div>
-</Layout>
+<Layout title="Six ressources pour décider" description="Six ressources gratuites, sans inscription, pour préparer une vente, relire une annonce ou comprendre les retours de visite.">
+<article class="lv-wrap lv-editorial"><header><h1>La bonne ressource est celle qui éclaire votre prochain choix.</h1><p class="lv-intro">Six lectures gratuites pour la vente. Une réponse courte, une grille utile et une limite explicite. Vous pouvez revenir à votre projet à tout moment.</p></header>
+<a class="lv-text-link" href="/lecture">Revenir à ma lecture en cours <span aria-hidden="true">↗</span></a>
+<div class="lv-resource-list">{resources.map((r,i)=><article><span class="lv-resource-index">{String(i+1).padStart(2,'0')}</span><div><p class="lv-note">{decisions[i]}</p><h2><a href={'/ressources/'+r.slug}>{r.titre}</a></h2><p>{r.question}</p><p class="lv-note">{r.benefice}</p></div><a class="lv-text-link" href={'/ressources/'+r.slug} aria-label={'Lire : '+r.titre}>Lire <span aria-hidden="true">↗</span></a></article>)}</div>
+<div class="lv-history"><h2>Votre projet est un achat ou une transition ?</h2><p class="lv-intro" style="margin-top:20px">Les parcours vous aident à partir de vos usages ou des liens entre votre vente et votre achat.</p><div class="lv-actions"><a class="lv-button" href="/ma-recherche">Clarifier mon achat</a><a class="lv-secondary" href="/vendre-et-acheter">Relier vente et achat</a></div></div>
+</article></Layout>
+<style>.lv-resource-list{margin-top:30px}.lv-resource-list article{display:grid;grid-template-columns:45px 1fr 80px;gap:30px;padding:32px 0;border-top:1px solid var(--lv-line)}.lv-resource-index{color:var(--lv-blue);font-size:14px;padding-top:4px}.lv-resource-list h2{font-size:30px;margin-top:8px}.lv-resource-list h2 a{text-decoration:none}.lv-resource-list h2 a:hover{color:var(--lv-blue)}.lv-resource-list p{margin-top:13px}.lv-resource-list p:first-child{margin-top:0}@media(max-width:760px){.lv-resource-list article{grid-template-columns:26px 1fr;gap:16px;padding:27px 0}.lv-resource-list h2{font-size:25px}.lv-resource-list article>.lv-text-link{grid-column:2;margin-top:-8px}}</style>

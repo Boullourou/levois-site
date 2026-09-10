@@ -19,4 +19,12 @@
   <url><loc>https://levois.fr/carte</loc><priority>0.5</priority></url>
   <url><loc>https://levois.fr/mentions-legales</loc><priority>0.2</priority></url>
   <url><loc>https://levois.fr/confidentialite</loc><priority>0.2</priority></url>
+  <url><loc>https://levois.fr/ma-recherche</loc></url>
+  <url><loc>https://levois.fr/vendre-et-acheter</loc></url>
+  <url><loc>https://levois.fr/votre-rue</loc></url>
+  <url><loc>https://levois.fr/bienvenue</loc></url>
+  <url><loc>https://levois.fr/methode/vendre</loc></url>
+  <url><loc>https://levois.fr/experiences/visites-sans-offre</loc></url>
+  <url><loc>https://levois.fr/experiences/surface-ou-usage</loc></url>
+  <url><loc>https://levois.fr/experiences/vendre-avant-acheter</loc></url>
 </urlset>

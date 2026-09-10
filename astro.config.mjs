@@ -6,7 +6,8 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   // URL de production - levois.fr (gentilé officiel des habitants de Lèves)
   site: 'https://levois.fr',
-  integrations: [sitemap({filter:page=>!['/cockpit','/composants','/404','/situer-ma-vente/resultat'].some(route=>new URL(page).pathname.startsWith(route))})],
+  devToolbar: { enabled: false },
+  integrations: [sitemap({filter:page=>!['/cockpit','/composants','/404','/situer-ma-vente/resultat','/lecture','/reprendre'].some(route=>new URL(page).pathname.startsWith(route))})],
   vite: {
     plugins: [tailwindcss()],
   },

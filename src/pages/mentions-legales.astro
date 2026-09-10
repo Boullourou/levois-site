@@ -3,9 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
 ---
 <Layout title="Mentions légales" description="Éditeur, activité immobilière, hébergement et crédits de LEVOIS.">
-<article class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
-<header class="mb-12"><p class="eyebrow">Informations légales</p><h1 class="text-display">Mentions légales</h1></header>
-<div class="space-y-12 font-sans text-[15px] leading-relaxed">
+<article class="lv-wrap lv-editorial">
+<header><h1>Mentions légales</h1></header>
+<div class="lv-prose">
 <section aria-labelledby="editeur"><h2 id="editeur">Éditeur et directeur de la publication</h2>
 <p><strong>Mouaad Boullourou — Entrepreneur individuel</strong><br/>25 rue de la Butte Celtique, 28300 Lèves, France<br/>SIRET : 824 194 419 00027<br/>Agent commercial inscrit au RSAC de Chartres sous le n° 824 194 419.<br/><a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></p></section>
 <section aria-labelledby="activite"><h2 id="activite">Activité immobilière</h2>
@@ -17,7 +17,7 @@ import { site } from '../config/site';
 <section aria-labelledby="hebergement"><h2 id="hebergement">Hébergement</h2>
 <p>Cloudflare, Inc. — 101 Townsend Street, San Francisco, CA 94107, États-Unis. <a href="https://www.cloudflare.com">Site de Cloudflare</a>.<br/>Nom de domaine : OVHcloud, 2 rue Kellermann, 59100 Roubaix, France.</p></section>
 <section aria-labelledby="credits"><h2 id="credits">Contenus, images et données</h2>
-<p>Les textes et la présentation de LEVOIS sont édités par Mouaad Boullourou. Les éléments de tiers restent soumis à leurs licences respectives. Le quartier miniature est une illustration : il ne représente ni un bien à vendre ni une rue réelle. Les ventes consultables proviennent des données publiques DVF ; elles ne constituent pas une estimation d’un logement.</p>
-<p>Typographie principale : <a href="https://www.fontshare.com/fonts/satoshi">Satoshi, Indian Type Foundry / Fontshare</a>. Le mot-symbole utilise Archivo Black. Les polices sont hébergées sur le site.</p></section>
-<p>Pour comprendre ce qui est conservé ou transmis, consultez la <a href="/confidentialite">politique de confidentialité</a>. Mise à jour : 6 septembre 2026.</p>
+<p>Les textes et la présentation de LEVOIS sont édités par Mouaad Boullourou. Les éléments de tiers restent soumis à leurs licences respectives. Le quartier miniature et les scènes de vie sont des illustrations : ils ne représentent ni un bien disponible ni un lieu documenté. Le portrait de Mouaad est celui conservé dans le site. Les ventes consultables proviennent des données publiques DVF ; elles ne constituent pas une estimation d’un logement.</p>
+<p>Typographie principale : <a href="https://www.fontshare.com/fonts/satoshi">Satoshi, Indian Type Foundry / Fontshare</a>. Le mot-symbole vectoriel du dépôt utilise DM Serif Display, selon sa licence jointe. Les polices sont hébergées sur le site.</p></section>
+<p>Pour comprendre ce qui est conservé ou transmis, consultez la <a href="/confidentialite">politique de confidentialité</a>. Mise à jour de présentation : 10 septembre 2026.</p>
 </div></article></Layout>

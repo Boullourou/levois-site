@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import {buyerJourney} from '../lib/experience/buyer';
+import {sellerJourney} from '../lib/experience/seller';
+import {transitionJourney} from '../lib/experience/transition';
+import {createContext} from '../lib/experience/context';
+interface Props { project:'buyer'|'seller'|'transition'; title:string; description:string }
+const {project,title,description}=Astro.props;
+const journey=project==='buyer'?buyerJourney:project==='seller'?sellerJourney:transitionJourney;
+const question=journey.getQuestions(createContext(project))[0];
+---
+<Layout title={title} description={description}>
+<div class="lv-journey" data-journey={project}>
+<div class="lv-journey-head"><a href="/">Accueil</a><span>Vos réponses restent dans cette session.</span></div>
+<div class="lv-journey-grid"><aside class="lv-journey-side" data-journey-side aria-label="Votre progression"><h2>Votre projet<br/>prend forme.</h2><ol class="lv-sequences">{journey.sequences.map((s,i)=><li aria-current={i===0?'step':undefined}><span>{String(i+1).padStart(2,'0')}</span>{s}</li>)}</ol><p class="lv-note">Une décision à la fois. Vous pouvez lire votre projet dès maintenant, corriger une réponse ou vous arrêter.</p><a class="lv-text-link" href="/lecture">Ma lecture en cours</a></aside>
+<div class="lv-question-panel" data-question-panel>
+<div class="lv-progress-label"><span>{question.sequenceTitle}</span><span>{question.sequence} sur {journey.sequences.length}</span></div><div class="lv-progress" role="progressbar" aria-label="Séquence du projet" aria-valuemin="0" aria-valuemax={journey.sequences.length} aria-valuenow={question.sequence}><i style={'width:'+(question.sequence/journey.sequences.length*100)+'%'}></i></div>
+<h1 tabindex="-1">{question.title}</h1>{question.help&&<p class="lv-intro">{question.help}</p>}
+<form class="lv-question-form"><div class="lv-choices">{question.choices?.map(o=><label class="lv-choice"><input type={question.type==='multiple'?'checkbox':'radio'} name="answer" value={o.value}/><span>{o.label}{o.detail&&<small>{o.detail}</small>}</span></label>)}</div><div class="lv-question-actions"><button class="lv-button" type="button">Continuer</button><button class="lv-secondary" type="button">Lire déjà mon projet</button></div><div class="lv-correction-bar"><button class="lv-text-link" type="button">Laisser ce point ouvert</button></div></form>
+<details class="lv-live"><summary>Relire et corriger mes réponses</summary></details>
+<noscript><p>Ce parcours utilise JavaScript pour relier vos réponses à leurs conséquences. Vous pouvez lire <a href="/methode">la méthode</a>, utiliser les <a href="/ressources">ressources gratuites</a> ou <a href="/contact">écrire à Mouaad</a>.</p></noscript>
+</div></div>
+<p data-storage-warning class="lv-limit" hidden>Votre navigateur ne permet pas de garder la session. Le parcours fonctionne ici ; téléchargez votre lecture avant de quitter cette page.</p>
+</div>
+<script>import '../scripts/experience-journey';</script>
+</Layout>

@@ -1,148 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../config/site';
+import {site} from '../config/site';
 ---
-
-<Layout
-  title="Contact"
-  description="Écrire directement à Mouaad Boullourou — email, téléphone, ou message via le formulaire."
->
-  <div class="world-contact-page">
-
-    <header class="mb-10">
-      <p class="eyebrow mb-4">Contact</p>
-      <h1 class="text-display text-encre mb-4">Parlons de<br/>votre projet.</h1>
-      <p class="font-sans text-body-lg text-brun max-w-prose">
-        Une question, une envie, un projet qui se précise.
-        Dites-moi ce qui vous amène. Je vous réponds personnellement.
-      </p>
-    </header>
-
-    <div class="grid sm:grid-cols-2 gap-4 mb-12 font-sans">
-      <a href={`mailto:${site.email}`} class="carte p-6 group transition-all duration-200 hover:border-argile">
-        <p class="text-sm text-brun mb-1">Email</p>
-        <p class="text-lg text-encre group-hover:text-argile transition-colors">{site.email}</p>
-      </a>
-      <a href={`tel:${site.phone}`} class="carte p-6 group transition-all duration-200 hover:border-argile">
-        <p class="text-sm text-brun mb-1">Téléphone</p>
-        <p class="text-lg text-encre group-hover:text-argile transition-colors">{site.phoneDisplay}</p>
-      </a>
-    </div>
-
-    <form id="form-contact" novalidate class="grid gap-4 font-sans carte p-6 md:p-8">
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label for="c-prenom" class="block text-sm text-brun mb-1.5">Prénom <span aria-hidden="true">*</span></label>
-          <input id="c-prenom" name="prenom" type="text" required autocomplete="given-name"
-            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
-        </div>
-        <div>
-          <label for="c-nom" class="block text-sm text-brun mb-1.5">Nom <span aria-hidden="true">*</span></label>
-          <input id="c-nom" name="nom" type="text" required autocomplete="family-name"
-            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <div>
-          <label for="c-email" class="block text-sm text-brun mb-1.5">Email <span aria-hidden="true">*</span></label>
-          <input id="c-email" name="email" type="email" required autocomplete="email" inputmode="email"
-            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
-        </div>
-        <div>
-          <label for="c-telephone" class="block text-sm text-brun mb-1.5">Téléphone <span class="text-brun/60">(facultatif)</span></label>
-          <input id="c-telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel"
-            class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
-        </div>
-      </div>
-      <div>
-        <label for="c-objet" class="block text-sm text-brun mb-1.5">Objet <span aria-hidden="true">*</span></label>
-        <input id="c-objet" name="objet" type="text" required
-          class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile" />
-      </div>
-      <div>
-        <label for="c-message" class="block text-sm text-brun mb-1.5">Message <span aria-hidden="true">*</span></label>
-        <textarea id="c-message" name="message" rows="5" required
-          class="w-full rounded-lg bg-papier border border-beige px-4 py-3 text-base text-encre focus:border-argile"></textarea>
-      </div>
-
-      <div class="hidden" aria-hidden="true">
-        <label for="c-site">Votre site web</label>
-        <input id="c-site" name="site_web" type="text" tabindex="-1" autocomplete="off" />
-      </div>
-
-      <label class="flex items-start gap-3 text-sm text-brun leading-relaxed cursor-pointer">
-        <input id="c-consentement" name="consentement" type="checkbox" required class="mt-0.5 w-5 h-5 rounded-none accent-[#243CFF]" />
-        <span>
-          J’accepte que ces informations soient utilisées pour me répondre — et pour rien d’autre.
-          <a href="/confidentialite" class="text-argile underline underline-offset-2">En savoir plus</a>.
-        </span>
-      </label>
-
-      <p id="c-erreur" class="hidden text-sm text-argile" role="alert"></p>
-
-      <button type="submit" id="c-envoyer" class="btn-primaire w-full sm:w-auto mt-1">Envoyer mon message</button>
-
-      <div id="c-succes" class="hidden pt-2" role="status">
-        <p class="font-display text-xl text-encre mb-1.5">Message bien envoyé.</p>
-        <p class="text-[15px] text-brun">Mouaad a reçu votre message et pourra vous répondre personnellement.</p>
-      </div>
-    </form>
-  </div>
-</Layout>
-
+<Layout title="Écrire à Mouaad" description="Une question précise ou un projet à partager : écrivez directement à Mouaad Boullourou.">
+<article class="lv-wrap lv-editorial"><header><h1>Votre question peut être le point de départ.</h1><p class="lv-intro">Vous pouvez écrire directement à Mouaad. Si vous avez déjà une lecture LEVOIS, partez de cette version pour garder le contexte.</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><a class="lv-text-link" href="/lecture">Partir de ma lecture</a><a href={'mailto:'+site.email}>{site.email}</a><a href={'tel:'+site.phone}>{site.phoneDisplay}</a><a href="/mouaad-boullourou.vcf" download>Garder le contact de Mouaad</a><p class="lv-note">Le message est utilisé pour vous répondre. Aucun appel n’est demandé par défaut.</p></aside><form data-direct-contact>
+<div class="lv-field"><label for="c-prenom">Prénom</label><input id="c-prenom" name="prenom" autocomplete="given-name" maxlength="80" required/></div>
+<div class="lv-field"><label for="c-nom">Nom</label><input id="c-nom" name="nom" autocomplete="family-name" maxlength="80" required/></div>
+<div class="lv-field"><label for="c-email">Adresse e-mail pour la réponse</label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="254" required/></div>
+<div class="lv-field"><label for="c-objet">Le sujet de votre message</label><input id="c-objet" name="objet" maxlength="200" required/></div>
+<div class="lv-field"><label for="c-message">Votre question</label><textarea id="c-message" name="message" maxlength="8000" rows="5" required></textarea></div>
+<div hidden aria-hidden="true"><label for="c-site">Votre site web</label><input id="c-site" name="site_web" tabindex="-1" autocomplete="off"/></div>
+<label class="lv-check"><input name="consentement" type="checkbox" required/><span>J’autorise l’utilisation de ces informations pour répondre à ce message. <a href="/confidentialite">Confidentialité</a>.</span></label>
+<div class="lv-actions"><button class="lv-button" type="submit">Envoyer mon message</button></div><p class="lv-error" data-contact-status role="status" hidden style="margin-top:22px"></p>
+<noscript><p>Vous pouvez envoyer directement un e-mail à <a href={'mailto:'+site.email}>{site.email}</a>.</p></noscript>
+</form></div></article></Layout>
 <script>
 import {requestJson} from '../lib/request-json';
-  const form = document.getElementById('form-contact') as HTMLFormElement;
-  const btn = document.getElementById('c-envoyer') as HTMLButtonElement;
-  const erreur = document.getElementById('c-erreur')!;
-  const motif = new URLSearchParams(window.location.search).get('motif');
-  const objectField = document.getElementById('c-objet') as HTMLInputElement;
-  if (motif === 'recommandation') objectField.value = 'Recommandation SAFTI Connect';
-  if (motif === 'equipe') objectField.value = 'Découvrir le métier et votre accompagnement';
-  let enCours = false;
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (enCours) return;
-    erreur.classList.add('hidden');
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-    enCours = true;
-    btn.disabled = true;
-    btn.textContent = 'Envoi en cours…';
-    const d = new FormData(form);
-    try {
-      const {response:rep,data} = await requestJson<any>('/api/lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'contact', consentement: d.get('consentement') === 'on',
-          prenom: d.get('prenom'),
-          nom: d.get('nom'),
-          email: d.get('email'),
-          telephone: d.get('telephone') || null,
-          objet: d.get('objet'),
-          message: d.get('message'),
-          site_web: d.get('site_web') || '',
-        }),
-      });
-      if (rep.ok && data?.ok === true) {
-        form.querySelectorAll('input, textarea, button[type="submit"], label').forEach((el) => el.classList.add('hidden'));
-        document.getElementById('c-succes')!.classList.remove('hidden');
-      } else {
-
-        erreur.textContent = data?.message ?? 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
-        erreur.classList.remove('hidden');
-      }
-    } catch {
-      erreur.textContent = 'L’envoi n’a pas abouti. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';
-      erreur.classList.remove('hidden');
-    } finally {
-      enCours = false;
-      btn.disabled = false;
-      btn.textContent = 'Envoyer mon message';
-    }
-  });
+const form=document.querySelector<HTMLFormElement>('[data-direct-contact]')!,status=form.querySelector<HTMLElement>('[data-contact-status]')!,button=form.querySelector<HTMLButtonElement>('[type=submit]')!;
+const motif=new URLSearchParams(location.search).get('motif'),subject=form.elements.namedItem('objet') as HTMLInputElement;
+if(motif==='equipe')subject.value='Découvrir le métier de conseiller immobilier';else if(motif==='recommandation')subject.value='Une question sur la recommandation';
+form.addEventListener('submit',async ev=>{ev.preventDefault();if(!form.reportValidity()||button.disabled)return;const d=new FormData(form);button.disabled=true;status.hidden=false;status.className='lv-note';status.textContent='Envoi en cours…';
+try{const {response,data}=await requestJson<any>('/api/lead',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({type:'contact',prenom:d.get('prenom'),nom:d.get('nom'),email:d.get('email'),objet:d.get('objet'),message:d.get('message'),consentement:d.get('consentement')==='on',site_web:d.get('site_web')||''})});if(response.ok&&data.ok){status.className='lv-limit';status.textContent='Votre message a été accepté par le service de transmission. Cela ne confirme pas encore sa lecture par Mouaad.';button.textContent='Message transmis';}else{status.className='lv-error';status.textContent=data.message||'La transmission n’est pas confirmée. Vous pouvez écrire directement à mouaad@levois.fr.';button.disabled=false;}}catch{status.className='lv-error';status.textContent='La transmission n’est pas confirmée. Votre message reste affiché. Vous pouvez réessayer ou écrire directement à mouaad@levois.fr.';button.disabled=false;}});
 </script>

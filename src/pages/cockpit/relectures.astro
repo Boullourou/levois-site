@@ -1,0 +1,77 @@
+---
+import CockpitLayout from '../../layouts/CockpitLayout.astro';
+---
+<CockpitLayout title="Relectures et continuité" active="clients" eyebrow="Demandes choisies" description="La version reçue, ce qui reste ouvert et la réponse humaine, sans relance automatique." pageId="relectures">
+  <button slot="actions" class="cockpit-button cockpit-button-secondary" type="button" data-refresh>Actualiser</button>
+  <button slot="actions" class="cockpit-button cockpit-button-primary" type="button" data-new-context>Contexte après échange</button>
+
+  <p class="cr-notice">La copie par e-mail ne figure pas dans cette file. Une relecture appelle une réponse écrite ciblée ; un échange suit uniquement le canal choisi. Aucun délai de réponse n’est promis.</p>
+  <p class="cr-feedback" data-feedback role="status" aria-live="polite" hidden></p>
+  <div class="cr-workspace">
+    <section class="cr-queue" aria-labelledby="cr-queue-title">
+      <h2 id="cr-queue-title">À reprendre</h2>
+      <div data-request-list aria-busy="true"><p role="status">Chargement des demandes…</p></div>
+    </section>
+    <section class="cr-detail" data-detail hidden aria-labelledby="cr-detail-title">
+      <header><p class="cockpit-kicker" data-request-intent></p><h2 id="cr-detail-title" tabindex="-1"></h2><p data-request-meta></p></header>
+      <dl class="cr-facts" data-request-facts></dl>
+      <section class="cr-block"><h3>La question à reprendre</h3><p data-request-question></p></section>
+      <section class="cr-block"><h3>La version exacte reçue</h3><p class="cockpit-form-hint">Cette lecture reste attachée à sa version. Une note ou une correction s’ajoute séparément.</p><pre class="cr-reading" data-synthesis></pre></section>
+      <details class="cr-block"><summary>Réponses et origine de cette lecture</summary><dl class="cr-facts" data-answer-facts></dl></details>
+      <details class="cr-block"><summary>Le choix et l’accord enregistrés</summary><p data-consent></p></details>
+      <section class="cr-block"><h3>Notes humaines</h3><div data-notes></div></section>
+      <div class="cr-actions"><button type="button" class="cockpit-button cockpit-button-secondary" data-edit-context>Reprendre ou corriger le contexte</button><button type="button" class="cockpit-button cockpit-button-secondary" data-retry-notification hidden>Réessayer la notification</button></div>
+      <form class="cr-block cockpit-fields" data-note-form>
+        <h3>Ajouter une relecture écrite</h3>
+        <p>Cette note est attribuée à Mouaad et conservée avec sa raison. Elle n’est pas envoyée automatiquement ; elle pourra être partagée par un accès protégé.</p>
+        <label><span>Votre lecture des points ouverts</span><textarea name="text" rows="4" maxlength="10000" required></textarea></label>
+        <label><span>Pourquoi la lecture évolue, ou ce qu’elle confirme</span><textarea name="reason" rows="2" maxlength="4000" required></textarea></label>
+        <label><span>Éléments utilisés et limites de vérification</span><textarea name="evidence" rows="2" maxlength="8000" required placeholder="Préciser la déclaration, la pièce ou le point encore non vérifié."></textarea></label>
+        <button type="submit" class="cockpit-button cockpit-button-primary">Enregistrer la note, sans envoyer</button>
+      </form>
+      <form class="cr-block cockpit-fields" data-access-form>
+        <h3>Partager une reprise protégée</h3><p data-access-recipient></p>
+        <label><span>Note humaine à partager</span><select name="noteId" required data-note-choice></select></label>
+        <details><summary>Voir exactement ce qui sera partagé</summary><pre class="cr-reading" data-share-preview></pre></details><label><span>Expiration de sécurité du lien</span><input name="expiresAt" type="datetime-local" required /><small>Choisir une échéance adaptée à cet échange. Cette date ne définit aucune durée de conservation commerciale.</small></label>
+        <label class="cr-check"><input name="authorized" type="checkbox" required /><span>Le partage de ce contexte et de cette note à cette adresse a été convenu avec la personne. Aucun appel ni relance supplémentaire n’est autorisé.</span></label>
+        <button type="submit" class="cockpit-button cockpit-button-primary">Créer le lien, sans envoyer</button>
+      </form>
+      <section class="cr-block cockpit-fields" data-created-access hidden aria-live="polite">
+        <h3>Le lien est prêt</h3><p>Transmettez-le uniquement à la personne concernée, par le moyen convenu. L’ouverture demandera un code à son adresse autorisée.</p>
+        <label><span>Lien personnel</span><input data-access-url type="text" readonly autocomplete="off" /></label><button type="button" class="cockpit-button cockpit-button-secondary" data-copy-access>Copier le lien</button>
+      </section>
+      <section class="cr-block"><h3>Accès déjà créés</h3><div data-access-list></div></section>
+      <form class="cr-block cockpit-fields" data-status-form><h3>Traitement de la demande</h3><label><span>Statut constaté par Mouaad</span><select name="status"><option value="open">À traiter</option><option value="answered">Réponse effectuée</option><option value="closed">Traitement terminé</option></select></label><p class="cockpit-form-hint">Une notification acceptée par le prestataire ne vaut pas réponse humaine. Terminer le traitement ne supprime pas les données.</p><button type="submit" class="cockpit-button cockpit-button-secondary">Enregistrer le statut</button></form>
+      <details class="cr-block cr-erasure"><summary>Supprimer le dossier opérationnel</summary><form class="cockpit-fields" data-delete-form><p>Cette suppression efface le dossier, ses notes et tous ses accès dans la base. Traitez séparément les copies présentes dans les messageries. Aucun profil CRM n’est modifié.</p><label class="cr-check"><input name="confirm" type="checkbox" required /><span>Je confirme que ce dossier n’est plus nécessaire et demande sa suppression.</span></label><button type="submit" class="cockpit-button cockpit-button-secondary">Supprimer ce dossier et ses accès</button></form></details>
+    </section>
+    <section class="cr-editor" data-editor hidden aria-labelledby="cr-editor-title">
+      <header><p class="cockpit-kicker">Après un échange établi</p><h2 id="cr-editor-title" tabindex="-1">Reprendre le contexte convenu</h2><p>Renseignez uniquement les éléments connus. Les réponses sont reprises comme déclarations à confirmer ; elles ne deviennent pas des vérifications professionnelles.</p></header>
+      <form class="cockpit-fields" data-context-form>
+        <div data-new-fields class="cockpit-fields">
+          <label><span>Projet</span><select name="project"><option value="buyer">Acheter</option><option value="seller">Vendre</option><option value="transition">Vendre et acheter</option></select></label>
+          <label><span>Prénom, facultatif</span><input name="firstName" maxlength="80" autocomplete="off" /></label>
+          <label><span>Adresse e-mail autorisée pour la reprise</span><input name="email" type="email" autocomplete="off" /></label>
+          <label><span>Date de l’accord pour cette reprise</span><input name="agreedAt" type="datetime-local" /></label>
+          <label><span>Trace de l’accord</span><textarea name="permissionEvidence" rows="2" maxlength="3000" placeholder="Quand et comment la personne a accepté cette reprise."></textarea></label>
+          <label class="cr-check"><input name="authorized" type="checkbox" /><span>La personne a accepté la reprise protégée de ce contexte à cette adresse, sans ajout de relance commerciale.</span></label>
+        </div>
+        <div class="cr-question-groups" data-context-questions></div>
+        <section class="cr-block"><h3>La lecture qui sera conservée</h3><pre class="cr-reading" data-context-preview></pre></section>
+        <div data-revision-fields class="cockpit-fields" hidden>
+          <label><span>Votre note sur cette révision</span><textarea name="revisionText" rows="3" maxlength="4000"></textarea></label>
+          <label><span>Pourquoi le contexte change</span><textarea name="revisionReason" rows="2" maxlength="4000"></textarea></label>
+          <label><span>Éléments nouveaux et limites</span><textarea name="revisionEvidence" rows="2" maxlength="8000"></textarea></label>
+        </div>
+        <label class="cr-check"><input name="approved" type="checkbox" required /><span>J’ai relu le contexte et la lecture affichés. Ils restituent ce qui a été convenu, avec leurs inconnues et leurs limites.</span></label>
+        <div class="cr-actions"><button type="submit" class="cockpit-button cockpit-button-primary" data-context-submit>Enregistrer le contexte, sans envoyer</button><button type="button" class="cockpit-button cockpit-button-secondary" data-cancel-editor>Annuler</button></div>
+      </form>
+    </section>
+  </div>
+</CockpitLayout>
+<script>import '../../scripts/cockpit/relectures';</script>
+<style>
+.cr-notice{max-width:90ch;line-height:1.6;font-size:14px;color:var(--cockpit-muted);margin:10px 0 28px}.cr-workspace{display:grid;grid-template-columns:minmax(210px,280px) minmax(0,1fr);gap:28px;align-items:start;padding-bottom:90px}.cr-queue h2{font-size:19px}.cr-detail,.cr-editor{min-width:0;background:var(--cockpit-white);border:1px solid var(--cockpit-line);padding:28px}.cr-detail h2,.cr-editor h2{font-size:30px;line-height:1.2;overflow-wrap:anywhere}.cr-detail p,.cr-editor p{font-size:14px;line-height:1.65}.cr-block{border-top:1px solid var(--cockpit-line);padding-top:24px;margin-top:26px}.cr-block h3{margin:0 0 12px;font-size:20px}.cr-block summary{cursor:pointer;font-weight:700;min-height:44px;padding:10px 0}.cr-reading{font-family:inherit;font-size:14px;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%;margin:20px 0;color:var(--cockpit-ink)}.cr-facts{display:grid;gap:14px;margin:20px 0}.cr-facts :global(dt){font-size:12px;color:var(--cockpit-muted);font-weight:650}.cr-facts :global(dd){font-size:14px;line-height:1.6;margin:3px 0;overflow-wrap:anywhere}.cr-actions .cockpit-button{flex:0 1 auto}.cr-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.cr-check{display:flex!important;grid-template-columns:none!important;gap:10px!important;align-items:flex-start;font-size:13px;line-height:1.5}.cr-check input{margin-top:4px;flex:0 0 auto}.cr-feedback{padding:15px;background:#edf1ff;border:1px solid #b8c5ee;line-height:1.6;overflow-wrap:anywhere}.cr-feedback[data-error="true"]{background:#fff1ec;border-color:#d59a85}.cr-question-groups{display:grid;gap:12px;margin:24px 0}.cr-erasure{margin-top:42px}.cr-editor header{margin-bottom:28px}.cr-detail[hidden],.cr-editor[hidden],.cr-feedback[hidden]{display:none}
+:global(.cr-request){display:grid;width:100%;text-align:left;gap:7px;padding:19px 14px;border:0;border-bottom:1px solid var(--cockpit-line);background:transparent;color:var(--cockpit-ink);cursor:pointer;overflow-wrap:anywhere}:global(.cr-request[aria-current="true"] span){color:#4d5955}:global(.cr-request[aria-current="true"]){background:#e9edff;border-left:3px solid var(--cockpit-blue)}:global(.cr-request span){font-size:12px;line-height:1.5;color:var(--cockpit-muted)}:global(.cr-request strong){font-size:15px}:global(.cr-note){padding:18px 0;border-bottom:1px solid var(--cockpit-line)}:global(.cr-note p){white-space:pre-wrap}:global(.cr-note time){font-size:12px;color:var(--cockpit-muted)}:global(.cr-group){border:1px solid var(--cockpit-line);padding:14px}:global(.cr-group summary){min-height:44px;cursor:pointer;font-weight:650}:global(.cr-group .cockpit-fields){margin-top:15px}:global(.cr-multiple){border:0;padding:0;margin:0}:global(.cr-multiple legend){font-size:13px;font-weight:650;margin-bottom:12px}:global(.cr-multiple label){display:flex!important;gap:10px!important;margin:10px 0;font-size:13px}:global(.cr-access-row){border-bottom:1px solid var(--cockpit-line);padding:15px 0;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}:global(.cr-access-row p){margin:0}:global(.cr-group small){font-weight:400;color:var(--cockpit-muted);line-height:1.5}
+@media(max-width:1050px){:global(body[data-cockpit-page="relectures"] .cockpit-mobile-link:not(.is-current) span){color:#b9c5cb}:global(body[data-cockpit-page="relectures"] .cockpit-mobile-link span){font-size:10px}.cr-workspace{grid-template-columns:1fr}.cr-queue{max-height:360px;overflow:auto;border-bottom:1px solid var(--cockpit-line)}.cr-detail,.cr-editor{padding:22px}}
+@media(max-width:600px){.cr-detail,.cr-editor{padding:18px 14px}.cr-detail h2,.cr-editor h2{font-size:25px}.cr-actions{flex-direction:column}.cr-workspace{gap:20px}.cr-reading{font-size:13px}:global(.cr-group){padding:10px}}
+</style>

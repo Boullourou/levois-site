@@ -100,6 +100,7 @@ async function startAnalytics(){
     const event = typeof detail.event === 'string' ? detail.event : '';
     const allowed = new Set([
       'journey_started',
+      'first_value_seen', 'answer_corrected', 'reading_kept', 'reading_copy_requested', 'review_requested', 'exchange_requested',
       'journey_step_completed',
       'journey_completed',
       'result_viewed',
@@ -109,9 +110,10 @@ async function startAnalytics(){
     ]);
     if (!allowed.has(event)) return;
     const safe: Record<string, string | number | boolean> = {};
-    if (typeof detail.step === 'number') safe.step = detail.step;
+    if (typeof detail.step === 'number' && Number.isInteger(detail.step) && detail.step>=0 && detail.step<=30) safe.step = detail.step;
+    if(typeof detail.duration_seconds==='number'&&Number.isFinite(detail.duration_seconds))safe.duration_seconds=Math.min(86400,Math.max(0,Math.round(detail.duration_seconds)));
     if (typeof detail.step_name === 'string') safe.step_name = detail.step_name.slice(0, 80);
-    if (typeof detail.selected_journey === 'string') safe.selected_journey = detail.selected_journey.slice(0, 40);
+    if (typeof detail.selected_journey === 'string'&&['buyer','seller','transition','local','audit','prescriber','team_candidate','brand'].includes(detail.selected_journey)) safe.selected_journey = detail.selected_journey;
     if (typeof detail.consent_type === 'string') safe.consent_type = detail.consent_type.slice(0, 40);
     capture(event, safe);
   });

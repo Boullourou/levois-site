@@ -1,0 +1,29 @@
+# Audit d’annonce — raccord de la cible
+
+L’outil garde l’API `POST /api/audit-url/`, les trois questions observées et la sélection de deux actions par `analyseHybridListing`. L’API et les deux anciens modules de calcul ne sont pas modifiés. Deux titres seulement sont adaptés : « prix modifié » ne prouve pas une baisse ; une proposition orale ne permet pas de statuer sur l’engagement. Les codes, observations et actions du moteur restent inchangés pour toutes les combinaisons connues. Les pistes sont affichées comme conditionnelles, avec une limite explicite sur le prix et les effets financiers/juridiques.
+
+Le lien est facultatif avec la voie « Continuer avec mes observations ». Les trois inconnues sont explicites. Lorsque durée ou signal est inconnu, aucun état factuel n’est inventé : un relevé et une relecture de présentation sont proposés. Une offre reçue reste traitée comme offre même avec durée inconnue ; le moteur historique fournit les mêmes actions pour ses trois durées dans cette branche.
+
+`classifyAuditResponse` distingue `readable`, `blocked`, `insufficient`, `unavailable`, `transport`, `rate-limited`, `manual`. L’API historique partage `reason: unavailable` entre contenu insuffisant et page indisponible ; seule sa formulation actuelle « La page est accessible, mais… » permet de distinguer le premier. Cette dépendance est testée sur le véritable handler, et reste un point à revoir si le contrat API évolue. Une erreur transport ne devient jamais un refus de portail.
+
+## Contexte et transmission
+
+`contextWithAudit` écrit `project: audit`, les réponses et une `reading` à cinq blocs par le contrat commun. Champs : `audit_url`, `audit_duration`, `audit_signal`, `audit_context`, `audit_access`, `audit_read_at`, `audit_title`, `audit_source`, `audit_photo_count`, `audit_description_length`. Les six derniers sont des éléments importés, pas des pièces vérifiées. Les sources de lecture les désignent ; une valeur explicitement inconnue porte le type `unknown`.
+
+L’URL apparaît dans la lecture exportée et dans la synthèse qu’un visiteur peut approuver. Elle n’est jamais mise dans une URL de navigation, un événement d’analytique ou un envoi automatique. Aucun formulaire de coordonnées ni appel à `/api/lead` n’existe dans cette page. La lecture URL et le brouillon sont conservés dans `sessionStorage`, pas dans une persistance permanente ; le brouillon garde l’extraction utile pour la reprise et son schéma est contrôlé. Une panne de conservation est signalée et empêche une navigation qui perdrait la lecture.
+
+`/lecture` est le raccord aux quatre suites communes. Les trois demandes volontaires n’ont pas été soumises par les tests UI. Copier et télécharger préservent le même contenu humain complet et les limites. « Garder cette lecture » utilise `keepReading` commun : le fichier HTML lisible contient aussi la lecture figée et les réponses avec leur provenance. La vraie page `/reprendre` accepte ce fichier. L’effacement depuis la confidentialité supprime avec un seul bouton le contexte commun et `levois:audit:draft:v2` ; le brouillon ne peut plus restaurer les éléments effacés.
+
+L’adaptateur `buildAuditReading(Context)` restitue seulement une lecture d’audit déjà enregistrée et renvoie `null` en son absence. Il n’invente pas de description d’annonce pour recalculer le moteur. La reprise d’une extraction et des trois réponses incomplètes appartient au brouillon de `/audit-annonce`.
+
+La correction d’une réaction retire la troisième réponse devenue incompatible et archive la lecture précédente. La reprise explicite vers vendeur importe seulement des observations équivalentes, avec provenance `imported`, et garde l’URL dans le contexte de session. Une durée ambiguë ou un simple retour « prix » ne devient pas une durée plus précise ou une comparaison de biens.
+
+## Vérification et fidélité visuelle
+
+Tests unitaires du domaine, de toutes les combinaisons connues et du véritable handler API : `audit.test.ts` et `audit-api.test.ts`. Le handler reçoit des réponses réseau simulées ; aucun portail extérieur n’a été sollicité. Contrôle reproductible : `node scripts/verify-audit-experience.mjs` sur le serveur local `4331`. Chromium via Playwright, après indisponibilité de l’IAB signalée par l’agent principal. Ni essai humain ni téléphone physique revendiqué.
+
+Rapport : `docs/design/cible-20260910/preuves/audit-ui-verification.json`. Captures `audit-{320|390|1440}-{entree|question-impact|resultat}.png`, lecture commune et quatre échecs. Dix états Axe WCAG A/AA, clavier/focus, aucun débordement horizontal, correction/historique, export, import vendeur, restitution commune intégrale et ouverture des trois demandes sans transmission. Les états « page lisible » utilisent une annonce illustrative nommée comme fixture dans le script ; les contrôles du vrai moteur ont lieu séparément.
+
+Le concept accepté `docs/design/cible-20260910/experience-concept.png` et les captures finales sont inspectés ensemble. Conservés : Satoshi, blanc/cobalt/encre, choix sombre, tracé fonctionnel reliant réponse et conséquence, pastels des conditions, numéros de progression et sortie après valeur. Adaptations nécessaires : la vraie lecture de lien a un état d’accès explicite ; les deux actions sont lisibles dans une colonne plus large sur desktop ; aucun plan décoratif n’est ajouté. Les 5 blocs complets et le relais vers Mouaad utilisent la page commune. Première conséquence visible vers 714 px à 390 et 756 px à 320 dans la séquence testée, sans réduction du texte à une taille illisible.
+
+Limites visuelles : la page d’audit garde sa méthode et sa FAQ après le résultat, ce qui allonge la page. Le logo actuel est celui du système commun. Les captures pleine page sont prises depuis l’origine du document pour éviter l’artefact de composition Chromium d’un lien d’évitement fixe hors écran. Le focus et les mesures sont relevés avant cette capture, puis la position est restaurée.

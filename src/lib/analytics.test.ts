@@ -17,7 +17,8 @@ describe('analytics privacy contract', () => {
   it('maps public pages to the three LEVOIS journeys', () => {
     expect(journeyForPath('/audit-annonce/')).toBe('listing_live');
     expect(journeyForPath('/situer-ma-vente/resultat')).toBe('seller_future');
-    expect(journeyForPath('/votre-rue')).toBe('seller_future');
+    expect(journeyForPath('/votre-rue')).toBe('local');
+    expect(journeyForPath('/vendre-et-acheter')).toBe('transition');
     expect(journeyForPath('/ma-recherche')).toBe('buyer');
     expect(journeyForPath('/recommander')).toBe('prescriber');
     expect(journeyForPath('/rejoindre')).toBe('team_candidate');

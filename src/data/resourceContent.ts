@@ -1,251 +1,200 @@
-/**
- * Contenu des six ressources principales — structure commune (§19.3 du CdC) :
- * question, réponse courte, explication, exemple, erreurs, checklist,
- * limite, prochaine action, parcours lié.
- */
-
-export interface ResourceContent {
-  id: string;
-  reponseCourte: string;
-  explication: string[];
-  exemple: { titre: string; texte: string };
-  erreurs: string[];
-  checklist: { titre: string; items: string[] };
-  limite: string;
-  action: string;
-  situationLiee: string;
-}
-
-export const resourceContents: ResourceContent[] = [
+/** Six ressources conservées ; formulations alignées sur les limites de la méthode. */
+export interface ResourceContent {id:string;reponseCourte:string;explication:string[];exemple:{titre:string;texte:string};erreurs:string[];checklist:{titre:string;items:string[]};limite:string;action:string;situationLiee:string}
+export const resourceContents:ResourceContent[]=[
   {
-    id: 'lancement-coherent',
-    reponseCourte:
-      'Un bon lancement suit un ordre précis : documents, préparation du bien, prise de vues, comparaison locale — et seulement ensuite, le prix envisagé. Inverser cet ordre peut retarder le lancement.',
-    explication: [
-      'Les premières semaines d’une annonce concentrent l’essentiel de son attention : les acheteurs actifs du secteur la découvrent, la comparent et la classent. Cette fenêtre ne se rejoue pas. Un lancement précipité — photos faites avant la préparation, prix choisi avant la comparaison — expose le bien à un accueil tiède qu’aucune retouche ultérieure ne rattrape complètement.',
-      'La logique du lancement cohérent est simple : chaque décision s’appuie sur la précédente. Les documents révèlent parfois des éléments qui changent la présentation (surface réelle, diagnostics). L’état du bien conditionne les photographies. Les photographies et la comparaison locale fondent le prix envisagé face aux biens comparables. Cet ordre aide à limiter les décisions à reprendre.',
-      'Le calendrier compte aussi : mieux vaut retarder une publication de deux semaines que publier un bien qui n’est pas prêt. Le marché ne récompense pas la vitesse — il récompense la cohérence entre la promesse, le prix et ce que la visite confirme.',
+    "id": "lancement-coherent",
+    "reponseCourte": "Préparer le lancement consiste à relier les documents, la présentation du bien, les comparaisons utiles et votre calendrier. L’ordre aide à éviter des décisions prises sur des informations encore incomplètes.",
+    "explication": [
+      "Commencez par ce qui peut changer la description du bien : surfaces, diagnostics, charges, travaux et documents disponibles. Une information manquante peut demander une vérification avant publication ; elle ne rend pas automatiquement tout le lancement impossible.",
+      "Préparer les espaces et les photographies aide à rendre les usages lisibles. Comparez ensuite le bien à des alternatives pertinentes, en distinguant annonces actuelles et ventes passées. Votre besoin de financement pour la suite ne suffit pas à déterminer sa valeur.",
+      "La date de publication découle aussi de vos contraintes. Poursuivre la préparation, publier avec des limites explicites ou attendre sont des options à examiner ; aucune durée universelle ne les départage."
     ],
-    exemple: {
-      titre: 'L’ordre inversé, et ce qu’il coûte',
-      texte:
-        'Un propriétaire pressé publie avec des photos de téléphone et un prix « à ajuster plus tard ». Trois semaines après, il refait les photos et baisse le prix : l’annonce affiche déjà une baisse et des visuels changés — les acheteurs du secteur, eux, ont déjà classé le bien. Le même travail fait avant la publication n’aurait rien coûté.',
+    "exemple": {
+      "titre": "Une information change la présentation",
+      "texte": "Un propriétaire découvre qu’une pièce présentée comme chambre demande une vérification de surface et d’usage. Il rassemble l’information, adapte le texte et les photos, puis réexamine son calendrier. Cet exemple décrit une démarche possible, pas un résultat commercial garanti."
     },
-    erreurs: [
-      'Fixer le prix à partir du budget nécessaire pour le projet suivant.',
-      'Publier « pour tester le marché » en pensant ajuster ensuite sans conséquence.',
-      'Faire les photographies avant la préparation du bien.',
-      'Réunir les documents après les premières demandes des acheteurs.',
-      'Choisir la date de publication sans regarder ce qui est en concurrence à ce moment-là.',
+    "erreurs": [
+      "Confondre le montant nécessaire au prochain projet avec une valeur vérifiée.",
+      "Publier une information dont on ignore le fondement.",
+      "Préparer des images qui masquent une contrainte importante.",
+      "Choisir une date sans regarder ce qui manque encore."
     ],
-    checklist: {
-      titre: 'Avant de publier, dans cet ordre',
-      items: [
-        'Documents réunis : titre, diagnostics, charges, taxe foncière, travaux réalisés.',
-        'Points à corriger traités — ou assumés et intégrés à la présentation.',
-        'Prise de vues faite dans un bien préparé, à la bonne lumière.',
-        'Les 5 à 8 annonces concurrentes de la même recherche listées et regardées.',
-        'Prix envisagé face aux biens comparables posée face à ces alternatives — pas dans l’absolu.',
-        'Calendrier écrit : publication, période d’observation, premier point de lecture à J+14.',
-      ],
+    "checklist": {
+      "titre": "Les points à relier avant publication",
+      "items": [
+        "Lister les documents disponibles et ceux à retrouver.",
+        "Décrire les usages et les contraintes du bien avec précision.",
+        "Préparer des photos fidèles à ce qu’une visite pourra constater.",
+        "Comparer des alternatives pertinentes en notant leur source et leur date.",
+        "Clarifier le fondement du prix envisagé et les vérifications nécessaires.",
+        "Choisir une date et les informations à observer après publication."
+      ]
     },
-    limite:
-      'Cette ressource ne remplace pas l’analyse du bien lui-même : elle structure l’ordre des décisions, pas leur contenu. Le « bon » prix et les « bons » ajustements dépendent de la comparaison locale réelle.',
-    action:
-      'Écrire votre ordre de lancement personnalisé : ce qui est déjà fait, ce qui manque, et la date de publication qui en découle — plutôt que l’inverse.',
-    situationLiee: 'preparer',
+    "limite": "Cette grille ne fixe ni le prix du bien ni un délai de vente. Ces sujets demandent le bien réel, des comparaisons pertinentes et votre situation.",
+    "action": "Écrire trois colonnes : déjà prêt, à vérifier, conséquence sur le calendrier. Choisir la prochaine vérification qui change réellement le lancement.",
+    "situationLiee": "preparer"
   },
   {
-    id: 'premiere-impression-annonce',
-    reponseCourte:
-      'Un acheteur accorde quelques secondes à votre annonce, sur un écran de téléphone, au milieu d’une liste. La première photographie, le prix et le titre décident s’il ouvre — ou passe.',
-    explication: [
-      'Dans une liste de résultats, votre annonce n’existe pas seule : elle apparaît entre deux autres, en vignette, avec un prix. L’acheteur ne « lit » pas — il balaie. Ce que la vignette montre, ce que le prix évoque face aux voisines, ce que le titre précise : voilà la totalité de votre première impression.',
-      'La première photographie doit répondre à une question simple : montre-t-elle la plus grande force du bien, cadrée pour un écran de téléphone ? Beaucoup d’annonces ouvrent sur une façade sombre ou une pièce anonyme alors que le jardin, la luminosité ou le volume principal feraient ouvrir l’annonce.',
-      'Le test le plus fiable est celui des conditions réelles : votre annonce, sur un téléphone, dans la vraie liste de résultats, au milieu des concurrentes. Pas en plein écran sur votre ordinateur, où tout paraît plus flatteur.',
+    "id": "premiere-impression-annonce",
+    "reponseCourte": "La première image, le titre et les informations visibles dans une liste donnent une première lecture du bien. Leur rôle est de faire comprendre ce qui est proposé, sans exagérer sa promesse.",
+    "explication": [
+      "Regardez l’annonce dans les conditions où elle est découverte : sur un téléphone, dans une liste de résultats, puis une fois ouverte. Ce qui paraît clair en grand peut devenir difficile à lire en vignette.",
+      "La première image doit transmettre une information pertinente sur le bien. Le choix dépend de ses usages et de la recherche concernée, pas d’une règle imposant toujours une façade ou un séjour.",
+      "Un test de compréhension sert à repérer ce qui est perçu ou manque. Il ne prédit ni le nombre de contacts ni la vente. Une image plus séduisante ne corrige pas une information inexacte."
     ],
-    exemple: {
-      titre: 'Le test des trois secondes',
-      texte:
-        'Montrez à un proche la liste de résultats où figure votre annonce, trois secondes, puis demandez : quelles annonces avez-vous envie d’ouvrir, et pourquoi ? Si la vôtre n’en fait pas partie, vous savez où se situe le premier écart — avant toute question de prix.',
+    "exemple": {
+      "titre": "Ce qui est compris avant le clic",
+      "texte": "Une annonce commence par un cadrage où l’extérieur est difficile à identifier. En la regardant dans la liste, le propriétaire constate que cette caractéristique n’apparaît pas clairement. Il peut tester une autre photo fidèle au bien et noter ce qui devient plus compréhensible."
     },
-    erreurs: [
-      'Juger ses photos en plein écran plutôt qu’en vignette mobile.',
-      'Ouvrir sur la façade par habitude, même quand elle n’est pas la force du bien.',
-      'Un titre qui répète la catégorie (« Maison 5 pièces ») sans rien promettre de plus.',
-      'Corriger la photo, le titre et le prix en même temps — impossible ensuite de savoir ce qui a joué.',
-      'Oublier que la première impression inclut le prix affiché à côté des concurrentes.',
+    "erreurs": [
+      "Juger seulement la version grand écran.",
+      "Choisir une image séduisante mais peu informative.",
+      "Cacher une contrainte que la visite révélera.",
+      "Modifier tous les éléments sans garder de trace."
     ],
-    checklist: {
-      titre: 'Mini-test en cinq points',
-      items: [
-        'Vignette vue sur téléphone : le sujet principal est-il lisible en petit ?',
-        'La première photo montre-t-elle la plus grande force du bien ?',
-        'Le titre apporte-t-il une information que la photo ne montre pas ?',
-        'Dans la liste réelle, votre prix côtoie quelles alternatives ?',
-        'Les 3 premières photos racontent-elles l’essentiel — ou faut-il aller à la dixième ?',
-      ],
+    "checklist": {
+      "titre": "Une vérification sur téléphone",
+      "items": [
+        "Ouvrir la recherche dans laquelle le bien doit apparaître.",
+        "Noter ce que la vignette permet réellement de comprendre.",
+        "Vérifier si le titre ajoute une information utile.",
+        "Regarder ce que les premières photos confirment ou laissent ouvert.",
+        "Noter un changement à examiner et conserver la version précédente."
+      ]
     },
-    limite:
-      'Une première impression réussie fait ouvrir l’annonce — elle ne compense ni un positionnement décalé face aux alternatives, ni une visite qui contredit la promesse.',
-    action:
-      'Refaire le parcours d’un acheteur sur téléphone : la recherche type, la liste, les trois secondes. Noter ce qui accroche, ce qui manque — puis ne modifier qu’un seul élément.',
-    situationLiee: 'peu-contacts',
+    "limite": "La présentation ne permet pas, seule, d’expliquer l’intérêt ou son absence. Les conditions du bien, les alternatives et la diffusion interviennent aussi.",
+    "action": "Rejouer la découverte sur téléphone et écrire : compris, ambigu, manquant. Corriger d’abord une information importante et observable.",
+    "situationLiee": "peu-contacts"
   },
   {
-    id: 'annonce-vue-peu-de-contacts',
-    reponseCourte:
-      'Vue, ouverture, contact, visite : chaque étape perd une partie des acheteurs — c’est normal. Ce qui informe, c’est de savoir à quelle étape la vôtre en perd trop, car chaque étape a ses propres leviers.',
-    explication: [
-      'Une « vue » signifie seulement que votre annonce est apparue dans une liste. Une ouverture signifie que la vignette et le prix ont convaincu de regarder. Un contact signifie que l’ensemble — photos, description, prix, localisation — a soutenu la comparaison avec les alternatives. Confondre ces étapes conduit à corriger le mauvais levier.',
-      'Beaucoup de vues sans ouvertures pointe vers la vignette, le titre ou le prix affiché. Des ouvertures sans contact pointe vers l’intérieur de l’annonce : la promesse s’effondre en la parcourant, ou la comparaison avec les annonces voisines ne tient pas. Peu de vues tout court pointe vers la diffusion — le support, la position dans les recherches.',
-      'La règle d’or : un seul levier à la fois. Modifier photo, texte et prix ensemble, c’est renoncer à comprendre. Modifier un élément, laisser dix à quatorze jours, lire — puis décider du suivant.',
+    "id": "annonce-vue-peu-de-contacts",
+    "reponseCourte": "Une vue, une ouverture, un contact et une visite ne décrivent pas la même étape. Avant de modifier l’annonce, il faut savoir ce que les chiffres du support mesurent réellement.",
+    "explication": [
+      "Les définitions de « vue » ou « consultation » peuvent varier selon le portail. Vérifiez la définition, la période observée et les changements intervenus avant de comparer les chiffres.",
+      "Un passage faible d’une étape à l’autre invite à examiner plusieurs pistes : diffusion, information visible, contenu de l’annonce, conditions du bien ou alternatives. Il n’identifie pas automatiquement la cause.",
+      "Lorsque c’est possible, documentez une modification et observez ses conséquences sur une période adaptée. Un faible nombre d’observations ou d’autres changements simultanés limitent ce que l’on peut attribuer à cette modification."
     ],
-    exemple: {
-      titre: 'Le même silence, trois causes différentes',
-      texte:
-        'Trois annonces « sans contact » : la première n’apparaît pas dans la recherche des acheteurs (mauvaise fourchette de prix — diffusion). La deuxième est vue mais jamais ouverte (vignette sombre — première impression). La troisième est ouverte puis refermée (les photos suivantes déçoivent — promesse). Même symptôme, trois réponses différentes.',
+    "exemple": {
+      "titre": "Même silence, informations différentes",
+      "texte": "Deux annonces ont peu de contacts. Pour l’une, les chiffres de consultation sont connus ; pour l’autre, ils ne le sont pas. La première permet d’examiner le passage à l’étape suivante. La seconde demande d’abord de retrouver la mesure disponible, sans conclure que sa présentation est en cause."
     },
-    erreurs: [
-      'Conclure « le prix est trop élevé » à partir du seul silence.',
-      'Modifier plusieurs éléments à la fois.',
-      'Comparer ses chiffres de vues à des moyennes nationales sans valeur locale.',
-      'Ignorer la différence entre vue et ouverture quand le support la fournit.',
-      'Changer de support de diffusion avant d’avoir compris ce que disait le premier.',
+    "erreurs": [
+      "Conclure au prix à partir du seul silence.",
+      "Comparer des chiffres dont les définitions diffèrent.",
+      "Transformer une piste en cause certaine.",
+      "Lire un petit échantillon comme une tendance établie."
     ],
-    checklist: {
-      titre: 'Localiser l’étape qui perd les acheteurs',
-      items: [
-        'Récupérer les chiffres disponibles : vues, et si possible ouvertures et contacts.',
-        'Reproduire la recherche type d’un acheteur et vérifier où l’annonce apparaît.',
-        'Comparer la vignette et le prix aux annonces voisines de la même liste.',
-        'Relire l’annonce ouverte comme un acheteur : la promesse tient-elle jusqu’au bout ?',
-        'Choisir l’unique levier de la prochaine période de quatorze jours.',
-      ],
+    "checklist": {
+      "titre": "Reconstituer le passage entre les étapes",
+      "items": [
+        "Noter le support, la période et la définition de chaque chiffre.",
+        "Distinguer ce qui est mesuré de ce qui est seulement supposé.",
+        "Vérifier la présence de l’annonce dans une recherche pertinente.",
+        "Relire la liste puis l’annonce ouverte sur téléphone.",
+        "Choisir une information manquante ou un changement documentable."
+      ]
     },
-    limite:
-      'Sans accès aux chiffres de consultation, cette lecture reste hypothétique : la première étape est alors de récupérer ces données auprès du support de diffusion.',
-    action:
-      'Identifier l’étape exacte où l’intérêt se perd — diffusion, ouverture ou contact — avant de choisir quoi modifier. Un levier, quatorze jours, une lecture.',
-    situationLiee: 'peu-contacts',
+    "limite": "Sans chiffres comparables ni observation suffisante, la lecture reste une hypothèse. L’absence de mesure n’est pas une mesure de zéro.",
+    "action": "Rassembler les données disponibles, marquer les inconnues et choisir la première étape qu’il est réellement possible d’examiner.",
+    "situationLiee": "peu-contacts"
   },
   {
-    id: 'retours-de-visite',
-    reponseCourte:
-      'Une visite sans offre n’est pas un échec : c’est une information — à condition de la collecter. Un motif qui revient sur trois visites vaut plus que dix avis d’entourage.',
-    explication: [
-      'La plupart des visiteurs ne disent pas ce qu’ils pensent : ils remercient, promettent de réfléchir, disparaissent. La politesse n’est pas une objection. Pour obtenir la vraie information, il faut la demander — vite, simplement, et de la même façon à chaque visite pour pouvoir comparer.',
-      'Ce qui compte n’est pas l’avis isolé mais le motif : une remarque qui revient (les travaux, le vis-à-vis, la troisième chambre trop petite) dessine la perception réelle du marché. Une remarque unique peut être une sensibilité personnelle ; trois occurrences sont un signal.',
-      'Attention au réflexe du prix : « c’est trop cher » en fin de visite signifie souvent « à ce prix, j’ai vu mieux » — c’est une information de comparaison, pas nécessairement de prix. La question utile est : mieux en quoi ? C’est là que se cache le levier.',
+    "id": "retours-de-visite",
+    "reponseCourte": "Une visite sans offre ne désigne pas sa cause. Un retour précis et comparable peut rendre la prochaine vérification plus claire ; un commentaire isolé reste un commentaire isolé.",
+    "explication": [
+      "Demandez ce qui a correspondu aux attentes, ce qui a surpris et ce qui retient éventuellement une suite. Les visiteurs peuvent ne pas répondre ou ne pas avoir encore décidé. Leur silence ne doit pas être interprété comme une objection précise.",
+      "Conservez la formulation du retour avant d’en proposer une interprétation. « Trop de travaux » peut désigner leur montant, leur durée, leur organisation ou une préférence personnelle. Ces sujets appellent des réponses différentes.",
+      "Un motif répété mérite d’être examiné. Il ne devient pas une preuve de valeur ni un score de probabilité parce qu’il apparaît plusieurs fois. Regardez aussi si les visites concernent des projets comparables."
     ],
-    exemple: {
-      titre: 'Traduire une objection en information',
-      texte:
-        '« Il y a trop de travaux » dit rarement le montant : le visiteur additionne un coût imaginé, un délai et une incertitude. Six visiteurs qui le disent ne signifient pas six fois le même chiffre — mais un écart certain entre le coût réel des travaux et leur coût perçu. Ce sont deux problèmes différents, avec deux réponses différentes.',
+    "exemple": {
+      "titre": "Préciser le sujet des travaux",
+      "texte": "Deux visiteurs évoquent les travaux. L’un craint de ne pas pouvoir habiter le logement rapidement ; l’autre n’a pas de repère de coût. Faire préciser ces différences peut orienter deux vérifications distinctes, au lieu de déduire automatiquement un ajustement du prix."
     },
-    erreurs: [
-      'Ne rien noter et se fier à sa mémoire des visites.',
-      'Prendre la politesse (« c’est très lumineux ! ») pour un signal positif.',
-      'Conclure à partir d’une seule visite.',
-      'Se vexer d’une objection au lieu de la creuser — elle est gratuite et précieuse.',
-      'Baisser le prix en réponse à une objection qui parlait d’autre chose.',
+    "erreurs": [
+      "Remplacer les notes par une impression générale.",
+      "Prendre un compliment pour une intention d’achat.",
+      "Interpréter « le prix » comme une demande certaine de baisse.",
+      "Attribuer le même sens à des formulations proches."
     ],
-    checklist: {
-      titre: 'Le débrief systématique (3 questions, à chaud)',
-      items: [
-        'Qu’est-ce qui vous a plu — et déplu — par rapport à ce que l’annonce laissait attendre ?',
-        'Comment situez-vous ce bien face aux autres que vous avez visités ?',
-        'Qu’est-ce qui vous ferait revenir pour une seconde visite ?',
-        'Tout noter dans un même document, avec la date et le profil du visiteur.',
-        'Relire l’ensemble tous les 3 à 5 retours et surligner ce qui se répète.',
-      ],
+    "checklist": {
+      "titre": "Une grille courte après visite",
+      "items": [
+        "Qu’est-ce qui correspondait à ce que l’annonce laissait attendre ?",
+        "Qu’est-ce qui a changé après la découverte du bien ?",
+        "Quel point retient une prochaine étape, s’il y en a un ?",
+        "Noter la date, le contexte utile et les mots employés, sans collecter d’informations inutiles.",
+        "Séparer les faits cités, votre interprétation et la vérification proposée."
+      ]
     },
-    limite:
-      'Les retours de visite décrivent la perception, pas la valeur : ils indiquent quoi vérifier, pas quoi conclure. Un motif répété appelle une vérification — pas automatiquement un changement.',
-    action:
-      'Mettre en place le débrief systématique dès la prochaine visite, et reconstituer de mémoire ce qui peut l’être des visites passées — dates, profils, remarques.',
-    situationLiee: 'visites',
+    "limite": "Les retours décrivent des perceptions et des situations particulières. Ils ne valident pas le prix, les travaux ni la décision d’une autre personne.",
+    "action": "Utiliser la même grille à la prochaine visite. Pour les visites passées, distinguer les notes retrouvées des souvenirs incertains.",
+    "situationLiee": "visites"
   },
   {
-    id: 'verifier-avant-baisse-prix',
-    reponseCourte:
-      'Une baisse de prix est une information publique que le marché lit et mémorise. Avant d’en faire une, vérifiez trois choses : d’où vient le prix actuel, ce que voient les acheteurs au même budget, et ce que dit vraiment le signal qui vous inquiète.',
-    explication: [
-      'Le réflexe « ça ne bouge pas, baissons » saute une étape : comprendre pourquoi ça ne bouge pas. Si l’annonce n’est pas vue, la baisse ne changera rien. Si elle est vue mais pas ouverte, c’est peut-être la vignette. Si les visites déçoivent, la baisse attire des visiteurs qui seront déçus pareil. La baisse ne répare que ce qui relève réellement du positionnement.',
-      'L’historique compte autant que le montant : les portails affichent les baisses successives, et les acheteurs les lisent comme un récit — « ils ont commencé trop haut », « ils sont pressés », « personne n’en veut ». Deux petites baisses racontent une histoire pire qu’un repositionnement unique et assumé.',
-      'La seule référence valable est la comparaison actuelle : les biens visibles aujourd’hui dans la même recherche, au même budget. Pas l’estimation d’il y a six mois, pas le prix d’achat, pas le besoin de financement du projet suivant.',
+    "id": "verifier-avant-baisse-prix",
+    "reponseCourte": "Avant de modifier le prix, vérifiez son fondement, les alternatives pertinentes et les informations qui motivent cette réflexion. Une modification peut être utile ; le seul inconfort de l’attente ne suffit pas à la déterminer.",
+    "explication": [
+      "Le prix, la présentation, la diffusion et les caractéristiques du bien peuvent intervenir ensemble. Distinguer ces sujets évite d’attendre d’un changement de prix qu’il résolve une information manquante ou une difficulté mal comprise.",
+      "Les annonces actuelles décrivent des offres proposées, pas des ventes réalisées. Les données DVF décrivent des ventes passées, avec leurs dates et leurs limites. Aucune de ces sources ne suffit seule à attribuer une valeur au bien.",
+      "L’historique des changements doit être conservé pour comprendre ce qui a été essayé. Il ne permet pas de deviner ce que tous les acheteurs pensent. Comparer un ajustement, une vérification préalable et une attente reste possible."
     ],
-    exemple: {
-      titre: 'La baisse qui n’a rien changé',
-      texte:
-        'Un bien baisse de 10 000 € après deux mois sans contact. Trois semaines plus tard, toujours rien : l’annonce n’apparaissait simplement pas dans les recherches des acheteurs du secteur — le problème était la diffusion, pas le prix. La baisse est désormais visible dans l’historique, pour rien.',
+    "exemple": {
+      "titre": "Vérifier avant d’attribuer une cause",
+      "texte": "Un propriétaire envisage une modification après une période sans contact. Il constate que les statistiques ne sont pas disponibles et que certaines informations importantes manquent dans l’annonce. Il peut d’abord récupérer ces éléments, puis reprendre la question du prix sur une base plus complète."
     },
-    erreurs: [
-      'Baisser pour « faire quelque chose » face au silence.',
-      'Enchaîner plusieurs petites baisses au lieu d’un repositionnement construit.',
-      'Baisser en même temps que d’autres modifications — effet illisible.',
-      'Prendre l’avis le plus alarmiste de l’entourage comme référence.',
-      'Oublier que le prix baissé doit rester cohérent avec la comparaison — pas juste inférieur au prix d’avant.',
+    "erreurs": [
+      "Fixer un nouveau montant sans comparaison pertinente.",
+      "Présumer que chaque remarque parle de prix.",
+      "Confondre annonces en ligne et transactions réalisées.",
+      "Conclure à un effet certain après plusieurs changements simultanés."
     ],
-    checklist: {
-      titre: 'Les vérifications avant toute décision de prix',
-      items: [
-        'D’où vient le prix actuel ? (estimation, comparaison, besoin de financement)',
-        'L’annonce est-elle réellement vue ? (sinon, le sujet est la diffusion)',
-        'Que voient les acheteurs au même budget aujourd’hui — concrètement ?',
-        'Que disent les retours de visite, s’il y en a eu ?',
-        'Quel récit l’historique de l’annonce raconte-t-il déjà ?',
-        'Si baisse il y a : est-elle unique, significative et cohérente avec la comparaison ?',
-      ],
+    "checklist": {
+      "titre": "Les vérifications avant la décision",
+      "items": [
+        "Retrouver le fondement du prix actuel et sa date.",
+        "Vérifier les informations de diffusion et de consultation disponibles.",
+        "Comparer les alternatives actuelles sans les confondre avec des ventes.",
+        "Examiner des ventes passées réellement comparables et leurs limites.",
+        "Lire les retours précis et les points non renseignés.",
+        "Comparer les conséquences d’un ajustement, d’une vérification et d’une attente."
+      ]
     },
-    limite:
-      'Cette ressource ne calcule pas un prix : elle sécurise la décision. Le montant pertinent, s’il faut en changer, se construit sur la comparaison locale réelle — pas sur une règle générale.',
-    action:
-      'Refaire la comparaison à neuf — les annonces visibles aujourd’hui dans la même recherche — et confronter chaque signal inquiétant à sa cause probable avant de décider.',
-    situationLiee: 'visites',
+    "limite": "Cette ressource organise la décision ; elle ne calcule pas un prix et ne garantit pas l’effet d’un ajustement.",
+    "action": "Écrire ce qui justifierait un changement et ce qui reste à vérifier avant de choisir son ampleur ou son calendrier.",
+    "situationLiee": "visites"
   },
   {
-    id: 'reprendre-commercialisation',
-    reponseCourte:
-      'Une annonce ancienne ne se « retouche » plus : elle se reprend. Comprendre l’usure, solder l’historique, et reconstruire une première impression neuve — en gardant ce que ces mois ont appris.',
-    explication: [
-      'Après plusieurs mois, une annonce s’use mécaniquement : les acheteurs actifs du secteur l’ont vue, classée, oubliée. Les nouveaux arrivants sur le marché la découvrent avec son historique — durée, baisses — qui raconte une histoire avant même la première photo. Ce phénomène ne dit rien de la valeur du bien : il dit que l’outil « annonce » est fatigué.',
-      'La tentation est la retouche de plus : encore une baisse, encore une photo. Sur une annonce usée, ces gestes sont lus comme des confirmations. Une reprise efficace est un événement, pas un ajustement : nouvelle première impression, présentation repensée, positionnement réévalué face au marché actuel — qui n’est plus celui du lancement.',
-      'Le plus précieux dans une vente longue, c’est ce qu’elle a appris : les remarques répétées, les profils qui sont venus, les moments où l’intérêt décrochait. Une reprise qui ignore ces enseignements recommence les mêmes erreurs avec de nouvelles photos.',
+    "id": "reprendre-commercialisation",
+    "reponseCourte": "Une commercialisation longue appelle une lecture de l’historique. Continuer, faire une pause ou reprendre certains éléments sont des options ; l’ancienneté seule n’impose pas une relance.",
+    "explication": [
+      "Reconstituez ce qui a changé depuis le lancement : présentation, conditions, prix, diffusion, visites et contraintes du projet. Des repères datés valent mieux qu’un sentiment général d’usure.",
+      "Examinez ce que les observations permettent d’apprendre et ce qu’elles ne permettent pas d’expliquer. Un manque de traces reste une incertitude, pas la preuve qu’une stratégie a échoué.",
+      "La comparaison actuelle peut différer de celle du lancement. Une pause peut donner le temps de traiter un sujet précis ; elle n’efface pas nécessairement l’historique d’une annonce et ne garantit pas un nouvel intérêt."
     ],
-    exemple: {
-      titre: 'Pause puis reprise, plutôt qu’érosion continue',
-      texte:
-        'Après dix mois et trois baisses, un propriétaire retire son bien six semaines, traite les deux remarques les plus répétées des visites, refait les photos de saison et republie avec un positionnement construit sur la concurrence actuelle. L’annonce repart neuve — avec l’expérience des dix mois, sans leur poids.',
+    "exemple": {
+      "titre": "Une pause avec un objectif précis",
+      "texte": "Un propriétaire souhaite suspendre la publication pour rassembler des informations sur des travaux souvent évoqués. Il définit ce qu’il doit obtenir avant de réexaminer la vente. La durée de la pause dépend de cette vérification ; aucun résultat de commercialisation n’est présumé."
     },
-    erreurs: [
-      'Ajouter une énième retouche à une annonce que le marché ne regarde plus.',
-      'Repartir sans avoir reconstitué l’historique et les enseignements.',
-      'Republier à l’identique en espérant un résultat différent.',
-      'Changer le prix et toute la présentation en même temps, sans période de lecture.',
-      'Oublier que le marché de comparaison a changé depuis le lancement initial.',
+    "erreurs": [
+      "Déduire de l’ancienneté que le bien ne sera plus regardé.",
+      "Republier en supposant que tout l’historique disparaît.",
+      "Reprendre sans savoir ce que l’on veut clarifier.",
+      "Continuer par habitude sans réexaminer ses propres contraintes."
     ],
-    checklist: {
-      titre: 'Construire la reprise',
-      items: [
-        'Reconstituer la chronologie : dates, prix successifs, changements, réactions.',
-        'Lister les enseignements : remarques répétées, profils venus, moments de décrochage.',
-        'Refaire la comparaison face au marché d’aujourd’hui, pas celui du lancement.',
-        'Décider : pause puis relance, repositionnement construit, ou continuité outillée.',
-        'Préparer une première impression réellement nouvelle avant de réexposer le bien.',
-        'Planifier la lecture : un point à J+14, sur des chiffres notés.',
-      ],
+    "checklist": {
+      "titre": "Construire une suite à partir de l’historique",
+      "items": [
+        "Noter les dates, versions, prix et changements connus.",
+        "Rassembler les retours disponibles et marquer les souvenirs incertains.",
+        "Identifier ce qui a changé dans le bien, le projet ou les alternatives.",
+        "Comparer poursuite, pause utile et reprise ciblée.",
+        "Définir la condition qui ferait choisir ou réexaminer chaque option.",
+        "Conserver la décision et les informations à observer ensuite."
+      ]
     },
-    limite:
-      'Cette ressource ne dit pas si votre reprise passe par un changement de prix, de présentation ou de diffusion : cela dépend de l’historique réel et de la comparaison actuelle — c’est précisément ce que la reconstitution révèle.',
-    action:
-      'Reconstituer la chronologie complète de votre commercialisation et en extraire trois enseignements — avant de choisir la forme de la reprise.',
-    situationLiee: 'longtemps',
-  },
+    "limite": "Ni une pause ni une relance ne garantissent une vente. Leur intérêt dépend du sujet traité, du bien, des alternatives et de votre situation.",
+    "action": "Reconstituer une chronologie courte puis choisir une information utile à obtenir avant de décider comment poursuivre.",
+    "situationLiee": "longtemps"
+  }
 ];
-
-export function getResourceContent(id: string): ResourceContent {
-  const c = resourceContents.find((c) => c.id === id);
-  if (!c) throw new Error(`Contenu de ressource introuvable : ${id}`);
-  return c;
-}
+export function getResourceContent(id:string):ResourceContent{const content=resourceContents.find(r=>r.id===id);if(!content)throw new Error('Ressource inconnue : '+id);return content;}

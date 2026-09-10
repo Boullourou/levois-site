@@ -9,7 +9,7 @@ export const AUDIT_EVENTS = [
 ] as const;
 
 export type AuditEventName = (typeof AUDIT_EVENTS)[number];
-export type Journey = 'listing_live' | 'seller_future' | 'buyer' | 'prescriber' | 'team_candidate' | 'brand';
+export type Journey = 'listing_live' | 'seller_future' | 'buyer' | 'prescriber' | 'team_candidate' | 'brand' | 'local' | 'transition';
 
 const auditEventSet = new Set<string>(AUDIT_EVENTS);
 
@@ -40,9 +40,14 @@ export function cleanAnalyticsUrl(value: unknown): string | undefined {
 export function journeyForPath(value: string): Journey {
   const path = cleanPath(value);
   if (path === '/audit-annonce') return 'listing_live';
-  if (path === '/situer-ma-vente' || path.startsWith('/situer-ma-vente/') || path === '/votre-rue') {
+  if (path === '/situer-ma-vente' || path.startsWith('/situer-ma-vente/')) {
     return 'seller_future';
   }
+  if(path === '/votre-rue') return 'local';
+  if(path === '/vendre-et-acheter') return 'transition';
+  if(path === '/experiences/visites-sans-offre') return 'seller_future';
+  if(path === '/experiences/surface-ou-usage') return 'buyer';
+  if(path === '/experiences/vendre-avant-acheter') return 'transition';
   if (path === '/ma-recherche' || path.startsWith('/ma-recherche/')) return 'buyer';
   if (path === '/recommander' || path.startsWith('/recommander/')) return 'prescriber';
   if (path === '/rejoindre' || path.startsWith('/rejoindre/')) return 'team_candidate';

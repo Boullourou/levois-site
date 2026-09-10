@@ -1,121 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ImageSlot from '../components/ImageSlot.astro';
-
-const etapes = [
-  { titre: 'Votre situation, déjà comprise', texte: 'Si vous avez fait le parcours « Situer ma vente », Mouaad part de votre synthèse : situation, signaux, hésitations. Vous ne répétez rien.' },
-  { titre: 'Une lecture sur pièces', texte: 'Le bien, l’annonce s’il y en a une, l’historique, la comparaison locale réelle : Mouaad confronte votre première lecture aux faits du terrain.' },
-  { titre: 'Une restitution honnête', texte: 'Ce qui est confirmé, ce qui est infirmé, ce qui reste à vérifier — et la prochaine décision utile. Y compris quand elle ne passe pas par lui.' },
-  { titre: 'Un accompagnement piloté, si vous le choisissez', texte: 'Stratégie, présentation, diffusion, visites, lectures régulières des signaux, ajustements un levier à la fois — jusqu’à la signature.' },
-];
-
-const faq = [
-  {
-    q: 'Est-ce que l’échange m’engage à quelque chose ?',
-    r: 'Non. La lecture précède toute proposition. Beaucoup d’échanges se concluent par une recommandation et rien d’autre — c’est le fonctionnement normal de LEVOIS.',
-  },
-  {
-    q: 'Pourquoi un mandat exclusif est-il parfois proposé ?',
-    r: 'Parce qu’un pilotage cohérent — stratégie, présentation, diffusion, visites, ajustements — ne fonctionne que coordonné par une seule main. L’exclusivité n’est jamais un préalable : elle se comprend, ou elle ne se signe pas.',
-  },
-  {
-    q: 'Que devient ma situation transmise via le site ?',
-    r: 'Elle est envoyée à Mouaad, uniquement pour vous répondre. Pas de newsletter automatique, pas de revente de données, pas de relances en série. Les détails sont dans la politique de confidentialité.',
-  },
-  {
-    q: 'Et si mon bien est déjà en agence ?',
-    r: 'La lecture LEVOIS reste possible : comprendre vos signaux n’engage ni votre agence ni vous. La coordination éventuelle se discute ensuite, en transparence.',
-  },
-];
 ---
+<Layout title="L’accompagnement" description="Ce que vous pouvez clarifier seul et ce que Mouaad peut vérifier avec vous, pour acheter, vendre ou coordonner les deux.">
 
-<Layout
-  title="Accompagnement"
-  description="Ce qui change quand Mouaad accompagne votre vente : une lecture avant toute proposition, un pilotage un levier à la fois, la transparence comme règle."
->
-  <div class="max-w-editorial mx-auto px-edge md:px-edge-md pt-12 md:pt-20">
-
-    <header class="mb-12">
-      <p class="eyebrow mb-4">L’accompagnement</p>
-      <h1 class="text-display text-encre mb-5">Ce qui change quand<br/>vous n’êtes plus seul.</h1>
-      <p class="font-sans text-body-lg text-brun">
-        LEVOIS vous a peut-être déjà aidé à lire votre situation. Voici ce qu’un regard
-        humain et local ajoute — et comment Mouaad travaille, concrètement.
-      </p>
-    </header>
-
-    <section class="mb-14" aria-labelledby="ce-que-levois-fait">
-      <h2 id="ce-que-levois-fait" class="text-h3 text-encre mb-4">Ce que le site a déjà permis</h2>
-      <p class="font-sans text-body-lg text-encre/85 leading-relaxed">
-        Le parcours « Situer ma vente » identifie un écart probable, son niveau de fiabilité,
-        et une prochaine décision utile. C’est une lecture structurée — mais elle s’arrête
-        là où commencent les faits du terrain : votre bien précis, vos concurrents réels,
-        les acheteurs actifs du moment. C’est exactement là que Mouaad intervient.
-      </p>
-    </section>
-
-    <section class="mb-14" aria-labelledby="etapes-titre">
-      <h2 id="etapes-titre" class="text-h3 text-encre mb-7">Comment ça se passe</h2>
-      <ol class="space-y-4 list-none">
-        {etapes.map((e, i) => (
-          <li class="carte p-6 flex gap-5">
-            <span class="font-sans text-sm text-argile font-medium tracking-widest pt-1">{String(i + 1).padStart(2, '0')}</span>
-            <div>
-              <h3 class="font-display text-xl text-encre mb-1.5">{e.titre}</h3>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">{e.texte}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-    </section>
-
-    <section class="mb-14 grid sm:grid-cols-2 gap-4 items-stretch" aria-label="Le cadre">
-      <div class="carte p-6">
-        <h2 class="font-sans text-sm uppercase tracking-widest text-encre mb-4">Le cadre SAFTI</h2>
-        <p class="font-sans text-[15px] text-encre/85 leading-relaxed">
-          Mouaad exerce comme conseiller immobilier indépendant au sein du réseau SAFTI —
-          le cadre professionnel, juridique et la force de diffusion d’un réseau national.
-          LEVOIS est sa méthode de lecture, de pédagogie et d’accompagnement.
-        </p>
-      </div>
-      <div class="carte p-6">
-        <h2 class="font-sans text-sm uppercase tracking-widest text-encre mb-4">Les principes</h2>
-        <ul class="space-y-2 font-sans text-[15px] text-encre/85">
-          <li>· La lecture précède toute proposition</li>
-          <li>· Un levier à la fois, des points de lecture réguliers</li>
-          <li>· Ce qui est incertain est annoncé comme incertain</li>
-          <li>· Vous décidez — à chaque étape</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="mb-14" aria-labelledby="faq-titre">
-      <h2 id="faq-titre" class="text-h3 text-encre mb-6">Questions fréquentes</h2>
-      <div class="space-y-3">
-        {faq.map((f) => (
-          <details class="carte px-6 py-4 group">
-            <summary class="font-sans text-base font-medium text-encre cursor-pointer list-none flex items-center justify-between gap-4 min-h-[44px]">
-              {f.q}
-              <span class="text-argile transition-transform duration-200 group-open:rotate-45 text-xl leading-none" aria-hidden="true">+</span>
-            </summary>
-            <p class="font-sans text-[15px] text-brun leading-relaxed pt-2 pb-1">{f.r}</p>
-          </details>
-        ))}
-      </div>
-    </section>
-
-    <section class="rounded-panel bg-encre text-papier p-7 md:p-10" aria-labelledby="cta-accompagnement">
-      <span class="ligne-ecart !bg-argile-lum mb-6"></span>
-      <h2 id="cta-accompagnement" class="text-h3 text-papier mb-3">Commencer par une lecture</h2>
-      <p class="font-sans text-[15px] text-papier/75 leading-relaxed mb-7 max-w-prose">
-        Le chemin naturel : situer votre vente, recevoir votre première lecture,
-        puis — si vous le souhaitez — la transmettre à Mouaad. Vous pouvez aussi
-        écrire directement.
-      </p>
-      <div class="flex flex-wrap gap-3">
-        <a href="/situer-ma-vente" class="btn-sur-encre">Situer ma vente</a>
-        <a href="/contact" class="btn-sur-encre">Écrire à Mouaad</a>
-      </div>
-    </section>
-  </div>
-</Layout>
+<article class="lv-wrap lv-editorial"><header><h1>Un relais humain, à partir de ce que vous avez déjà compris.</h1><p class="lv-intro">Le passage vers Mouaad part des points ouverts de votre lecture. Vous gardez la maîtrise du sujet et de la suite.</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><img src="/images/levois-mouaad.webp" width="240" height="290" alt="Mouaad Boullourou" loading="lazy" style="width:200px;height:240px;object-fit:cover;object-position:center 25%"/><p class="lv-note" style="margin-top:15px">Mouaad Boullourou<br/>Conseiller immobilier indépendant SAFTI</p><a href="/mouaad">Rencontrer Mouaad</a><a href="/lecture">Partir de ma lecture</a></aside><div class="lv-prose">
+<h2>D’abord, une lecture qui vous appartient.</h2><p>Vous pouvez répondre, corriger, comparer, télécharger ou imprimer sans transmettre vos coordonnées. Une copie par e-mail ne demande ni appel ni relecture.</p>
+<h2>Une relecture écrite ciblée.</h2><p>Vous choisissez « Demander à Mouaad de relire », vérifiez la version à transmettre et précisez votre question si vous le souhaitez. Mouaad reprend les points ouverts par écrit. Aucun délai chiffré n’est promis au lancement.</p>
+<h2>Un échange lorsque vous le choisissez.</h2><p>Vous pouvez demander un échange par e-mail ou par téléphone. Le sujet, le contexte déjà clarifié et le canal choisi sont transmis ensemble pour éviter de tout recommencer.</p>
+<h2>Pour un achat.</h2><p>Confronter les usages au bien réel, préparer des points de visite, reprendre un arbitrage ou préciser une condition de recherche. La faisabilité financière et les pièces restent à vérifier avec les interlocuteurs compétents.</p>
+<h2>Pour une vente.</h2><p>Examiner le bien et sa présentation, comparer des informations locales, organiser les retours de visite, relire les conditions d’une offre avec les professionnels concernés.</p>
+<h2>Pour vendre et acheter.</h2><p>Relier les dates, les ressources et les solutions de repli. Une coordination utile commence par ce qui dépend de quoi, sans présumer que tout peut s’aligner.</p>
+<h2>Le cadre d’une mission.</h2><p>Si vous souhaitez aller plus loin, le périmètre, les modalités, le mandat applicable et les honoraires sont expliqués avant engagement. Utiliser LEVOIS ou demander une relecture ne vaut pas mandat.</p>
+<div class="lv-actions"><a class="lv-button" href="/lecture">Retrouver ma lecture</a><a class="lv-secondary" href="/contact">J’ai déjà une question précise</a></div>
+</div></div></article></Layout>

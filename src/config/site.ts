@@ -1,9 +1,9 @@
 export const site = {
   name: 'LEVOIS',
   url: 'https://levois.fr',
-  baseline: 'Rendre la valeur lisible.',
+  baseline: 'Des décisions immobilières plus claires.',
   description:
-    "LEVOIS aide les acheteurs et les vendeurs du bassin chartrain à distinguer les faits, la perception du marché et la décision à prendre.",
+    "Acheter, vendre ou coordonner les deux : LEVOIS aide à clarifier votre projet immobilier autour de Lèves et Chartres, avant de choisir la prochaine décision utile.",
   email: 'mouaad@levois.fr',
   phone: '+33781380121',
   phoneDisplay: '07 81 38 01 21',

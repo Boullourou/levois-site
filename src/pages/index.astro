@@ -1,146 +1,42 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import WorldScene from '../components/WorldScene.astro';
-import Icon from '../components/WorldIcon.astro';
-import summary from '../data/dvf-market-summary.json';
-const houses=summary.series.find(s=>s.commune==='Lèves'&&s.propertyType==='Maison')!;
+import { site } from '../config/site';
 ---
-<Layout title="Accueil" description="Il y a une vie derrière chaque adresse. Explorez les ventes du bassin chartrain, clarifiez votre projet et avancez avec Mouaad Boullourou, conseiller immobilier SAFTI.">
-<section class="world-home-hero" aria-labelledby="world-home-title">
-  <WorldScene />
-  <div class="world-hero-heading">
-    <h1 id="world-home-title">Il y a une vie derrière<br /><span>chaque adresse.</span></h1>
-    <p>Acheter, vendre ou comprendre les ventes locales : commencez par votre situation.</p>
-  </div>
-  <div class="world-marker world-marker-right">
-    <button type="button" aria-expanded="false" aria-controls="world-marker-detail"><span class="world-marker-dot"><Icon name="plus"/></span><span>Et derrière les prix ?</span></button>
-    <div id="world-marker-detail" class="world-marker-detail" hidden><strong>Des ventes, vraiment signées.</strong><p>Un premier repère pour comprendre ce qui se passe autour de vous.</p><a href="/votre-rue">Voir les faits <Icon /></a></div>
-  </div>
-  <div class="world-dock world-entry">
-    <div id="home-projects">
-      <h2 id="home-entry-title">Qu’est-ce qui vous amène ?</h2>
-      <nav class="world-entry-choices" aria-labelledby="home-entry-title">
-        <a href="/ma-recherche"><Icon name="home"/><span>Je cherche un logement</span><Icon /></a>
-        <a href="/situer-ma-vente"><Icon name="key"/><span>Je prépare ou je vends un bien</span><Icon /></a>
-        <a id="home-explore" href="/votre-rue"><Icon name="pin"/><span>Je consulte les ventes près de chez moi</span><Icon /></a>
-      </nav>
-    </div>
-    <div id="home-place" hidden>
-      <button id="home-project-back" class="world-entry-back" type="button"><Icon /><span>Changer de projet</span></button>
-      <form action="/votre-rue" method="get" data-world-address>
-        <div class="world-dock-input"><Icon name="pin"/><div><label for="home-adresse">Quelle adresse vous intéresse ?</label><input id="home-adresse" name="q" type="text" autocomplete="off" placeholder="Une rue, une adresse, une commune…" required minlength="3" maxlength="180" role="combobox" aria-expanded="false" aria-controls="home-address-list" aria-autocomplete="list"/><ul id="home-address-list" class="world-address-list" role="listbox" aria-label="Adresses proposées" hidden></ul></div></div>
-        <input type="hidden" name="src" value="accueil" />
-        <button type="submit" class="world-button">Voir les ventes <Icon /></button>
-      </form>
-      <p id="home-address-status" class="world-address-status" role="status" hidden></p>
-      <a class="world-entry-direct" href="/votre-rue">Accéder directement aux ventes locales <Icon /></a>
-    </div>
-    <p class="world-dock-trust"><Icon name="lock"/> Un premier éclairage. Sans coordonnées.</p>
-  </div>
-  <p class="world-scene-caption">Quartier illustré · une invitation à explorer le vôtre</p>
-  <a href="/carte" class="world-hero-person"><img src="/images/levois-mouaad-avatar.webp" alt="" width="44" height="44"/><span>Mouaad Boullourou<small>Votre conseiller SAFTI · bassin chartrain</small></span></a>
+<Layout title="Accueil" description="Acheter, vendre, ou faire les deux. LEVOIS vous aide à clarifier votre projet immobilier à Lèves, Chartres et alentours, avant toute demande de coordonnées.">
+<section class="lv-home lv-wrap">
+<div class="lv-home-grid"><div class="lv-home-copy">
+<h1>Un projet immobilier.<br/>Des décisions plus claires.</h1>
+<p class="lv-intro">Acheter, vendre, ou faire les deux. Distinguez ce que vous savez, ce qui reste ouvert et votre prochaine décision utile.</p>
+<nav class="lv-projects" aria-label="Votre projet"><a href="/ma-recherche">Je veux acheter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a><a href="/situer-ma-vente">Je veux vendre <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a><a href="/vendre-et-acheter">Je veux vendre et acheter <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></nav>
+<a href="/votre-rue" class="lv-text-link lv-home-local">Comprendre les ventes autour de moi <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
+</div>
+<figure class="lv-life-plan">
+<picture><source srcset="/images/plan-vivant-vie-480.avif 480w, /images/plan-vivant-vie-800.avif 800w, /images/plan-vivant-vie-1200.avif 1200w" sizes="(max-width:760px) 92vw, 45vw" type="image/avif"/><img src="/images/plan-vivant-vie-800.webp" width="1200" height="800" alt="Un bureau près d’une fenêtre ouverte sur un jardin : illustration d’un usage du logement." fetchpriority="high"/></picture>
+<svg class="lv-life-path" viewBox="0 0 400 380" aria-hidden="true"><path d="M20 0v75q0 45 55 45h225q55 0 55 55v30q0 55-75 55H85q-40 0-40 65v55"/><circle cx="20" cy="0" r="4" fill="currentColor"/><circle cx="355" cy="190" r="4" fill="currentColor"/><circle cx="45" cy="380" r="4" fill="currentColor"/></svg>
+<span class="lv-plan-point a">Votre point de départ</span><span class="lv-plan-point b">Ce qui compte</span><span class="lv-plan-point c">Le prochain choix</span>
+<figcaption>Scène de vie illustrée · aucun bien proposé à la vente.</figcaption>
+</figure></div>
+<div class="lv-locale-line"><p>Lèves, Chartres et les communes voisines.</p><p>Une lecture accessible sans inscription. Vous choisissez la suite.</p></div>
 </section>
-<div class="world-local-strip"><span>Lèves. Chartres. Et la vie autour.</span><a href="#votre-projet">Un premier fait local <span aria-hidden="true">↓</span></a></div>
-<section class="world-project" id="votre-projet" aria-labelledby="world-project-title">
-  <div class="world-section-opening"><h2 id="world-project-title">Un prix ne raconte<br /><span>jamais toute l’histoire.</span></h2><p>Les ventes récentes donnent un repère. L’adresse, l’état du bien et votre projet changent la lecture.</p></div>
-  <div class="world-local-reading">
-    <div class="world-local-fact">
-      <p>Maisons à Lèves · {houses.latest.year}</p>
-      <p class="world-local-price"><strong>{houses.latest.pricePerSqm.median.toLocaleString('fr-FR')}</strong><span>€/m² médian</span></p>
-      <p class="world-local-source">{houses.latest.count} ventes observées · source DVF</p>
-      <p class="world-local-boundary">Ce chiffre décrit les ventes observées.<br/>Il ne donne pas le prix de votre logement.</p>
-    </div>
-    <div class="world-local-context">
-      <h3>Ce que le chiffre ne dit pas.</h3>
-      <dl>
-        <div><dt>L’adresse</dt><dd>La rue, les trajets, la vie autour du logement.</dd></div>
-        <div><dt>L’état du bien</dt><dd>Ce qui est déjà prêt, ce qu’il faudra prévoir.</dd></div>
-        <div><dt>Votre projet</dt><dd>Vos priorités, votre calendrier et votre marge de choix.</dd></div>
-      </dl>
-    </div>
-  </div>
-  <div class="world-local-follow"><p>Une vente voisine n’est pas une estimation de votre bien.</p><a class="world-text-action" href="/votre-rue">Explorer les ventes locales <Icon /></a></div>
-</section>
-<section class="world-method" aria-labelledby="world-method-title">
-  <div class="world-method-title"><h2 id="world-method-title">Moins de flou.<br /><span>Plus de perspectives.</span></h2><p>Le chiffre n’est que le début.<br />Ce qui compte, c’est ce qu’il change pour vous.</p></div>
-  <div class="world-method-steps">
-    <article><span aria-hidden="true">01</span><div><h3>Voir les faits.</h3><p>Des ventes enregistrées, des sources accessibles et les limites de ce qu’on peut en déduire.</p></div></article>
-    <article><span aria-hidden="true">02</span><div><h3>Poser vos priorités.</h3><p>Votre budget, vos contraintes, les choses auxquelles vous tenez. Un projet prend forme.</p></div></article>
-    <article><span aria-hidden="true">03</span><div><h3>Choisir la suite.</h3><p>Vous repartez avec une lecture. Si vous le souhaitez, nous la confrontons ensemble au terrain.</p></div></article>
-  </div>
-</section>
-<section class="world-human" aria-labelledby="world-human-title">
-  <div class="world-human-photo"><img src="/images/levois-mouaad.webp" width="800" height="1202" loading="lazy" alt="Mouaad Boullourou"/><span>Mouaad Boullourou · Conseiller immobilier SAFTI</span></div>
-  <div class="world-human-copy"><h2 id="world-human-title">Et derrière LEVOIS,<br /><span>il y a Mouaad.</span></h2><p>Un outil peut rapprocher des chiffres. Pour comprendre ce que votre projet représente, il faut une conversation.</p><p>Je vous accompagne à Lèves, à Chartres et dans les communes voisines. Avec une lecture locale, des options expliquées et de la place pour vos questions.</p><a href="/carte" class="world-button world-button-dark">Faisons connaissance <Icon /></a><small>Votre rythme. Votre décision.</small></div>
-</section>
+<section class="lv-proof lv-section"><div class="lv-wrap lv-proof-grid">
+<div class="lv-proof-copy"><h2>Une réponse doit changer quelque chose.</h2><p>Avant les mètres carrés, il y a la façon dont vous voulez vivre. Une priorité rend déjà le prochain choix plus précis.</p><a href="/methode" class="lv-text-link">Découvrir notre approche <span aria-hidden="true">↗</span></a></div>
+<div><fieldset class="lv-demo-choices"><legend>Qu’est-ce que votre prochain logement doit faciliter ?</legend><div class="lv-choices"><label class="lv-choice"><input type="radio" name="home-use" value="calm" checked/><span>Travailler au calme</span></label><label class="lv-choice"><input type="radio" name="home-use" value="outside"/><span>Vivre davantage dehors</span></label></div></fieldset>
+<div class="lv-demo-impact" aria-live="polite"><h3 data-home-impact-title>La séparation compte autant que la surface.</h3><p data-home-impact-text>Une pièce que l’on peut fermer et le bruit aux heures de travail deviennent des points à vérifier en visite.</p><p class="lv-note" data-home-impact-limit>Un plan seul ne permet pas de vérifier le calme réel.</p></div>
+<a href="/ma-recherche" class="lv-text-link" data-home-continue>Partir de cette priorité <span aria-hidden="true">↗</span></a></div>
+</div></section>
+<section class="lv-wrap lv-section lv-local-section"><div class="lv-local-copy"><h2>Des repères ancrés ici.</h2><p>Les ventes enregistrées donnent un point d’appui. Leur date, leur périmètre et ce qu’elles ne disent pas restent visibles.</p><p class="lv-note">Les données DVF décrivent des ventes passées. Elles ne sont ni des annonces disponibles, ni une estimation automatique de votre bien.</p><div class="lv-local-communes">{site.communes.map(c=><a href={'/votre-rue?q='+encodeURIComponent(c)}>{c}</a>)}</div><a href="/votre-rue" class="lv-text-link">Explorer les ventes locales <span aria-hidden="true">↗</span></a></div>
+<div class="lv-local-graphic"><svg viewBox="0 0 500 240" role="img" aria-label="Sept communes reliées dans un schéma du secteur ; ce dessin n’est pas une carte géographique."><g fill="none" stroke="#2545df" stroke-width="1.3"><path d="M70 75 205 45 350 80 420 160 285 185 170 135 70 75M205 45 170 135 350 80 285 185M170 135 205 45"/></g><g fill="#2545df"><circle cx="70" cy="75" r="5"/><circle cx="205" cy="45" r="5"/><circle cx="350" cy="80" r="5"/><circle cx="420" cy="160" r="5"/><circle cx="285" cy="185" r="5"/><circle cx="170" cy="135" r="5"/><circle cx="70" cy="175" r="5"/></g><g font-family="Satoshi,sans-serif" font-size="14" fill="#111a30"><text x="43" y="55">Lèves</text><text x="175" y="24">Champhol</text><text x="323" y="60">Chartres</text><text x="389" y="190">Le Coudray</text><text x="255" y="215">Luisant</text><text x="145" y="164">Lucé</text><text x="27" y="204">Mainvilliers</text></g></svg><p>Schéma des communes couvertes · non géographique.</p></div></section>
+<section class="lv-wrap"><div class="lv-human"><img src="/images/levois-mouaad.webp" width="240" height="290" alt="Mouaad Boullourou" loading="lazy"/><div><h2>Le terrain commence là où une lecture à distance atteint sa limite.</h2><p>Vous avez clarifié votre situation. Mouaad peut maintenant relire un point ouvert, confronter une hypothèse au bien réel ou préparer avec vous la prochaine vérification.</p><p class="lv-note">Mouaad Boullourou · conseiller immobilier indépendant SAFTI.</p><div class="lv-human-actions"><a class="lv-text-link" href="/mouaad">Rencontrer Mouaad <span aria-hidden="true">↗</span></a><a class="lv-text-link" href="/accompagnement">Comprendre l’accompagnement <span aria-hidden="true">↗</span></a></div></div></div></section>
 </Layout>
-<style>
-  .world-local-reading { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; align-items: center; }
-  .world-local-fact { padding: 18px 0; }
-  .world-local-fact > p:first-child { font-size: 15px; color: var(--rp-muted); }
-  .world-local-price { display: flex; flex-wrap: wrap; gap: 8px 15px; align-items: baseline; margin: 14px 0 8px; }
-  .world-local-price strong { font-size: clamp(64px, 6.3vw, 88px); font-weight: 400; letter-spacing: -.04em; line-height: 1.1; color: var(--rp-accent); }
-  .world-local-price span { font-size: 17px; color: var(--rp-muted); }
-  .world-local-source { font-size: 13px; color: var(--rp-muted); }
-  .world-local-boundary { margin-top: 27px; color: var(--rp-muted); font-size: 14px; line-height: 1.8; }
-  .world-local-context { border-left: 1px solid var(--rp-line); padding-left: 40px; }
-  .world-local-context h3 { margin: 0 0 22px; font-size: 25px; line-height: 1.3; font-weight: 500; letter-spacing: -.02em; }
-  .world-local-context dl { margin: 0; }
-  .world-local-context dl > div + div { margin-top: 20px; }
-  .world-local-context dt { font-size: 15px; font-weight: 500; }
-  .world-local-context dd { margin: 4px 0 0; color: var(--rp-muted); font-size: 14px; line-height: 1.6; }
-  .world-local-follow { margin-top: 40px; padding-top: 23px; border-top: 1px solid var(--rp-line); display: flex; align-items: center; justify-content: space-between; gap: 25px; }
-  .world-local-follow p { color: var(--rp-muted); font-size: 13px; }
-  @media (max-width: 700px) {
-    .world-local-reading { grid-template-columns: 1fr; gap: 36px; }
-    .world-local-fact { padding: 0; }
-    .world-local-context { border-left: 0; padding-left: 0; }
-    .world-local-context h3 { font-size: 23px; }
-    .world-local-follow { display: block; margin-top: 30px; }
-    .world-local-follow .world-text-action { margin-top: 12px; font-size: 14px; }
-  }
-  /* Accueil uniquement : la situation précède l’adresse. */
-  .world-hero-heading > p { max-width: 690px; padding-inline: 12px; }
-  .world-entry.world-dock { width: min(940px, calc(100% - 48px)); padding: 22px 22px 15px; }
-  .world-entry h2 { margin: 0 0 17px; font-size: 22px; line-height: 1.25; font-weight: 500; letter-spacing: -.02em; }
-  .world-entry-choices { display: grid; grid-template-columns: 1fr 1fr 1.12fr; gap: 8px; }
-  .world-entry-choices > :is(a, button) { display: grid; grid-template-columns: 22px 1fr 18px; align-items: center; gap: 11px; min-height: 92px; padding: 15px 14px; border: 0; border-radius: var(--levois-action-radius); background: transparent; color: var(--rp-ink); font: 500 15px/1.4 Satoshi, sans-serif; text-align: left; text-decoration: none; transition: background 180ms; }
-  .world-entry-choices > :first-child { background: var(--levois-selected); }
-  .world-entry-choices > :is(a, button):hover { background: var(--levois-selected); }
-  .world-entry-choices > :is(a, button) > :global(svg) { color: var(--rp-accent); }
-  .world-entry-choices > :is(a, button) > :global(svg:last-child) { width: 18px; height: 18px; }
-  .world-entry-choices > :is(a, button):focus-visible { outline-offset: 2px; }
-  .world-entry .world-dock-trust { margin-top: 15px; }
-  .world-entry-back { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0; margin: -6px 0 10px; border: 0; background: transparent; color: var(--rp-accent); font-size: 13px; }
-  .world-entry-back > :global(svg) { width: 17px; transform: rotate(180deg); }
-  .world-entry-direct { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; margin-top: 5px; color: var(--rp-accent); font-size: 12px; text-decoration: none; }
-  .world-entry-direct > :global(svg) { width: 16px; }
-  .world-entry-direct:hover, .world-entry-back:hover { text-decoration: underline; }
-  @media (max-width: 900px) {
-    .world-entry.world-dock { width: min(680px, calc(100% - 48px)); }
-    .world-entry-choices { grid-template-columns: 1fr; gap: 0; }
-    .world-entry-choices > :is(a, button) { min-height: 62px; padding: 12px 14px; }
-    .world-entry-choices > :last-child { border-top: 1px solid var(--rp-line); border-radius: 0; }
-  }
-  @media (max-width: 600px) {
-    .world-entry.world-dock { width: calc(100% - 32px); padding: 18px 16px 14px; }
-    .world-entry h2 { font-size: 20px; margin-bottom: 12px; }
-    .world-entry-choices > :is(a, button) { min-height: 61px; gap: 10px; padding: 12px 10px; font-size: 14px; }
-    .world-entry .world-dock-trust { margin-top: 12px; }
-  }
-  @media (max-width: 359px) {
-    .world-entry.world-dock { width: calc(100% - 24px); padding-inline: 12px; }
-    .world-entry h2 { font-size: 19px; }
-    .world-entry-choices > :is(a, button) { grid-template-columns: 20px 1fr 16px; gap: 8px; padding-inline: 8px; }
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    #home-place:not([hidden]) { animation: home-place-reveal 220ms var(--levois-ease) both; }
-    @keyframes home-place-reveal { from { opacity: .5; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-  }
-</style>
 <script>
-  import '../scripts/home-address';
-  const marker=document.querySelector<HTMLButtonElement>('.world-marker button');const detail=document.getElementById('world-marker-detail');
-  marker?.addEventListener('click',()=>{const opened=marker.getAttribute('aria-expanded')==='true';marker.setAttribute('aria-expanded',String(!opened));if(detail)detail.hidden=opened;});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&detail&&!detail.hidden){detail.hidden=true;marker?.setAttribute('aria-expanded','false');marker?.focus();}});
+import { readContext,setAnswer,saveContext } from '../lib/experience/context';
+let selected='calm';
+document.querySelectorAll<HTMLInputElement>('[name="home-use"]').forEach(input=>input.addEventListener('change',()=>{
+ selected=input.value;
+ const outside=selected==='outside';
+ document.querySelector('[data-home-impact-title]')!.textContent=outside?'L’accès compte autant que la taille de l’extérieur.':'La séparation compte autant que la surface.';
+ document.querySelector('[data-home-impact-text]')!.textContent=outside?'Sortir directement, l’ensoleillement et l’entretien deviennent des points concrets à comparer.':'Une pièce que l’on peut fermer et le bruit aux heures de travail deviennent des points à vérifier en visite.';
+ document.querySelector('[data-home-impact-limit]')!.textContent=outside?'Une photo ne décrit ni l’usage au fil des saisons, ni les contraintes d’entretien.':'Un plan seul ne permet pas de vérifier le calme réel.';
+}));
+document.querySelector('[data-home-continue]')?.addEventListener('click',()=>{let c=readContext('buyer');c=setAnswer(c,'buyer_goal',selected==='outside'?'outdoors':'quiet');saveContext(c);});
 </script>

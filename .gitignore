@@ -37,3 +37,9 @@ pnpm-debug.log*
 
 # Local QA evidence and generated delivery captures
 artifacts/
+
+# Local compiler/runtime caches
+.cache/
+
+# Downloadable delivery bundle (sources and proofs tracked separately)
+docs/LEVOIS_Livraison_20260910.zip

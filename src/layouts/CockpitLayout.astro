@@ -90,7 +90,7 @@ const navigation = [
             <h1>{title}</h1>
             {description && <p class="cockpit-description">{description}</p>}
           </div>
-          <div class="cockpit-actions"><slot name="actions" /></div>
+          <div class="cockpit-actions">{pageId !== "relectures" && <a class="cockpit-button cockpit-button-secondary" href="/cockpit/relectures">Relectures LEVOIS</a>}<slot name="actions" /></div>
         </header>
 
         <slot />

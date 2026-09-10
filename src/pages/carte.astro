@@ -1,15 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Icon from '../components/WorldIcon.astro';
 import {site} from '../config/site';
 ---
-<Layout title="Enchanté, Mouaad." description="Vous avez ma carte. Faisons connaissance : Mouaad Boullourou, votre conseiller immobilier SAFTI à Lèves, Chartres et alentours.">
-<section class="world-card-page">
- <div class="world-card-portrait"><img src="/images/levois-mouaad.webp" width="800" height="1202" alt="Mouaad Boullourou" fetchpriority="high"/><span>Lèves, Chartres<br/>&amp; la vie autour.</span></div>
- <div class="world-card-intro"><p class="world-card-hello">Vous avez ma carte. Gardons le lien.</p><h1>Enchanté,<br/><span>Mouaad.</span></h1><p class="world-card-role">Mouaad Boullourou<br/>Conseiller immobilier indépendant SAFTI</p><p>Un projet déjà précis ou juste une question ?<br/>On peut commencer par là.</p>
- <a class="world-button" href="/contact?src=carte">M’écrire <Icon name="mail"/></a><a class="world-card-save" href="/mouaad-boullourou.vcf" download>Garder mon contact <Icon name="download"/></a>
- <a class="world-card-phone" href={`tel:${site.phone}`}><Icon name="phone"/>{site.phoneDisplay}</a>
- </div>
- <div class="world-card-next"><h2>Avant d’en parler,<br/>vous pouvez déjà y voir plus clair.</h2><nav aria-label="Choisir mon premier éclairage"><a href="/votre-rue?src=carte"><span>Mon quartier<small>Ce qui s’est réellement vendu autour de moi</small></span><Icon/></a><a href="/ma-recherche?src=carte"><span>Mon achat<small>Mes priorités face au marché local</small></span><Icon/></a><a href="/situer-ma-vente?src=carte"><span>Ma vente<small>Mon point de départ et ma prochaine étape</small></span><Icon/></a></nav></div>
-</section>
+<Layout title="La carte de Mouaad" description="Retrouvez Mouaad et choisissez votre premier éclairage : acheter, vendre, coordonner les deux ou explorer les ventes locales.">
+<article class="lv-wrap lv-editorial"><div class="lv-editorial-grid"><header><h1>Enchanté, Mouaad.</h1><p class="lv-intro" style="margin-top:22px">Une question précise ou un projet qui commence. Vous pouvez déjà y voir plus clair.</p><nav class="lv-projects" aria-label="Votre premier éclairage"><a href="/ma-recherche">Mon achat <span aria-hidden="true">↗</span></a><a href="/situer-ma-vente">Ma vente <span aria-hidden="true">↗</span></a><a href="/vendre-et-acheter">Ma vente et mon achat <span aria-hidden="true">↗</span></a></nav><a class="lv-text-link" href="/votre-rue">Les ventes autour de moi</a></header><div><div class="lv-human-reading" style="margin-top:0"><header><img src="/images/levois-mouaad.webp" width="120" height="150" alt="Mouaad Boullourou" fetchpriority="high" style="width:120px;height:150px"/><div><h2>Mouaad Boullourou</h2><p class="lv-note">Conseiller immobilier indépendant SAFTI<br/>Lèves, Chartres et alentours</p></div></header><div class="lv-actions"><a class="lv-button" href="/contact">M’écrire</a><a class="lv-secondary" href="/mouaad-boullourou.vcf" download>Garder mon contact</a></div><a class="lv-text-link" href={'tel:'+site.phone}>{site.phoneDisplay}</a></div><div class="lv-history"><a class="lv-text-link" href="/reprendre">Mouaad m’a déjà partagé un contexte</a><a class="lv-text-link" href="/methode">Comprendre la méthode LEVOIS</a></div></div></div></article>
 </Layout>

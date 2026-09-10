@@ -1,45 +1,36 @@
 ---
-/**
- * /votre-rue — expérience « infographie » du QR encart publicitaire.
- *
- * URL protégée (imprimée). Ne pas supprimer/renommer/rediriger sans validation.
- *
- * Transforme les DVF en une lecture immédiate, compréhensible en quelques
- * secondes par quelqu'un qui ne connaît rien à l'immobilier :
- *   adresse → courte analyse animée → 4 informations → « En clair »
- *   → ventes détaillées (facultatif) → tunnel de conversion.
- *
- * Honnêteté (impératif) : tout est calculé sur les vraies données DVF générées
- * par scripts/build-dvf.mjs. Aucun chiffre fictif. Aucun indicateur non
- * calculable (demande, délai de vente, visites, tension : jamais affichés ni
- * sous-entendus). Aucune estimation du bien du visiteur. Aucun faux temps de
- * chargement : les messages d'analyse accompagnent le calcul réel.
- *
- * Géocodage : Géoplateforme (BAN) — service actuel de l'État.
- * Conversion : les réponses de qualification + le contexte sont destinés à
- * /api/lead (backend migré à l'itération suivante — cf. commentaire d'envoi).
- */
+/** Stable address route. Original DVF calculations; personal reading before contact. */
 import Layout from '../layouts/Layout.astro';
 import LocalObservatory from '../components/LocalObservatory.astro';
-import WorldScene from '../components/WorldScene.astro';
-import Icon from '../components/WorldIcon.astro';
 ---
 
 <Layout
-  title="Les prix réels de votre secteur"
-  description="Combien s'est vendue la dernière maison de votre quartier ? Les ventes réelles de votre secteur, à partir des données publiques DVF. Sans inscription."
+  title="Les ventes observées autour de votre adresse"
+  description="Comprendre les ventes passées autour d’une adresse, leurs différences et leurs limites. Puis relier ces repères à votre projet, sans coordonnées."
 >
-  <div class="rp-territory-page">
+  <div class="lv-wrap lv-local-page">
+    <section class="vr-plan-hero" aria-labelledby="street-title">
+      <header class="vr-plan-copy">
+        <p class="lv-eyebrow">Repères locaux · Bassin chartrain</p>
+        <h1 id="street-title">Une adresse.<br/><span>Des faits à situer.</span></h1>
+        <p class="lv-intro">Regarder ce qui s’est vendu. Comprendre ce qui se compare. Voir ce qu’il reste à vérifier pour votre projet.</p>
+        <p class="lv-note vr-local-names">Lèves · Chartres · Mainvilliers · Lucé · Champhol · Le Coudray · Luisant</p>
+        <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
+      </header>
+      <figure class="vr-plan-figure">
+        <svg viewBox="0 0 460 275" role="img" aria-label="Schéma : des ventes passées dans un secteur donnent un repère à confronter à votre question">
+          <path d="M40 63H165V137H270V221H412M83 34V204H207V247M293 35V100H412M222 34V87H350V180H413" fill="none" stroke="#b6c2dc" stroke-width="1.4"/>
+          <rect x="105" y="87" width="65" height="73" fill="#eaf0ff"/><rect x="296" y="124" width="42" height="57" fill="#f4d4bf"/><rect x="180" y="177" width="65" height="37" fill="#eee8f4"/>
+          <circle cx="229" cy="139" r="96" fill="none" stroke="#2545df" stroke-width="1.4" stroke-dasharray="3 6"/>
+          <path d="M135 124L230 141L316 159" fill="none" stroke="#2545df" stroke-width="2"/>
+          <circle cx="135" cy="124" r="6" fill="#2545df"/><circle cx="230" cy="141" r="7" fill="#ca581c"/><circle cx="316" cy="159" r="6" fill="#2545df"/>
+          <rect x="24" y="12" width="166" height="38" rx="2" fill="#eaf0ff"/><text x="40" y="36" fill="#2545df" font-size="14">Des ventes passées</text>
+          <rect x="246" y="218" width="189" height="38" rx="2" fill="#f4d4bf"/><text x="262" y="243" fill="#111a30" font-size="14">Votre question, aujourd’hui</text>
+        </svg>
+        <figcaption>Schéma de la méthode · aucune mesure géographique représentée.</figcaption>
+      </figure>
 
-    <section class="world-street-hero" aria-labelledby="street-title">
-    <WorldScene compact />
-    <header class="rp-territory-intro">
-      <h1 id="street-title" class="vr-page-title">Votre rue a des choses<br/><span>à vous dire.</span></h1>
-      <p>Découvrez les ventes réellement signées autour de chez vous.<br/>Les faits d’abord. Votre prochaine décision ensuite.</p>
-      <p class="rp-territory-location">Lèves · Chartres · 7 communes du bassin chartrain</p>
-      <p id="vr-fraicheur" class="vr-fraicheur" hidden></p>
-    </header>
-    <form id="vr-form" class="vr-search" autocomplete="off" novalidate>
+    <form id="vr-form" class="vr-search vr-plan-search" autocomplete="off" novalidate>
       <label for="vr-adresse" class="block font-sans text-sm text-brun mb-2">
         Quelle adresse souhaitez-vous explorer ?
       </label>
@@ -54,7 +45,7 @@ import Icon from '../components/WorldIcon.astro';
           />
           <ul id="vr-suggestions" class="vr-suggestions" role="listbox" aria-label="Adresses proposées" hidden></ul>
         </div>
-        <button type="submit" id="vr-submit" class="btn-primaire vr-submit">Voir les ventes</button>
+        <button type="submit" id="vr-submit" class="lv-button vr-submit">Voir les ventes</button>
       </div>
       <p class="font-sans text-[13px] text-brun/70 mt-3">
         Votre résultat est accessible sans e-mail ni téléphone.
@@ -62,11 +53,12 @@ import Icon from '../components/WorldIcon.astro';
       <p id="vr-geo-erreur" class="font-sans text-sm text-argile mt-2 hidden" role="alert"></p>
     </form>
 
-    <p class="world-street-caption">Quartier illustré · les résultats ci-dessous proviennent des données DVF.</p>
+    <p class="lv-limit vr-plan-contract">Une vente passée est un repère, pas le prix actuel d’un bien. Les résultats gardent leur période, leur périmètre et leur effectif.</p>
     </section>
 
     <!-- ②③④⑤⑥ Scène (analyse → infographie → En clair → détails → conversion) -->
     <section id="vr-scene" aria-live="polite" hidden></section>
+    <section class="vr-local-autonomy" aria-label="Avancer sans adresse"><p class="lv-note">Vous pouvez aussi clarifier votre projet sans chercher une adresse.</p><div class="lv-actions"><a class="lv-text-link" href="/ma-recherche">Acheter ↗</a><a class="lv-text-link" href="/situer-ma-vente">Vendre ↗</a><a class="lv-text-link" href="/vendre-et-acheter">Vendre et acheter ↗</a></div></section>
     <LocalObservatory />
 
     <!-- ⑦ Méthode & limites (accessibles mais discrètes) -->
@@ -105,6 +97,56 @@ import Icon from '../components/WorldIcon.astro';
      matcherait aucun élément injecté → contenu rendu sans aucun style.
      Tous les sélecteurs sont préfixés .vr- : aucun risque de collision. -->
 <style is:global>
+  .lv-local-page {padding-top:34px;padding-bottom:70px;}
+  .vr-plan-hero {display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:30px 55px;padding-bottom:35px;border-bottom:1px solid var(--lv-line);}
+  .vr-plan-copy h1 {font-size:clamp(39px,4.4vw,64px);line-height:1.06;margin-top:22px;}
+  .vr-plan-copy h1 span {color:var(--lv-blue);}
+  .vr-plan-copy .lv-intro {font-size:18px;max-width:44ch;margin-top:25px;}
+  .vr-local-names {margin-top:23px!important;max-width:50ch;}
+  .vr-plan-figure {margin:12px 0 0;align-self:center;background:#f8f7f3;padding:20px 14px;}
+  .vr-plan-figure svg {display:block;width:100%;height:auto;}
+  .vr-plan-figure figcaption {font-size:11px;color:var(--lv-muted);padding:12px 8px 0;}
+  .vr-plan-search,.vr-plan-contract {grid-column:1/-1;max-width:840px;width:100%;}
+  .vr-plan-search {margin-top:0;}
+  .plan-vivant .lv-local-page .vr-search {position:static;inset:auto;transform:none;width:100%;max-width:840px;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent;z-index:auto;}
+  .plan-vivant .lv-local-page .vr-search label {font-size:14px;line-height:1.5;}
+  .plan-vivant .lv-local-page .vr-search>p {font-size:13px;}
+  .plan-vivant .lv-local-page .vr-input {font-size:16px;border-radius:3px;min-height:54px;}
+  .plan-vivant .lv-local-page .vr-suggestions {top:calc(100% + 6px);bottom:auto;border-radius:3px;}
+  .plan-vivant .lv-local-page #vr-scene {display:block;width:100%;max-width:none;margin:30px 0;}
+  .plan-vivant .lv-local-page .vr-block {padding:0;border:0;}
+  .plan-vivant .lv-local-page .vr-head-adr {font-size:26px;line-height:1.25;max-width:55ch;}
+  .plan-vivant .lv-local-page .vr-fraicheur:not([hidden]) {display:inline-flex!important;margin-top:18px;background:var(--lv-info);color:var(--lv-muted);font-size:12px;}
+  .plan-vivant .lv-local-page .vr-conv-eyebrow {display:block;font-size:12px;}
+
+  .vr-plan-contract {margin:0!important;}
+  .vr-local-autonomy {padding:27px 0;border-bottom:1px solid var(--lv-line);}
+  .vr-local-autonomy .lv-actions {margin-top:6px;gap:12px 30px;}
+  .lv-local-page .vr-results {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-block:28px;}
+  .lv-local-page .vr-results>.vr-head,.lv-local-page .vr-results>.vr-block:last-child {grid-column:1/-1;}
+  .lv-local-page .vr-results .vr-card {height:100%;border-color:var(--lv-line);background:#f5f7fc;padding:26px;}
+  .lv-local-page .vr-results>.vr-block:nth-child(3) .vr-card {background:var(--lv-unknown);}
+  .lv-local-page .vr-results .vr-card--warm {background:var(--lv-condition);}
+  .lv-local-page .vr-conv {padding:30px;background:var(--lv-info);color:var(--lv-ink);border:0;}
+  .lv-local-page .vr-conv-eyebrow {color:var(--lv-blue);}
+  .lv-local-page .vr-conv-titre {color:var(--lv-ink);font-size:32px;}
+  .lv-local-page .vr-conv-intro {color:var(--lv-muted);max-width:64ch;}
+  .lv-local-page .vr-path {border:1px solid var(--lv-line);background:white;color:var(--lv-ink);min-height:70px;}
+  .lv-local-page .vr-path:hover {border-color:var(--lv-blue);transform:none;}
+  .lv-local-page .vr-path--1 {background:var(--lv-blue);color:white;border-color:var(--lv-blue);}
+  .lv-local-page .vr-path--1:hover {background:var(--lv-ink);}
+  .lv-local-page .vr-path-d {color:inherit;opacity:.85;}
+  .lv-local-page .vr-panneau {padding:26px;margin-top:24px;border-left:2px solid var(--lv-blue);background:white;}
+  .vr-local-reading {margin-top:24px;}
+  .vr-local-reading .lv-reading-section {padding-left:42px;}
+  .vr-local-reading .lv-reading-section h2 {font-size:22px;}
+  .vr-local-reading .lv-reading-item {font-size:15px;}
+  .vr-local-reading .lv-reading-item[data-kind=data] {background:var(--lv-info);}
+  .vr-local-reading .lv-next h2 {font-size:24px;}
+  .lv-local-page .vr-methode {margin-top:35px;}
+  @media(max-width:760px){.lv-local-page{padding-top:23px}.vr-plan-hero{display:block;padding-bottom:25px}.vr-plan-copy h1{font-size:clamp(38px,10vw,58px)}.vr-plan-copy .lv-intro{font-size:17px}.vr-plan-figure{margin-top:26px;max-width:510px;padding:10px}.vr-plan-search{margin-top:28px}.vr-plan-contract{margin-top:21px!important}.lv-local-page .vr-results{grid-template-columns:1fr;gap:13px}.lv-local-page .vr-results .vr-card{padding:23px}.lv-local-page .vr-conv{padding:22px 17px}.lv-local-page .vr-conv-titre{font-size:28px}.lv-local-page .vr-panneau{padding:20px 15px}.vr-local-reading .lv-reading-section{padding-left:35px}.vr-local-reading .lv-reading-section h2{font-size:20px}.vr-local-autonomy .lv-actions{flex-direction:row}.vr-plan-figure figcaption{font-size:10px}}
+  @media print{.vr-plan-figure,.vr-plan-search,.vr-paths,.vr-local-autonomy{display:none}.lv-local-page .vr-results{display:block}.vr-block,.vr-bloc-anim{opacity:1!important;transform:none!important}.vr-card{break-inside:avoid}.vr-local-reading .lv-actions{display:none}.vr-local-reading details>*{display:block!important}}
+
   .vr-page-title {
     font-family: Satoshi, system-ui, sans-serif; font-weight: 700;
     font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.08; letter-spacing: -0.02em;
@@ -603,11 +645,14 @@ import Icon from '../components/WorldIcon.astro';
 
 <script>
 import {requestJson} from '../lib/request-json';
+import {readContext, saveContext, setAnswer, entryFromUrl} from '../lib/experience/context';
+import {readingSectionsHTML, nextHTML, limitsHTML, impactHTML} from '../lib/experience/render';
+import {buildLocalReading, getLocalQuestions, localImpact, localContinuation, localDependencies, withLocalObservation, type LocalObservation} from '../lib/experience/local-experience';
   type Tx = {
     id: string; d: string; v: number; t: string; lat: number; lon: number;
     no?: string; vo?: string; cp?: string; co?: string; sb?: number; p?: number; st?: number; lots?: number;
   };
-  type Meta = { status: string; generatedAt: string | null; dateVenteLaPlusRecente: string | null };
+  type Meta = { status: string; generatedAt: string | null; dateVenteLaPlusRecente: string | null; anneesIncluses?: number[]; source?: string; sourceUrl?: string };
 
   const form = document.getElementById('vr-form') as HTMLFormElement;
   const input = document.getElementById('vr-adresse') as HTMLInputElement;
@@ -632,6 +677,23 @@ import {requestJson} from '../lib/request-json';
   let meta: Meta | null = null;
   let selection: { lon: number; lat: number; label: string } | null = null;
   let lastModel: any = null;
+  let localContext = readContext('local');
+  const incomingEntry = entryFromUrl(new URL(location.href));
+  if (incomingEntry.door !== 'unknown') localContext.entry = incomingEntry;
+  function localSnapshot(model: any, status: LocalObservation['status'] = model ? 'ready' : 'unavailable') {
+    const years = meta?.anneesIncluses?.filter(year => Number.isInteger(year)).sort((a,b)=>a-b) || [];
+    localContext = withLocalObservation(localContext, {
+      schemaVersion:1, status, label:(selection?.label || input.value.trim()).slice(0,300),
+      source:'DVF · DGFiP / Etalab', sourceUrl:'https://files.data.gouv.fr/geo-dvf/latest/csv/',
+      period:years.length ? `${years[0]}–${years[years.length-1]}` : 'Période non disponible',
+      generatedAt:meta?.generatedAt || null, latestSale:meta?.dateVenteLaPlusRecente || null,
+      radius:model?.Rw ?? (status==='empty'?3000:null), count:model?.nbVentes ?? (status==='empty'?0:null),
+      houses:model?.ppmM || null, apartments:model?.ppmA || null, filters:'',
+    });
+    localContext.reading = buildLocalReading(localContext);
+    saveContext(localContext);
+  }
+
 
   // ——— Fraîcheur affichée d'emblée ———
   (async () => {
@@ -888,7 +950,7 @@ import {requestJson} from '../lib/request-json';
       <div class="vr-block" data-anim="count">
         <div class="vr-card">
           <p class="vr-num vr-b-num"><span data-count="${model.nbVentes}">0</span></p>
-          <p class="vr-b-l">ventes réalisées depuis 2021</p>
+          <p class="vr-b-l">ventes enregistrées · 2021–2025</p>
           <p class="vr-sub vr-b-sub">dans un rayon d'environ ${rayonTxt(model.Rw)}</p>
         </div>
       </div>`);
@@ -897,7 +959,7 @@ import {requestJson} from '../lib/request-json';
     parts.push(`
       <div class="vr-block" data-anim="count">
         <div class="vr-card">
-          <p class="vr-label">Ce qui se vend ici</p>
+          <p class="vr-label">Les types de biens vendus</p>
           <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:0.5rem">
             <div><p class="vr-num" style="font-size:clamp(2rem,8vw,2.8rem)"><span data-count="${model.nM}">0</span></p><p class="vr-sub">maisons</p></div>
             <div><p class="vr-num" style="font-size:clamp(2rem,8vw,2.8rem)"><span data-count="${model.nA}">0</span></p><p class="vr-sub">appartements</p></div>
@@ -912,7 +974,7 @@ import {requestJson} from '../lib/request-json';
       const pos = q3 > q1 ? Math.max(6, Math.min(94, ((med - q1) / (q3 - q1)) * 100)) : 50;
       let altHtml = '';
       if (ppmAlt) {
-        altHtml = `<div class="vr-ppm-alt"><p class="vr-ppm-alt-type">${esc(typePlurielNu(altType))}</p><p class="vr-ppm-alt-val">${eur.format(Math.round(ppmAlt.median))} €/m²</p><p class="vr-ppm-alt-range">fourchette ${eur.format(Math.round(ppmAlt.q1))} – ${eur.format(Math.round(ppmAlt.q3))} €/m²</p></div>`;
+        altHtml = `<div class="vr-ppm-alt"><p class="vr-ppm-alt-type">${esc(typePlurielNu(altType))}</p><p class="vr-ppm-alt-val">${eur.format(Math.round(ppmAlt.median))} €/m²</p><p class="vr-ppm-alt-range">fourchette ${eur.format(Math.round(ppmAlt.q1))} – ${eur.format(Math.round(ppmAlt.q3))} €/m² · ${ppmAlt.n} ventes</p></div>`;
       }
       parts.push(`
         <div class="vr-block" data-anim="slider">
@@ -926,7 +988,7 @@ import {requestJson} from '../lib/request-json';
                 <span class="vr-range-dot" data-pos="${pos.toFixed(0)}%" style="left:50%"></span>
               </div>
               <div class="vr-range-arrows" aria-hidden="true"><span>←</span><span>→</span></div>
-              <p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)}</strong> et <strong>${eur.format(q3)} €/m²</strong>.</p>
+              <p class="vr-note-sample lv-note">${ppmDom.n} ventes avec surface renseignée · même type · rayon ${rayonTxt(model.Rw)} · 2021–2025</p><p class="vr-c-phrase">La moitié des ${esc(typePlurielNu(model.dom))} se sont vendues entre <strong>${eur.format(q1)}</strong> et <strong>${eur.format(q3)} €/m²</strong>.</p>
             </div>
             ${altHtml}
           </div>
@@ -940,7 +1002,7 @@ import {requestJson} from '../lib/request-json';
       parts.push(`
         <div class="vr-block" data-anim="gauge">
           <div class="vr-card">
-            <p class="vr-label">Les prix, dans le temps</p>
+            <p class="vr-label">La trajectoire des ventes passées</p>
             <div class="vr-d-head">
               <span class="vr-d-ico" aria-hidden="true">${iconeTendance(dir)}</span>
               <span class="vr-d-title">${tendanceTitre(dir)}</span>
@@ -964,7 +1026,7 @@ import {requestJson} from '../lib/request-json';
         <div class="vr-card vr-card--warm">
           <p class="vr-label">À retenir</p>
           <p class="vr-ec">Un même quartier. Des biens très différents.</p>
-          <p class="vr-sub" style="margin-top:0.8rem;line-height:1.55">Une adresse donne le contexte, elle ne suffit pas à situer votre bien. Surface, état, exposition, travaux : chaque propriété est unique, et ces statistiques de quartier ne peuvent pas le refléter.</p>
+          <p class="vr-sub" style="margin-top:0.8rem;line-height:1.55">Une adresse donne le contexte, elle ne suffit pas à situer votre bien. État, disposition, exposition et travaux restent à vérifier. Ces ventes passées ne décrivent ni une offre disponible ni le prix actuel d’un bien.</p>
         </div>
         <p class="vr-maj">${majLigne()}</p>
       </div>`);
@@ -1021,266 +1083,83 @@ import {requestJson} from '../lib/request-json';
     return esc(parts.join(' · ')) + ' · Source : DVF (DGFiP).';
   }
 
-  // ——— Conversion : 3 chemins ———
+  // Valeur locale, puis question personnelle. Aucun contact n’est demandé ici.
   function construireConversion() {
-    return `
-      <div class="vr-block" data-anim="fade">
-        <div class="vr-conv" id="vr-conv">
-          <p class="vr-conv-eyebrow">La suite</p>
-          <p class="vr-conv-titre">Et votre bien dans tout ça&nbsp;?</p>
-          <p class="vr-conv-intro">Ces ventes dessinent le contexte de votre quartier — mais votre bien a ses propres caractéristiques. Surface, état, exposition : autant de facteurs que les statistiques ne captent pas.</p>
-          <div class="vr-paths" id="vr-paths">
-            <button type="button" class="vr-path vr-path--1" data-path="lecture">
-              <span><span class="vr-path-t">Situer mon bien dans ce marché</span><span class="vr-path-d">Quelques questions · première lecture avant vos coordonnées</span></span>
-              <span class="vr-path-arrow" aria-hidden="true">→</span>
-            </button>
-            <button type="button" class="vr-path vr-path--2" data-path="mouaad">
-              <span><span class="vr-path-t">Parler directement avec Mouaad</span><span class="vr-path-d">Pour échanger dès maintenant, sans étape</span></span>
-              <span class="vr-path-arrow" aria-hidden="true">→</span>
-            </button>
-            <button type="button" class="vr-path vr-path--3" data-path="explorer">
-              <span><span class="vr-path-t">Continuer à explorer LEVOIS</span><span class="vr-path-d">Vers les contenus utiles du site</span></span>
-              <span class="vr-path-arrow" aria-hidden="true">→</span>
-            </button>
-          </div>
-          <div id="vr-panneau"></div>
-        </div>
-      </div>`;
+    return `<div class="vr-block is-in" data-anim="fade"><div class="vr-conv" id="vr-conv">
+      <p class="vr-conv-eyebrow">Le repère devient utile avec votre question</p>
+      <h2 class="vr-conv-titre">Et pour votre projet ?</h2>
+      <p class="vr-conv-intro">Deux réponses pour distinguer ce que ces ventes vous apprennent et ce qu’il faudra vérifier. Votre lecture apparaît ici, sans coordonnées.</p>
+      <div class="vr-paths" id="vr-paths">
+        <button type="button" class="vr-path vr-path--1" data-path="lecture"><span><span class="vr-path-t">Relier les repères à ma question</span><span class="vr-path-d">Acheter, vendre, coordonner ou simplement comprendre</span></span><span aria-hidden="true">→</span></button>
+        <button type="button" class="vr-path vr-path--2" data-path="garder"><span><span class="vr-path-t">Garder les repères seuls</span><span class="vr-path-d">La source, les limites et la prochaine vérification</span></span><span aria-hidden="true">↗</span></button>
+      </div><div id="vr-panneau"></div>
+    </div></div>`;
   }
-
-  // Intentions (qualification commerciale) — clés lisibles côté lead
-  const INTENTIONS = [
-    { key: 'curieux', label: 'Je suis simplement curieux', tag: 'Curieux' },
-    { key: 'reflexion', label: 'Je réfléchis à vendre', tag: 'Vendeur potentiel' },
-    { key: 'prochainement', label: 'Je vais vendre prochainement', tag: 'Vendeur prochainement' },
-    { key: 'envente', label: 'Mon bien est déjà en vente', tag: 'Déjà en vente' },
-    { key: 'acheteur', label: 'Je souhaite acheter dans le secteur', tag: 'Acheteur' },
-  ];
-  const OPTS_TYPE = [
-    { value: 'maison', label: 'Une maison' }, { value: 'appartement', label: 'Un appartement' },
-    { value: 'terrain', label: 'Un terrain' }, { value: 'autre', label: 'Autre / je ne sais pas' },
-  ];
-  const QUALIF: Record<string, Array<{ key: string; label: string; options: Array<{ value: string; label: string }> }>> = {
-    curieux: [
-      { key: 'curiosite', label: "Qu'est-ce qui vous amène ?", options: [
-        { value: 'prix-quartier', label: 'Le prix des ventes de mon quartier' },
-        { value: 'valeur-bien', label: "La valeur d'un bien précis" },
-        { value: 'curiosite', label: 'Simple curiosité' } ] },
-    ],
-    reflexion: [
-      { key: 'horizon', label: 'Quand envisagez-vous de vendre ?', options: [
-        { value: 'dans-annee', label: "Dans l'année" }, { value: '1-2-ans', label: 'Dans 1 à 2 ans' }, { value: 'sans-date', label: 'Pas encore de date' } ] },
-      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
-      { key: 'besoin', label: 'Votre besoin principal ?', options: [
-        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
-        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
-    ],
-    prochainement: [
-      { key: 'horizon', label: 'Dans quel délai ?', options: [
-        { value: 'ce-mois', label: 'Ce mois-ci' }, { value: '1-3-mois', label: 'Dans 1 à 3 mois' }, { value: '3-6-mois', label: 'Dans 3 à 6 mois' } ] },
-      { key: 'typeBien', label: 'Quel type de bien ?', options: OPTS_TYPE },
-      { key: 'besoin', label: 'Votre besoin principal ?', options: [
-        { value: 'valeur', label: 'Connaître sa valeur' }, { value: 'marche', label: 'Comprendre le marché' },
-        { value: 'preparer', label: 'Préparer la vente' }, { value: 'accompagne', label: 'Être accompagné' } ] },
-    ],
-    envente: [
-      { key: 'dureeEnVente', label: 'Depuis combien de temps est-il en vente ?', options: [
-        { value: 'moins-1-mois', label: "Moins d'un mois" }, { value: '1-3-mois', label: '1 à 3 mois' },
-        { value: '3-6-mois', label: '3 à 6 mois' }, { value: 'plus-6-mois', label: 'Plus de 6 mois' } ] },
-      { key: 'problemePrincipal', label: "Qu'est-ce qui bloque le plus ?", options: [
-        { value: 'peu-visites', label: 'Peu de visites' }, { value: 'visites-sans-offre', label: "Des visites mais pas d'offre" },
-        { value: 'offres-basses', label: 'Des offres trop basses' }, { value: 'peu-vue', label: "L'annonce est peu vue" },
-        { value: 'je-ne-sais-pas', label: 'Je ne sais pas' } ] },
-    ],
-    acheteur: [
-      { key: 'typeRecherche', label: 'Que recherchez-vous ?', options: OPTS_TYPE },
-      { key: 'budget', label: 'Votre budget approximatif ?', options: [
-        { value: 'moins-150', label: 'Moins de 150 000 €' }, { value: '150-250', label: '150 à 250 000 €' },
-        { value: '250-400', label: '250 à 400 000 €' }, { value: 'plus-400', label: 'Plus de 400 000 €' },
-        { value: 'nsp', label: 'Je ne sais pas encore' } ] },
-      { key: 'horizon', label: 'Dans quel délai ?', options: [
-        { value: 'rapidement', label: 'Rapidement' }, { value: 'dans-annee', label: "Dans l'année" }, { value: 'sans-date', label: 'Pas pressé' } ] },
-    ],
-  };
-
-  function brancherConversion(model: any) {
-    const paths = document.getElementById('vr-paths')!;
-    const panneau = document.getElementById('vr-panneau')!;
-    paths.querySelectorAll<HTMLButtonElement>('.vr-path').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const p = btn.dataset.path;
-        if (p === 'mouaad') panneauMouaad(panneau);
-        else if (p === 'explorer') panneauExplorer(panneau);
-        else panneauQualif(panneau, model);
-        panneau.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'nearest' });
-      });
+  function brancherConversion(model: any, status?: LocalObservation['status']) {
+    localSnapshot(model,status);
+    const paths=document.getElementById('vr-paths');
+    const panneau=document.getElementById('vr-panneau');
+    if(!paths || !panneau) return;
+    paths.querySelectorAll<HTMLButtonElement>('[data-path]').forEach(button=>button.addEventListener('click',()=>{
+      if(button.dataset.path==='garder') rendreLecture(panneau);
+      else panneauQualif(panneau);
+      panneau.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest'});
+    }));
+  }
+  function rendreLecture(panneau:HTMLElement) {
+    const reading=buildLocalReading(localContext);
+    localContext.reading=reading;
+    const stored=saveContext(localContext);
+    const continuation=localContinuation(localContext);
+    panneau.innerHTML=`<div class="vr-panneau vr-local-reading"><p class="lv-eyebrow">Votre lecture · avant toute coordonnée</p><h2 tabindex="-1" style="font-size:29px;margin:15px 0 25px">Ce que vous pouvez en faire.</h2>${readingSectionsHTML(reading,localContext)}${nextHTML(reading)}${limitsHTML(reading)}
+      <p class="lv-note">Version ${reading.revision} · méthode ${reading.methodVersion}. La copie, la relecture écrite et l’échange sont des suites distinctes.</p>
+      ${stored?'':'<p class="lv-error">La session ne peut pas être enregistrée sur cet appareil. Votre lecture reste visible : vous pouvez la copier ou l’imprimer ici.</p>'}
+      <div class="lv-actions">${stored?'<a class="lv-button" href="/lecture">Garder ma lecture et choisir la suite ↗</a>':''}<button type="button" class="lv-secondary" data-local-copy>Copier ma lecture</button><button type="button" class="lv-text-link" data-local-print>Imprimer</button><button type="button" class="lv-text-link" data-local-correct>Corriger ma question</button><a class="lv-text-link" href="${continuation.href}">${continuation.label} ↗</a></div><p class="lv-note" data-local-status role="status"></p></div>`;
+    panneau.querySelector<HTMLElement>('h2')?.focus({preventScroll:true});
+    panneau.querySelector('[data-local-correct]')?.addEventListener('click',()=>panneauQualif(panneau,true));
+    panneau.querySelector('[data-local-print]')?.addEventListener('click',()=>window.print());
+    panneau.querySelector('[data-local-copy]')?.addEventListener('click',async()=>{
+      const content=[reading.title,`Version ${reading.revision} · ${reading.generatedAt} · ${reading.methodVersion}`,...reading.sections.flatMap(section=>[section.title,...section.items.map(item=>item.text)]),'Votre prochaine décision utile',reading.nextDecision.text,reading.nextDecision.why,...reading.limits].join('\n\n');
+      const status=panneau.querySelector<HTMLElement>('[data-local-status]')!;
+      try{await navigator.clipboard.writeText(content);status.textContent='Lecture copiée, sans envoi ni appel.';}catch{status.textContent='La copie automatique est indisponible. Sélectionnez le texte visible ou imprimez cette page.';}
     });
   }
-
-  function panneauMouaad(panneau: HTMLElement) {
-    panneau.innerHTML = `
-      <div class="vr-panneau">
-        <p class="vr-q-label">Parlons de votre projet.</p>
-        <p class="font-sans text-[15px] text-brun leading-relaxed" style="margin-bottom:1.1rem">
-          Pas d'étape à remplir : contactez Mouaad directement, il vous répond personnellement.
-        </p>
-        <div class="vr-contact-liens">
-          <a href="tel:+33781380121" class="btn-primaire">Appeler Mouaad</a>
-          <a href="mailto:mouaad@levois.fr" class="btn-secondaire">Écrire un e-mail</a>
-          <a href="/contact?src=votre-rue" class="btn-secondaire">Être rappelé</a>
-        </div>
-      </div>`;
+  function panneauQualif(panneau:HTMLElement, startOver=false) {
+    const questions=getLocalQuestions(localContext);
+    const q=startOver?questions[0]:questions.find(question=>!Object.hasOwn(localContext.answers,question.id));
+    if(!q){rendreLecture(panneau);return;}
+    panneau.innerHTML=`<div class="vr-panneau"><p class="lv-eyebrow">${q.sequence} sur 2 · ${esc(q.sequenceTitle)}</p><h2 tabindex="-1" class="vr-q-label" style="font-size:27px;margin:15px 0 20px">${esc(q.title)}</h2><div class="vr-q-opts">${q.choices!.map(option=>`<button type="button" class="vr-q-opt" data-local-answer="${esc(option.value)}" aria-pressed="${localContext.answers[q.id]?.value===option.value}">${esc(option.label)}</button>`).join('')}</div>
+      ${q.sequence===2?`<div class="lv-impact">${impactHTML(localImpact('local_intention',localContext))}</div>`:''}
+      <div class="lv-actions"><button class="lv-text-link" type="button" data-local-read>Lire avec ce que je sais déjà</button>${q.sequence===2?'<button type="button" class="lv-text-link" data-local-back>Revenir à mon intention</button>':''}</div></div>`;
+    panneau.querySelector<HTMLElement>('h2')?.focus({preventScroll:true});
+    panneau.querySelectorAll<HTMLButtonElement>('[data-local-answer]').forEach(button=>button.addEventListener('click',()=>{
+      localContext=setAnswer(localContext,q.id,button.dataset.localAnswer!,localDependencies);
+      localContext.reading=buildLocalReading(localContext);saveContext(localContext);
+      if(q.sequence===2)rendreLecture(panneau);else panneauQualif(panneau);
+    }));
+    panneau.querySelector('[data-local-read]')?.addEventListener('click',()=>rendreLecture(panneau));
+    panneau.querySelector('[data-local-back]')?.addEventListener('click',()=>panneauQualif(panneau,true));
   }
 
-  function panneauExplorer(panneau: HTMLElement) {
-    panneau.innerHTML = `
-      <div class="vr-panneau">
-        <p class="vr-q-label">Continuer à comprendre.</p>
-        <div class="vr-explorer">
-          <a href="/situer-ma-vente?src=votre-rue"><b>Situer ma vente</b> — un diagnostic en 3 minutes, sans coordonnées</a>
-          <a href="/methode"><b>La méthode LEVOIS</b> — lire le marché avant de décider</a>
-          <a href="/ressources/annonce-vue-peu-de-contacts"><b>Pourquoi une vente bloque</b> — annonce vue, peu de contacts</a>
-          <a href="/ressources"><b>Toutes les ressources</b> — comprendre chaque étape</a>
-        </div>
-      </div>`;
+  // Les états incomplets gardent une valeur autonome et une lecture personnelle.
+  function afficherEtatLocal(status:LocalObservation['status'],title:string,message:string) {
+    scene.hidden=false;lastModel=null;
+    scene.innerHTML=`<div class="vr-vide"><h2 tabindex="-1" style="font-size:29px;margin-bottom:16px">${esc(title)}</h2><p class="lv-intro" style="font-size:16px">${esc(message)}</p><p class="lv-limit" style="margin-top:20px">Un chiffre absent ne devient jamais zéro. Vous pouvez préciser l’adresse, consulter le repère communal ci-dessous ou clarifier votre question.</p></div>${construireConversion()}`;
+    brancherConversion(null,status);
   }
-
-  // Micro-qualification : une question par écran, progression visible
-  function panneauQualif(panneau: HTMLElement, model: any) {
-    const state: any = { intentionKey: null, intention: null, tag: null, answers: {} };
-
-    const rendre = (steps: any[], idx: number) => {
-      const total = 1 + steps.length + 1; // intention + questions + contact
-      const dots = Array.from({ length: total }, (_, i) => `<span class="vr-q-dot ${i <= idx ? 'is-on' : ''}"></span>`).join('');
-      // idx 0 = intention ; 1..steps.length = questions ; total-1 = contact
-      if (idx === 0) {
-        panneau.innerHTML = `
-          <div class="vr-panneau">
-            <div class="vr-q-progress">${dots}</div>
-            <p class="vr-q-label">Où en êtes-vous ?</p>
-            <div class="vr-q-opts">${INTENTIONS.map((it) => `<button type="button" class="vr-q-opt" data-k="${it.key}">${it.label}</button>`).join('')}</div>
-          </div>`;
-        panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
-          const it = INTENTIONS.find((x) => x.key === b.dataset.k)!;
-          state.intentionKey = it.key; state.intention = it.label; state.tag = it.tag;
-          const st = QUALIF[it.key] || [];
-          if (st.length) rendre(st, 1); else rendreContact(st);
-        }));
-        return;
-      }
-      const q = steps[idx - 1];
-      panneau.innerHTML = `
-        <div class="vr-panneau">
-          <div class="vr-q-progress">${dots}</div>
-          <p class="vr-q-label">${esc(q.label)}</p>
-          <div class="vr-q-opts">${q.options.map((o: any) => `<button type="button" class="vr-q-opt" data-v="${o.value}">${esc(o.label)}</button>`).join('')}</div>
-          <button type="button" class="vr-q-back">← Revenir</button>
-        </div>`;
-      panneau.querySelectorAll<HTMLButtonElement>('.vr-q-opt').forEach((b) => b.addEventListener('click', () => {
-        state.answers[q.key] = { value: b.dataset.v, label: b.textContent };
-        if (idx < steps.length) rendre(steps, idx + 1); else rendreContact(steps);
-      }));
-      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (idx === 1) rendre(steps, 0); else rendre(steps, idx - 1); });
-    };
-
-    const rendreContact = (steps: any[]) => {
-      const total = 1 + steps.length + 1;
-      const dots = Array.from({ length: total }, () => `<span class="vr-q-dot is-on"></span>`).join('');
-      panneau.innerHTML = `
-        <div class="vr-panneau">
-          <div class="vr-q-progress">${dots}</div>
-          <p class="vr-q-label">Où vous envoyer votre analyse personnalisée ?</p>
-          <p class="font-sans text-[14px] text-brun" style="margin-bottom:1rem">
-            Elle réunit le récapitulatif des ventes autour de votre adresse, votre situation, les ressources adaptées — et, quand c'est utile, une lecture préparée par Mouaad. Aucune estimation automatique de votre bien : une aide à comprendre, honnête.
-          </p>
-          <form id="vr-lead" novalidate>
-            <div class="vr-champ"><label for="vr-prenom">Prénom</label><input id="vr-prenom" name="prenom" type="text" autocomplete="given-name" required /></div>
-            <div class="vr-champ"><label for="vr-email">E-mail</label><input id="vr-email" name="email" type="email" inputmode="email" autocomplete="email" required /></div>
-            <div class="vr-champ"><label for="vr-tel">Téléphone <span style="color:#58615B">(facultatif)</span></label><input id="vr-tel" name="telephone" type="tel" inputmode="tel" autocomplete="tel" /></div>
-            <div style="position:absolute;left:-9999px" aria-hidden="true"><label>Site</label><input name="site_web" tabindex="-1" autocomplete="off" /></div>
-            <label class="vr-consent"><input type="checkbox" id="vr-consent" required /><span>J'accepte d'être recontacté au sujet de ma demande — et pour rien d'autre. <a href="/confidentialite" class="text-argile underline">En savoir plus</a>.</span></label>
-            <p id="vr-lead-err" class="font-sans text-sm text-argile hidden" role="alert" style="margin-bottom:0.6rem"></p>
-            <button type="submit" class="btn-primaire" id="vr-lead-envoi">Recevoir mon analyse personnalisée</button>
-            <button type="button" class="vr-q-back">← Revenir</button>
-          </form>
-        </div>`;
-      panneau.querySelector<HTMLButtonElement>('.vr-q-back')!.addEventListener('click', () => { if (steps.length) rendre(steps, steps.length); else rendre(steps, 0); });
-      brancherEnvoiLead(panneau, model, state);
-    };
-
-    rendre([], 0);
-  }
-
-  function brancherEnvoiLead(panneau: HTMLElement, model: any, state: any) {
-    const f = panneau.querySelector<HTMLFormElement>('#vr-lead')!;
-    const err = panneau.querySelector<HTMLElement>('#vr-lead-err')!;
-    const btn = panneau.querySelector<HTMLButtonElement>('#vr-lead-envoi')!;
-    let envoiEnCours = false;
-    f.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (envoiEnCours) return;
-      err.classList.add('hidden');
-      if (!f.checkValidity()) { f.reportValidity(); return; }
-      envoiEnCours = true; btn.disabled = true; btn.textContent = 'Envoi…';
-      const fd = new FormData(f);
-      const d = model.derniere;
-      // Synthèse et coordonnées transmises uniquement après accord explicite.
-      const payload = {
-        type: 'votre-rue', consentement: !!f.querySelector<HTMLInputElement>('#vr-consent')?.checked,
-        source: 'QR /votre-rue',
-        adresseRecherchee: selection?.label || '',
-        commune: d?.co || '',
-        intention: state.intention, intentionKey: state.intentionKey, profil: state.tag,
-        qualification: Object.fromEntries(Object.entries(state.answers).map(([k, v]: any) => [k, v.label])),
-        prenom: fd.get('prenom'), email: fd.get('email'), telephone: fd.get('telephone') || null,
-        site_web: fd.get('site_web') || '',
-        contexteInfographie: {
-          nbVentes: model.nbVentes, rayon: model.Rw,
-          composition: { maisons: model.nM, appartements: model.nA },
-          ppmMaisons: model.ppmM ? { median: Math.round(model.ppmM.median), q1: Math.round(model.ppmM.q1), q3: Math.round(model.ppmM.q3) } : null,
-          ppmAppartements: model.ppmA ? { median: Math.round(model.ppmA.median), q1: Math.round(model.ppmA.q1), q3: Math.round(model.ppmA.q3) } : null,
-          tendance: model.D ? { direction: model.D.dir, pct: Number(model.D.delta.toFixed(1)) } : null,
-        },
-      };
-      try {
-        const {response:rep,data} = await requestJson<any>('/api/lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (rep.ok && data?.ok === true) {
-          panneau.innerHTML = `
-            <div class="vr-panneau">
-              <p class="vr-q-label">C'est noté, ${esc(String(fd.get('prenom') || ''))}.</p>
-              <p class="font-sans text-[15px] text-brun leading-relaxed">Votre demande et le récapitulatif des ventes ont été transmis à Mouaad. Il pourra vous répondre au sujet de votre situation. Vous pouvez aussi le joindre directement : <a href="tel:+33781380121" class="text-argile underline">07 81 38 01 21</a>.</p>
-            </div>`;
-        } else {
-
-          err.textContent = data?.message || "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
-          err.classList.remove('hidden');
-        }
-      } catch {
-        err.textContent = "L'envoi n'a pas abouti. Vous pouvez réessayer ou écrire à mouaad@levois.fr.";
-        err.classList.remove('hidden');
-      } finally {
-        envoiEnCours = false; btn.disabled = false; btn.textContent = 'Recevoir mon analyse personnalisée';
-      }
-    });
-  }
-
-  // ——— États vides / attente ———
   function afficherDonneesEnAttente() {
-    scene.hidden = false;
-    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">L'accès aux ventes de votre secteur est en cours de finalisation.</p>
-      <p class="font-sans text-[15px] text-brun leading-relaxed">Les données publiques de ventes (DVF) seront disponibles ici très prochainement. En attendant, Mouaad peut vous transmettre les ventes récentes autour de votre adresse.</p>
-      <div class="flex flex-wrap gap-3 mt-5"><a href="/contact?src=votre-rue" class="btn-primaire">Demander à Mouaad</a><a href="/situer-ma-vente?src=votre-rue" class="btn-secondaire">Situer ma vente</a></div></div>`;
+    afficherEtatLocal('unavailable','Les ventes ne sont pas disponibles pour cette recherche.','Le chargement ou la couverture des données ne permet pas d’afficher un repère fiable. Aucune date de disponibilité n’est promise. La lecture de votre question reste possible.');
   }
-  function afficherAucun(label: string) {
-    scene.hidden = false;
-    scene.innerHTML = `<div class="vr-vide"><p class="font-display text-xl text-encre mb-2">Aucune vente retrouvée à proximité immédiate.</p>
-      <p class="font-sans text-[15px] text-brun leading-relaxed">Autour de « ${esc(label)} », aucune vente ne figure pour l'instant dans les données publiques disponibles (DVF). Cette base n'est pas exhaustive.</p>
-      <div class="flex flex-wrap gap-3 mt-5"><a href="/situer-ma-vente?src=votre-rue" class="btn-primaire">Situer ma vente</a><a href="/contact?src=votre-rue" class="btn-secondaire">Échanger avec Mouaad</a></div></div>`;
+  function afficherAucun(label:string) {
+    afficherEtatLocal('empty','Aucune vente retenue dans ce périmètre.',`Autour de « ${label} », aucune vente correspondant aux filtres n’a été retrouvée dans un rayon de 3 km. La base n’est pas exhaustive et ne couvre que les communes indiquées.`);
+  }
+  function afficherAdresseIndeterminee() {
+    afficherEtatLocal('address_unconfirmed','L’adresse reste à préciser.','Aucune adresse n’a été confirmée dans le périmètre de recherche. Ajoutez la commune ou choisissez une proposition. Aucun résultat n’est attribué automatiquement à une adresse ambiguë.');
   }
 
   // ——— Moment d'analyse (adossé au calcul réel, sans fausse attente) ———
   async function jouerAnalyseEtRendre(lat: number, lon: number) {
-    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes récentes…', "Lecture de l'évolution du secteur…"];
+    const messages = ['Recherche des ventes autour de chez vous…', 'Comparaison des ventes enregistrées…', "Lecture de l'évolution du secteur…"];
     scene.hidden = false;
     scene.innerHTML = `<div class="vr-analyse">${messages.map((m, i) => `<div class="vr-analyse-step" data-i="${i}"><span class="vr-analyse-dot"></span><span>${m}</span></div>`).join('')}</div>`;
     const steps = Array.from(scene.querySelectorAll<HTMLElement>('.vr-analyse-step'));
@@ -1343,7 +1222,7 @@ import {requestJson} from '../lib/request-json';
     scene.innerHTML = `<div class="vr-analyse"><div class="vr-analyse-step is-active"><span class="vr-analyse-dot"></span><span>Recherche des ventes autour de chez vous…</span></div></div>`;
     try { await chargerDonnees(); } catch {
       geoErreur.textContent = 'Impossible de charger les données pour le moment. Réessayez dans un instant.';
-      geoErreur.classList.remove('hidden'); scene.hidden = true; return;
+      geoErreur.classList.remove('hidden'); afficherDonneesEnAttente(); return;
     }
     if (!meta || meta.status !== 'ready' || !dataset || !dataset.length) { afficherDonneesEnAttente(); return; }
 
@@ -1351,8 +1230,8 @@ import {requestJson} from '../lib/request-json';
     if (!coords) {
       const q = input.value.trim();
       if (q.length < 3) { scene.hidden = true; geoErreur.textContent = "Indiquez d'abord votre rue ou votre adresse."; geoErreur.classList.remove('hidden'); return; }
-      try { const feats = await geocoder(q, false, 6); if (!feats.length) { afficherAucun(q); return; } scene.hidden=true; rendreSug(feats); input.focus(); geoErreur.textContent='Choisissez l’adresse à explorer dans la liste.'; geoErreur.classList.remove('hidden'); return; }
-      catch { geoErreur.textContent = 'Adresse non reconnue. Précisez la rue et la commune.'; geoErreur.classList.remove('hidden'); scene.hidden = true; return; }
+      try { const feats = await geocoder(q, false, 6); if (!feats.length) { afficherAdresseIndeterminee(); return; } scene.hidden=true; rendreSug(feats); input.focus(); geoErreur.textContent='Choisissez l’adresse à explorer dans la liste.'; geoErreur.classList.remove('hidden'); return; }
+      catch { geoErreur.textContent = 'Le service de recherche d’adresse est momentanément indisponible.'; geoErreur.classList.remove('hidden'); afficherAdresseIndeterminee(); return; }
     }
     await jouerAnalyseEtRendre(coords.lat, coords.lon);
   }
