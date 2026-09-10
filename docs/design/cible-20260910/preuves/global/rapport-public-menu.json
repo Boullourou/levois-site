@@ -1,0 +1,530 @@
+{
+  "startedAt": "2026-09-10T14:52:19.366Z",
+  "base": "http://127.0.0.1:4331",
+  "browser": "Chromium keyboard and desktop viewport emulation",
+  "status": "passed",
+  "states": [
+    {
+      "width": 320,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 320,
+      "escapeRestoresTrigger": true
+    },
+    {
+      "width": 390,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 390,
+      "screenshot": "menu-clavier-390.png",
+      "escapeRestoresTrigger": true
+    },
+    {
+      "width": 768,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "text": "Acheter",
+          "href": "/ma-recherche"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre",
+          "href": "/situer-ma-vente"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre et acheter",
+          "href": "/vendre-et-acheter"
+        },
+        {
+          "tag": "A",
+          "text": "Repères locaux",
+          "href": "/votre-rue"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 768,
+      "escapeRestoresTrigger": true
+    },
+    {
+      "width": 1440,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "text": "Acheter",
+          "href": "/ma-recherche"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre",
+          "href": "/situer-ma-vente"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre et acheter",
+          "href": "/vendre-et-acheter"
+        },
+        {
+          "tag": "A",
+          "text": "Repères locaux",
+          "href": "/votre-rue"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 1440,
+      "screenshot": "menu-clavier-1440.png",
+      "escapeRestoresTrigger": true
+    }
+  ],
+  "blockedExternalRequests": [],
+  "blockedSubmissions": [],
+  "notes": [
+    "The shared menu is reached using Tab, never by assigning focus in script.",
+    "Enter opens; every menu link is reached in DOM order with Tab; Escape closes and restores the trigger.",
+    "No navigation or form submission is performed. No physical device or human test is claimed."
+  ],
+  "summary": {
+    "states": 4,
+    "statesWithIssues": 0,
+    "keyboardLinksReached": 44,
+    "jsErrors": 0,
+    "axeViolations": 0,
+    "blockedSubmissions": 0
+  },
+  "finishedAt": "2026-09-10T14:52:32.417Z"
+}

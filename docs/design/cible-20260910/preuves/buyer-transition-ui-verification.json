@@ -1,0 +1,37 @@
+{
+  "base": "http://127.0.0.1:4331",
+  "results": [
+    {
+      "name": "buyer-empty-reading-AC02-AC06",
+      "status": "passed"
+    },
+    {
+      "name": "buyer-real-flow-no-budget-AC04-AC06",
+      "status": "passed"
+    },
+    {
+      "name": "buyer-unknown-exclusive-AC05",
+      "status": "passed"
+    },
+    {
+      "name": "buyer-budget-sector-surface-correction-AC07",
+      "status": "passed"
+    },
+    {
+      "name": "buyer-session-resource-return-AC03",
+      "status": "passed"
+    },
+    {
+      "name": "buyer-completed-resume-AC03",
+      "status": "passed"
+    },
+    {
+      "name": "transition-conditions-dates-wait-AC14-AC15-AC16",
+      "status": "passed"
+    },
+    {
+      "name": "transition-empty-autonomous-AC15",
+      "status": "passed"
+    }
+  ]
+}

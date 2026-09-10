@@ -1,0 +1,236 @@
+{
+  "browser": "Chromium desktop emulation",
+  "viewports": [
+    390,
+    320,
+    1440
+  ],
+  "errors": [],
+  "scenarios": [
+    {
+      "width": 390,
+      "scenario": "Readable page + 3 explicit answers + 2 real actions + no coordinates",
+      "passed": true
+    },
+    {
+      "width": 320,
+      "scenario": "Readable page + 3 explicit answers + 2 real actions + no coordinates",
+      "passed": true
+    },
+    {
+      "width": 1440,
+      "scenario": "Readable page + 3 explicit answers + 2 real actions + no coordinates",
+      "passed": true
+    },
+    {
+      "scenario": "Common HTML export is accepted by Reprendre; complete visible reading text matches the copy; source answers and frozen reading are unchanged",
+      "passed": true
+    },
+    {
+      "scenario": "Correction invalidates old reading + context, history preserved; download and copy complete; common reading retains all five blocks; three voluntary dialogs, no submit",
+      "passed": true
+    },
+    {
+      "scenario": "Explicit seller continuation imports only semantic equivalents and keeps private URL out of navigation",
+      "passed": true
+    },
+    {
+      "scenario": "blocked: correct access status, unknowns remain unknown, useful two-action result",
+      "passed": true
+    },
+    {
+      "scenario": "insufficient: correct access status, unknowns remain unknown, useful two-action result",
+      "passed": true
+    },
+    {
+      "scenario": "unavailable: correct access status, unknowns remain unknown, useful two-action result",
+      "passed": true
+    },
+    {
+      "scenario": "transport: correct access status, unknowns remain unknown, useful two-action result",
+      "passed": true
+    },
+    {
+      "scenario": "Invalid URL is correctable; manual flow available; offer with unknown duration retains offer verification",
+      "passed": true
+    },
+    {
+      "scenario": "One confidentiality action removes both common context and audit draft; audit cannot restore the erased URL or responses",
+      "passed": true
+    }
+  ],
+  "axe": [
+    {
+      "name": "390-entree",
+      "violations": []
+    },
+    {
+      "name": "390-question",
+      "violations": []
+    },
+    {
+      "name": "390-resultat",
+      "violations": []
+    },
+    {
+      "name": "320-entree",
+      "violations": []
+    },
+    {
+      "name": "320-question",
+      "violations": []
+    },
+    {
+      "name": "320-resultat",
+      "violations": []
+    },
+    {
+      "name": "1440-entree",
+      "violations": []
+    },
+    {
+      "name": "1440-question",
+      "violations": []
+    },
+    {
+      "name": "1440-resultat",
+      "violations": []
+    },
+    {
+      "name": "390-lecture-commune",
+      "violations": []
+    }
+  ],
+  "screenshots": [
+    "docs/design/cible-20260910/preuves/audit-390-entree.png",
+    "docs/design/cible-20260910/preuves/audit-390-question-impact.png",
+    "docs/design/cible-20260910/preuves/audit-390-resultat.png",
+    "docs/design/cible-20260910/preuves/audit-320-entree.png",
+    "docs/design/cible-20260910/preuves/audit-320-question-impact.png",
+    "docs/design/cible-20260910/preuves/audit-320-resultat.png",
+    "docs/design/cible-20260910/preuves/audit-1440-entree.png",
+    "docs/design/cible-20260910/preuves/audit-1440-question-impact.png",
+    "docs/design/cible-20260910/preuves/audit-1440-resultat.png",
+    "docs/design/cible-20260910/preuves/audit-390-lecture-commune.png",
+    "docs/design/cible-20260910/preuves/audit-390-blocked.png",
+    "docs/design/cible-20260910/preuves/audit-390-insufficient.png",
+    "docs/design/cible-20260910/preuves/audit-390-unavailable.png",
+    "docs/design/cible-20260910/preuves/audit-390-transport.png"
+  ],
+  "measurements": [
+    {
+      "name": "390-entree",
+      "scroll": 0,
+      "active": "BODY",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "390-question-impact",
+      "scroll": 73,
+      "active": "INPUT",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": 713.671875
+    },
+    {
+      "name": "390-resultat",
+      "scroll": 73,
+      "active": "audit-result-title",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "320-entree",
+      "scroll": 0,
+      "active": "BODY",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "320-question-impact",
+      "scroll": 73,
+      "active": "INPUT",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": 755.921875
+    },
+    {
+      "name": "320-resultat",
+      "scroll": 73,
+      "active": "audit-result-title",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "1440-entree",
+      "scroll": 0,
+      "active": "BODY",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "1440-question-impact",
+      "scroll": 109,
+      "active": "INPUT",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": 466.671875
+    },
+    {
+      "name": "1440-resultat",
+      "scroll": 109,
+      "active": "audit-result-title",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "390-lecture-commune",
+      "scroll": 4159,
+      "active": "BUTTON",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "390-blocked",
+      "scroll": 73,
+      "active": "audit-question",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "390-insufficient",
+      "scroll": 73,
+      "active": "audit-question",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "390-unavailable",
+      "scroll": 73,
+      "active": "audit-question",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    },
+    {
+      "name": "390-transport",
+      "scroll": 73,
+      "active": "audit-question",
+      "skipTransform": "matrix(1, 0, 0, 1, 0, -87.675)",
+      "skipFocused": false,
+      "impactTop": null
+    }
+  ],
+  "externalSends": 0,
+  "status": "passed"
+}

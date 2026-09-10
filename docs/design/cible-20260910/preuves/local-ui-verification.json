@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "browser": "Chromium",
+  "viewports": [
+    320,
+    390,
+    1440
+  ],
+  "errors": [],
+  "geocoding": "Mocked response from an actual DVF record; ambiguity and q/confirmee compatibility tested.",
+  "data": "Actual repository DVF dataset; unavailable response tested separately.",
+  "checks": [
+    "Value before contact",
+    "Two-question personal reading",
+    "No implicit seller/QR classification",
+    "Shared reading continuity",
+    "No horizontal overflow",
+    "DVF failure retains autonomous reading"
+  ],
+  "screenshots": 6
+}

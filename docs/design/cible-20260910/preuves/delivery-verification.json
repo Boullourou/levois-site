@@ -1,0 +1,49 @@
+{
+  "performance": [
+    {
+      "route": "/",
+      "profile": "Chromium local, cache vide, réseau 1,6 Mb/s, latence 150 ms, CPU ×4",
+      "lcp": 1624,
+      "cls": 0,
+      "domContentLoaded": 970.4000000059605,
+      "encodedResourceBytes": 130822,
+      "jsBytes": 8040,
+      "requestCount": 9
+    },
+    {
+      "route": "/ma-recherche",
+      "profile": "Chromium local, cache vide, réseau 1,6 Mb/s, latence 150 ms, CPU ×4",
+      "lcp": 1352,
+      "cls": 0,
+      "domContentLoaded": 1292.0999999940395,
+      "encodedResourceBytes": 162377,
+      "jsBytes": 63115,
+      "requestCount": 11
+    },
+    {
+      "route": "/experiences/visites-sans-offre",
+      "profile": "Chromium local, cache vide, réseau 1,6 Mb/s, latence 150 ms, CPU ×4",
+      "lcp": 1244,
+      "cls": 0,
+      "domContentLoaded": 1266,
+      "encodedResourceBytes": 162469,
+      "jsBytes": 63207,
+      "requestCount": 11
+    },
+    {
+      "route": "/votre-rue",
+      "profile": "Chromium local, cache vide, réseau 1,6 Mb/s, latence 150 ms, CPU ×4",
+      "lcp": 1428,
+      "cls": 0.026959215133243085,
+      "domContentLoaded": 2129.9000000059605,
+      "encodedResourceBytes": 176267,
+      "jsBytes": 70787,
+      "requestCount": 14
+    }
+  ],
+  "checks": [
+    "explicit QR Google and recommendation propagate without assuming unknown origins",
+    "modal keyboard small height reduced motion long text and print"
+  ],
+  "failures": []
+}

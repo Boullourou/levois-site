@@ -1,0 +1,659 @@
+{
+  "startedAt": "2026-09-10T14:39:36.075Z",
+  "base": "http://127.0.0.1:4331",
+  "browser": "Chromium desktop viewport emulation",
+  "widths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "status": "passed",
+  "routes": [
+    "/confidentialite",
+    "/lecture",
+    "/mentions-legales"
+  ],
+  "pages": [
+    {
+      "route": "/confidentialite",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:39:36.352Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:40.009Z"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:39:36.358Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:40.013Z"
+    },
+    {
+      "route": "/lecture",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:39:40.036Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:39:43.931Z"
+    },
+    {
+      "route": "/lecture",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:39:40.037Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:39:44.248Z"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:39:43.951Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:46.454Z"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:39:44.261Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:46.459Z"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:39:46.493Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:48.916Z"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:39:46.494Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:48.919Z"
+    },
+    {
+      "route": "/lecture",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:39:48.941Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:39:52.803Z"
+    },
+    {
+      "route": "/lecture",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:39:48.945Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:39:53.339Z"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:39:52.820Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:55.252Z"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:39:53.355Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:39:55.449Z"
+    }
+  ],
+  "links": [
+    {
+      "path": "/confidentialite",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [
+        "#contenu",
+        "#mesure-audience"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/confidentialite",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/ma-recherche",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/situer-ma-vente",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/vendre-et-acheter",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/vendre-et-acheter",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/votre-rue",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/lecture",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [
+        "#contenu",
+        "#corrections"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/lecture",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/reprendre",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/reprendre",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/methode",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/methode",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/ressources",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/audit-annonce",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/audit-annonce",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/mouaad",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/mouaad",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/contact",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/contact",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/mentions-legales",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/mentions-legales",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/accompagnement",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/accompagnement",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/carte",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/carte",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/recommander",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/recommander",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/rejoindre",
+      "from": [
+        "/confidentialite",
+        "/lecture",
+        "/mentions-legales"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/rejoindre",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/ma-recherche?depth=deep",
+      "from": [
+        "/lecture"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?depth=deep",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/ma-recherche?edit=buyer_stage",
+      "from": [
+        "/lecture"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?edit=buyer_stage",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    },
+    {
+      "path": "/ma-recherche?edit=buyer_purpose",
+      "from": [
+        "/lecture"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?edit=buyer_purpose",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true
+    }
+  ],
+  "screenshots": [
+    {
+      "route": "/lecture",
+      "width": 390,
+      "file": "restitution-390.png"
+    },
+    {
+      "route": "/lecture",
+      "width": 1440,
+      "file": "restitution-1440.png"
+    }
+  ],
+  "blockedExternalRequests": [],
+  "blockedSubmissions": [],
+  "notes": [
+    "No external link is followed.",
+    "No form is sent. Buyer answers only prepare an anonymous local reading.",
+    "Axe WCAG 2 A/AA, 2.1 A/AA and 2.2 AA. No human or physical-device test claimed.",
+    "Screenshots use real pages and local resources; no page style is rewritten except hiding the Astro developer toolbar.",
+    "Targeted recheck after reported issues or concurrent preview updates."
+  ],
+  "summary": {
+    "routes": 3,
+    "states": 12,
+    "screenshots": 2,
+    "pagesWithIssues": 0,
+    "jsErrors": 0,
+    "axeViolations": 0,
+    "overflowStates": 0,
+    "uniqueInternalLinks": 21,
+    "brokenInternalLinks": 0,
+    "blockedSubmissions": 0
+  },
+  "finishedAt": "2026-09-10T14:39:55.833Z"
+}

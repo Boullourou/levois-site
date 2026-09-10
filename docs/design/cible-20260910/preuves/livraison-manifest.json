@@ -1,0 +1,13 @@
+{
+  "base": "52c92ca64ca22606272ae9dd933b5706f4301842",
+  "implementationCommit": "43e73075f1987bba74fb9a7f1466c7bbd386ef70",
+  "branch": "codex/levois-experience-cible-20260909",
+  "buildPages": 42,
+  "vitestTests": 257,
+  "publicStates": 124,
+  "internalLinks": 55,
+  "localPagesChecks": 7,
+  "distSha256": "2a7696b2be8a93fd30c7df74c1faaf9a78e3caf81cd0e9e1ce565539cbcddb85",
+  "builtAt": "2026-09-10T15:01:39Z",
+  "productionDeployed": false
+}

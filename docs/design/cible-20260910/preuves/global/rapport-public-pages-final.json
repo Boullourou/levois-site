@@ -1,0 +1,5110 @@
+{
+  "consolidatedAt": "2026-09-10T14:53:34.821Z",
+  "base": "http://127.0.0.1:4331",
+  "sourceReports": [
+    {
+      "file": "rapport-public-pages.json",
+      "startedAt": "2026-09-10T14:49:11.499Z",
+      "finishedAt": "2026-09-10T14:52:18.066Z",
+      "status": "passed",
+      "summary": {
+        "routes": 31,
+        "states": 124,
+        "screenshots": 20,
+        "pagesWithIssues": 0,
+        "jsErrors": 0,
+        "axeViolations": 0,
+        "overflowStates": 0,
+        "uniqueInternalLinks": 55,
+        "brokenInternalLinks": 0,
+        "blockedSubmissions": 0
+      }
+    },
+    {
+      "file": "rapport-public-pages-recheck.json",
+      "startedAt": "2026-09-10T14:39:36.075Z",
+      "finishedAt": "2026-09-10T14:39:55.833Z",
+      "status": "passed",
+      "summary": {
+        "routes": 3,
+        "states": 12,
+        "screenshots": 2,
+        "pagesWithIssues": 0,
+        "jsErrors": 0,
+        "axeViolations": 0,
+        "overflowStates": 0,
+        "uniqueInternalLinks": 21,
+        "brokenInternalLinks": 0,
+        "blockedSubmissions": 0
+      }
+    },
+    {
+      "file": "rapport-public-menu.json",
+      "startedAt": "2026-09-10T14:52:19.366Z",
+      "finishedAt": "2026-09-10T14:52:32.417Z",
+      "status": "passed",
+      "summary": {
+        "states": 4,
+        "statesWithIssues": 0,
+        "keyboardLinksReached": 44,
+        "jsErrors": 0,
+        "axeViolations": 0,
+        "blockedSubmissions": 0
+      }
+    }
+  ],
+  "scope": {
+    "routes": [
+      "/",
+      "/404",
+      "/accompagnement",
+      "/audit-annonce",
+      "/bienvenue",
+      "/carte",
+      "/confidentialite",
+      "/contact",
+      "/experiences/surface-ou-usage",
+      "/experiences/vendre-avant-acheter",
+      "/experiences/visites-sans-offre",
+      "/lecture",
+      "/ma-recherche",
+      "/mentions-legales",
+      "/methode",
+      "/methode/vendre",
+      "/mouaad",
+      "/recommander",
+      "/rejoindre",
+      "/reprendre",
+      "/ressources",
+      "/ressources/annonce-vue-peu-de-contacts",
+      "/ressources/lancement-coherent",
+      "/ressources/premiere-impression-annonce",
+      "/ressources/reprendre-commercialisation",
+      "/ressources/retours-de-visite",
+      "/ressources/verifier-avant-baisse-prix",
+      "/situer-ma-vente",
+      "/situer-ma-vente/resultat",
+      "/vendre-et-acheter",
+      "/votre-rue"
+    ],
+    "widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "browser": "Chromium desktop viewport emulation"
+  },
+  "notes": [
+    "No external link is followed.",
+    "No form is sent. Buyer answers only prepare an anonymous local reading.",
+    "Axe WCAG 2 A/AA, 2.1 A/AA and 2.2 AA. No human or physical-device test claimed.",
+    "Screenshots use real pages and local resources; no page style is rewritten except hiding the Astro developer toolbar.",
+    "This consolidated report retains the latest tested state per route and width. Original findings are preserved in the source report.",
+    "The legal-link corrections and actual buyer restitution were rechecked at all four widths.",
+    "The shared menu also passed Enter, Tab through all 11 links, and Escape restoring the trigger at all four widths.",
+    "Modal, annotation, short viewport, zoom and performance checks are covered separately by the parent agent."
+  ],
+  "pages": [
+    {
+      "route": "/",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:11.731Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".a"
+              ],
+              [
+                ".b"
+              ],
+              [
+                ".c"
+              ],
+              [
+                "figcaption"
+              ],
+              [
+                "text[x=\"43\"]"
+              ],
+              [
+                "text[x=\"175\"]"
+              ],
+              [
+                "text[x=\"323\"]"
+              ],
+              [
+                "text[x=\"389\"]"
+              ],
+              [
+                "text[x=\"255\"]"
+              ],
+              [
+                "text[x=\"145\"]"
+              ],
+              [
+                "text[x=\"27\"]"
+              ],
+              [
+                ".lv-local-graphic > p"
+              ],
+              [
+                ".lv-human > div > p:nth-child(2)"
+              ],
+              [
+                ".lv-human > div > .lv-note"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:49:16.824Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:11.735Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".a"
+              ],
+              [
+                ".b"
+              ],
+              [
+                ".c"
+              ],
+              [
+                "figcaption"
+              ],
+              [
+                "text[x=\"43\"]"
+              ],
+              [
+                "text[x=\"175\"]"
+              ],
+              [
+                "text[x=\"323\"]"
+              ],
+              [
+                "text[x=\"389\"]"
+              ],
+              [
+                "text[x=\"255\"]"
+              ],
+              [
+                "text[x=\"145\"]"
+              ],
+              [
+                "text[x=\"27\"]"
+              ],
+              [
+                ".lv-human > div > p:nth-child(2)"
+              ],
+              [
+                ".lv-human > div > .lv-note"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:49:17.225Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/404",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:16.851Z",
+      "jsErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failures": [],
+      "status": 404,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:19.218Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/404",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:17.250Z",
+      "jsErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failures": [],
+      "status": 404,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:19.357Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/accompagnement",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:19.242Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:21.568Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/accompagnement",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:19.373Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:21.576Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/audit-annonce",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:21.608Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:24.298Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/audit-annonce",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:21.611Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:24.593Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/bienvenue",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:24.322Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:28.633Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/bienvenue",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:24.619Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:28.637Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/carte",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:28.665Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:30.893Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/carte",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:28.667Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:30.897Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:30.919Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:33.460Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:30.922Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:33.463Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/contact",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:33.484Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:35.950Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/contact",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:33.486Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:36.177Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/surface-ou-usage",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:35.968Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:40.704Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/surface-ou-usage",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:36.189Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:40.895Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/vendre-avant-acheter",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:40.722Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:42.899Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/vendre-avant-acheter",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:40.910Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:43.074Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/visites-sans-offre",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:42.920Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:45.317Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/visites-sans-offre",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:43.091Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:45.474Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/lecture",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:45.332Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:49:49.744Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/lecture",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:45.490Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:49:50.078Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ma-recherche",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:49.759Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:54.563Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ma-recherche",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:50.093Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:54.785Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:54.587Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:56.835Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:54.796Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:56.984Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:56.852Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:59.097Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:57.003Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:49:59.261Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode/vendre",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:59.118Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:01.361Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode/vendre",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:49:59.281Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:01.482Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mouaad",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:01.379Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:05.872Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mouaad",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:01.501Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:05.880Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/recommander",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:05.893Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:08.242Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/recommander",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:05.898Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:08.249Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/rejoindre",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:08.312Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:11.862Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/rejoindre",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:08.315Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:11.867Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/reprendre",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:11.893Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:14.175Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/reprendre",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:11.897Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:14.317Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:14.196Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:18.389Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:14.333Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:18.607Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/annonce-vue-peu-de-contacts",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:18.415Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:20.965Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/annonce-vue-peu-de-contacts",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:18.624Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:20.969Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/lancement-coherent",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:20.991Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:23.211Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/lancement-coherent",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:20.993Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:23.401Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/premiere-impression-annonce",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:23.236Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:25.460Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/premiere-impression-annonce",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:23.423Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:25.637Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/reprendre-commercialisation",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:25.657Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:29.671Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/reprendre-commercialisation",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:25.474Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:29.841Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/retours-de-visite",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:29.690Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:31.978Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/retours-de-visite",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:29.858Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:32.156Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/verifier-avant-baisse-prix",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:32.003Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:34.270Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/verifier-avant-baisse-prix",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:32.179Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:34.449Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:34.466Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:37.224Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:34.294Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:37.461Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente/resultat",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:37.240Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:41.326Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente/resultat",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:37.474Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:41.330Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/vendre-et-acheter",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:41.358Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:43.964Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/vendre-et-acheter",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:41.360Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:44.336Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/votre-rue",
+      "width": 320,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:43.983Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 320,
+        "documentWidth": 320,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                "text[x=\"40\"]"
+              ],
+              [
+                "text[x=\"262\"]"
+              ],
+              [
+                "button[data-map-choice=\"Le Coudray\"]"
+              ],
+              [
+                "button[data-map-choice=\"Luisant\"]"
+              ],
+              [
+                ".world-map-note"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:50:48.283Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/votre-rue",
+      "width": 390,
+      "height": 844,
+      "startedAt": "2026-09-10T14:50:44.347Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 390,
+        "documentWidth": 390,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                "text[x=\"40\"]"
+              ],
+              [
+                "text[x=\"262\"]"
+              ],
+              [
+                "button[data-map-choice=\"Luisant\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:50:48.617Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:50:48.645Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".a"
+              ],
+              [
+                ".b"
+              ],
+              [
+                ".c"
+              ],
+              [
+                "figcaption"
+              ],
+              [
+                "text[x=\"43\"]"
+              ],
+              [
+                "text[x=\"175\"]"
+              ],
+              [
+                "text[x=\"323\"]"
+              ],
+              [
+                "text[x=\"389\"]"
+              ],
+              [
+                "text[x=\"255\"]"
+              ],
+              [
+                "text[x=\"145\"]"
+              ],
+              [
+                "text[x=\"27\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:50:51.264Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:50:48.647Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".a"
+              ],
+              [
+                ".b"
+              ],
+              [
+                ".c"
+              ],
+              [
+                "figcaption"
+              ],
+              [
+                "text[x=\"43\"]"
+              ],
+              [
+                "text[x=\"175\"]"
+              ],
+              [
+                "text[x=\"323\"]"
+              ],
+              [
+                "text[x=\"389\"]"
+              ],
+              [
+                "text[x=\"255\"]"
+              ],
+              [
+                "text[x=\"145\"]"
+              ],
+              [
+                "text[x=\"27\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:50:51.923Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/404",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:50:51.280Z",
+      "jsErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failures": [],
+      "status": 404,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:54.365Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/404",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:50:51.965Z",
+      "jsErrors": [],
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)"
+      ],
+      "failures": [],
+      "status": 404,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:55.230Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/accompagnement",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:50:54.380Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:56.541Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/accompagnement",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:50:55.246Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:57.338Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/audit-annonce",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:50:56.558Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:58.855Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/audit-annonce",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:50:57.354Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:50:59.922Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/bienvenue",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:50:58.868Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:01.151Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/bienvenue",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:50:59.982Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:02.074Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/carte",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:01.169Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:03.353Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/carte",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:02.140Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:05.682Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:03.366Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:05.856Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/confidentialite",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:05.707Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:08.153Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/contact",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:05.872Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:08.157Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/surface-ou-usage",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:08.187Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:10.675Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/contact",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:08.184Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:10.804Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/vendre-avant-acheter",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:10.800Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:13.259Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/surface-ou-usage",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:10.820Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:13.787Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/vendre-avant-acheter",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:13.801Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:17.122Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/visites-sans-offre",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:13.290Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:17.126Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/visites-sans-offre",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:17.152Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:19.566Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/lecture",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:17.154Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:51:20.946Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ma-recherche",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:20.967Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:23.553Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/lecture",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:19.583Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                ".lv-note > strong"
+              ],
+              [
+                "button[data-keep=\"\"] > span[aria-hidden=\"true\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "fixture": "Actual buyer journey: idea, primary, then Lire déjà.",
+      "readingTitle": "Votre recherche, mise au clair",
+      "finishedAt": "2026-09-10T14:51:23.912Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:23.567Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:26.001Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ma-recherche",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:23.927Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:26.531Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:26.019Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:29.491Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mentions-legales",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:26.544Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:29.674Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode/vendre",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:29.514Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:31.909Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:29.691Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:32.088Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mouaad",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:31.937Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:34.254Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/methode/vendre",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:32.104Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:34.257Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/recommander",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:34.278Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:36.745Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mouaad",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:34.279Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:37.196Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/rejoindre",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:36.767Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:40.353Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/recommander",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:37.209Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:40.358Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/rejoindre",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:40.389Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:42.497Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/reprendre",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:40.387Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:42.614Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/reprendre",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:42.513Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:44.884Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:42.630Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:45.099Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/annonce-vue-peu-de-contacts",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:45.115Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:47.631Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:44.904Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:47.635Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/annonce-vue-peu-de-contacts",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:47.663Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:51.380Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/lancement-coherent",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:47.664Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:51.384Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/lancement-coherent",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:51.413Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:53.801Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/premiere-impression-annonce",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:51.416Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:53.997Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/premiere-impression-annonce",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:53.816Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:56.067Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/reprendre-commercialisation",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:54.014Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:56.245Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/reprendre-commercialisation",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:56.087Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:58.514Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/retours-de-visite",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:56.263Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:51:58.518Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/verifier-avant-baisse-prix",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:51:58.546Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:02.161Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/retours-de-visite",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:51:58.545Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:02.317Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ressources/verifier-avant-baisse-prix",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:52:02.333Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:04.645Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:52:02.176Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:04.849Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente/resultat",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:52:04.867Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:07.071Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:52:04.659Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:07.753Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/vendre-et-acheter",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:52:07.088Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:09.510Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente/resultat",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:52:07.798Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:09.913Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/votre-rue",
+      "width": 768,
+      "height": 1024,
+      "startedAt": "2026-09-10T14:52:09.559Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 768,
+        "documentWidth": 768,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                "text[x=\"40\"]"
+              ],
+              [
+                "text[x=\"262\"]"
+              ],
+              [
+                "button[data-map-choice=\"Luisant\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:52:13.702Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/vendre-et-acheter",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:52:09.926Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": []
+      },
+      "finishedAt": "2026-09-10T14:52:13.719Z",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/votre-rue",
+      "width": 1440,
+      "height": 1000,
+      "startedAt": "2026-09-10T14:52:13.738Z",
+      "jsErrors": [],
+      "consoleErrors": [],
+      "failures": [],
+      "status": 200,
+      "layout": {
+        "viewport": 1440,
+        "documentWidth": 1440,
+        "overflowing": [],
+        "failedImages": []
+      },
+      "axe": {
+        "violations": [],
+        "incomplete": [
+          {
+            "id": "color-contrast",
+            "nodes": [
+              [
+                "text[x=\"40\"]"
+              ],
+              [
+                "text[x=\"262\"]"
+              ]
+            ]
+          }
+        ]
+      },
+      "finishedAt": "2026-09-10T14:52:16.975Z",
+      "sourceReport": "rapport-public-pages.json"
+    }
+  ],
+  "links": [
+    {
+      "path": "/",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ma-recherche",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/vendre-et-acheter",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/vendre-et-acheter",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu",
+        "#vr-adresse",
+        "#vr-methode"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/lecture",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu",
+        "#corrections"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/lecture",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/reprendre",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/reprendre",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/methode",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/methode",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/audit-annonce",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/audit-annonce",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/mouaad",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/mouaad",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/contact",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/contact",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=L%C3%A8ves",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=L%C3%A8ves",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=Chartres",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=Chartres",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=Mainvilliers",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=Mainvilliers",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=Luc%C3%A9",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=Luc%C3%A9",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=Champhol",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=Champhol",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=Le%20Coudray",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=Le%20Coudray",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?q=Luisant",
+      "from": [
+        "/"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?q=Luisant",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/accompagnement",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/accompagnement",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/carte",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/carte",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/mentions-legales",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/mentions-legales",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/confidentialite",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#mesure-audience",
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/confidentialite",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/recommander",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/recommander",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/rejoindre",
+      "from": [
+        "/",
+        "/404",
+        "/accompagnement",
+        "/audit-annonce",
+        "/bienvenue",
+        "/carte",
+        "/confidentialite",
+        "/contact",
+        "/experiences/surface-ou-usage",
+        "/experiences/vendre-avant-acheter",
+        "/experiences/visites-sans-offre",
+        "/lecture",
+        "/ma-recherche",
+        "/mentions-legales",
+        "/methode",
+        "/methode/vendre",
+        "/mouaad",
+        "/recommander",
+        "/rejoindre",
+        "/reprendre",
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/lancement-coherent",
+        "/ressources/premiere-impression-annonce",
+        "/ressources/reprendre-commercialisation",
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix",
+        "/situer-ma-vente",
+        "/situer-ma-vente/resultat",
+        "/vendre-et-acheter",
+        "/votre-rue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/rejoindre",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/404",
+      "from": [
+        "/404"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 404,
+      "finalUrl": "http://127.0.0.1:4331/404",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": false,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/bienvenue?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/bienvenue?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ma-recherche?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/vendre-et-acheter?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/vendre-et-acheter?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/votre-rue?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/votre-rue?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/experiences/surface-ou-usage?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/experiences/surface-ou-usage?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/carte?src=recommandation",
+      "from": [
+        "/bienvenue"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/carte?src=recommandation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/mouaad-boullourou.vcf",
+      "from": [
+        "/carte",
+        "/contact"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/mouaad-boullourou.vcf",
+      "contentType": "",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/experiences/surface-ou-usage",
+      "from": [
+        "/experiences/surface-ou-usage"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/experiences/surface-ou-usage",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/experiences/vendre-avant-acheter",
+      "from": [
+        "/experiences/vendre-avant-acheter"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/experiences/vendre-avant-acheter",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/experiences/visites-sans-offre",
+      "from": [
+        "/experiences/visites-sans-offre"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/experiences/visites-sans-offre",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ma-recherche?depth=deep",
+      "from": [
+        "/lecture"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?depth=deep",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ma-recherche?edit=buyer_stage",
+      "from": [
+        "/lecture"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?edit=buyer_stage",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ma-recherche?edit=buyer_purpose",
+      "from": [
+        "/lecture"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ma-recherche?edit=buyer_purpose",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/methode/vendre",
+      "from": [
+        "/methode",
+        "/methode/vendre"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/methode/vendre",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/bienvenue",
+      "from": [
+        "/recommander"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/bienvenue",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/contact?motif=equipe",
+      "from": [
+        "/rejoindre"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/contact?motif=equipe",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources/lancement-coherent",
+      "from": [
+        "/ressources",
+        "/ressources/lancement-coherent"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources/lancement-coherent",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources/premiere-impression-annonce",
+      "from": [
+        "/ressources",
+        "/ressources/premiere-impression-annonce"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources/premiere-impression-annonce",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources/annonce-vue-peu-de-contacts",
+      "from": [
+        "/ressources",
+        "/ressources/annonce-vue-peu-de-contacts"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources/annonce-vue-peu-de-contacts",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources/retours-de-visite",
+      "from": [
+        "/ressources",
+        "/ressources/retours-de-visite"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources/retours-de-visite",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources/verifier-avant-baisse-prix",
+      "from": [
+        "/ressources",
+        "/ressources/verifier-avant-baisse-prix"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources/verifier-avant-baisse-prix",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/ressources/reprendre-commercialisation",
+      "from": [
+        "/ressources",
+        "/ressources/reprendre-commercialisation"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/ressources/reprendre-commercialisation",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente?s=peu-contacts",
+      "from": [
+        "/ressources/annonce-vue-peu-de-contacts",
+        "/ressources/premiere-impression-annonce"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente?s=peu-contacts",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente?s=preparer",
+      "from": [
+        "/ressources/lancement-coherent"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente?s=preparer",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente?s=longtemps",
+      "from": [
+        "/ressources/reprendre-commercialisation"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente?s=longtemps",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente?s=visites",
+      "from": [
+        "/ressources/retours-de-visite",
+        "/ressources/verifier-avant-baisse-prix"
+      ],
+      "hashes": [],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente?s=visites",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "path": "/situer-ma-vente/resultat",
+      "from": [
+        "/situer-ma-vente/resultat"
+      ],
+      "hashes": [
+        "#contenu"
+      ],
+      "status": 200,
+      "finalUrl": "http://127.0.0.1:4331/situer-ma-vente/resultat",
+      "contentType": "text/html",
+      "redirects": [],
+      "resolved": true,
+      "sourceReport": "rapport-public-pages.json"
+    }
+  ],
+  "screenshots": [
+    {
+      "route": "/",
+      "width": 390,
+      "file": "accueil-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/audit-annonce",
+      "width": 390,
+      "file": "audit-annonce-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/contact",
+      "width": 390,
+      "file": "contact-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/surface-ou-usage",
+      "width": 390,
+      "file": "micro-experience-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/lecture",
+      "width": 390,
+      "file": "restitution-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ma-recherche",
+      "width": 390,
+      "file": "acquereur-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mouaad",
+      "width": 390,
+      "file": "mouaad-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente",
+      "width": 390,
+      "file": "vendeur-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/vendre-et-acheter",
+      "width": 390,
+      "file": "transition-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/votre-rue",
+      "width": 390,
+      "file": "votre-rue-390.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/",
+      "width": 1440,
+      "file": "accueil-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/audit-annonce",
+      "width": 1440,
+      "file": "audit-annonce-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/contact",
+      "width": 1440,
+      "file": "contact-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/experiences/surface-ou-usage",
+      "width": 1440,
+      "file": "micro-experience-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/lecture",
+      "width": 1440,
+      "file": "restitution-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/ma-recherche",
+      "width": 1440,
+      "file": "acquereur-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/mouaad",
+      "width": 1440,
+      "file": "mouaad-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/situer-ma-vente",
+      "width": 1440,
+      "file": "vendeur-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/vendre-et-acheter",
+      "width": 1440,
+      "file": "transition-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    },
+    {
+      "route": "/votre-rue",
+      "width": 1440,
+      "file": "votre-rue-1440.png",
+      "sourceReport": "rapport-public-pages.json"
+    }
+  ],
+  "keyboard": [
+    {
+      "width": 320,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 320,
+      "escapeRestoresTrigger": true
+    },
+    {
+      "width": 390,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 390,
+      "screenshot": "menu-clavier-390.png",
+      "escapeRestoresTrigger": true
+    },
+    {
+      "width": 768,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "text": "Acheter",
+          "href": "/ma-recherche"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre",
+          "href": "/situer-ma-vente"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre et acheter",
+          "href": "/vendre-et-acheter"
+        },
+        {
+          "tag": "A",
+          "text": "Repères locaux",
+          "href": "/votre-rue"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 768,
+      "escapeRestoresTrigger": true
+    },
+    {
+      "width": 1440,
+      "route": "/",
+      "jsErrors": [],
+      "failures": [],
+      "tabOrderToTrigger": [
+        {
+          "tag": "A",
+          "text": "Aller au contenu",
+          "href": "#contenu"
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "href": "/"
+        },
+        {
+          "tag": "A",
+          "text": "Acheter",
+          "href": "/ma-recherche"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre",
+          "href": "/situer-ma-vente"
+        },
+        {
+          "tag": "A",
+          "text": "Vendre et acheter",
+          "href": "/vendre-et-acheter"
+        },
+        {
+          "tag": "A",
+          "text": "Repères locaux",
+          "href": "/votre-rue"
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Menu",
+          "href": null
+        }
+      ],
+      "menuLinks": [
+        {
+          "href": "/ma-recherche",
+          "text": "Acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/situer-ma-vente",
+          "text": "Vendre↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/vendre-et-acheter",
+          "text": "Vendre et acheter↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/votre-rue",
+          "text": "Repères locaux↗",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/lecture",
+          "text": "Ma lecture en cours",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/reprendre",
+          "text": "Reprendre un projet",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/methode",
+          "text": "La méthode",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/ressources",
+          "text": "Les ressources",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/audit-annonce",
+          "text": "Relire une annonce",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/mouaad",
+          "text": "Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        },
+        {
+          "href": "/contact",
+          "text": "Écrire à Mouaad",
+          "insideMenu": true,
+          "visible": true,
+          "outlineStyle": "solid",
+          "outlineWidth": "3px"
+        }
+      ],
+      "axeViolations": [],
+      "documentWidthOpen": 1440,
+      "screenshot": "menu-clavier-1440.png",
+      "escapeRestoresTrigger": true
+    }
+  ],
+  "summary": {
+    "routes": 31,
+    "latestPageStates": 124,
+    "pageStatesExecuted": 136,
+    "keyboardStates": 4,
+    "structuralScreenshots": 20,
+    "menuScreenshots": 2,
+    "pagesWithIssues": 0,
+    "keyboardStatesWithIssues": 0,
+    "jsErrors": 0,
+    "axeViolations": 0,
+    "overflowStates": 0,
+    "uniqueInternalLinks": 55,
+    "brokenInternalLinks": 0,
+    "blockedSubmissions": 0
+  },
+  "status": "passed"
+}
