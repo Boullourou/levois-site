@@ -1,0 +1,7 @@
+# Actif architectural — Le Plan vivant
+
+Outil intégré imagegen ; édition à partir de concepts/plan-vivant.png, inspectée puis copiée dans plan-vivant/architecture.png. Fiction architecturale éditoriale, jamais présentée comme un logement réel.
+
+```text
+Edit the attached LEVOIS "Le Plan vivant" concept board by extracting and rendering only its architectural background artwork as a fresh standalone asset. Produce one high-quality square image of the exact white and cobalt architectural world shown at the bottom of the board's left home screen: sculptural modern white plaster building planes, one vivid cobalt #2545df solid vertical plane and one low cobalt foreground plane, white steps, a restrained dark olive small tree, one slender orange #f47b20 vertical line with one orange dot. Image backdrop pure true white #ffffff with generous entirely white upper-left half for the HTML interface; architecture concentrated lower-right. Frontal/very slight axonometric view, crisp edges, physically natural soft shadows, luminous white daylight. Preserve this graphic spatial composition, no painterly aesthetic, no warm limestone, no beige, no cream, no glass skyscraper, no extra structures. No words, no lettering, no typography, no logo, no UI controls, no borders, no frame. This is explicitly fictional editorial architecture, not a real property, not a photograph representing an available listing. Only the artwork, not a crop containing the interface. High craft architectural visualization matching the reference.
+```

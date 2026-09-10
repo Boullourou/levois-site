@@ -1,0 +1,196 @@
+{
+  "direction": "plan-vivant",
+  "date": "2026-09-10T09:37:42.504Z",
+  "errors": [],
+  "failures": [],
+  "outbound": [],
+  "observations": [
+    {
+      "screen": "accueil",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Un projet immobilier. Des choix plus clairs.",
+      "headings": 1,
+      "height": 1119,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "visites-entree",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Des visites, mais aucune offre ?",
+      "headings": 1,
+      "height": 872,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "visites",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Des visites, mais aucune offre ?",
+      "headings": 1,
+      "height": 1065,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "recherche",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Qu’est-ce que votre prochain logement doit rendre possible ?",
+      "headings": 1,
+      "height": 1555,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "lecture",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Votre projet, un peu plus clair.",
+      "headings": 1,
+      "height": 1742,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "transition",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Vendre et acheter : qu’est-ce qui dépend de quoi ?",
+      "headings": 1,
+      "height": 1284,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "local",
+      "width": 390,
+      "viewport": 390,
+      "h1": "Un repère local, pas encore une conclusion.",
+      "headings": 1,
+      "height": 1099,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "accueil",
+      "width": 320,
+      "viewport": 320,
+      "h1": "Un projet immobilier. Des choix plus clairs.",
+      "headings": 1,
+      "height": 1097,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "visites-entree",
+      "width": 320,
+      "viewport": 320,
+      "h1": "Des visites, mais aucune offre ?",
+      "headings": 1,
+      "height": 911,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "visites",
+      "width": 320,
+      "viewport": 320,
+      "h1": "Des visites, mais aucune offre ?",
+      "headings": 1,
+      "height": 1129,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "recherche",
+      "width": 320,
+      "viewport": 320,
+      "h1": "Qu’est-ce que votre prochain logement doit rendre possible ?",
+      "headings": 1,
+      "height": 1631,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "lecture",
+      "width": 320,
+      "viewport": 320,
+      "h1": "Votre projet, un peu plus clair.",
+      "headings": 1,
+      "height": 1842,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "accueil",
+      "width": 1440,
+      "viewport": 1440,
+      "h1": "Un projet immobilier. Des choix plus clairs.",
+      "headings": 1,
+      "height": 1178,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "visites-entree",
+      "width": 1440,
+      "viewport": 1440,
+      "h1": "Des visites, mais aucune offre ?",
+      "headings": 1,
+      "height": 1016,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "visites",
+      "width": 1440,
+      "viewport": 1440,
+      "h1": "Des visites, mais aucune offre ?",
+      "headings": 1,
+      "height": 1016,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "recherche",
+      "width": 1440,
+      "viewport": 1440,
+      "h1": "Qu’est-ce que votre prochain logement doit rendre possible ?",
+      "headings": 1,
+      "height": 1189,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    },
+    {
+      "screen": "lecture",
+      "width": 1440,
+      "viewport": 1440,
+      "h1": "Votre projet, un peu plus clair.",
+      "headings": 1,
+      "height": 1559,
+      "images": [],
+      "smallButtons": [],
+      "axe": []
+    }
+  ]
+}

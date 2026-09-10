@@ -1,0 +1,14 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { markdownToHtml } from 'satteri';
+const root = path.dirname(fileURLToPath(import.meta.url));
+const source = await readFile(path.join(root, 'comparaison.md'), 'utf8');
+const result = await markdownToHtml(source);
+const body = result.html.replace(/<table>/g, '<div class="table-scroll" tabindex="0" role="region" aria-label="Tableau comparatif, défilement horizontal sur petit écran"><table>').replace(/<\/table>/g, '</table></div>');
+const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Le dossier des trois directions — LEVOIS</title><link rel="stylesheet" href="shared/base.css"><link rel="stylesheet" href="dossier.css"></head><body><header class="document-header"><a href="./" aria-label="Revenir au comparateur"><img src="/brand/levois-horizontal.svg" alt="LEVOIS" width="107" height="38"></a><span>Dossier d’arbitrage artistique</span><a href="./">Retour aux trois prototypes ↗</a></header><main class="document"><article>${body}</article></main><footer class="document-footer"><a href="./">Comparer les trois directions</a><a href="comparaison.md">Version Markdown</a><span>Exploration locale · aucune migration engagée</span></footer></body></html>`;
+await writeFile(path.join(root,'comparaison.html'), html);
+const prefix = '../../explorations/directions-artistiques-20260910/';
+const mirror = source.replace(/\]\((?!https?:|#)([^)]+)\)/g, (_, href) => `](${prefix}${href === './' ? 'index.html' : href})`);
+await writeFile(path.resolve(root,'../../docs/design/LEVOIS_Trois_Directions_Artistiques_2026-09-10.md'), mirror);
+console.log('Dossier HTML et copie docs/design synchronisés.');

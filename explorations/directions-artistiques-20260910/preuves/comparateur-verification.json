@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-10T09:50:26.367Z",
+  "errors": [],
+  "boardAxe": [],
+  "docAxe": [],
+  "sizes": [
+    {
+      "surface": "comparateur",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "surface": "dossier",
+      "width": 390,
+      "overflow": false
+    },
+    {
+      "surface": "comparateur",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "surface": "dossier",
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "surface": "comparateur",
+      "width": 1440,
+      "overflow": false
+    },
+    {
+      "surface": "dossier",
+      "width": 1440,
+      "overflow": false
+    }
+  ],
+  "missing": []
+}
