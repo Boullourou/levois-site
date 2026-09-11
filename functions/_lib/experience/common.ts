@@ -185,11 +185,12 @@ export async function sendMail(env: ExperienceEnv, mail: Mail, idempotencyKey: s
   if (env.RESEND_API_KEY) {
     try {
       const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST', signal: AbortSignal.timeout(12_000), redirect: 'error',
+        method: 'POST', signal: AbortSignal.timeout(12_000), redirect: 'manual',
         headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json', 'idempotency-key': idempotencyKey },
         body: JSON.stringify({ from, to: [mail.to], subject: mail.subject, text: mail.text, ...(mail.replyTo ? { reply_to: mail.replyTo } : {}) }),
       });
       await response.body?.cancel();
+      if (response.status >= 300 && response.status < 400) return { state: 'failed', provider: 'resend' };
       return { state: response.ok ? 'sent' : response.status >= 500 ? 'unknown' : 'failed', provider: 'resend' };
     } catch { return { state: 'unknown', provider: 'resend' }; }
   }
@@ -200,11 +201,12 @@ export async function sendMail(env: ExperienceEnv, mail: Mail, idempotencyKey: s
   if (destination.protocol !== 'https:' || destination.hostname !== 'formspree.io') return { state: 'unavailable' };
   try {
     const response = await fetch(destination.href, {
-      method: 'POST', signal: AbortSignal.timeout(12_000), redirect: 'error',
+      method: 'POST', signal: AbortSignal.timeout(12_000), redirect: 'manual',
       headers: { accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8' },
       body: new URLSearchParams({ _subject: mail.subject, message: mail.text, ...(mail.replyTo ? { email: mail.replyTo } : {}) }).toString(),
     });
     await response.body?.cancel();
+    if (response.status >= 300 && response.status < 400) return { state: 'failed', provider: 'formspree' };
     return { state: response.ok ? 'sent' : response.status >= 500 ? 'unknown' : 'failed', provider: 'formspree' };
   } catch { return { state: 'unknown', provider: 'formspree' }; }
 }
