@@ -1,0 +1,7 @@
+---
+import content from './v7-content.html?raw';
+import motion from './v7-motion.js?raw';
+import '../../styles/home-v7.css';
+---
+<div class="v7-home" set:html={content} />
+<script is:inline set:html={`document.addEventListener('DOMContentLoaded', () => { ${motion} });`} />

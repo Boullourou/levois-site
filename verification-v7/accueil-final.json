@@ -1,0 +1,31 @@
+{
+  "pages": [
+    {
+      "route": "/",
+      "width": 1440,
+      "overflow": false,
+      "h1": 1,
+      "broken": [],
+      "font": "\"LEVOIS Display\", Impact, sans-serif",
+      "errors": []
+    },
+    {
+      "route": "/",
+      "width": 390,
+      "overflow": false,
+      "h1": 1,
+      "broken": [],
+      "font": "\"LEVOIS Display\", Impact, sans-serif",
+      "errors": []
+    },
+    {
+      "route": "/",
+      "width": 320,
+      "overflow": false,
+      "h1": 1,
+      "broken": [],
+      "font": "\"LEVOIS Display\", Impact, sans-serif",
+      "errors": []
+    }
+  ]
+}

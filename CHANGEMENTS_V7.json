@@ -1,0 +1,148 @@
+{
+  "base_archive": "levois-site-9d1d955-sources.zip",
+  "production_deployed": false,
+  "protected_files_identical": 105,
+  "original_files_removed": [],
+  "changes": [
+    {
+      "path": "LIRE_MISE_A_JOUR_V7.md",
+      "status": "added",
+      "sha256": "fdaeb19d3ac1e6364f57a0a2b39127038d7b49b8e73f02d2ac22922586a05202"
+    },
+    {
+      "path": "PUBLIER_AVEC_CODEX_LOCAL.md",
+      "status": "added",
+      "sha256": "c398b31583d98dfad1314a61c581dd174bcc632be0addf9f47f93fbb77cec7b1"
+    },
+    {
+      "path": "scripts/qa-buyer-transition.mjs",
+      "status": "modified",
+      "sha256": "94cdea93a785f60f9dcc731119759147312a0c6f44ade2404f0c4ade9cbcee5b"
+    },
+    {
+      "path": "verification-v7/interactions.json",
+      "status": "added",
+      "sha256": "f286da2686f0b8ea30ee2918eefbd16a448bdd655d0fba6ab59465e8fa8ad78e"
+    },
+    {
+      "path": "verification-v7/reprise-et-transmission.json",
+      "status": "added",
+      "sha256": "31f598d1c89fb41086b9d3413fc495960d6b74817e5d745d5de35fa20a80675b"
+    },
+    {
+      "path": "verification-v7/accueil-final.json",
+      "status": "added",
+      "sha256": "5baca585f3642771c76409b6158f79d0ba7fe20a1952d140fbab3d925331a3af"
+    },
+    {
+      "path": "verification-v7/pages.json",
+      "status": "added",
+      "sha256": "d05d4f00fde807bd77e4f9af4bb2a3b749ffebcee40f0462a36b6918bf39e168"
+    },
+    {
+      "path": "verification-v7/parcours.json",
+      "status": "added",
+      "sha256": "f29b64bc1f5489c7a36ae25c243f53babe753189287a1046fea8dece60a260ba"
+    },
+    {
+      "path": "src/styles/home-v7.css",
+      "status": "added",
+      "sha256": "196fed287e0dceb3bea12a448672c68b7653bebf0cbd84ad286fd7007a788162"
+    },
+    {
+      "path": "src/styles/v7-fonts.css",
+      "status": "added",
+      "sha256": "968562cf1c04651e6fc4ad68e035e37ff0fe5c536a4896b61b0ca1d56119032b"
+    },
+    {
+      "path": "src/styles/v7-production.css",
+      "status": "added",
+      "sha256": "14708c1525b3c72a15337aea6048a818519d627b5691a2526a86a2e244eabde3"
+    },
+    {
+      "path": "src/styles/v7.css",
+      "status": "added",
+      "sha256": "bdc2ddd87dbf7bff6c8805bea03043663b272156581076f28c96f2af910c2119"
+    },
+    {
+      "path": "src/layouts/Layout.astro",
+      "status": "modified",
+      "sha256": "7ac4361f219784172fd6179155ee2acd774b357432e99a3d050937a2bcfbeeb9"
+    },
+    {
+      "path": "src/components/Footer.astro",
+      "status": "modified",
+      "sha256": "8b268ec355aa5d26e554ff9a4abf598a6358fe491079bcb42810b43931370529"
+    },
+    {
+      "path": "src/components/Header.astro",
+      "status": "modified",
+      "sha256": "1857fb82c2c5d3bae3b78e777f5da20078102e18a53b00a429f461efb3904ead"
+    },
+    {
+      "path": "src/pages/index.astro",
+      "status": "modified",
+      "sha256": "f98d7d4d6b0622800a26a4d16472f0afdc22c088a525a1fbc58e74a901dc41d5"
+    },
+    {
+      "path": "src/components/home/HomeV7.astro",
+      "status": "added",
+      "sha256": "5f83c5ae1c6d17a4e32f71108474564400e9a64b32381c6ee5efbc7d788f82ab"
+    },
+    {
+      "path": "src/components/home/v7-motion.js",
+      "status": "added",
+      "sha256": "e2eb24d06a519c0e28f0e37b72ec41ad9d41489f6303ad613be3f33926dc586f"
+    },
+    {
+      "path": "src/components/home/v7-content.html",
+      "status": "added",
+      "sha256": "30441557ccb91a5ff21c49e2bcbee745d42e326f517ff1bc8e6d9c0ba61d1b7c"
+    },
+    {
+      "path": "public/v7/asset-03.webp",
+      "status": "added",
+      "sha256": "a64f9bb15de69ea844bd7d10db4dec65690c0ca569c5f6c1de2ecbc7e4cfe0b2"
+    },
+    {
+      "path": "public/v7/asset-04.webp",
+      "status": "added",
+      "sha256": "4f25af7e79c6e3d05e44c812c312ec07c2d91f1e6b8d3a8392e5b60be15bc7a8"
+    },
+    {
+      "path": "public/v7/asset-06.webp",
+      "status": "added",
+      "sha256": "4f25af7e79c6e3d05e44c812c312ec07c2d91f1e6b8d3a8392e5b60be15bc7a8"
+    },
+    {
+      "path": "public/v7/asset-01.woff",
+      "status": "added",
+      "sha256": "798b0cf80b9d823c4eaa907dd451d2722619da15e48b79ae3a2a481520791674"
+    },
+    {
+      "path": "public/v7/PROVENANCE.json",
+      "status": "added",
+      "sha256": "132125836dce6b4bf1f5eb397b984ab75a5986a35d7835f2ac1cb88400650490"
+    },
+    {
+      "path": "public/v7/asset-02.woff",
+      "status": "added",
+      "sha256": "b0d0cf77bc05a49e72ee56c83f917d6b87962ee94dbeab480b78a02be1f4c874"
+    },
+    {
+      "path": "public/v7/asset-07.webp",
+      "status": "added",
+      "sha256": "af344b2dfdce681ab4ec18dae525d6150b5f92c0636b79feb1b1ad84e08f3abc"
+    },
+    {
+      "path": "public/v7/asset-05.mp4",
+      "status": "added",
+      "sha256": "3a1e44d9a2ffc9bf47363c539b0efef03c56b4f8371f58a10fedb0da0deb41b3"
+    },
+    {
+      "path": "public/assets/levois-partage.jpg",
+      "status": "added",
+      "sha256": "e904c63e2e6555e5ad91bd8366fc4d85055df3d91ab01bf4cf5791d85246056e"
+    }
+  ]
+}

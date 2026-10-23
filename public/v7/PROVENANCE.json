@@ -1,0 +1,41 @@
+{
+  "source": "LEVOIS_ACCUEIL_V7.html",
+  "operation": "Extraction sans modification des ressources embarquées",
+  "assets": [
+    {
+      "file": "asset-01.woff",
+      "mime": "font/woff",
+      "bytes": 24100
+    },
+    {
+      "file": "asset-02.woff",
+      "mime": "font/woff",
+      "bytes": 25064
+    },
+    {
+      "file": "asset-03.webp",
+      "mime": "image/webp",
+      "bytes": 57092
+    },
+    {
+      "file": "asset-04.webp",
+      "mime": "image/webp",
+      "bytes": 81312
+    },
+    {
+      "file": "asset-05.mp4",
+      "mime": "video/mp4",
+      "bytes": 1047525
+    },
+    {
+      "file": "asset-06.webp",
+      "mime": "image/webp",
+      "bytes": 81312
+    },
+    {
+      "file": "asset-07.webp",
+      "mime": "image/webp",
+      "bytes": 61178
+    }
+  ]
+}

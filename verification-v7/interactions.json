@@ -1,0 +1,21 @@
+{
+  "diagram-1440": true,
+  "map-1440": true,
+  "overflow-1440": true,
+  "diagram-390": true,
+  "map-390": true,
+  "overflow-390": true,
+  "diagram-320": true,
+  "map-320": true,
+  "overflow-320": true,
+  "menu": true,
+  "menuClosed": true,
+  "tabs": true,
+  "keyboardTabs": true,
+  "privacy": true,
+  "invalidBlocked": true,
+  "failureHandled": true,
+  "successHandled": true,
+  "simulatedRequests": 2,
+  "errors": []
+}

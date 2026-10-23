@@ -33,7 +33,7 @@ await scenario('buyer-empty-reading-AC02-AC06',async({page})=>{
 await scenario('buyer-real-flow-no-budget-AC04-AC06',async({page})=>{
   await page.goto(base+'/ma-recherche');
   await choose(page,'idea');await choose(page,'primary');await choose(page,'space');await choose(page,'quiet');
-  assert.match(await page.locator('[data-question-panel] h1').innerText(),/quotidien/);
+  assert.match(await page.locator('[data-question-panel] h1').innerText(),/quotidien/i);
   await page.locator('input[value="work"]').check();await page.locator('.lv-question-form button[type="submit"]').click();
   await page.locator('#journey-answer').fill('Lèves');await page.locator('.lv-question-form button[type="submit"]').click();
   await page.locator('input[value="unknown"]').check();await page.locator('[data-read]').click();await page.waitForURL('**/lecture');

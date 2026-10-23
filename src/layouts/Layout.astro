@@ -5,45 +5,33 @@ import '../styles/public-base.css';
 import '../styles/levois.css';
 import '../styles/editorial.css';
 import '../styles/plan-vivant.css';
-interface Props { title:string; description?:string; image?:string; noindex?:boolean; headerTransparent?:boolean; homeV2?:boolean; designContract?:string }
-const {title,description=site.description,image='/images/plan-vivant-vie-1200.webp',noindex=false}=Astro.props;
+import '../styles/v7.css';
+import '../styles/v7-production.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+interface Props { homeV7?:boolean; title:string; description?:string; image?:string; noindex?:boolean; headerTransparent?:boolean; homeV2?:boolean; designContract?:string }
+const {title,description=site.description,image='/assets/levois-partage.jpg',noindex=false,homeV7=false}=Astro.props;
 const path=Astro.url.pathname.replace(/\/$/,'')||'/';
 const links=[{href:'/ma-recherche',label:'Acheter'},{href:'/situer-ma-vente',label:'Vendre'},{href:'/vendre-et-acheter',label:'Vendre et acheter'},{href:'/votre-rue',label:'Repères locaux'}];
 ---
 <!doctype html>
 <html lang="fr"><head>
+<script is:inline>document.documentElement.classList.add("js");</script>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="color-scheme" content="light"/>
 {(noindex||['/composants','/404','/situer-ma-vente/resultat','/lecture','/reprendre'].includes(path))&&<meta name="robots" content="noindex,nofollow"/>}
 <title>{title==='Accueil'?'LEVOIS · Des décisions immobilières plus claires':title+' · LEVOIS'}</title>
-<meta name="description" content={description}/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="canonical" href={site.url+Astro.url.pathname}/>
-<link rel="preload" href="/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin/><link rel="preload" href="/fonts/satoshi-700.woff2" as="font" type="font/woff2" crossorigin/>
+<meta name="theme-color" content="#102635"/><meta name="description" content={description}/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="canonical" href={site.url+Astro.url.pathname}/>
+<link rel="preload" href="/v7/asset-02.woff" as="font" type="font/woff" crossorigin/><link rel="preload" href="/v7/asset-01.woff" as="font" type="font/woff" crossorigin/>
 <meta property="og:title" content={title+' · LEVOIS'}/><meta property="og:description" content={description}/><meta property="og:image" content={site.url+image}/><meta property="og:locale" content="fr_FR"/><meta property="og:type" content="website"/>
 <script type="application/ld+json" set:html={JSON.stringify({'@context':'https://schema.org','@type':'RealEstateAgent',name:'LEVOIS',url:site.url,email:site.email,telephone:site.phone,founder:{'@type':'Person',name:site.mouaad.nom},areaServed:site.communes.map(name=>({'@type':'City',name}))})}/>
-</head><body class:list={['reperes-shell','plan-vivant',{'rp-territoire':path==='/votre-rue'}]}>
+</head><body class:list={['levois-v7',homeV7?'v7-homepage':'reperes-shell plan-vivant v7-inner',{'rp-territoire':path==='/votre-rue'}]}>
 <a class="lv-skip" href="#contenu">Aller au contenu</a>
-<header class="lv-header">
-<a class="lv-brand" href="/" aria-label="LEVOIS, accueil"><img src="/brand/levois-horizontal.svg" width="129" height="40" alt=""/></a>
-<nav class="lv-nav" aria-label="Navigation principale">{links.map(l=><a href={l.href} aria-current={path===l.href?'page':undefined}>{l.label}</a>)}</nav>
-<button class="lv-menu-button" type="button" aria-expanded="false" aria-controls="lv-menu">Menu <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"/></svg></button>
-<nav id="lv-menu" class="lv-menu" aria-label="Toutes les pages" hidden>
-{links.map(l=><a href={l.href} aria-current={path===l.href?'page':undefined}>{l.label}<span aria-hidden="true">↗</span></a>)}
-<a href="/lecture">Ma lecture en cours</a><a href="/reprendre">Reprendre un projet</a><a href="/methode">La méthode</a><a href="/ressources">Les ressources</a><a href="/audit-annonce">Relire une annonce</a><a href="/mouaad">Mouaad</a><a href="/contact">Écrire à Mouaad</a>
-</nav>
-</header>
+<Header transparent={homeV7}/>
 <main id="contenu" tabindex="-1"><slot/></main>
-<footer class="lv-footer">
-<div class="lv-footer-line"><p>Ce qui est plus clair<br/><strong>vous appartient.</strong></p><a class="lv-text-link" href="/lecture">Retrouver ma lecture <span aria-hidden="true">↗</span></a></div>
-<div class="lv-footer-grid"><a class="lv-brand" href="/" aria-label="LEVOIS, accueil"><img src="/brand/levois-horizontal.svg" width="129" height="40" alt=""/></a><p>Mouaad Boullourou<br/>Conseiller immobilier indépendant SAFTI<br/>Lèves, Chartres et alentours</p><nav aria-label="Parcours">{links.map(l=><a href={l.href}>{l.label}</a>)}</nav><nav aria-label="Approfondir"><a href="/methode">La méthode</a><a href="/accompagnement">L’accompagnement</a><a href="/ressources">Six ressources gratuites</a><a href="/carte">La carte de Mouaad</a></nav></div>
-<div class="lv-footer-bottom"><span>© {new Date().getFullYear()} LEVOIS</span><nav aria-label="Informations"><a href="/mentions-legales">Mentions légales</a><a href="/confidentialite">Confidentialité</a><button type="button" data-analytics-settings>Mes choix de confidentialité</button><a href="/recommander">Recommander Mouaad</a><a href="/rejoindre">Découvrir le métier</a></nav></div>
-</footer>
+<Footer flush={homeV7}/>
 <Analytics/>
 <script>
 import '../scripts/public-forms';
 import '../scripts/experience-entry';
-const toggle=document.querySelector<HTMLButtonElement>('.lv-menu-button'),menu=document.querySelector<HTMLElement>('#lv-menu');
-function closeMenu(){if(menu)menu.hidden=true;toggle?.setAttribute('aria-expanded','false');}
-toggle?.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';if(menu)menu.hidden=open;toggle.setAttribute('aria-expanded',String(!open));});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu&&!menu.hidden){closeMenu();toggle?.focus();}});
-document.addEventListener('click',e=>{if(e.target instanceof Node&&!menu?.contains(e.target)&&!toggle?.contains(e.target))closeMenu();});
 </script>
 </body></html>

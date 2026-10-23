@@ -1,0 +1,59 @@
+/* Adaptation de la V7 aux parcours de production : aucune logique métier modifiée. */
+:root,.levois-v7.plan-vivant {
+ --levois-paper:#f6f0e3;--levois-surface:#fffaf0;--levois-ink:#102635;--levois-muted:#475961;--levois-line:#d6cbb6;--levois-accent:#a9330d;--levois-hover:#852708;--levois-selected:#f4e5d6;--levois-dark:#102635;--levois-human:#ff5b22;--levois-on-dark:#f6f0e3;
+ --lv-ink:#102635;--lv-blue:#a9330d;--lv-muted:#475961;--lv-line:#d6cbb6;--lv-info:#eee4d0;--lv-condition:#f4d4bf;--lv-point:#a9330d;
+ --levois-field-radius:14px;--levois-action-radius:99px;--levois-choice-radius:16px;--site-header-h:76px;
+}
+body.levois-v7 {margin:0}.levois-v7 *, .levois-v7 *::before,.levois-v7 *::after{box-sizing:border-box}
+.levois-v7 a{color:inherit}.levois-v7 .v7-footer-contact{color:var(--v7-paper)}
+.levois-v7 :is(.v7-header,.v7-footer) button{background:none;color:inherit;border:0;font:inherit}.levois-v7 .v7-header .v7-menu-toggle{border:1px solid currentColor;font-size:15px}
+.v7-inner :is(h1,h2,h3){letter-spacing:0;line-height:1.08}
+.v7-inner .lv-editorial>header h1{font-size:clamp(42px,5.6vw,80px);max-width:23ch}
+.v7-inner .lv-editorial>header{max-width:1080px}
+.v7-inner .lv-editorial>header .lv-intro{max-width:62ch}
+.v7-inner :is(.lv-button,.lv-secondary,.world-button){border-radius:99px;font-family:'LEVOIS Text',Arial,sans-serif;font-weight:600}
+.v7-inner .lv-button{background:var(--v7-orange);border-color:var(--v7-orange);color:var(--v7-ink)!important}
+.v7-inner .lv-button:hover{background:var(--v7-ink);border-color:var(--v7-ink);color:var(--v7-paper)!important}
+.v7-inner .lv-secondary{background:transparent;border-color:var(--v7-ink);color:var(--v7-ink)!important}
+.v7-inner .lv-secondary:hover{background:var(--lv-info)}
+.v7-inner .lv-choice{border-radius:16px;background:#fffaf0}
+.v7-inner .lv-choice:has(input:checked){background:var(--v7-ink);color:var(--v7-paper)}
+.v7-inner .lv-progress{background:var(--v7-line);height:5px;border-radius:5px;overflow:hidden}
+.v7-inner .lv-progress i{background:var(--v7-orange)}
+.v7-inner .lv-journey-side{padding:32px 26px;background:var(--v7-ink);color:var(--v7-paper);border-radius:90px 24px 24px 24px}
+.v7-inner .lv-journey-side h2{font-size:clamp(34px,3.5vw,48px);padding-top:22px}
+.v7-inner .lv-journey-side :is(.lv-note,.lv-text-link){color:var(--v7-paper)!important}
+.v7-inner .lv-journey-side .lv-sequences{border-color:#f6f0e340}.v7-inner .lv-journey-side .lv-sequences li{color:#e2d9c5;border-color:#f6f0e340}
+.v7-inner .lv-journey-side .lv-sequences li[aria-current]{color:var(--v7-paper)}
+.v7-inner .lv-journey-side .lv-sequences li span{color:var(--v7-orange)}
+.v7-inner .lv-question-panel h1{font-size:clamp(36px,4vw,55px);line-height:1.1}
+.v7-inner .lv-resource-list article{border:1px solid var(--v7-line);border-radius:24px 64px 24px 24px;padding:30px;margin-top:20px;background:#eee4d0}
+.v7-inner .lv-resource-list article:nth-child(3n+1){background:var(--v7-ink);color:var(--v7-paper)}
+.v7-inner .lv-resource-list article:nth-child(3n+1) :is(.lv-note,.lv-text-link,.lv-resource-index){color:var(--v7-paper)!important}
+.v7-inner .lv-resource-list h2{font-size:clamp(27px,3vw,38px)}
+.v7-inner [data-direct-contact]{background:#fffaf0;padding:32px;border:1px solid var(--v7-line);border-radius:28px}
+.v7-inner .lv-editorial img[src='/images/levois-mouaad.webp']{border-radius:180px 180px 18px 18px;max-width:430px!important;max-height:570px!important}
+.v7-inner :is(.lv-reading-section,.lv-history,.lv-live,.lv-limit){border-radius:16px}
+.v7-inner .lv-reading h1{font-size:clamp(38px,5vw,66px)}
+.v7-nav{max-height:calc(100dvh - 76px);overflow-y:auto}
+@media(max-width:760px){
+ .v7-inner .lv-resource-list article{padding:24px 18px;gap:12px}
+ .v7-inner [data-direct-contact]{padding:24px 18px}
+ .v7-inner .lv-question-actions{gap:10px}
+ .v7-inner .lv-question-actions :is(.lv-button,.lv-secondary){gap:12px;padding:13px 16px}
+}
+@media print{.v7-header,.v7-footer,#bar{display:none!important}.v7-inner #contenu{padding:0}body.levois-v7{background:white;color:#102635}}
+/* Les diagrammes conservent leur taille propre, distincte de celle des icônes. */
+.levois-v7 .vr-plan-figure svg{width:100%!important;height:auto!important}
+.levois-v7 .world-territory-map>svg{width:100%!important;height:100%!important}
+.v7-inner .world-territory-map{background:#eee4d0}
+.v7-inner .world-territory-map path{stroke:#b1a794}.v7-inner .world-territory-map path.is-selected{stroke:var(--v7-rust)}
+.v7-inner .rp-chart-year>div{background:#d4bd98}.v7-inner .rp-chart-year.is-latest>div{background:var(--v7-rust)}
+.v7-inner .rp-chart-bars{border-color:var(--v7-line)}
+.v7-inner .rp-segment{background:#eee4d0}
+.v7-inner .vr-plan-figure{background:#fffaf0;border-radius:28px}
+.v7-inner .vr-plan-figure [stroke='#2545df']{stroke:var(--v7-rust)}
+.v7-inner .vr-plan-figure [fill='#2545df']{fill:var(--v7-rust)}
+.v7-inner .vr-plan-figure [fill='#eaf0ff']{fill:#eee4d0}
+/* Navigation native stable ; les animations propres à l’accueil V7 sont conservées. */
+@view-transition{navigation:none}

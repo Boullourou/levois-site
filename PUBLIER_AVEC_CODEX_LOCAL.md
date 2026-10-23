@@ -1,0 +1,15 @@
+# Instruction à Codex local — terminer la mise en ligne LEVOIS
+
+Mouaad a demandé la publication du site mis à jour. Utilise ce dossier complet comme version candidate V7 ; ne repars pas du ZIP redesign plus ancien.
+
+1. Lis LIRE_MISE_A_JOUR_V7.md et CHANGEMENTS_V7.json. Préserve une copie du projet local et ses changements en cours. Ne remplace pas un autre travail local plus récent sans comparaison.
+2. Confirme l’accès Cloudflare déjà configuré avec `npx wrangler whoami`. S’il n’est pas connecté, utilise `npx wrangler login` avec connexion dans le navigateur de Mouaad. Ne demande aucune clé dans le chat et n’affiche aucun secret.
+3. Vérifie que le compte et le projet `levois-site` correspondent bien à `levois.fr`. Référence connue : déploiement de production `29ed89a9-daf1-4253-9c5c-b60cdf949584`, commit annoncé `9d1d955`. Si la production a changé, compare la nouvelle version avant tout remplacement. Note le déploiement à restaurer avant de commencer.
+4. Compare la configuration Wrangler avec les bindings, variables et fonctions actuellement utilisés par le projet Cloudflare. Les préserver, en particulier D1, la transmission mail, la reprise et le cockpit. Ne pas créer/supprimer de base, lancer de migration ou réinitialiser un secret. Un écart de configuration doit être résolu avant déploiement, sans supprimer de réglage distant.
+5. Dans le dossier du site, exécute `npm ci`, `npm test`, puis `npm run build`. Le build doit inclure les 42 routes attendues. Les secrets serveur restent dans Cloudflare ; les variables publiques de build doivent correspondre au déploiement existant.
+6. Prépare d’abord une preview du projet EXISTANT : `npx wrangler pages deploy dist --project-name levois-site --branch v7-preview`. Vérifie les bindings de preview, qui doivent utiliser les bases de test définies pour cet environnement. Ne jamais utiliser un compte temporaire ni un nouveau projet.
+7. Vérifie accueil, achat, vente, transition, /lecture, /reprendre, /votre-rue, ressources, contact, mentions, confidentialité et menu mobile. Vérifie les fonctions et leurs bindings sans envoyer de faux messages à de vrais destinataires. Vérifie notamment qu’aucun secret ne se trouve dans dist et que les fonctions Pages sont bien empaquetées.
+8. Si tous les contrôles sont bons et que les configurations sont préservées, publie vers la branche de production main du même projet : `npx wrangler pages deploy dist --project-name levois-site --branch main`. Ne pousse pas le dossier entier dans une branche GitHub dont l’historique diffère sans rapprochement préalable.
+9. Vérifie le résultat sur https://levois.fr et les routes, les assets et les fonctions critiques. Donne à Mouaad l’URL, l’identifiant du nouveau déploiement et les résultats. Si une régression critique apparaît, restaure immédiatement le déploiement précédent identifié à l’étape 3.
+
+Cette instruction concerne une mise à jour de code et de présentation. Elle ne demande aucun changement de contenu métier, de données, de destinataires ou de politique de consentement.
