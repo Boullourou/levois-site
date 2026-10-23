@@ -20,12 +20,12 @@ import LocalObservatory from '../components/LocalObservatory.astro';
       <figure class="vr-plan-figure">
         <svg viewBox="0 0 460 275" role="img" aria-label="Schéma : des ventes passées dans un secteur donnent un repère à confronter à votre question">
           <path d="M40 63H165V137H270V221H412M83 34V204H207V247M293 35V100H412M222 34V87H350V180H413" fill="none" stroke="#b6c2dc" stroke-width="1.4"/>
-          <rect x="105" y="87" width="65" height="73" fill="#eaf0ff"/><rect x="296" y="124" width="42" height="57" fill="#f4d4bf"/><rect x="180" y="177" width="65" height="37" fill="#eee8f4"/>
-          <circle cx="229" cy="139" r="96" fill="none" stroke="#2545df" stroke-width="1.4" stroke-dasharray="3 6"/>
-          <path d="M135 124L230 141L316 159" fill="none" stroke="#2545df" stroke-width="2"/>
-          <circle cx="135" cy="124" r="6" fill="#2545df"/><circle cx="230" cy="141" r="7" fill="#ca581c"/><circle cx="316" cy="159" r="6" fill="#2545df"/>
-          <rect x="24" y="12" width="166" height="38" rx="2" fill="#eaf0ff"/><text x="40" y="36" fill="#2545df" font-size="14">Des ventes passées</text>
-          <rect x="246" y="218" width="189" height="38" rx="2" fill="#f4d4bf"/><text x="262" y="243" fill="#111a30" font-size="14">Votre question, aujourd’hui</text>
+          <rect x="105" y="87" width="65" height="73" fill="#fff7ed"/><rect x="296" y="124" width="42" height="57" fill="#f4d4bf"/><rect x="180" y="177" width="65" height="37" fill="#eee8f4"/>
+          <circle cx="229" cy="139" r="96" fill="none" stroke="#ea580c" stroke-width="1.4" stroke-dasharray="3 6"/>
+          <path d="M135 124L230 141L316 159" fill="none" stroke="#ea580c" stroke-width="2"/>
+          <circle cx="135" cy="124" r="6" fill="#ea580c"/><circle cx="230" cy="141" r="7" fill="#ca581c"/><circle cx="316" cy="159" r="6" fill="#ea580c"/>
+          <rect x="24" y="12" width="166" height="38" rx="2" fill="#fff7ed"/><text x="40" y="36" fill="#ea580c" font-size="14">Des ventes passées</text>
+          <rect x="246" y="218" width="189" height="38" rx="2" fill="#f4d4bf"/><text x="262" y="243" fill="#132a22" font-size="14">Votre question, aujourd’hui</text>
         </svg>
         <figcaption>Schéma de la méthode · aucune mesure géographique représentée.</figcaption>
       </figure>
@@ -922,7 +922,7 @@ import {buildLocalReading, getLocalQuestions, localImpact, localContinuation, lo
   const gaugePos = (delta: number) => Math.max(4, Math.min(96, ((delta + 10) / 20) * 100));
 
   function iconeTendance(dir: string) {
-    if (dir === 'hausse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#243CFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17L11 10l4 4 6-6"/><path d="M15 8h6v6"/></svg>';
+    if (dir === 'hausse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17L11 10l4 4 6-6"/><path d="M15 8h6v6"/></svg>';
     if (dir === 'baisse') return '<svg viewBox="0 0 24 24" fill="none" stroke="#58615B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l7 7 4-4 6 6"/><path d="M15 16h6v-6"/></svg>';
     return '<svg viewBox="0 0 24 24" fill="none" stroke="#58615B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="M16 8l4 4-4 4"/></svg>';
   }
