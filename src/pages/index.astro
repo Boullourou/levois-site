@@ -1,7 +1,8 @@
 ---
 import { site } from '../config/site';
 import Analytics from '../components/Analytics.astro';
-import '../styles/home-luxury.css';
+// Keep this page's small stylesheet in the HTML to avoid a blocking network request.
+import homeStyles from '../styles/home-luxury.css?inline';
 
 const title = 'LEVOIS · Aide à la décision immobilière · Chartres Métropole';
 const description = "Mettez votre projet immobilier au clair avant de vous engager. Outils d'aide à la décision et accompagnement local indépendant à Chartres, Lèves et son agglomération. Sans pression commerciale.";
@@ -25,6 +26,7 @@ const navigation = [
     <link rel="canonical" href={site.url + '/'} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href="/fonts/plus-jakarta-sans-latin-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={homeStyles}></style>
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={site.url + '/assets/levois-partage.jpg'} />

@@ -95,6 +95,8 @@ components:
 
 Portée : route `/` uniquement. Sources visuelles : `src/pages/index.astro` et `src/styles/home-luxury.css`. Les autres surfaces V7, le `DESIGN.md` historique et le sidecar global restent inchangés. `design.json`, dans ce dossier, complète uniquement cette référence locale.
 
+La feuille de style de l'accueil est intégrée au HTML généré, via l'import Vite `?inline`, pour supprimer une requête bloquant le premier affichage. Son fichier source reste séparé pour la maintenance.
+
 ## Overview
 
 **Creative North Star: "La clarté avant l'engagement"**
