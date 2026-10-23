@@ -5,41 +5,32 @@ const { flush = false } = Astro.props;
 ---
 <footer class:list={['v7-footer', { 'v7-footer--flush': flush }]}>
   <div class="v7-footer-inner">
-    <div class="v7-footer-top">
-      <a class="v7-logo" href="/">LEVOIS.FR</a>
-      <p>Comprendre. Puis décider.<br /><span>Immobilier à Lèves, Chartres et alentours.</span></p>
-      <a class="v7-footer-contact" href="/contact">Écrire à Mouaad <span aria-hidden="true">↗</span></a>
-    </div>
+    {!flush && (
+      <div class="v7-footer-top">
+        <a class="v7-logo" href="/">LEVOIS</a>
+        <p>Aide à la décision immobilière.<br /><span>Chartres & Agglomération (Lèves).</span></p>
+        <a class="v7-footer-contact" href="/contact">Écrire à Mouaad <span aria-hidden="true">↗</span></a>
+      </div>
+    )}
     <nav class="v7-footer-links" aria-label="Navigation de pied de page">
-      <a href="/ma-recherche">Acheter</a><a href="/situer-ma-vente">Vendre</a>
-      <a href="/vendre-et-acheter">Vendre et acheter</a><a href="/lecture">Ma lecture</a><a href="/reprendre">Reprendre un projet</a><a href="/votre-rue">Repères locaux</a><a href="/carte">La carte de Mouaad</a>
-      <a href="/ressources">Ressources</a><a href="/methode">La méthode</a>
-      <a href="/audit-annonce">Audit annonce</a><a href="/accompagnement">Accompagnement</a>
-      <a href="/recommander">Recommander</a><a href="/rejoindre">Découvrir le métier</a>
+      <a href="/ma-recherche">Acheter</a>
+      <a href="/situer-ma-vente">Vendre</a>
+      <a href="/vendre-et-acheter">Vendre et acheter</a>
+      <a href="/votre-rue">Repères locaux (DVF)</a>
+      <a href="/carte">La carte de Mouaad</a>
+      <a href="/ressources">Ressources en libre accès</a>
+      <a href="/methode">La méthode</a>
+      <a href="/accompagnement">Accompagnement</a>
     </nav>
     <div class="v7-footer-bottom">
-      <p>Mouaad Boullourou · Conseiller immobilier indépendant SAFTI<br /><a href={`mailto:${site.email}`}>{site.email}</a> · <a href={`tel:${site.phone}`}>{site.phoneDisplay}</a></p>
-      <nav aria-label="Informations et préférences">
-        <a href="/mentions-legales">Mentions légales</a><a href="/confidentialite">Confidentialité</a>
-        <button type="button" data-analytics-settings>Mes choix de confidentialité</button>
-        <a href="https://www.safti.fr/bareme">Honoraires SAFTI</a>
-        <button id="mo" type="button" aria-pressed="false">Réduire les animations</button>
+      <p>Mouaad Boullourou · Conseiller immobilier indépendant SAFTI (RSAC Chartres)<br /><a href={`tel:${site.phone}`}>{site.phoneDisplay}</a> · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+      <nav aria-label="Informations légales et confidentialité">
+        <a href="/mentions-legales">Mentions légales</a>
+        <a href="/confidentialite">Confidentialité</a>
+        <button type="button" data-analytics-settings>Choix de confidentialité</button>
+        <a href="https://www.safti.fr/bareme" target="_blank" rel="noopener noreferrer">Barème SAFTI</a>
       </nav>
     </div>
-    <p class="v7-copyright">© {new Date().getFullYear()} LEVOIS · Vous gardez la décision.</p>
+    <p class="v7-copyright">© {new Date().getFullYear()} LEVOIS · Zéro appel automatique · Vous gardez la décision.</p>
   </div>
 </footer>
-<script>
-  if (!document.querySelector('.v7-home')) {
-    const button = document.querySelector<HTMLButtonElement>('#mo');
-    const preference = matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = (reduced: boolean) => {
-      document.documentElement.classList.toggle('mo', reduced);
-      button?.setAttribute('aria-pressed', String(reduced));
-      if (button) button.textContent = reduced ? 'Activer les animations' : 'Réduire les animations';
-    };
-    button?.addEventListener('click', () => apply(button.getAttribute('aria-pressed') !== 'true'));
-    preference.addEventListener('change', e => apply(e.matches));
-    apply(preference.matches);
-  }
-</script>

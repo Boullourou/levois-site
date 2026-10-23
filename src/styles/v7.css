@@ -1,6 +1,6 @@
 @import './v7-fonts.css';
 /* Identité partagée issue de l’accueil V7 approuvé. */
-:root { --v7-ink:#102635; --v7-paper:#f6f0e3; --v7-orange:#ff5b22; --v7-rust:#a9330d; --v7-muted:#475961; --v7-line:#d6cbb6; --site-header-h:76px; }
+:root { --v7-ink:#132a22; --v7-paper:#FAF9F6; --v7-orange:#ea580c; --v7-rust:#c2410c; --v7-muted:#475961; --v7-line:#d6cbb6; --site-header-h:76px; }
 html { scroll-padding-top:96px; }
 body.levois-v7 { background:var(--v7-paper); color:var(--v7-ink); font-family:'LEVOIS Text',Arial,sans-serif; font-size:17px; line-height:1.6; }
 .levois-v7 ::selection { background:var(--v7-orange); color:var(--v7-ink); }
@@ -38,7 +38,7 @@ body.levois-v7 { background:var(--v7-paper); color:var(--v7-ink); font-family:'L
 .v7-inner .url-hero h1 { line-height:1.04; }
 .v7-inner .rounded-card { border-radius:26px; }
 #bar { position:fixed; inset:0 0 auto; height:3px; z-index:80; background:var(--v7-orange); transform:scaleX(0); transform-origin:0; }
-.v7-header { position:sticky; top:0; z-index:70; background:var(--v7-paper); color:var(--v7-ink); border-bottom:1px solid #10263518; }
+.v7-header { position:sticky; top:0; z-index:70; background:var(--v7-paper); color:var(--v7-ink); border-bottom:1px solid #132a2218; }
 .v7-header--home { position:fixed; left:0; right:0; background:transparent; border:0; color:var(--v7-paper); }
 .v7-header.s,.v7-header.menu-open { background:rgba(246,240,227,.97); color:var(--v7-ink); backdrop-filter:blur(14px); }
 .v7-nav-wrap { width:min(1320px,calc(100% - 48px)); min-height:76px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:28px; }
@@ -53,12 +53,12 @@ body.levois-v7 { background:var(--v7-paper); color:var(--v7-ink); font-family:'L
 .v7-footer { margin-top:64px; background:var(--v7-orange); color:var(--v7-ink); border-radius:56px 56px 0 0; padding:58px 0 30px; }
 .v7-footer--flush { margin-top:0; border-radius:0; }
 .v7-footer-inner { width:min(1320px,calc(100% - 48px)); margin:auto; }
-.v7-footer-top { display:flex; justify-content:space-between; align-items:center; gap:30px; padding-bottom:38px; border-bottom:1px solid #10263550; }
+.v7-footer-top { display:flex; justify-content:space-between; align-items:center; gap:30px; padding-bottom:38px; border-bottom:1px solid #132a2250; }
 .v7-footer-top p { margin:0; font-size:20px; }.v7-footer-top p span { font-size:15px; }
 .v7-footer-contact { padding:14px 24px; background:var(--v7-ink); color:var(--v7-paper); border-radius:99px; text-decoration:none; white-space:nowrap; }
 .v7-footer-links { display:flex; flex-wrap:wrap; gap:12px 30px; padding:30px 0; }
 .v7-footer a,.v7-footer button { text-underline-offset:4px; }
-.v7-footer-bottom { border-top:1px solid #10263550; padding-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:14px; }
+.v7-footer-bottom { border-top:1px solid #132a2250; padding-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:14px; }
 .v7-footer-bottom p { margin:0; }.v7-footer-bottom nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:12px 22px; align-content:start; }
 .v7-footer-bottom button { text-decoration:underline; cursor:pointer; }
 .v7-copyright { font-size:13px; margin-top:24px; }
@@ -68,7 +68,7 @@ html.mo .fade-up { opacity:1!important; transform:none!important; }
  .v7-nav-wrap { gap:16px; }.v7-logo { margin-right:auto; }
  .v7-menu-toggle { display:flex; align-items:center; gap:12px; padding:10px 12px; min-height:44px; border:1px solid currentColor; border-radius:99px; font-size:15px; cursor:pointer; }
  .v7-menu-toggle span { font-size:21px; line-height:1; }.menu-open .v7-menu-toggle span { transform:rotate(45deg); }
- .v7-nav { display:none; position:absolute; left:0; right:0; top:76px; padding:20px 24px 28px; background:var(--v7-paper); color:var(--v7-ink); border-bottom:1px solid var(--v7-line); box-shadow:0 14px 24px #10263515; }
+ .v7-nav { display:none; position:absolute; left:0; right:0; top:76px; padding:20px 24px 28px; background:var(--v7-paper); color:var(--v7-ink); border-bottom:1px solid var(--v7-line); box-shadow:0 14px 24px #132a2215; }
  .menu-open .v7-nav { display:grid; gap:5px; }.v7-nav a { width:max-content; }
 }
 @media(max-width:600px) {
