@@ -1,0 +1,262 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-23T20:35:03.006Z",
+  "title": "Design System: LEVOIS — accueil",
+  "extensions": {
+    "scope": {
+      "routes": [
+        "/"
+      ],
+      "sources": [
+        "src/pages/index.astro",
+        "src/styles/home-luxury.css"
+      ],
+      "description": "Référence locale de l'accueil ; autres surfaces V7, DESIGN.md historique et sidecar global inchangés."
+    },
+    "colorMeta": {
+      "vert-fond": {
+        "role": "primary",
+        "displayName": "Forêt sombre"
+      },
+      "vert-principal": {
+        "role": "primary",
+        "displayName": "Forêt"
+      },
+      "vert-doux": {
+        "role": "primary",
+        "displayName": "Vert des catégories"
+      },
+      "orange-safti": {
+        "role": "secondary",
+        "displayName": "Orange SAFTI"
+      },
+      "orange-hover": {
+        "role": "secondary",
+        "displayName": "Orange des actions et du focus"
+      },
+      "orange-subtil": {
+        "role": "secondary",
+        "displayName": "Fond orange du badge"
+      },
+      "orange-action-hover": {
+        "role": "secondary",
+        "displayName": "Orange au survol du contact"
+      },
+      "fond-page": {
+        "role": "neutral",
+        "displayName": "Lin"
+      },
+      "fond-carte": {
+        "role": "neutral",
+        "displayName": "Blanc des cartes"
+      },
+      "texte-fonce": {
+        "role": "neutral",
+        "displayName": "Texte principal"
+      },
+      "texte-moyen": {
+        "role": "neutral",
+        "displayName": "Descriptions"
+      },
+      "texte-leger": {
+        "role": "neutral",
+        "displayName": "Mentions secondaires"
+      },
+      "texte-footer": {
+        "role": "neutral",
+        "displayName": "Texte du pied de page"
+      },
+      "bordure-douce": {
+        "role": "neutral",
+        "displayName": "Bordures claires"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Promesse",
+        "purpose": "Titre principal centré, sur 880 px maximum."
+      },
+      "headline": {
+        "displayName": "Section",
+        "purpose": "Titre des outils ; 28 px à 768 px et moins."
+      },
+      "title": {
+        "displayName": "Projet",
+        "purpose": "Titres des trois cartes d'entrée."
+      },
+      "body": {
+        "displayName": "Lecture",
+        "purpose": "Famille et hauteur de ligne générales ; tailles adaptées par composant."
+      },
+      "label": {
+        "displayName": "Catégorie",
+        "purpose": "Catégories de projet et badge en capitales."
+      }
+    },
+    "shadows": [
+      {
+        "name": "ombre-carte",
+        "value": "0 10px 25px -5px rgb(30 58 47 / 5%), 0 8px 10px -6px rgb(30 58 47 / 3%)",
+        "purpose": "Cartes de projet au repos."
+      },
+      {
+        "name": "ombre-flottante",
+        "value": "0 20px 35px -10px rgb(30 58 47 / 12%)",
+        "purpose": "Cartes survolées, menu mobile et fenêtre de confidentialité."
+      }
+    ],
+    "motion": [
+      {
+        "name": "couleur",
+        "value": ".2s",
+        "purpose": "Couleurs des liens, boutons et bordures des outils."
+      },
+      {
+        "name": "carte",
+        "value": ".3s",
+        "purpose": "Déplacement, ombre, bordure et barre supérieure des cartes de projet."
+      },
+      {
+        "name": "carte-easing",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Déplacement vertical de -6 px au survol."
+      },
+      {
+        "name": "mouvement-reduit",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Transitions et animations désactivées ; aucun déplacement des cartes."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "menu-natif",
+        "value": "1040px",
+        "condition": "max-width",
+        "purpose": "Navigation horizontale remplacée par details."
+      },
+      {
+        "name": "biographie-compacte",
+        "value": "900px",
+        "condition": "max-width",
+        "purpose": "Portrait 220 px, marge intérieure 32 px et espacement 28 px."
+      },
+      {
+        "name": "une-colonne",
+        "value": "768px",
+        "condition": "max-width",
+        "purpose": "Biographie et pied de page sur une colonne ; espacements réduits."
+      },
+      {
+        "name": "contact-dans-menu",
+        "value": "620px",
+        "condition": "max-width",
+        "purpose": "CTA d'en-tête masqué ; actions de la biographie sur toute la largeur."
+      },
+      {
+        "name": "petit-ecran",
+        "value": "359px",
+        "condition": "max-width",
+        "purpose": "Marges intérieures et textes de marque ajustés."
+      }
+    ],
+    "accessibility": {
+      "focus": "3px solid var(--orange-hover), outline-offset: 5px ; blanc dans le pied de page.",
+      "navigation": "Lien d'évitement, main focalisable, liens natifs et menu details utilisables sans JavaScript.",
+      "targets": "En-tête et confidentialité : 44 px minimum ; liens du menu mobile : 46 px ; actions de biographie : 48 px.",
+      "analytics": "Désactivée avant accord explicite valide ; DNT/GPC respectés ; choix valable 180 jours. SDK à la demande, sans autocapture ni enregistrement de session. Bouton de préférences masqué sans JavaScript."
+    },
+    "assets": [
+      {
+        "path": "/fonts/plus-jakarta-sans-latin-variable.woff2",
+        "bytes": 27348,
+        "purpose": "Police locale variable 400–800, préchargée, font-display swap."
+      },
+      {
+        "path": "/v7/asset-07.webp",
+        "purpose": "Portrait existant de Mouaad, recadré en 4:5, loading lazy et decoding async."
+      }
+    ],
+    "finish": {
+      "disposition": "ship",
+      "materialFixes": "Aucune correction matérielle demandée par la revue indépendante.",
+      "fidelity": "Match de la composition, de la palette et de la typographie prescrites ; adaptations pour routes existantes, mobile, clavier, consentement et police locale."
+    }
+  },
+  "components": [
+    {
+      "name": "Contact",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Lien de contact dans la biographie, hauteur minimale 48 px.",
+      "html": "<a class=\"ds-contact\" href=\"/contact/\">Poser une question directe</a>",
+      "css": ".ds-contact{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:14px 24px;border-radius:8px;background:var(--orange-hover,#c2410c);color:#fff;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:700;text-align:center;text-decoration:none;transition:background .2s,border-color .2s}.ds-contact:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}@media(hover:hover){.ds-contact:hover{background:#9a3412}}@media(prefers-reduced-motion:reduce){.ds-contact{transition:none!important;animation:none!important;transform:none!important}}"
+    },
+    {
+      "name": "Téléphone",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Lien secondaire de la biographie ; numéro fourni par la configuration du site.",
+      "html": "<a class=\"ds-secondary\" href=\"#telephone\">Numéro de téléphone</a>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:14px 22px;border:1px solid var(--bordure-douce,#e2e8f0);border-radius:8px;background:transparent;color:var(--texte-fonce,#0f172a);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;font-weight:700;text-align:center;text-decoration:none;transition:background .2s,border-color .2s}.ds-secondary:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}@media(hover:hover){.ds-secondary:hover{background:#fff;border-color:var(--texte-fonce,#0f172a)}}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none!important;animation:none!important;transform:none!important}}"
+    },
+    {
+      "name": "Contact d'en-tête",
+      "kind": "button",
+      "refersTo": "button-header",
+      "description": "CTA forêt, présent dans l'en-tête au-dessus de 620 px.",
+      "html": "<a class=\"ds-header-cta\" href=\"/contact/\">Échanger avec Mouaad</a>",
+      "css": ".ds-header-cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 18px;border-radius:8px;background:var(--vert-principal,#1e3a2f);color:#fff;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;font-weight:700;text-align:center;text-decoration:none;transition:background .2s}.ds-header-cta:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}@media(hover:hover){.ds-header-cta:hover{background:var(--vert-fond,#132a22)}}@media(prefers-reduced-motion:reduce){.ds-header-cta{transition:none!important;animation:none!important;transform:none!important}}"
+    },
+    {
+      "name": "Badge de promesse",
+      "kind": "chip",
+      "refersTo": "hero-badge",
+      "description": "Information statique au-dessus du titre, sans état sélectionné.",
+      "html": "<div class=\"ds-badge\"><span aria-hidden=\"true\">✦</span> Sans engagement · Sans coordonnées obligatoires</div>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;padding:6px 14px;border:1px solid rgb(234 88 12 / 20%);border-radius:100px;background:var(--orange-subtil,#fff7ed);color:var(--orange-hover,#c2410c);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}.ds-badge>span{flex-shrink:0}@media(max-width:620px){.ds-badge{font-size:11px;border-radius:16px}}"
+    },
+    {
+      "name": "Carte de projet",
+      "kind": "card",
+      "refersTo": "project-card",
+      "description": "Lien complet ; même construction pour achat, vente et double projet.",
+      "html": "<a class=\"ds-project\" href=\"/ma-recherche/\"><div><span class=\"ds-project-tag\">Acquéreurs</span><h2>Clarifier ma recherche d’achat</h2><p>Partez de votre vie quotidienne avant les filtres techniques pour éviter le piège de la maison idéale au mauvais endroit.</p></div><span class=\"ds-project-action\">Lancer l’outil d’analyse <span aria-hidden=\"true\">→</span></span></a>",
+      "css": ".ds-project{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-width:0;overflow:hidden;padding:32px 28px;border:1px solid var(--bordure-douce,#e2e8f0);border-radius:16px;background:var(--fond-carte,#fff);color:var(--texte-fonce,#0f172a);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;text-align:left;text-decoration:none;box-shadow:var(--ombre-carte,0 10px 25px -5px rgb(30 58 47 / 5%),0 8px 10px -6px rgb(30 58 47 / 3%));transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s,border-color .3s}.ds-project::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--vert-principal,#1e3a2f);opacity:0;transition:opacity .3s ease}.ds-project-tag{display:block;margin-bottom:12px;color:var(--vert-doux,#2d5a49);font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}.ds-project h2{margin:0 0 12px;font-size:20px;font-weight:700;line-height:1.3}.ds-project p{margin:0 0 24px;color:var(--texte-moyen,#475569);font-size:14px;line-height:1.5}.ds-project-action{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;color:var(--orange-hover,#c2410c);font-size:14px;font-weight:700}.ds-project:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}@media(hover:hover){.ds-project:hover{transform:translateY(-6px);box-shadow:var(--ombre-flottante,0 20px 35px -10px rgb(30 58 47 / 12%));border-color:rgb(30 58 47 / 20%)}.ds-project:hover::before{opacity:1}}@media(max-width:768px){.ds-project{padding:28px 24px}}@media(max-width:359px){.ds-project{padding:24px 20px}}@media(prefers-reduced-motion:reduce){.ds-project,.ds-project::before,.ds-project:hover{transition:none!important;animation:none!important;transform:none!important}}"
+    },
+    {
+      "name": "Carte d'outil",
+      "kind": "card",
+      "refersTo": "tool-card",
+      "description": "Lien complet à bordure orange sombre au survol.",
+      "html": "<a class=\"ds-tool\" href=\"/votre-rue/\"><span class=\"ds-tool-number\">02 · Données</span><h3>Les ventes réelles dans votre rue</h3><p>Consultez l’historique DVF des vrais prix signés autour de chez vous, avec leurs limites méthodologiques expliquées.</p></a>",
+      "css": ".ds-tool{display:block;min-width:0;padding:24px;border:1px solid var(--bordure-douce,#e2e8f0);border-radius:12px;background:#fff;color:var(--texte-fonce,#0f172a);font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;text-decoration:none;transition:border-color .2s}.ds-tool-number{display:inline-block;margin-bottom:12px;padding:2px 8px;border-radius:4px;background:var(--vert-principal,#1e3a2f);color:#fff;font-size:11px;font-weight:800}.ds-tool h3{margin:0 0 8px;font-size:17px;font-weight:700;line-height:1.5}.ds-tool p{margin:0;color:var(--texte-moyen,#475569);font-size:13px;line-height:1.5}.ds-tool:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}@media(hover:hover){.ds-tool:hover{border-color:var(--orange-hover,#c2410c)}}@media(prefers-reduced-motion:reduce){.ds-tool{transition:none!important;animation:none!important;transform:none!important}}"
+    },
+    {
+      "name": "Navigation native",
+      "kind": "nav",
+      "description": "Liens horizontaux au-dessus de 1040 px ; menu details natif en dessous.",
+      "html": "<div class=\"ds-navigation\"><nav class=\"ds-nav\" aria-label=\"Navigation principale\"><a href=\"/ma-recherche/\">Acheter</a><a href=\"/situer-ma-vente/\">Vendre</a><a href=\"/vendre-et-acheter/\">Les deux</a><a href=\"/votre-rue/\">Ventes dans ma rue</a><a href=\"/ressources/\">Ressources</a></nav><details class=\"ds-menu\"><summary>Menu <span aria-hidden=\"true\">+</span></summary><nav aria-label=\"Navigation mobile\"><a href=\"/ma-recherche/\">Acheter</a><a href=\"/situer-ma-vente/\">Vendre</a><a href=\"/vendre-et-acheter/\">Les deux</a><a href=\"/votre-rue/\">Ventes dans ma rue</a><a href=\"/ressources/\">Ressources</a><a href=\"/reprendre/\">Reprendre ma lecture</a><a href=\"/contact/\">Échanger avec Mouaad</a></nav></details></div>",
+      "css": ".ds-navigation{position:relative;font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif}.ds-nav{display:flex;align-items:center;gap:24px}.ds-nav a{display:inline-flex;align-items:center;min-height:44px;color:var(--texte-moyen,#475569);font-size:13px;font-weight:600;text-decoration:none;transition:color .2s ease}.ds-menu{display:none}.ds-menu summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:8px 12px;border:1px solid var(--bordure-douce,#e2e8f0);border-radius:8px;color:var(--vert-principal,#1e3a2f);font-size:14px;font-weight:700;cursor:pointer;list-style:none}.ds-menu summary::-webkit-details-marker{display:none}.ds-menu summary span{font-size:20px;line-height:1}.ds-menu[open] summary span{transform:rotate(45deg)}.ds-menu nav{position:absolute;right:0;top:calc(100% + 8px);width:min(340px,calc(100vw - 48px));max-height:calc(100dvh - 100px);overflow-y:auto;padding:12px;border:1px solid var(--bordure-douce,#e2e8f0);border-radius:12px;background:var(--fond-carte,#fff);box-shadow:var(--ombre-flottante,0 20px 35px -10px rgb(30 58 47 / 12%))}.ds-menu nav a{display:flex;align-items:center;min-height:46px;padding:10px 12px;border-radius:6px;color:var(--vert-principal,#1e3a2f);font-size:14px;font-weight:600;text-decoration:none}.ds-menu nav a:last-child{margin-top:6px;background:var(--vert-principal,#1e3a2f);color:#fff}.ds-navigation a:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}.ds-menu summary:focus-visible{outline:3px solid var(--orange-hover,#c2410c);outline-offset:5px}@media(hover:hover){.ds-nav a:hover{color:var(--vert-principal,#1e3a2f)}.ds-menu nav a:not(:last-child):hover{background:var(--fond-page,#faf9f6)}}@media(max-width:1040px){.ds-nav{display:none}.ds-menu{display:block}}@media(prefers-reduced-motion:reduce){.ds-nav a{transition:none!important;animation:none!important;transform:none!important}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La clarté avant l'engagement",
+    "overview": "L'accueil traduit le HTML prescrit par l'utilisateur : forêt, orange SAFTI, fond lin et Plus Jakarta Sans. La promesse est centrée, puis les trois cartes achat, vente et double projet donnent accès aux parcours. Les outils précèdent la présentation de Mouaad. Le ton reste direct, calme et sans pression, conformément à `PRODUCT.md`.",
+    "keyCharacteristics": [
+      "Trois cartes de même traitement visuel pour les trois projets.",
+      "Surfaces claires, titres forêt et orange réservé aux accents et actions.",
+      "Portrait existant de Mouaad, navigation native et profondeur discrète."
+    ],
+    "rules": [],
+    "dos": [
+      "**Do** conserver les trois cartes de projet comme liens complets et de même traitement visuel.",
+      "**Do** conserver la palette forêt/orange/lin, Plus Jakarta Sans locale et le portrait existant sur cet accueil.",
+      "**Do** préserver les liens natifs, le focus visible et la préférence de mouvement réduit."
+    ],
+    "donts": [
+      "**Don't** étendre cette référence locale aux autres surfaces V7 sans décision distincte.",
+      "**Don't** conditionner la navigation ou la lecture de l'accueil au JavaScript ou à la mesure d'audience.",
+      "**Don't** activer la mesure d'audience avant l'accord explicite valide."
+    ]
+  }
+}
