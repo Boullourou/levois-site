@@ -3,64 +3,37 @@ import { site } from '../config/site';
 interface Props { transparent?: boolean; homeV2?: boolean }
 const { transparent = false } = Astro.props;
 const links = [
-  { href: '/situer-ma-vente', label: 'Vendre' },
-  { href: '/ma-recherche', label: 'Acheter' },
-  { href: '/votre-rue', label: 'Ventes notariées (DVF)' },
-  { href: '/ressources', label: 'Diagnostics' },
-  { href: '/#methode', label: 'Méthode' },
-  { href: '/#mouaad', label: 'Mouaad' },
+  { href: '/#projet', label: 'Votre projet' },
+  { href: '/votre-rue', label: 'Votre quartier' },
+  { href: '/ressources', label: 'Pour avancer' },
+  { href: '/methode', label: 'La méthode' },
+  { href: '/mouaad', label: 'Mouaad' },
 ];
 ---
 <div id="bar" aria-hidden="true"></div>
-<header id="hd" class="apple-header">
-  <div class="apple-nav-wrap">
-    <a class="apple-logo" href="/" aria-label="LEVOIS, accueil">
-      <span class="brand-text">LEVOIS</span>
-      <span class="brand-dot">.</span>
-    </a>
-
-    <nav class="apple-nav" id="v7-nav" aria-label="Navigation principale">
-      {links.map(link => (
-        <a href={link.href} class="nav-link">{link.label}</a>
-      ))}
+<header id="hd" class="v7-header">
+  <div class="v7-nav-wrap">
+    <a class="v7-logo" href="/" aria-label="LEVOIS, accueil">LEVOIS<span>.FR</span></a>
+    <button class="v7-menu-toggle" type="button" aria-expanded="false" aria-controls="v7-nav">Menu <span aria-hidden="true">+</span></button>
+    <nav class="v7-nav" id="v7-nav" aria-label="Navigation principale">
+      {links.map(link => <a href={link.href} aria-current={Astro.url.pathname.replace(/\/$/, '') === link.href ? 'page' : undefined}>{link.label}</a>)}
     </nav>
-
-    <div class="apple-actions">
-      <a class="apple-call-btn" href={`tel:${site.phone}`}>
-        <span>Appeler Mouaad</span>
-      </a>
-      <button class="v7-menu-toggle apple-menu-btn" type="button" aria-expanded="false" aria-controls="v7-nav" aria-label="Ouvrir le menu">
-        <span>Menu</span>
-      </button>
-    </div>
+    <a class="v7-call" href={`tel:${site.phone}`}>Appeler</a>
   </div>
 </header>
-
 <script>
   const button = document.querySelector<HTMLButtonElement>('.v7-menu-toggle');
   const nav = document.querySelector<HTMLElement>('#v7-nav');
   const header = document.querySelector<HTMLElement>('#hd');
   if (button && nav && header) {
-    const close = () => { 
-      button.setAttribute('aria-expanded', 'false'); 
-      header.classList.remove('menu-open'); 
-    };
+    const close = () => { button.setAttribute('aria-expanded', 'false'); header.classList.remove('menu-open'); };
     button.addEventListener('click', () => {
       const open = button.getAttribute('aria-expanded') !== 'true';
-      button.setAttribute('aria-expanded', String(open)); 
-      header.classList.toggle('menu-open', open);
+      button.setAttribute('aria-expanded', String(open)); header.classList.toggle('menu-open', open);
     });
-    nav.addEventListener('click', event => { 
-      if ((event.target as HTMLElement).closest('a')) close(); 
-    });
-    document.addEventListener('keydown', event => { 
-      if (event.key === 'Escape' && header.classList.contains('menu-open')) { 
-        close(); 
-        button.focus(); 
-      } 
-    });
-    document.addEventListener('click', event => { 
-      if (!header.contains(event.target as Node)) close(); 
-    });
+    nav.addEventListener('click', event => { if ((event.target as HTMLElement).closest('a')) close(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && header.classList.contains('menu-open')) { close(); button.focus(); } });
+    document.addEventListener('click', event => { if (!header.contains(event.target as Node)) close(); });
+    matchMedia('(min-width: 1041px)').addEventListener('change', event => { if (event.matches) close(); });
   }
 </script>

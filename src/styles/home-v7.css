@@ -1,729 +1,420 @@
-/* ==========================================================================
-   LEVOIS · EXPERIENCE ULTRA-MODERNE TYPE APPLE / NIKE
-   ========================================================================== */
-
-:root {
+.v7-home {
   --ink: #132a22;
-  --ink-light: #3a5247;
+  --ink-light: #2d4a3e;
   --pa: #FAF9F6;
   --or: #ea580c;
-  --or-hover: #c2410c;
-  --or-subtil: rgba(234, 88, 12, 0.1);
-  --white: #ffffff;
-  --border-glass: rgba(255, 255, 255, 0.18);
-  --border-light: rgba(19, 42, 34, 0.1);
-  --shadow-bento: 0 20px 40px -15px rgba(19, 42, 34, 0.06);
-  --shadow-cta: 0 10px 25px -5px rgba(234, 88, 12, 0.35);
-  --font-modern: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Plus Jakarta Sans", "Inter", "Helvetica Neue", sans-serif;
+  --ru: #c2410c;
+  --arch: 999px 999px 28px 28px;
 }
-
+.v7-home * { box-sizing: border-box; }
+.v7-home ::selection { background: var(--or); color: #fff; }
+html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
 .v7-home {
+  margin: 0;
   background: var(--pa);
   color: var(--ink);
-  font-family: var(--font-modern);
-  font-size: 16px;
-  line-height: 1.6;
+  font: 17px/1.6 "LEVOIS Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
-
-.v7-home * { box-sizing: border-box; }
+.v7-home h1, .v7-home h2, .v7-home h3, .v7-home p { margin: 0; }
+.v7-home h1, .v7-home h2, .v7-home h3, .v7-home .an {
+  font-family: "LEVOIS Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--ink);
+}
 .v7-home a { color: inherit; text-decoration: none; }
-.v7-home h1, .v7-home h2, .v7-home h3, .v7-home h4, .v7-home p { margin: 0; }
-.v7-home h1, .v7-home h2, .v7-home h3, .v7-home h4 {
-  font-family: var(--font-modern) !important;
-  font-weight: 800 !important;
-  text-transform: none !important;
-  letter-spacing: -0.03em !important;
+.v7-home button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+.v7-home :focus-visible { outline: 3px solid var(--or); outline-offset: 4px; }
+.v7-home .w { width: min(1280px, 100% - 48px); margin: auto; }
+
+/* PROGRESS BAR */
+.v7-home #bar {
+  position: fixed; top: 0; left: 0; height: 3px; width: 100%;
+  background: var(--or); transform: scaleX(0); transform-origin: 0; z-index: 60;
 }
 
-.v7-home .w { width: min(1200px, 100% - 40px); margin: auto; }
+/* HERO SECTION */
+.v7-home .hero {
+  padding-top: 100px;
+  padding-bottom: 40px;
+}
+.v7-home .hg {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 56px;
+  align-items: center;
+}
+.v7-home .ey {
+  font: 700 12px/1 "LEVOIS Display", sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--or);
+  margin-bottom: 16px;
+}
+.v7-home .hero h1 {
+  font-size: clamp(44px, 5.2vw, 76px);
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.v7-home .hero .ln { display: block; overflow: hidden; }
+.v7-home .hero .sub {
+  font-size: clamp(17px, 1.8vw, 20px);
+  line-height: 1.55;
+  color: var(--ink-light);
+  margin-bottom: 32px;
+  max-width: 580px;
+}
 
-/* HEADER APPLE GLASS */
-.apple-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: rgba(19, 42, 34, 0.75);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  transition: all .3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.apple-nav-wrap {
-  width: min(1280px, 100% - 40px);
-  height: 70px;
-  margin: auto;
+/* HERO ACTIONS */
+.v7-home .en {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-.apple-logo {
-  font-family: var(--font-modern);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-}
-.apple-logo .brand-text { color: #ffffff; }
-.apple-logo .brand-dot { color: var(--or); }
-
-.apple-nav {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-.apple-nav .nav-link {
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  transition: color .2s;
-  letter-spacing: -0.2px;
-}
-.apple-nav .nav-link:hover { color: #ffffff; }
-
-.apple-actions {
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 24px;
 }
-.apple-call-btn {
+.v7-home .pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 9px 18px;
-  background: var(--or);
-  color: #ffffff;
+  gap: 16px;
+  padding: 15px 26px;
   border-radius: 99px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-  transition: all .2s;
-  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
-}
-.apple-call-btn:hover {
-  background: var(--or-hover);
-  transform: translateY(-1px);
-}
-.apple-menu-btn {
-  display: none;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--or);
   color: #fff;
-  padding: 8px 14px;
-  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  transition: transform .2s, background .2s, box-shadow .2s;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.25);
+}
+.v7-home .pill:hover {
+  background: var(--ru);
+  transform: translateY(-2px);
+}
+.v7-home .pill.l {
+  background: #ffffff;
+  border: 1px solid rgba(19, 42, 34, 0.15);
+  color: var(--ink);
+  box-shadow: none;
+}
+.v7-home .pill.l:hover {
+  border-color: var(--ink);
+  background: var(--pa);
+}
+.v7-home .pill.k {
+  background: var(--ink);
+  color: #fff;
+  box-shadow: none;
+}
+.v7-home .pill.k:hover {
+  background: var(--or);
+}
+.v7-home .q {
   font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
+  color: var(--ink-light);
+  line-height: 1.6;
+}
+.v7-home .q a {
+  color: var(--or);
+  font-weight: 700;
+  margin-left: 6px;
+  text-decoration: underline;
 }
 
-/* ==========================================================================
-   HERO CINÉMATIQUE PLEIN ÉCRAN (APPLE / NIKE)
-   ========================================================================== */
-.apple-hero {
-  position: relative;
-  min-height: 92vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: 110px;
-  padding-bottom: 40px;
+/* HERO VISUAL CONTAINER WITH ARCH SHAPE (VIDÉO DE CHARTRES CADRÉE) */
+.v7-home .hi {
+  justify-self: end;
+  width: min(100%, 460px);
+  aspect-ratio: 3 / 4.2;
+  border-radius: var(--arch);
   overflow: hidden;
+  position: relative;
   background: var(--ink);
-  color: #ffffff;
+  box-shadow: 0 20px 40px -10px rgba(19, 42, 34, 0.2);
+  border: 1px solid rgba(19, 42, 34, 0.1);
 }
-.hero-video-bg {
+.v7-home .hi video {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-.hero-video-bg video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(19, 42, 34, 0.5) 0%,
-    rgba(19, 42, 34, 0.78) 55%,
-    #132a22 100%
-  );
-  z-index: 2;
-}
-.hero-content {
-  position: relative;
-  z-index: 3;
-  max-width: 840px;
-  margin-block: auto;
-}
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 14px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 99px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  color: #ffffff;
-  margin-bottom: 22px;
-}
-.hero-badge .badge-dot { color: var(--or); }
-.hero-title {
-  font-size: clamp(38px, 5.5vw, 68px);
-  line-height: 1.06;
-  color: #ffffff;
-  margin-bottom: 20px;
-  text-wrap: balance;
-}
-.hero-line { display: block; }
-.hero-lead {
-  font-size: clamp(16px, 1.9vw, 19px);
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 36px;
-  max-width: 620px;
-}
 
-/* APPLE GLASS CTA BOX */
-.hero-cta-box {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  max-width: 580px;
-  margin-bottom: 26px;
-}
-.cta-primary-glass {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 24px;
-  background: var(--or);
-  color: #ffffff;
-  border-radius: 12px;
-  box-shadow: var(--shadow-cta);
-  transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cta-primary-glass:hover {
-  background: var(--or-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 14px 30px -5px rgba(234, 88, 12, 0.45);
-}
-.cta-primary-glass .cta-eyebrow {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 2px;
-}
-.cta-primary-glass .cta-label {
-  font-size: 15px;
-  font-weight: 700;
-  color: #ffffff;
-}
-.cta-primary-glass .cta-arrow {
-  font-size: 20px;
-  font-weight: 400;
-  transition: transform .2s;
-}
-.cta-primary-glass:hover .cta-arrow {
-  transform: translateX(4px);
-}
-
-.hero-cta-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-.cta-secondary-glass {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 12px;
-  color: #ffffff;
-  transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cta-secondary-glass:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: translateY(-2px);
-}
-.cta-secondary-glass .cta-eyebrow {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: rgba(255, 255, 255, 0.65);
-  margin-bottom: 2px;
-}
-.cta-secondary-glass .cta-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #ffffff;
-}
-.cta-secondary-glass .cta-arrow {
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.6);
-  transition: transform .2s;
-}
-.cta-secondary-glass:hover .cta-arrow {
-  transform: translateX(3px);
-  color: #ffffff;
-}
-
-.hero-trust {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-.trust-pill {
-  color: var(--or);
-  font-weight: 700;
-}
-.trust-sep { opacity: 0.4; }
-.trust-link {
-  color: #ffffff;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* TERRITORY STRIP */
-.territory-strip {
-  position: relative;
-  z-index: 3;
+/* MARQUEE COMMUNE STRIP */
+.v7-home .mq {
   overflow: hidden;
-  border-block: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 14px 0;
+  border-block: 1px solid rgba(19, 42, 34, 0.12);
+  padding: 16px 0;
   margin-top: 50px;
-  background: rgba(19, 42, 34, 0.6);
-  backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.6);
 }
-.territory-scroll {
-  display: flex;
-  gap: 28px;
-  white-space: nowrap;
-  animation: mq 32s linear infinite;
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
+.v7-home .mq div {
+  display: flex; gap: 28px; white-space: nowrap; animation: mq 32s linear infinite;
+  font-size: 13px; font-weight: 700; color: var(--ink-light); text-transform: uppercase;
+  letter-spacing: .08em;
 }
-.territory-scroll i { font-style: normal; color: var(--or); }
+.v7-home .mq i { font-style: normal; color: var(--or); }
 @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* ==========================================================================
-   SECTION 2 : DVF & PREUVE LOCALE
-   ========================================================================== */
-.dvf-section {
+/* SECTION 2 : LOCAL REALITY DVF */
+.v7-home .lo {
   background: var(--ink);
-  color: #ffffff;
-  padding: 90px 0;
+  color: #fff;
+  padding: 85px 0;
+  margin-block: 50px;
 }
-.dvf-grid {
+.v7-home .st {
+  width: min(1280px, 100% - 48px);
+  margin: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 56px;
   align-items: center;
 }
-.dvf-visual {
+.v7-home .vw {
   position: relative;
+  aspect-ratio: 16 / 10;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
 }
-.dvf-visual img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.v7-home .vw img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
-.dvf-floating-badge {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: rgba(19, 42, 34, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 12px 18px;
+.v7-home .lt h2 {
+  color: #fff;
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1.1;
+  margin-bottom: 20px;
 }
-.dvf-floating-badge .badge-icon { font-size: 20px; }
-.dvf-floating-badge b { display: block; font-size: 14px; color: #fff; }
-.dvf-floating-badge p { font-size: 12px; color: rgba(255, 255, 255, 0.75); margin: 0; }
-
-.sec-eyebrow {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--or);
-  margin-bottom: 12px;
-}
-.sec-title {
-  font-size: clamp(32px, 3.8vw, 48px);
-  line-height: 1.15;
-  margin-bottom: 18px;
-  color: inherit;
-}
-.sec-desc {
+.v7-home .lt p {
   font-size: 16px;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 30px;
-  max-width: 520px;
+  margin-bottom: 28px;
 }
-.btn-orange-solid {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 26px;
-  background: var(--or);
-  color: #ffffff;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  box-shadow: var(--shadow-cta);
-  transition: all .2s;
-}
-.btn-orange-solid:hover {
-  background: var(--or-hover);
-  transform: translateY(-2px);
-}
-.dvf-details {
+.v7-home .lt details {
   margin-top: 24px;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.65);
   line-height: 1.5;
 }
-.dvf-details summary {
+.v7-home .lt summary {
   cursor: pointer;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 6px;
 }
 
-/* ==========================================================================
-   SECTION 3 : BENTO GRID DES 3 DIAGNOSTICS (APPLE GRADE)
-   ========================================================================== */
-.diag-section {
-  padding-block: 90px;
+/* SECTION 3 : 3 DIAGNOSTICS HVCO CARDS (V7 ORIGINAL CARDS) */
+.v7-home .sec {
+  padding-block: 60px 80px;
 }
-.diag-head {
-  max-width: 720px;
-  margin-bottom: 48px;
-}
-.diag-head .sec-title { color: var(--ink); }
-.diag-head .sec-desc { color: var(--ink-light); }
-
-.bento-grid {
+.v7-home .cd {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  margin-top: 40px;
 }
-.bento-card {
-  background: #ffffff;
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 36px 30px;
+.v7-home .c {
+  padding: 38px 30px;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-bento);
-  transition: all .25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform .25s, box-shadow .25s;
+  box-shadow: 0 10px 30px rgba(19, 42, 34, 0.05);
 }
-.bento-card:hover {
+.v7-home .c:hover {
   transform: translateY(-4px);
-  border-color: rgba(234, 88, 12, 0.35);
-  box-shadow: 0 24px 48px -12px rgba(19, 42, 34, 0.1);
+  box-shadow: 0 18px 40px rgba(19, 42, 34, 0.1);
 }
-.card-badge {
-  font-size: 11px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--or);
-  background: var(--or-subtil);
-  padding: 5px 12px;
-  border-radius: 99px;
-  display: inline-block;
-  align-self: flex-start;
-  margin-bottom: 20px;
+.v7-home .c1 {
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--arch);
 }
-.card-title {
-  font-size: 21px;
-  line-height: 1.3;
+.v7-home .c1 h3 { color: #fff; }
+.v7-home .c2 {
+  background: #e8e2d5;
   color: var(--ink);
-  margin-bottom: 14px;
+  border-radius: 28px 140px 28px 28px;
 }
-.card-text {
+.v7-home .c3 {
+  background: var(--or);
+  color: #fff;
+  border-radius: 28px 28px 140px 28px;
+}
+.v7-home .c3 h3 { color: #fff; }
+.v7-home .c .n {
+  font: 700 12px/1 "LEVOIS Display", sans-serif;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  opacity: 0.85;
+}
+.v7-home .c h3 {
+  font-size: clamp(24px, 2.5vw, 32px);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.v7-home .c .ar {
+  margin-top: auto;
   font-size: 14px;
-  line-height: 1.65;
-  color: var(--ink-light);
-  margin-bottom: 28px;
-  flex: 1;
-}
-.card-action-btn {
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
-  background: var(--pa);
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  font-size: 13px;
+  gap: 8px;
+}
+.v7-home .all {
+  margin-top: 36px;
+  text-align: right;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--ink);
-  transition: all .2s;
-  margin-top: auto;
+  color: var(--or);
 }
-.bento-card:hover .card-action-btn {
-  background: var(--or);
-  border-color: var(--or);
-  color: #ffffff;
-}
+.v7-home .all a:hover { text-decoration: underline; }
 
-/* ==========================================================================
-   SECTION 4 : LA MÉTHODE EN 5 PILIERS (NIKE / APPLE TIMELINE)
-   ========================================================================== */
-.method-section {
-  background: #ffffff;
-  border-top: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
-  padding-block: 90px;
+/* SECTION 4 : LA METHODE EN 5 PILIERS */
+.v7-home .me {
+  background: var(--pa);
+  border-top: 1px solid rgba(19, 42, 34, 0.1);
+  border-bottom: 1px solid rgba(19, 42, 34, 0.1);
+  padding: 90px 0;
 }
-.method-head {
+.v7-home .mh {
   max-width: 760px;
   margin-bottom: 48px;
 }
-.sec-eyebrow-light {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--or);
-  margin-bottom: 12px;
-}
-.sec-title-light {
-  font-size: clamp(32px, 3.8vw, 48px);
-  line-height: 1.15;
-  margin-bottom: 16px;
-  color: var(--ink);
-}
-.sec-desc-light {
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--ink-light);
-}
-
-.method-bento-grid {
+.v7-home .ms {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 20px;
+  gap: 24px;
+  border-top: 2px solid var(--ink);
+  padding-top: 36px;
+  margin: 0;
+  padding-left: 0;
 }
-.method-card {
-  background: var(--pa);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 26px 20px;
-  transition: transform .2s;
-}
-.method-card:hover { transform: translateY(-3px); }
-.method-index {
-  font-family: var(--font-modern);
-  font-size: 22px;
-  font-weight: 800;
+.v7-home .ms li { list-style: none; }
+.v7-home .ms b {
+  font: 700 24px/1 "LEVOIS Display", sans-serif;
   color: var(--or);
-  margin-bottom: 12px;
   display: block;
+  margin-bottom: 14px;
 }
-.method-title {
-  font-size: 16px;
-  font-weight: 800;
+.v7-home .ms h4 {
+  font: 600 18px/1.2 "LEVOIS Text", sans-serif;
   color: var(--ink);
   margin-bottom: 8px;
 }
-.method-desc {
-  font-size: 13px;
+.v7-home .ms p {
+  font-size: 14px;
   line-height: 1.55;
   color: var(--ink-light);
 }
 
-/* ==========================================================================
-   SECTION 5 : MOUAAD BOULLOUROU (PORTRAIT & CONTACT DIRECT)
-   ========================================================================== */
-.founder-section {
-  padding-block: 90px 110px;
+/* SECTION 5 : MOUAAD BOULLOUROU */
+.v7-home .ct {
+  padding-block: 85px 110px;
 }
-.founder-bento {
+.v7-home .cg {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 52px;
+  grid-template-columns: 320px 1fr;
+  gap: 56px;
   align-items: center;
-  background: #ffffff;
-  border: 1px solid var(--border-light);
+  background: #fff;
+  border: 1px solid rgba(19, 42, 34, 0.1);
   border-radius: 24px;
   padding: 48px;
-  box-shadow: var(--shadow-bento);
+  box-shadow: 0 10px 30px rgba(19, 42, 34, 0.04);
 }
-.founder-photo {
-  position: relative;
+.v7-home .pt {
   width: 100%;
   aspect-ratio: 4 / 5;
-  border-radius: 16px;
+  border-radius: 18px;
   overflow: hidden;
   background: var(--ink);
 }
-.founder-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.v7-home .pt img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
 }
-.founder-info .sec-title { color: var(--ink); }
-.founder-identity {
-  margin-bottom: 20px;
+.v7-home .ct h2 {
+  font-size: clamp(32px, 3.8vw, 48px);
+  margin-bottom: 8px;
 }
-.founder-name {
-  font-size: 18px;
-  font-weight: 800;
+.v7-home .who {
+  font-size: 17px;
+  font-weight: 700;
   color: var(--or);
-  display: block;
+  margin-bottom: 16px;
 }
-.founder-role {
+.v7-home .who span {
+  display: block;
   font-size: 13px;
   font-weight: 600;
   color: var(--ink-light);
-  display: block;
   margin-top: 3px;
 }
-.founder-quote {
+.v7-home .t {
   font-size: 16px;
   line-height: 1.65;
   color: var(--ink);
-  font-weight: 500;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
-.founder-promise {
+.v7-home .r2 {
   font-size: 14px;
   line-height: 1.6;
   color: var(--ink-light);
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
-.founder-fee {
+.v7-home .fee {
   font-size: 13px;
   color: var(--ink-light);
   padding: 10px 16px;
   background: var(--pa);
-  border-radius: 10px;
-  border: 1px solid var(--border-light);
-  margin-bottom: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  margin-bottom: 24px;
   display: inline-block;
 }
-.founder-fee a {
+.v7-home .fee a {
   color: var(--or);
   font-weight: 700;
   text-decoration: underline;
 }
-.founder-actions {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.btn-white-outline {
+.v7-home .ph {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 14px 22px;
+  border: 1px solid rgba(19, 42, 34, 0.15);
+  border-radius: 99px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 22px;
-  background: #ffffff;
-  border: 1px solid var(--border-light);
-  color: var(--ink);
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 700;
-  transition: all .2s;
-}
-.btn-white-outline:hover {
-  border-color: var(--ink);
 }
 
-/* ==========================================================================
-   RESPONSIVE DESIGN (MOBILE & TABLETTE)
-   ========================================================================== */
+/* RESPONSIVE DESIGN */
 @media (max-width: 1040px) {
-  .apple-nav { display: none; }
-  .apple-menu-btn { display: inline-flex; }
-  .dvf-grid { grid-template-columns: 1fr; gap: 40px; }
-  .bento-grid { grid-template-columns: 1fr; gap: 20px; }
-  .method-bento-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .founder-bento { grid-template-columns: 1fr; gap: 36px; padding: 32px; }
-  .founder-photo { max-width: 260px; margin: auto; }
+  .v7-home .hg { grid-template-columns: 1fr; gap: 36px; }
+  .v7-home .hi {
+    order: -1;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 20px;
+    justify-self: stretch;
+  }
+  .v7-home .cd { grid-template-columns: 1fr; }
+  .v7-home .st { grid-template-columns: 1fr; gap: 36px; }
+  .v7-home .ms { grid-template-columns: repeat(2, 1fr); }
+  .v7-home .cg { grid-template-columns: 1fr; padding: 32px; gap: 32px; }
+  .v7-home .pt { max-width: 260px; margin: auto; }
 }
 
 @media (max-width: 640px) {
-  .apple-header { height: 64px; }
-  .apple-nav-wrap { height: 64px; }
-  .apple-hero { min-height: 90vh; padding-top: 90px; }
-  .hero-title { font-size: 34px; }
-  .hero-cta-grid { grid-template-columns: 1fr; }
-  .method-bento-grid { grid-template-columns: 1fr; }
-  .founder-actions { flex-direction: column; width: 100%; }
-  .btn-orange-solid, .btn-white-outline { width: 100%; justify-content: center; }
-}
-@media (max-width: 1040px) {
-  .apple-header.menu-open .apple-nav {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 64px;
-    left: 0;
-    right: 0;
-    background: rgba(19, 42, 34, 0.98);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    padding: 24px 20px;
-    gap: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-  }
-  .apple-header.menu-open .apple-nav .nav-link {
-    font-size: 16px;
-    padding-block: 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
+  .v7-home .hero { padding-top: 85px; }
+  .v7-home .hero h1 { font-size: 38px; }
+  .v7-home .en { flex-direction: column; }
+  .v7-home .pill { width: 100%; justify-content: space-between; }
+  .v7-home .ms { grid-template-columns: 1fr; }
 }
