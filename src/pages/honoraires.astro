@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../config/site';
+
+const bareme = [
+  { tranche: "Jusqu'à 50 000 €", honoraires: "Forfait fixe de 4 500 € TTC", charge: "Charge vendeur ou acquéreur" },
+  { tranche: "De 50 001 € à 100 000 €", honoraires: "Forfait fixe de 6 500 € TTC", charge: "Charge vendeur ou acquéreur" },
+  { tranche: "De 100 001 € à 150 000 €", honoraires: "7,00 % TTC (minimum 7 500 €)", charge: "Charge vendeur ou acquéreur" },
+  { tranche: "De 150 001 € à 200 000 €", honoraires: "6,00 % TTC", charge: "Charge vendeur ou acquéreur" },
+  { tranche: "De 200 001 € à 300 000 €", honoraires: "5,50 % TTC", charge: "Charge vendeur ou acquéreur" },
+  { tranche: "De 300 001 € à 500 000 €", honoraires: "5,00 % TTC", charge: "Charge vendeur ou acquéreur" },
+  { tranche: "Au-delà de 500 001 €", honoraires: "4,50 % TTC", charge: "Charge vendeur ou acquéreur" },
+];
+---
+
+<Layout
+  title="Barème d'honoraires de transaction"
+  description="Barème officiel des prix des prestations de transaction immobilière pratiqués par Mouaad Boullourou, mandataire indépendant SAFTI (RSAC Chartres n° 824 194 419)."
+>
+  <article class="lv-wrap lv-editorial">
+    <header>
+      <p class="eyebrow" style="color:var(--v7-orange);font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;">Transparence & Conformité réglementaire</p>
+      <h1>Barème officiel d'honoraires de transaction immobilière.</h1>
+      <p class="lv-intro">
+        Conformément à l'Arrêté du 10 janvier 2017 relatif à l'information des consommateurs sur les prix des prestations de certains professionnels de l'immobilier, ce barème détaille les tarifs maximums pratiqués par Mouaad Boullourou dans le cadre de ses mandats de vente.
+      </p>
+    </header>
+
+    <div class="lv-prose" style="max-width:880px;margin-top:32px;">
+      <section aria-labelledby="vente-habitation">
+        <h2 id="vente-habitation">Vente de biens à usage d'habitation et terrains</h2>
+        <p>Les honoraires sont exprimés en pourcentage ou en forfait fixe, toutes taxes comprises (TVA au taux légal de 20 % en vigueur incluse). Ils sont calculés sur le prix net vendeur du bien.</p>
+        
+        <div style="overflow-x:auto;margin:28px 0;">
+          <table style="width:100%;border-collapse:collapse;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(19,42,34,0.06);border:1px solid #d6cbb6;">
+            <thead>
+              <tr style="background:#132a22;color:#fff;text-align:left;">
+                <th style="padding:16px 20px;font-weight:600;">Prix de vente net vendeur</th>
+                <th style="padding:16px 20px;font-weight:600;">Honoraires de transaction (TTC)</th>
+                <th style="padding:16px 20px;font-weight:600;">Imputation légale</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bareme.map((item, idx) => (
+                <tr style={`border-bottom:1px solid #eee;${idx % 2 === 1 ? 'background:#faf9f6;' : ''}`}>
+                  <td style="padding:14px 20px;font-weight:600;color:#132a22;">{item.tranche}</td>
+                  <td style="padding:14px 20px;font-weight:700;color:#ea580c;">{item.honoraires}</td>
+                  <td style="padding:14px 20px;color:#475961;">{item.charge}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="conditions-application" style="margin-top:40px;">
+        <h2 id="conditions-application">Modalités d'application et règles légales</h2>
+        <ul>
+          <li><strong>Charge des honoraires :</strong> Les honoraires sont à la charge du vendeur ou de l'acquéreur selon les stipulations expresses du mandat de vente préalablement signé. En cas de mandat avec honoraires à la charge de l'acquéreur, le montant des honoraires est expressément mentionné dans les annonces de vente.</li>
+          <li><strong>Loi Hoguet :</strong> Conformément à la Loi n° 70-9 du 2 janvier 1970 réglementant les conditions d'exercice des activités relatives à certaines opérations portant sur les immeubles et les fonds de commerce, <em>aucun versement d'honoraires, d'acompte ou de frais ne peut être exigé ni reçu avant la signature effective de l'acte authentique de vente chez le notaire</em>.</li>
+          <li><strong>Cumul de tranches :</strong> Le barème s'applique par tranche unique selon le montant de la transaction (il ne s'agit pas de tranches cumulatives).</li>
+          <li><strong>Outils en ligne LEVOIS :</strong> Les consultations d'historique de ventes réelles DVF, guides méthodologiques et outils d'analyse mis à disposition sur <code>levois.fr</code> sont en <strong>libre accès</strong>. Ils ont une finalité d'information générale et d'aide à la compréhension, et ne constituent ni un mandat de vente, ni une prestation facturable.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="statut-professionnel" style="margin-top:40px;background:#FAF9F6;padding:24px 28px;border-radius:16px;border:1px solid #d6cbb6;">
+        <h2 id="statut-professionnel" style="margin-top:0;">Statut légal de votre interlocuteur</h2>
+        <p style="margin-bottom:8px;"><strong>Mouaad Boullourou</strong> — Entrepreneur individuel</p>
+        <p style="font-size:14px;line-height:1.6;color:#2d4a3e;margin-bottom:12px;">
+          Conseiller immobilier indépendant, agent commercial mandataire en immobilier pour le compte de la société <strong>SAFTI France SAS</strong>.<br>
+          Inscrit au Registre Spécial des Agents Commerciaux (RSAC) du Tribunal de Commerce de Chartres sous le numéro <strong>824 194 419</strong>.<br>
+          SIRET : 824 194 419 00027 · Titulaire de l'attestation d'habilitation de collaborateur délivrée sous la responsabilité de SAFTI France SAS.<br>
+          Adresse professionnelle : 25 rue de la Butte Celtique, 28300 Lèves.<br>
+          Contact direct : <a href={`tel:${site.phone}`} style="color:#ea580c;font-weight:700;">{site.phoneDisplay}</a> · <a href={`mailto:${site.email}`} style="color:#ea580c;font-weight:700;">{site.email}</a>
+        </p>
+        <p style="font-size:13px;line-height:1.5;color:#475961;margin-bottom:0;">
+          <strong>Réseau SAFTI :</strong> SAFTI France SAS, 118 route d'Espagne, Immeuble Le Phénix, 31100 Toulouse · SIRET : 523 964 328 00026 (RCS Toulouse) · Carte professionnelle « Transactions sur immeubles et fonds de commerce » CPI 3101 2018 000 025 936 délivrée par la CCI de Toulouse · Responsabilité Civile Professionnelle : GENERALI IARD n° AR591464.<br>
+          Médiateur de la consommation : MED CONSO DEV, 3 rue J. Constant Milleret, 42000 Saint-Étienne (<a href="https://medconsodev.eu" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:underline;">medconsodev.eu</a>).
+        </p>
+      </section>
+
+      <div style="margin-top:40px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
+        <a class="pill" href="/contact/" style="display:inline-flex;align-items:center;gap:12px;padding:14px 24px;border-radius:99px;background:#132a22;color:#fff;font-weight:700;text-decoration:none;">Échanger sur votre projet de vente <i>→</i></a>
+        <a href="/situer-ma-vente/" style="color:#132a22;font-weight:600;text-decoration:underline;">Faire le point en ligne sur ma vente →</a>
+      </div>
+    </div>
+  </article>
+</Layout>
