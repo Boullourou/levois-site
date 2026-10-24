@@ -7,7 +7,7 @@ export function getStaticPaths() {
       slug: 'chartres',
       name: 'Chartres',
       postalCode: '28000',
-      description: 'Cœur historique et administratif d\'Eure-et-Loir, reliant Paris en 1h par la gare TER. Marché dynamique mêlant maisons de ville, appartements anciens et pavillons résidentiels.',
+      description: 'Cœur historique et administratif d\'Eure-et-Loir, reliant Paris-Montparnasse en 1h par la gare TER. Marché dynamique mêlant maisons de ville bourgeoises, appartements du centre ancien et quartiers pavillonnaires.',
       maison: {
         median2025: 2507,
         q1: 2084,
@@ -151,7 +151,7 @@ export function getStaticPaths() {
       slug: 'champhol',
       name: 'Champhol',
       postalCode: '28300',
-      description: 'Secteur résidentiel haut de gamme au nord-est de Chartres, réputé pour son cadre aéré, ses lotissements de standing et sa proximité avec le pôle santé.',
+      description: 'Secteur résidentiel de premier ordre au nord-est de Chartres, réputé pour son cadre aéré, ses lotissements de standing et sa proximité immédiate avec les cliniques et centres de soins.',
       maison: {
         median2025: 2426,
         q1: 2088,
@@ -209,7 +209,7 @@ export function getStaticPaths() {
       slug: 'luisant',
       name: 'Luisant',
       postalCode: '28600',
-      description: 'Commune limitrophe sud de Chartres très prisée des familles pour ses écoles, ses équipements sportifs, son étang et sa qualité de vie préservée.',
+      description: 'Commune limitrophe sud de Chartres très prisée des familles pour ses écoles réputées, ses équipements sportifs, son étang et sa qualité de vie préservée.',
       maison: {
         median2025: 2500,
         q1: 2143,
@@ -251,7 +251,7 @@ export function getStaticPaths() {
 
 const { commune } = Astro.props;
 const pageTitle = `Prix m² & Ventes Notariées DVF à ${commune.name} (${commune.postalCode})`;
-const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DVF) à ${commune.name} (${commune.postalCode}). Historique 2021-2025, médianes maisons/appartements et accompagnement SAFTI avec Mouaad Boullourou.`;
+const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DVF) à ${commune.name} (${commune.postalCode}). Historique complet 2021-2025, médianes maisons et appartements, analyse de marché et diagnostics avec Mouaad Boullourou.`;
 ---
 
 <Layout title={pageTitle} description={pageDesc}>
@@ -276,7 +276,7 @@ const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DV
       </p>
     </header>
 
-    <!-- BLOC SYNTHÈSE CHIFFRÉE EN DUR (100% STATIQUE POUR LES ROBOTS & IA) -->
+    <!-- BLOC SYNTHÈSE CHIFFRÉE EN DUR -->
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:48px;">
       <!-- CARTE MAISONS -->
       <div style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(19,42,34,0.04);">
@@ -285,7 +285,7 @@ const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DV
           {commune.maison.median2025} <span style="font-size:20px;font-weight:600;">€/m²</span>
         </div>
         <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">
-          Prix médian constaté sur <b>{commune.maison.count2025} ventes</b> notariées en 2025 ({commune.maison.totalCount} ventes sur 5 ans).
+          Prix médian constaté sur <b>{commune.maison.count2025} ventes</b> notariées en 2025 ({commune.maison.totalCount} ventes enregistrées sur 5 ans).
         </p>
         <div style="background:var(--pa);padding:12px 16px;border-radius:10px;font-size:13px;color:var(--ink);">
           <b>Fourchette 50 % des ventes :</b><br/>
@@ -301,7 +301,7 @@ const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DV
             {commune.appartement.median2025} <span style="font-size:20px;font-weight:600;">€/m²</span>
           </div>
           <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">
-            Prix médian constaté sur <b>{commune.appartement.count2025} ventes</b> notariées en 2025 ({commune.appartement.totalCount} ventes sur 5 ans).
+            Prix médian constaté sur <b>{commune.appartement.count2025} ventes</b> notariées en 2025 ({commune.appartement.totalCount} ventes enregistrées sur 5 ans).
           </p>
           <div style="background:var(--pa);padding:12px 16px;border-radius:10px;font-size:13px;color:var(--ink);">
             <b>Fourchette 50 % des ventes :</b><br/>
@@ -315,7 +315,7 @@ const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DV
     <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;margin-bottom:48px;">
       <h2 style="font-size:24px;margin-bottom:12px;">Historique des ventes notariées de maisons à {commune.name} (2021-2025)</h2>
       <p style="font-size:15px;color:var(--ink-light);margin-bottom:24px;">Données brutes issues de la base officielle DVF (DGFiP / Etalab).</p>
-
+      
       <div style="overflow-x:auto;">
         <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
           <thead>
@@ -341,6 +341,62 @@ const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DV
         </table>
       </div>
     </section>
+
+    <!-- TABLEAU HISTORIQUE 5 ANS APPARTEMENTS -->
+    {commune.appartement && (
+      <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;margin-bottom:48px;">
+        <h2 style="font-size:24px;margin-bottom:12px;">Historique des ventes notariées d'appartements à {commune.name} (2021-2025)</h2>
+        <p style="font-size:15px;color:var(--ink-light);margin-bottom:24px;">Données brutes issues de la base officielle DVF (DGFiP / Etalab).</p>
+        
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
+            <thead>
+              <tr style="border-bottom:2px solid var(--ink);color:var(--ink);">
+                <th style="padding:12px;">Année</th>
+                <th style="padding:12px;">Nombre de ventes</th>
+                <th style="padding:12px;">Prix médian au m²</th>
+                <th style="padding:12px;">1er quartile (25%)</th>
+                <th style="padding:12px;">3e quartile (75%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {commune.appartement.history.map(row => (
+                <tr style="border-bottom:1px solid rgba(19,42,34,0.08);">
+                  <td style="padding:12px;font-weight:700;">{row.year}</td>
+                  <td style="padding:12px;">{row.count}</td>
+                  <td style="padding:12px;font-weight:700;color:var(--ink);">{row.median} €/m²</td>
+                  <td style="padding:12px;">{row.q1} €/m²</td>
+                  <td style="padding:12px;">{row.q3} €/m²</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+
+    <!-- ANALYSE ÉDITORIALE DÉTAILLÉE : COMPRENDRE LES ÉCARTS DE PRIX À LA COMMUNE -->
+    <article style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:44px;margin-bottom:48px;line-height:1.7;color:var(--ink);">
+      <h2 style="font-size:26px;margin-bottom:18px;">Comment analyser les prix de l'immobilier à {commune.name} ?</h2>
+      <p style="margin-bottom:16px;">
+        À {commune.name} ({commune.postalCode}), le prix médian au m² ne constitue pas un tarif figé, mais un repère statistique central. La dispersion entre le premier quartile (les 25 % des biens les plus abordables) et le troisième quartile (les 25 % les plus onéreux) s'explique par des critères tangibles et vérifiables sur le terrain.
+      </p>
+      
+      <h3 style="font-size:20px;margin-top:28px;margin-bottom:12px;color:var(--or);">1. L'état du bâti et le diagnostic de performance énergétique (DPE)</h3>
+      <p style="margin-bottom:16px;">
+        La performance énergétique est devenue un facteur de négociation majeur sur le bassin chartrain. Une maison classée F ou G subit une décote directe liée au coût estimé des travaux d'isolation et de chauffage, tandis qu'un bien classé C ou D sans travaux se positionne naturellement dans le quartile supérieur du marché local.
+      </p>
+
+      <h3 style="font-size:20px;margin-top:28px;margin-bottom:12px;color:var(--or);">2. L'emplacement micro-local, le calme et les accès</h3>
+      <p style="margin-bottom:16px;">
+        Au sein même de {commune.name}, deux biens identiques peuvent afficher un écart de valeur substantiel selon leur rue, la proximité immédiate des écoles, des commerces de quartier ou des arrêts de bus de la métropole. L'absence de nuisances sonores et la qualité du voisinage immédiat pèsent lourdement sur la décision finale des acquéreurs.
+      </p>
+
+      <h3 style="font-size:20px;margin-top:28px;margin-bottom:12px;color:var(--or);">3. La distinction entre une vente DVF passée et votre projet actuel</h3>
+      <p style="margin-bottom:0;">
+        Les chiffres présentés ci-dessus reflètent des actes notariés signés. Ils ne capturent ni les négociations en cours, ni les finitions intérieures de votre bien, ni les conditions d'emprunt bancaire actuelles des acheteurs. Pour fixer un prix de vente juste sans risquer de brader ni de bloquer son bien pendant des mois, un diagnostic méthodique de votre situation est indispensable.
+      </p>
+    </article>
 
     <!-- SECTION DIAGNOSTIC ET PRISE DE DÉCISION -->
     <section style="background:var(--pa);border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:44px;margin-bottom:48px;">
