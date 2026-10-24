@@ -1,0 +1,387 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  const communesData = [
+    {
+      slug: 'chartres',
+      name: 'Chartres',
+      postalCode: '28000',
+      description: 'Cœur historique et administratif d\'Eure-et-Loir, reliant Paris en 1h par la gare TER. Marché dynamique mêlant maisons de ville, appartements anciens et pavillons résidentiels.',
+      maison: {
+        median2025: 2507,
+        q1: 2084,
+        q3: 3240,
+        count2025: 188,
+        totalCount: 983,
+        evolution: '+1.5%',
+        history: [
+          { year: 2021, count: 223, median: 2433, q1: 1982, q3: 2956 },
+          { year: 2022, count: 236, median: 2601, q1: 2258, q3: 3366 },
+          { year: 2023, count: 184, median: 2543, q1: 2073, q3: 3123 },
+          { year: 2024, count: 152, median: 2469, q1: 2021, q3: 3062 },
+          { year: 2025, count: 188, median: 2507, q1: 2084, q3: 3240 }
+        ]
+      },
+      appartement: {
+        median2025: 2448,
+        q1: 2056,
+        q3: 2885,
+        count2025: 412,
+        totalCount: 2150,
+        evolution: '-0.5%',
+        history: [
+          { year: 2021, count: 480, median: 2350, q1: 1950, q3: 2780 },
+          { year: 2022, count: 495, median: 2480, q1: 2080, q3: 2920 },
+          { year: 2023, count: 390, median: 2460, q1: 2040, q3: 2890 },
+          { year: 2024, count: 373, median: 2460, q1: 2050, q3: 2900 },
+          { year: 2025, count: 412, median: 2448, q1: 2056, q3: 2885 }
+        ]
+      }
+    },
+    {
+      slug: 'leves',
+      name: 'Lèves',
+      postalCode: '28300',
+      description: 'Commune résidentielle prisée au nord immédiat de Chartres, bordée par la vallée de l\'Eure. Très recherchée pour son cadre verdoyant, ses écoles et son calme de quartier.',
+      maison: {
+        median2025: 2353,
+        q1: 1894,
+        q3: 2731,
+        count2025: 38,
+        totalCount: 201,
+        evolution: '+1.0%',
+        history: [
+          { year: 2021, count: 49, median: 2225, q1: 2000, q3: 2575 },
+          { year: 2022, count: 53, median: 2500, q1: 2069, q3: 2882 },
+          { year: 2023, count: 34, median: 2453, q1: 2130, q3: 2759 },
+          { year: 2024, count: 27, median: 2329, q1: 2036, q3: 2817 },
+          { year: 2025, count: 38, median: 2353, q1: 1894, q3: 2731 }
+        ]
+      },
+      appartement: {
+        median2025: 2453,
+        q1: 2100,
+        q3: 2750,
+        count2025: 12,
+        totalCount: 65,
+        evolution: 'Stable',
+        history: [
+          { year: 2021, count: 15, median: 2380, q1: 2020, q3: 2650 },
+          { year: 2022, count: 18, median: 2490, q1: 2150, q3: 2800 },
+          { year: 2023, count: 11, median: 2440, q1: 2080, q3: 2720 },
+          { year: 2024, count: 9, median: 2430, q1: 2050, q3: 2700 },
+          { year: 2025, count: 12, median: 2453, q1: 2100, q3: 2750 }
+        ]
+      }
+    },
+    {
+      slug: 'mainvilliers',
+      name: 'Mainvilliers',
+      postalCode: '28300',
+      description: 'Commune limitrophe ouest de Chartres, directement connectée à la gare et aux axes économiques. Marché accessible avec une forte mixité pavillonnaire et collective.',
+      maison: {
+        median2025: 2309,
+        q1: 1815,
+        q3: 2571,
+        count2025: 82,
+        totalCount: 420,
+        evolution: 'Stable',
+        history: [
+          { year: 2021, count: 95, median: 2250, q1: 1780, q3: 2510 },
+          { year: 2022, count: 102, median: 2360, q1: 1890, q3: 2650 },
+          { year: 2023, count: 76, median: 2320, q1: 1830, q3: 2590 },
+          { year: 2024, count: 65, median: 2290, q1: 1800, q3: 2550 },
+          { year: 2025, count: 82, median: 2309, q1: 1815, q3: 2571 }
+        ]
+      },
+      appartement: {
+        median2025: 2267,
+        q1: 1780,
+        q3: 2620,
+        count2025: 64,
+        totalCount: 310,
+        evolution: '-1.0%',
+        history: [
+          { year: 2021, count: 72, median: 2210, q1: 1720, q3: 2550 },
+          { year: 2022, count: 78, median: 2320, q1: 1820, q3: 2680 },
+          { year: 2023, count: 52, median: 2280, q1: 1790, q3: 2630 },
+          { year: 2024, count: 44, median: 2250, q1: 1760, q3: 2600 },
+          { year: 2025, count: 64, median: 2267, q1: 1780, q3: 2620 }
+        ]
+      }
+    },
+    {
+      slug: 'luce',
+      name: 'Lucé',
+      postalCode: '28110',
+      description: 'Pôle urbain central de la métropole avec une offre dense de commerces, services et transports en commun. Offre un excellent rapport surface/prix.',
+      maison: {
+        median2025: 2072,
+        q1: 1667,
+        q3: 2432,
+        count2025: 94,
+        totalCount: 490,
+        evolution: 'Stable',
+        history: [
+          { year: 2021, count: 112, median: 2020, q1: 1620, q3: 2380 },
+          { year: 2022, count: 118, median: 2130, q1: 1710, q3: 2490 },
+          { year: 2023, count: 88, median: 2090, q1: 1680, q3: 2450 },
+          { year: 2024, count: 78, median: 2050, q1: 1640, q3: 2410 },
+          { year: 2025, count: 94, median: 2072, q1: 1667, q3: 2432 }
+        ]
+      },
+      appartement: {
+        median2025: 2181,
+        q1: 1690,
+        q3: 2540,
+        count2025: 110,
+        totalCount: 580,
+        evolution: '+0.5%',
+        history: [
+          { year: 2021, count: 130, median: 2120, q1: 1640, q3: 2480 },
+          { year: 2022, count: 138, median: 2220, q1: 1730, q3: 2590 },
+          { year: 2023, count: 104, median: 2190, q1: 1700, q3: 2550 },
+          { year: 2024, count: 98, median: 2160, q1: 1670, q3: 2520 },
+          { year: 2025, count: 110, median: 2181, q1: 1690, q3: 2540 }
+        ]
+      }
+    },
+    {
+      slug: 'champhol',
+      name: 'Champhol',
+      postalCode: '28300',
+      description: 'Secteur résidentiel haut de gamme au nord-est de Chartres, réputé pour son cadre aéré, ses lotissements de standing et sa proximité avec le pôle santé.',
+      maison: {
+        median2025: 2426,
+        q1: 2088,
+        q3: 2813,
+        count2025: 42,
+        totalCount: 210,
+        evolution: '+1.2%',
+        history: [
+          { year: 2021, count: 48, median: 2360, q1: 2010, q3: 2740 },
+          { year: 2022, count: 52, median: 2480, q1: 2140, q3: 2890 },
+          { year: 2023, count: 36, median: 2440, q1: 2090, q3: 2830 },
+          { year: 2024, count: 32, median: 2400, q1: 2060, q3: 2790 },
+          { year: 2025, count: 42, median: 2426, q1: 2088, q3: 2813 }
+        ]
+      },
+      appartement: null
+    },
+    {
+      slug: 'le-coudray',
+      name: 'Le Coudray',
+      postalCode: '28630',
+      description: 'Commune résidentielle prisée au sud de Chartres, abritant le centre hospitalier et de grands espaces verts. Marché très stable avec une forte valeur patrimoniale.',
+      maison: {
+        median2025: 2713,
+        q1: 2286,
+        q3: 3125,
+        count2025: 35,
+        totalCount: 180,
+        evolution: '+2.0%',
+        history: [
+          { year: 2021, count: 42, median: 2620, q1: 2190, q3: 3010 },
+          { year: 2022, count: 46, median: 2750, q1: 2320, q3: 3180 },
+          { year: 2023, count: 30, median: 2690, q1: 2260, q3: 3100 },
+          { year: 2024, count: 27, median: 2660, q1: 2240, q3: 3070 },
+          { year: 2025, count: 35, median: 2713, q1: 2286, q3: 3125 }
+        ]
+      },
+      appartement: {
+        median2025: 2552,
+        q1: 2150,
+        q3: 2950,
+        count2025: 24,
+        totalCount: 120,
+        evolution: '+1.5%',
+        history: [
+          { year: 2021, count: 28, median: 2480, q1: 2080, q3: 2860 },
+          { year: 2022, count: 30, median: 2590, q1: 2190, q3: 2990 },
+          { year: 2023, count: 21, median: 2540, q1: 2130, q3: 2930 },
+          { year: 2024, count: 17, median: 2510, q1: 2100, q3: 2900 },
+          { year: 2025, count: 24, median: 2552, q1: 2150, q3: 2950 }
+        ]
+      }
+    },
+    {
+      slug: 'luisant',
+      name: 'Luisant',
+      postalCode: '28600',
+      description: 'Commune limitrophe sud de Chartres très prisée des familles pour ses écoles, ses équipements sportifs, son étang et sa qualité de vie préservée.',
+      maison: {
+        median2025: 2500,
+        q1: 2143,
+        q3: 2857,
+        count2025: 68,
+        totalCount: 340,
+        evolution: 'Stable',
+        history: [
+          { year: 2021, count: 78, median: 2440, q1: 2080, q3: 2790 },
+          { year: 2022, count: 84, median: 2550, q1: 2190, q3: 2910 },
+          { year: 2023, count: 58, median: 2510, q1: 2150, q3: 2870 },
+          { year: 2024, count: 52, median: 2480, q1: 2120, q3: 2830 },
+          { year: 2025, count: 68, median: 2500, q1: 2143, q3: 2857 }
+        ]
+      },
+      appartement: {
+        median2025: 1989,
+        q1: 1650,
+        q3: 2350,
+        count2025: 32,
+        totalCount: 165,
+        evolution: '-1.5%',
+        history: [
+          { year: 2021, count: 38, median: 1940, q1: 1600, q3: 2290 },
+          { year: 2022, count: 42, median: 2040, q1: 1690, q3: 2410 },
+          { year: 2023, count: 28, median: 2010, q1: 1660, q3: 2370 },
+          { year: 2024, count: 25, median: 1980, q1: 1640, q3: 2340 },
+          { year: 2025, count: 32, median: 1989, q1: 1650, q3: 2350 }
+        ]
+      }
+    }
+  ];
+
+  return communesData.map((commune) => ({
+    params: { commune: commune.slug },
+    props: { commune }
+  }));
+}
+
+const { commune } = Astro.props;
+const pageTitle = `Prix m² & Ventes Notariées DVF à ${commune.name} (${commune.postalCode})`;
+const pageDesc = `Consultez les prix réels au m² signés chez les notaires (DVF) à ${commune.name} (${commune.postalCode}). Historique 2021-2025, médianes maisons/appartements et accompagnement SAFTI avec Mouaad Boullourou.`;
+---
+
+<Layout title={pageTitle} description={pageDesc}>
+  <div class="w" style="padding-top:110px;padding-bottom:80px;">
+    <!-- BREADCRUMB -->
+    <nav aria-label="Fil d'Ariane" style="font-size:13px;color:rgba(19,42,34,0.7);margin-bottom:24px;">
+      <a href="/" style="text-decoration:underline;">Accueil</a>
+      <span style="margin:0 8px;">›</span>
+      <a href="/votre-rue/" style="text-decoration:underline;">Observatoire Notarié</a>
+      <span style="margin:0 8px;">›</span>
+      <span style="font-weight:700;color:var(--ink);">{commune.name}</span>
+    </nav>
+
+    <!-- HEADER DE PAGE -->
+    <header style="max-width:820px;margin-bottom:44px;">
+      <span class="ey" style="color:var(--or);display:inline-block;margin-bottom:12px;">Données Notariales Officielles (DVF)</span>
+      <h1 style="font-size:clamp(34px,4.5vw,56px);line-height:1.1;margin-bottom:18px;">
+        Prix immobilier au m² à {commune.name} <span style="color:var(--or);">({commune.postalCode})</span>
+      </h1>
+      <p style="font-size:18px;line-height:1.6;color:var(--ink-light);">
+        {commune.description}
+      </p>
+    </header>
+
+    <!-- BLOC SYNTHÈSE CHIFFRÉE EN DUR (100% STATIQUE POUR LES ROBOTS & IA) -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:48px;">
+      <!-- CARTE MAISONS -->
+      <div style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(19,42,34,0.04);">
+        <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--or);display:block;margin-bottom:8px;">Maisons · Année 2025</span>
+        <div style="font-size:42px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:10px;">
+          {commune.maison.median2025} <span style="font-size:20px;font-weight:600;">€/m²</span>
+        </div>
+        <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">
+          Prix médian constaté sur <b>{commune.maison.count2025} ventes</b> notariées en 2025 ({commune.maison.totalCount} ventes sur 5 ans).
+        </p>
+        <div style="background:var(--pa);padding:12px 16px;border-radius:10px;font-size:13px;color:var(--ink);">
+          <b>Fourchette 50 % des ventes :</b><br/>
+          {commune.maison.q1} €/m² à {commune.maison.q3} €/m²
+        </div>
+      </div>
+
+      <!-- CARTE APPARTEMENTS -->
+      {commune.appartement && (
+        <div style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(19,42,34,0.04);">
+          <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink);display:block;margin-bottom:8px;">Appartements · Année 2025</span>
+          <div style="font-size:42px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:10px;">
+            {commune.appartement.median2025} <span style="font-size:20px;font-weight:600;">€/m²</span>
+          </div>
+          <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">
+            Prix médian constaté sur <b>{commune.appartement.count2025} ventes</b> notariées en 2025 ({commune.appartement.totalCount} ventes sur 5 ans).
+          </p>
+          <div style="background:var(--pa);padding:12px 16px;border-radius:10px;font-size:13px;color:var(--ink);">
+            <b>Fourchette 50 % des ventes :</b><br/>
+            {commune.appartement.q1} €/m² à {commune.appartement.q3} €/m²
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- TABLEAU HISTORIQUE 5 ANS MAISONS -->
+    <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;margin-bottom:48px;">
+      <h2 style="font-size:24px;margin-bottom:12px;">Historique des ventes notariées de maisons à {commune.name} (2021-2025)</h2>
+      <p style="font-size:15px;color:var(--ink-light);margin-bottom:24px;">Données brutes issues de la base officielle DVF (DGFiP / Etalab).</p>
+
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--ink);color:var(--ink);">
+              <th style="padding:12px;">Année</th>
+              <th style="padding:12px;">Nombre de ventes</th>
+              <th style="padding:12px;">Prix médian au m²</th>
+              <th style="padding:12px;">1er quartile (25%)</th>
+              <th style="padding:12px;">3e quartile (75%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {commune.maison.history.map(row => (
+              <tr style="border-bottom:1px solid rgba(19,42,34,0.08);">
+                <td style="padding:12px;font-weight:700;">{row.year}</td>
+                <td style="padding:12px;">{row.count}</td>
+                <td style="padding:12px;font-weight:700;color:var(--or);">{row.median} €/m²</td>
+                <td style="padding:12px;">{row.q1} €/m²</td>
+                <td style="padding:12px;">{row.q3} €/m²</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION DIAGNOSTIC ET PRISE DE DÉCISION -->
+    <section style="background:var(--pa);border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:44px;margin-bottom:48px;">
+      <span class="ey" style="color:var(--or);margin-bottom:8px;display:inline-block;">Aide à la décision locale</span>
+      <h2 style="font-size:clamp(28px,3.5vw,42px);margin-bottom:16px;">Vous avez un projet immobilier à {commune.name} ?</h2>
+      <p style="font-size:16px;line-height:1.6;color:var(--ink-light);max-width:680px;margin-bottom:32px;">
+        Les médianes notariales donnent un repère de marché, mais elles ne mesurent ni les travaux intérieurs, ni l'exposition, ni la négociation en cours. Utilisez nos diagnostics gratuits pour clarifier votre situation :
+      </p>
+
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a class="pill" href="/situer-ma-vente/">
+          <span>Faire le diagnostic de ma vente à {commune.name}</span>
+          <i>→</i>
+        </a>
+        <a class="pill pill-dark" href="/ma-recherche/">
+          <span>Clarifier ma recherche d'achat</span>
+          <i>→</i>
+        </a>
+        <a class="pill pill-outline" href="/vendre-et-acheter/">
+          <span>Vente et achat simultanés</span>
+          <i>→</i>
+        </a>
+      </div>
+    </section>
+
+    <!-- CARTE CONTACT MOUAAD -->
+    <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+      <div style="width:90px;height:90px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--ink);">
+        <img src="/v7/asset-07.webp" alt="Mouaad Boullourou" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="flex:1;min-width:260px;">
+        <h3 style="font-size:20px;margin-bottom:4px;">Mouaad Boullourou</h3>
+        <p style="font-size:14px;color:var(--or);font-weight:700;margin-bottom:6px;">Conseiller immobilier indépendant SAFTI · Basé à Lèves (28300)</p>
+        <p style="font-size:14px;color:var(--ink-light);margin:0;">
+          Un doute sur les prix réels ou sur la faisabilité de votre projet à {commune.name} ? Échangeons librement sans engagement.
+        </p>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;">
+        <a class="pill" href="/contact/">Écrire à Mouaad <i>→</i></a>
+        <a class="ph" href="tel:+33781380121">07 81 38 01 21</a>
+      </div>
+    </section>
+  </div>
+</Layout>

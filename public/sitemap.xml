@@ -22,4 +22,11 @@
   <url><loc>https://levois.fr/experiences/visites-sans-offre/</loc></url>
   <url><loc>https://levois.fr/experiences/surface-ou-usage/</loc></url>
   <url><loc>https://levois.fr/experiences/vendre-avant-acheter/</loc></url>
+  <url><loc>https://levois.fr/prix-immobilier/chartres/</loc><priority>0.9</priority></url>
+  <url><loc>https://levois.fr/prix-immobilier/leves/</loc><priority>0.9</priority></url>
+  <url><loc>https://levois.fr/prix-immobilier/mainvilliers/</loc><priority>0.8</priority></url>
+  <url><loc>https://levois.fr/prix-immobilier/luce/</loc><priority>0.8</priority></url>
+  <url><loc>https://levois.fr/prix-immobilier/champhol/</loc><priority>0.8</priority></url>
+  <url><loc>https://levois.fr/prix-immobilier/le-coudray/</loc><priority>0.8</priority></url>
+  <url><loc>https://levois.fr/prix-immobilier/luisant/</loc><priority>0.8</priority></url>
 </urlset>

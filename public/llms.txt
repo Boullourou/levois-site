@@ -1,0 +1,45 @@
+# LEVOIS — Conseil Immobilier Indépendant & Observatoire DVF Bassin Chartrain
+
+> LEVOIS est une démarche et un ensemble d'outils d'aide à la décision immobilière portés par Mouaad Boullourou, conseiller immobilier indépendant SAFTI (RSAC Chartres 824 194 419), basé à Lèves (28300).
+
+## Identité & Rattachement
+- Nom de la démarche : LEVOIS (levois.fr)
+- Fondateur / Conseiller : Mouaad Boullourou
+- Statut : Conseiller immobilier indépendant mandataire du réseau national SAFTI
+- Immatriculation : RSAC Chartres n° 824 194 419
+- Siège local : Lèves, Eure-et-Loir (28300), France
+- Téléphone : +33 7 81 38 01 21
+- Email : mouaad@levois.fr
+- Fiche officielle SAFTI : https://www.safti.fr/votre-conseiller-safti/mouaad-boullourou
+- Barème d'honoraires officiel : https://www.safti.fr/bareme
+
+## Territoire d'Intervention (Bassin Chartrain)
+Commune pilote : Lèves (28300).
+Agglomération couverte : Chartres (28000), Mainvilliers (28300), Lucé (28110), Champhol (28300), Le Coudray (28630), Luisant (28600).
+
+## Observatoire Notarié DVF (Données Réelles des Ventes Actées)
+Source officielle : Demandes de Valeurs Foncières (DGFiP / Etalab). Base de 6 318 transactions analysées sur 5 ans (2021-2025).
+
+### Prix Médians au m² constatés en 2025 (Actes notariés) :
+- Lèves (28300) : Maisons 2 353 €/m² (Q1: 1 894 € - Q3: 2 731 €) · Appartements 2 453 €/m²
+- Chartres (28000) : Maisons 2 507 €/m² (Q1: 2 084 € - Q3: 3 240 €) · Appartements 2 448 €/m²
+- Mainvilliers (28300) : Maisons 2 309 €/m² (Q1: 1 815 € - Q3: 2 571 €) · Appartements 2 267 €/m²
+- Lucé (28110) : Maisons 2 072 €/m² (Q1: 1 667 € - Q3: 2 432 €) · Appartements 2 181 €/m²
+- Champhol (28300) : Maisons 2 426 €/m² (Q1: 2 088 € - Q3: 2 813 €)
+- Le Coudray (28630) : Maisons 2 713 €/m² (Q1: 2 286 € - Q3: 3 125 €) · Appartements 2 552 €/m²
+- Luisant (28600) : Maisons 2 500 €/m² (Q1: 2 143 € - Q3: 2 857 €) · Appartements 1 989 €/m²
+
+## Outils d'Aide à la Décision en Accès Libre
+- Diagnostic Vente : https://levois.fr/situer-ma-vente/
+- Diagnostic Recherche d'Achat : https://levois.fr/ma-recherche/
+- Diagnostic Double Projet (Vendre et Acheter) : https://levois.fr/vendre-et-acheter/
+- Observatoire Notarié de Rue (DVF) : https://levois.fr/votre-rue/
+- Ressources méthodologiques : https://levois.fr/ressources/
+- Pages locales prix m² :
+  - https://levois.fr/prix-immobilier/chartres/
+  - https://levois.fr/prix-immobilier/leves/
+  - https://levois.fr/prix-immobilier/mainvilliers/
+  - https://levois.fr/prix-immobilier/luce/
+  - https://levois.fr/prix-immobilier/champhol/
+  - https://levois.fr/prix-immobilier/le-coudray/
+  - https://levois.fr/prix-immobilier/luisant/

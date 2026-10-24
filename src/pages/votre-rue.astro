@@ -89,8 +89,26 @@ import LocalObservatory from '../components/LocalObservatory.astro';
       </div>
     </details>
 
+  
+    <!-- MAILLAGE LOCAL : ACCÈS DIRECT AUX 7 PAGES COMMUNES DVF -->
+    <section style="margin-top:48px;background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;box-shadow:0 10px 30px rgba(19,42,34,0.04);">
+      <h2 style="font-size:24px;margin-bottom:10px;">Prix immobiliers par commune dans l'agglomération chartraine</h2>
+      <p style="font-size:15px;color:rgba(19,42,34,0.8);margin-bottom:24px;">
+        Consultez l'historique complet des ventes notariées (DVF 2021-2025), les prix médians au m² et l'analyse de marché pour chaque commune :
+      </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+        <a href="/prix-immobilier/chartres/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Chartres (28000)</span><i>→</i></a>
+        <a href="/prix-immobilier/leves/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Lèves (28300)</span><i>→</i></a>
+        <a href="/prix-immobilier/mainvilliers/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Mainvilliers (28300)</span><i>→</i></a>
+        <a href="/prix-immobilier/luce/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Lucé (28110)</span><i>→</i></a>
+        <a href="/prix-immobilier/champhol/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Champhol (28300)</span><i>→</i></a>
+        <a href="/prix-immobilier/le-coudray/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Le Coudray (28630)</span><i>→</i></a>
+        <a href="/prix-immobilier/luisant/" style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pa);border:1px solid rgba(19,42,34,0.15);border-radius:10px;font-weight:700;font-size:14px;color:var(--ink);"><span>Luisant (28600)</span><i>→</i></a>
+      </div>
+    </section>
   </div>
 </Layout>
+
 
 <!-- is:global OBLIGATOIRE : l'infographie est injectée en JS (innerHTML), donc
      sans l'attribut de scope Astro (data-astro-cid). Une feuille scopée ne
