@@ -7,7 +7,7 @@ const {resource}=Astro.props;
 const content=getResourceContent(resource.id);
 ---
 <Layout title={resource.titre} description={resource.question+' '+resource.benefice}>
-<article class="lv-wrap lv-editorial"><header><a class="lv-text-link" href="/ressources">Les six ressources</a><h1>{resource.titre}</h1><p class="lv-intro">{resource.question}</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><a href="/lecture">Revenir à ma lecture</a><a href={'/situer-ma-vente?s='+content.situationLiee}>Relier cette ressource à ma vente</a><button type="button" class="lv-text-link" data-resource-print>Imprimer cette ressource</button><p class="lv-note">Lecture gratuite, sans inscription.</p></aside><div class="lv-prose">
+<article class="lv-wrap lv-editorial"><header><a class="lv-text-link" href="/ressources/">Les six ressources</a><h1>{resource.titre}</h1><p class="lv-intro">{resource.question}</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><a href="/lecture/">Revenir à ma lecture</a><a href={'/situer-ma-vente/?s='+content.situationLiee}>Relier cette ressource à ma vente</a><button type="button" class="lv-text-link" data-resource-print>Imprimer cette ressource</button><p class="lv-note">Lecture gratuite, sans inscription.</p></aside><div class="lv-prose">
 <section class="lv-next"><h2>La réponse courte</h2><p>{content.reponseCourte}</p></section>
 {content.explication.map(p=><p>{p}</p>)}
 <h2>Exemple illustratif · {content.exemple.titre}</h2><p>{content.exemple.texte}</p><p class="lv-note">Exemple pédagogique, pas le récit d’une transaction réalisée par Mouaad.</p>
@@ -15,7 +15,7 @@ const content=getResourceContent(resource.id);
 <h2>{content.checklist.titre}</h2><ol>{content.checklist.items.map(item=><li>{item}</li>)}</ol>
 <section class="lv-limit"><h2 style="font-size:21px;margin:0 0 14px">Ce que cette ressource ne peut pas conclure</h2><p>{content.limite}</p></section>
 <h2>Votre prochaine action utile</h2><p>{content.action}</p>
-<div class="lv-actions"><a class="lv-button" href="/lecture">Revenir à ma lecture</a><a class="lv-secondary" href={'/situer-ma-vente?s='+content.situationLiee}>Situer ma vente</a></div>
+<div class="lv-actions"><a class="lv-button" href="/lecture/">Revenir à ma lecture</a><a class="lv-secondary" href={'/situer-ma-vente/?s='+content.situationLiee}>Situer ma vente</a></div>
 </div></div></article>
 </Layout>
 <script>document.querySelector('[data-resource-print]')?.addEventListener('click',()=>window.print());</script>
