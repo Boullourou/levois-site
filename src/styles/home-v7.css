@@ -92,15 +92,25 @@ html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
   background: var(--ru);
   transform: translateY(-2px);
 }
-.v7-home .pill.l {
-  background: #ffffff;
-  border: 1px solid rgba(19, 42, 34, 0.15);
-  color: var(--ink);
-  box-shadow: none;
+.v7-home .pill.pill-dark {
+  background: var(--ink);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.25);
 }
-.v7-home .pill.l:hover {
-  border-color: var(--ink);
-  background: var(--pa);
+.v7-home .pill.pill-dark:hover {
+  background: #1d3e32;
+  transform: translateY(-2px);
+}
+.v7-home .pill.pill-outline {
+  background: #ffffff;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(19, 42, 34, 0.08);
+}
+.v7-home .pill.pill-outline:hover {
+  border-color: var(--or);
+  color: var(--or);
+  transform: translateY(-2px);
 }
 .v7-home .pill.k {
   background: var(--ink);
