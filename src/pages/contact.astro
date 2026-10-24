@@ -3,14 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import {site} from '../config/site';
 ---
 <Layout title="Écrire à Mouaad" description="Une question précise ou un projet à partager : écrivez directement à Mouaad Boullourou.">
-<article class="lv-wrap lv-editorial"><header><h1>Votre question peut être le point de départ.</h1><p class="lv-intro">Vous pouvez écrire directement à Mouaad. Si vous avez déjà une lecture LEVOIS, partez de cette version pour garder le contexte.</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><a class="lv-text-link" href="/lecture">Partir de ma lecture</a><a href={'mailto:'+site.email}>{site.email}</a><a href={'tel:'+site.phone}>{site.phoneDisplay}</a><a href="/mouaad-boullourou.vcf" download>Garder le contact de Mouaad</a><p class="lv-note">Le message est utilisé pour vous répondre. Aucun appel n’est demandé par défaut.</p></aside><form data-direct-contact>
+<article class="lv-wrap lv-editorial"><header><h1>Votre question peut être le point de départ.</h1><p class="lv-intro">Vous pouvez écrire directement à Mouaad. Si vous avez déjà une lecture LEVOIS, partez de cette version pour garder le contexte.</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><a class="lv-text-link" href="/lecture/">Partir de ma lecture</a><a href={'mailto:'+site.email}>{site.email}</a><a href={'tel:'+site.phone}>{site.phoneDisplay}</a><a href="/mouaad-boullourou.vcf" download>Garder le contact de Mouaad</a><p class="lv-note">Le message est utilisé pour vous répondre. Aucun appel n’est demandé par défaut.</p></aside><form data-direct-contact>
 <div class="lv-field"><label for="c-prenom">Prénom</label><input id="c-prenom" name="prenom" autocomplete="given-name" maxlength="80" required/></div>
 <div class="lv-field"><label for="c-nom">Nom</label><input id="c-nom" name="nom" autocomplete="family-name" maxlength="80" required/></div>
 <div class="lv-field"><label for="c-email">Adresse e-mail pour la réponse</label><input id="c-email" name="email" type="email" autocomplete="email" maxlength="254" required/></div>
 <div class="lv-field"><label for="c-objet">Le sujet de votre message</label><input id="c-objet" name="objet" maxlength="200" required/></div>
 <div class="lv-field"><label for="c-message">Votre question</label><textarea id="c-message" name="message" maxlength="8000" rows="5" required></textarea></div>
 <div hidden aria-hidden="true"><label for="c-site">Votre site web</label><input id="c-site" name="site_web" tabindex="-1" autocomplete="off"/></div>
-<label class="lv-check"><input name="consentement" type="checkbox" required/><span>J’autorise l’utilisation de ces informations pour répondre à ce message. <a href="/confidentialite">Confidentialité</a>.</span></label>
+<label class="lv-check"><input name="consentement" type="checkbox" required/><span>J’autorise l’utilisation de ces informations pour répondre à ce message. <a href="/confidentialite/">Confidentialité</a>.</span></label>
 <div class="lv-actions"><button class="lv-button" type="submit">Envoyer mon message</button></div><p class="lv-error" data-contact-status role="status" hidden style="margin-top:22px"></p>
 <noscript><p>Vous pouvez envoyer directement un e-mail à <a href={'mailto:'+site.email}>{site.email}</a>.</p></noscript>
 </form></div></article></Layout>
