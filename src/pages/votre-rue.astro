@@ -58,7 +58,7 @@ import LocalObservatory from '../components/LocalObservatory.astro';
 
     <!-- ②③④⑤⑥ Scène (analyse → infographie → En clair → détails → conversion) -->
     <section id="vr-scene" aria-live="polite" hidden></section>
-    <section class="vr-local-autonomy" aria-label="Avancer sans adresse"><p class="lv-note">Vous pouvez aussi clarifier votre projet sans chercher une adresse.</p><div class="lv-actions"><a class="lv-text-link" href="/ma-recherche">Acheter ↗</a><a class="lv-text-link" href="/situer-ma-vente">Vendre ↗</a><a class="lv-text-link" href="/vendre-et-acheter">Vendre et acheter ↗</a></div></section>
+    <section class="vr-local-autonomy" aria-label="Avancer sans adresse"><p class="lv-note">Vous pouvez aussi clarifier votre projet sans chercher une adresse.</p><div class="lv-actions"><a class="lv-text-link" href="/ma-recherche/">Acheter ↗</a><a class="lv-text-link" href="/situer-ma-vente/">Vendre ↗</a><a class="lv-text-link" href="/vendre-et-acheter/">Vendre et acheter ↗</a></div></section>
     <LocalObservatory />
 
     <!-- ⑦ Méthode & limites (accessibles mais discrètes) -->
@@ -1132,7 +1132,7 @@ import {buildLocalReading, getLocalQuestions, localImpact, localContinuation, lo
     panneau.innerHTML=`<div class="vr-panneau vr-local-reading"><p class="lv-eyebrow">Votre lecture · avant toute coordonnée</p><h2 tabindex="-1" style="font-size:29px;margin:15px 0 25px">Ce que vous pouvez en faire.</h2>${readingSectionsHTML(reading,localContext)}${nextHTML(reading)}${limitsHTML(reading)}
       <p class="lv-note">Version ${reading.revision} · méthode ${reading.methodVersion}. La copie, la relecture écrite et l’échange sont des suites distinctes.</p>
       ${stored?'':'<p class="lv-error">La session ne peut pas être enregistrée sur cet appareil. Votre lecture reste visible : vous pouvez la copier ou l’imprimer ici.</p>'}
-      <div class="lv-actions">${stored?'<a class="lv-button" href="/lecture">Garder ma lecture et choisir la suite ↗</a>':''}<button type="button" class="lv-secondary" data-local-copy>Copier ma lecture</button><button type="button" class="lv-text-link" data-local-print>Imprimer</button><button type="button" class="lv-text-link" data-local-correct>Corriger ma question</button><a class="lv-text-link" href="${continuation.href}">${continuation.label} ↗</a></div><p class="lv-note" data-local-status role="status"></p></div>`;
+      <div class="lv-actions">${stored?'<a class="lv-button" href="/lecture/">Garder ma lecture et choisir la suite ↗</a>':''}<button type="button" class="lv-secondary" data-local-copy>Copier ma lecture</button><button type="button" class="lv-text-link" data-local-print>Imprimer</button><button type="button" class="lv-text-link" data-local-correct>Corriger ma question</button><a class="lv-text-link" href="${continuation.href}">${continuation.label} ↗</a></div><p class="lv-note" data-local-status role="status"></p></div>`;
     panneau.querySelector<HTMLElement>('h2')?.focus({preventScroll:true});
     panneau.querySelector('[data-local-correct]')?.addEventListener('click',()=>panneauQualif(panneau,true));
     panneau.querySelector('[data-local-print]')?.addEventListener('click',()=>window.print());
