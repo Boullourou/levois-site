@@ -878,7 +878,7 @@ const breadcrumbSchema = {
   '@type': 'BreadcrumbList',
   'itemListElement': [
     { '@type': 'ListItem', 'position': 1, 'name': 'Accueil', 'item': 'https://levois.fr/' },
-    { '@type': 'ListItem', 'position': 2, 'name': 'Observatoire Notarié', 'item': 'https://levois.fr/votre-rue/' },
+    { '@type': 'ListItem', 'position': 2, 'name': 'Ventes réelles (DVF)', 'item': 'https://levois.fr/votre-rue/' },
     { '@type': 'ListItem', 'position': 3, 'name': commune.name, 'item': `https://levois.fr/prix-immobilier/${commune.slug}/` }
   ]
 };
@@ -917,7 +917,7 @@ const datasetSchema = {
     <nav aria-label="Fil d'Ariane" style="font-size:13px;color:rgba(19,42,34,0.7);margin-bottom:24px;">
       <a href="/" style="text-decoration:underline;">Accueil</a>
       <span style="margin:0 8px;">›</span>
-      <a href="/votre-rue/" style="text-decoration:underline;">Observatoire Notarié</a>
+      <a href="/votre-rue/" style="text-decoration:underline;">Ventes réelles (DVF)</a>
       <span style="margin:0 8px;">›</span>
       <span style="font-weight:700;color:var(--ink);">{commune.name}</span>
     </nav>
