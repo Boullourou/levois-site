@@ -1,70 +1,93 @@
 .v7-home {
   --ink: #132a22;
-  --ink-light: #2d4a3e;
+  --ink-light: #475961;
   --pa: #FAF9F6;
-  --or: #ea580c;
-  --ru: #c2410c;
-  --arch: 999px 999px 28px 28px;
+  --or: #c25e1a; /* Ambre doux chaleureux */
+  --ru: #9a4313;
 }
+
 .v7-home * { box-sizing: border-box; }
-.v7-home ::selection { background: var(--or); color: #fff; }
+.v7-home ::selection { background: rgba(194, 94, 26, 0.18); color: var(--ink); }
 html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
 .v7-home {
   margin: 0;
   background: var(--pa);
   color: var(--ink);
-  font: 17px/1.6 "LEVOIS Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font: 17px/1.65 "LEVOIS Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
+
 .v7-home h1, .v7-home h2, .v7-home h3, .v7-home p { margin: 0; }
-.v7-home h1, .v7-home h2, .v7-home h3, .v7-home .an {
+
+.v7-home h1, .v7-home h2, .v7-home h3 {
   font-family: "LEVOIS Display", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-weight: 700;
-  line-height: 1.05;
+  font-weight: 600;
+  text-transform: none; /* Casse phrase naturelle */
+  line-height: 1.18;
   color: var(--ink);
 }
+
 .v7-home a { color: inherit; text-decoration: none; }
 .v7-home button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
 .v7-home :focus-visible { outline: 3px solid var(--or); outline-offset: 4px; }
-.v7-home .w { width: min(1280px, 100% - 48px); margin: auto; }
+.v7-home .w { width: min(1200px, 100% - 40px); margin: auto; }
+
+@media (max-width: 640px) {
+  .v7-home .w { width: calc(100% - 32px); }
+}
 
 /* PROGRESS BAR */
 .v7-home #bar {
-  position: fixed; top: 0; left: 0; height: 3px; width: 100%;
-  background: var(--or); transform: scaleX(0); transform-origin: 0; z-index: 60;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--or);
+  transform: scaleX(0);
+  transform-origin: 0;
+  z-index: 60;
 }
 
 /* HERO SECTION */
 .v7-home .hero {
-  padding-top: 100px;
+  padding-top: 56px;
   padding-bottom: 40px;
 }
+
 .v7-home .hg {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: 56px;
+  gap: 48px;
   align-items: center;
 }
+
 .v7-home .ey {
-  font: 700 12px/1 "LEVOIS Display", sans-serif;
-  letter-spacing: .12em;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--or);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
+
 .v7-home .hero h1 {
-  font-size: clamp(44px, 5.2vw, 76px);
+  font-size: clamp(34px, 4.4vw, 56px);
+  line-height: 1.15;
   margin-bottom: 20px;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
-.v7-home .hero .ln { display: block; overflow: hidden; }
+
+.v7-home .hero .ln { display: block; }
+
 .v7-home .hero .sub {
-  font-size: clamp(17px, 1.8vw, 20px);
-  line-height: 1.55;
+  font-size: clamp(16px, 1.6vw, 19px);
+  line-height: 1.6;
   color: var(--ink-light);
-  margin-bottom: 32px;
+  margin-bottom: 30px;
   max-width: 580px;
 }
 
@@ -73,77 +96,79 @@ html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
+
 .v7-home .pill {
   display: inline-flex;
   align-items: center;
-  gap: 16px;
-  padding: 15px 26px;
+  gap: 12px;
+  padding: 14px 24px;
   border-radius: 99px;
-  background: var(--or);
-  color: #fff;
-  font-size: 16px;
+  background: var(--ink);
+  color: #fff !important;
+  font-size: 15px;
   font-weight: 700;
-  transition: transform .2s, background .2s, box-shadow .2s;
-  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.25);
+  transition: transform .2s, background-color .2s, box-shadow .2s;
+  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.12);
 }
+
 .v7-home .pill:hover {
-  background: var(--ru);
+  background: #1f4236;
   transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(19, 42, 34, 0.18);
 }
+
 .v7-home .pill.pill-dark {
-  background: var(--ink);
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.25);
-}
-.v7-home .pill.pill-dark:hover {
-  background: #1d3e32;
-  transform: translateY(-2px);
-}
-.v7-home .pill.pill-outline {
-  background: #ffffff;
-  border: 2px solid var(--ink);
-  color: var(--ink);
-  box-shadow: 0 4px 12px rgba(19, 42, 34, 0.08);
-}
-.v7-home .pill.pill-outline:hover {
-  border-color: var(--or);
-  color: var(--or);
-  transform: translateY(-2px);
-}
-.v7-home .pill.k {
-  background: var(--ink);
-  color: #fff;
+  background: #FFFFFF;
+  color: var(--ink) !important;
+  border: 1.5px solid var(--ink);
   box-shadow: none;
 }
-.v7-home .pill.k:hover {
-  background: var(--or);
+
+.v7-home .pill.pill-dark:hover {
+  background: rgba(19, 42, 34, 0.05);
+  transform: translateY(-2px);
 }
+
+.v7-home .pill.pill-outline {
+  background: #FFFFFF;
+  color: var(--ink) !important;
+  border: 1.5px solid #d6cbb6;
+  box-shadow: none;
+}
+
+.v7-home .pill.pill-outline:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
 .v7-home .q {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink-light);
   line-height: 1.6;
 }
+
 .v7-home .q a {
-  color: var(--or);
+  color: var(--ink);
   font-weight: 700;
   margin-left: 6px;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* HERO VISUAL CONTAINER WITH ARCH SHAPE (VIDÉO DE CHARTRES CADRÉE) */
+/* HERO VIDEO PROPRE (FIN DE L'ARCHE BIZARRE) */
 .v7-home .hi {
-  justify-self: end;
-  width: min(100%, 460px);
-  aspect-ratio: 3 / 4.2;
-  border-radius: var(--arch);
+  width: 100%;
+  aspect-ratio: 16 / 11;
+  border-radius: 20px;
   overflow: hidden;
   position: relative;
   background: var(--ink);
-  box-shadow: 0 20px 40px -10px rgba(19, 42, 34, 0.2);
+  box-shadow: 0 16px 36px -10px rgba(19, 42, 34, 0.15);
   border: 1px solid rgba(19, 42, 34, 0.1);
 }
+
 .v7-home .hi video {
   position: absolute;
   inset: 0;
@@ -153,210 +178,278 @@ html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
   display: block;
 }
 
-/* MARQUEE COMMUNE STRIP */
+/* MARQUEE BANDEAU COMMUNES */
 .v7-home .mq {
   overflow: hidden;
-  border-block: 1px solid rgba(19, 42, 34, 0.12);
-  padding: 16px 0;
-  margin-top: 50px;
-  background: rgba(255, 255, 255, 0.6);
+  border-block: 1px solid rgba(19, 42, 34, 0.1);
+  padding: 14px 0;
+  margin-top: 48px;
+  background: rgba(255, 255, 255, 0.7);
 }
+
 .v7-home .mq div {
-  display: flex; gap: 28px; white-space: nowrap; animation: mq 32s linear infinite;
-  font-size: 13px; font-weight: 700; color: var(--ink-light); text-transform: uppercase;
+  display: flex;
+  gap: 28px;
+  white-space: nowrap;
+  animation: mq 36s linear infinite;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-light);
+  text-transform: uppercase;
   letter-spacing: .08em;
 }
+
 .v7-home .mq i { font-style: normal; color: var(--or); }
 @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-/* SECTION 2 : LOCAL REALITY DVF */
+/* SECTION 2 : PREUVE LOCALE DVF */
 .v7-home .lo {
   background: var(--ink);
   color: #fff;
-  padding: 85px 0;
-  margin-block: 50px;
+  padding: 76px 0;
+  margin-block: 40px;
 }
+
 .v7-home .st {
-  width: min(1280px, 100% - 48px);
+  width: min(1200px, 100% - 40px);
   margin: auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 56px;
   align-items: center;
 }
+
 .v7-home .vw {
   position: relative;
   aspect-ratio: 16 / 10;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.3);
 }
+
 .v7-home .vw img {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
+
 .v7-home .lt h2 {
   color: #fff;
-  font-size: clamp(34px, 4vw, 52px);
-  line-height: 1.1;
-  margin-bottom: 20px;
+  font-size: clamp(30px, 3.6vw, 46px);
+  line-height: 1.15;
+  margin-bottom: 18px;
 }
+
 .v7-home .lt p {
   font-size: 16px;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
+
+.v7-home .lt .pill {
+  background: #FFFFFF;
+  color: var(--ink) !important;
+}
+
+.v7-home .lt .pill:hover {
+  background: var(--pa);
+}
+
 .v7-home .lt details {
-  margin-top: 24px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.65);
-  line-height: 1.5;
+  margin-top: 22px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
 }
+
 .v7-home .lt summary {
   cursor: pointer;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 8px;
+  text-decoration: underline;
 }
 
-/* SECTION 3 : 3 DIAGNOSTICS HVCO CARDS (CARTES ÉPURÉES SANS DÉCOUPE BIZARRE, '01' PARFAITEMENT LISIBLE) */
+/* SECTION 3 : 3 CARTES DE DÉCISION (FIN DE L'ORANGE CRIARD SUR LA CARTE 3) */
 .v7-home .sec {
-  padding-block: 60px 80px;
+  padding-block: 60px 70px;
 }
+
 .v7-home .cd {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  margin-top: 40px;
+  margin-top: 36px;
 }
+
 .v7-home .c {
-  padding: 38px 30px;
+  padding: 34px 28px;
   display: flex;
   flex-direction: column;
-  border-radius: 24px;
+  border-radius: 20px;
+  border: 1px solid var(--v7-line, #d6cbb6);
   transition: transform .25s, box-shadow .25s;
-  box-shadow: 0 10px 30px rgba(19, 42, 34, 0.05);
+  box-shadow: 0 6px 20px rgba(19, 42, 34, 0.04);
+  background: #FFFFFF;
 }
+
 .v7-home .c:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 18px 40px rgba(19, 42, 34, 0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(19, 42, 34, 0.08);
 }
+
 .v7-home .c1 {
   background: var(--ink);
   color: #fff;
+  border-color: var(--ink);
 }
+
 .v7-home .c1 h3 { color: #fff; }
+
 .v7-home .c2 {
-  background: #e8e2d5;
+  background: #f4eee3;
   color: var(--ink);
+  border-color: #dfd6c5;
 }
+
 .v7-home .c3 {
-  background: var(--or);
-  color: #fff;
+  background: #FFFFFF;
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
 }
-.v7-home .c3 h3 { color: #fff; }
+
+.v7-home .c3 h3 { color: var(--ink); }
+
 .v7-home .c .n {
-  font: 700 13px/1 "LEVOIS Display", sans-serif;
-  letter-spacing: .12em;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   opacity: 0.9;
 }
+
+.v7-home .c1 .n { color: #e2a876; }
+.v7-home .c2 .n { color: var(--or); }
+.v7-home .c3 .n { color: var(--or); }
+
 .v7-home .c h3 {
-  font-size: clamp(24px, 2.5vw, 32px);
-  line-height: 1.15;
-  margin-bottom: 8px;
+  font-size: clamp(22px, 2.2vw, 28px);
+  line-height: 1.25;
+  margin-bottom: 12px;
 }
+
 .v7-home .c .ar {
   margin-top: auto;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding-top: 18px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
+
 .v7-home .all {
-  margin-top: 36px;
+  margin-top: 32px;
   text-align: right;
   font-size: 15px;
   font-weight: 700;
-  color: var(--or);
 }
-.v7-home .all a:hover { text-decoration: underline; }
+
+.v7-home .all a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 
 /* SECTION 4 : LA MÉTHODE EN 5 PILIERS */
 .v7-home .me {
   background: var(--pa);
   border-top: 1px solid rgba(19, 42, 34, 0.1);
   border-bottom: 1px solid rgba(19, 42, 34, 0.1);
-  padding: 90px 0;
+  padding: 80px 0;
 }
+
 .v7-home .mh {
   max-width: 760px;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
+
 .v7-home .ms {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 24px;
+  gap: 22px;
   border-top: 2px solid var(--ink);
-  padding-top: 36px;
+  padding-top: 32px;
   margin: 0;
   padding-left: 0;
 }
+
 .v7-home .ms li { list-style: none; }
+
 .v7-home .ms b {
-  font: 700 24px/1 "LEVOIS Display", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
   color: var(--or);
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
+
 .v7-home .ms h3 {
-  font: 600 18px/1.2 "LEVOIS Text", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--ink);
   margin-bottom: 8px;
+  line-height: 1.3;
 }
+
 .v7-home .ms p {
   font-size: 14px;
   line-height: 1.55;
   color: var(--ink-light);
 }
 
-/* SECTION 5 : MOUAAD BOULLOUROU */
+/* SECTION 5 : INCARNATION MOUAAD */
 .v7-home .ct {
-  padding-block: 85px 110px;
+  padding-block: 76px 90px;
 }
+
 .v7-home .cg {
   display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 56px;
+  grid-template-columns: 300px 1fr;
+  gap: 48px;
   align-items: center;
   background: #fff;
   border: 1px solid rgba(19, 42, 34, 0.1);
-  border-radius: 24px;
-  padding: 48px;
+  border-radius: 20px;
+  padding: 44px;
   box-shadow: 0 10px 30px rgba(19, 42, 34, 0.04);
 }
+
 .v7-home .pt {
   width: 100%;
   aspect-ratio: 4 / 5;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
   background: var(--ink);
 }
+
 .v7-home .pt img {
   width: 100%; height: 100%; object-fit: cover; display: block;
 }
+
 .v7-home .ct h2 {
-  font-size: clamp(32px, 3.8vw, 48px);
-  margin-bottom: 8px;
+  font-size: clamp(28px, 3.4vw, 42px);
+  margin-bottom: 12px;
 }
+
 .v7-home .who {
   font-size: 17px;
   font-weight: 700;
   color: var(--or);
   margin-bottom: 16px;
 }
+
 .v7-home .who span {
   display: block;
   font-size: 13px;
@@ -364,18 +457,21 @@ html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
   color: var(--ink-light);
   margin-top: 3px;
 }
+
 .v7-home .t {
   font-size: 16px;
   line-height: 1.65;
   color: var(--ink);
   margin-bottom: 12px;
 }
+
 .v7-home .r2 {
   font-size: 14px;
   line-height: 1.6;
   color: var(--ink-light);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
+
 .v7-home .fee {
   font-size: 13px;
   color: var(--ink-light);
@@ -383,45 +479,50 @@ html:has(.v7-home) { scroll-behavior: smooth; scroll-padding-top: 80px; }
   background: var(--pa);
   border-radius: 8px;
   border: 1px solid rgba(19, 42, 34, 0.1);
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   display: inline-block;
 }
+
 .v7-home .fee a {
   color: var(--or);
   font-weight: 700;
   text-decoration: underline;
 }
+
 .v7-home .ph {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--ink);
-  padding: 14px 22px;
-  border: 1px solid rgba(19, 42, 34, 0.15);
+  padding: 13px 22px;
+  border: 1px solid rgba(19, 42, 34, 0.2);
   border-radius: 99px;
   display: inline-flex;
   align-items: center;
 }
 
-/* RESPONSIVE DESIGN */
+/* RESPONSIVE DESIGN - ORDRE MOBILE NATUREL */
 @media (max-width: 1040px) {
-  .v7-home .hg { grid-template-columns: 1fr; gap: 36px; }
+  .v7-home .hg {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  /* TEXTE AVANT LA VIDÉO SUR MOBILE (FIN DE ORDER: -1) */
   .v7-home .hi {
-    order: -1;
+    order: 2; /* Reste en dessous du message et des boutons */
     width: 100%;
-    aspect-ratio: 16 / 9;
-    border-radius: 20px;
-    justify-self: stretch;
+    aspect-ratio: 16 / 10;
+    border-radius: 16px;
   }
   .v7-home .cd { grid-template-columns: 1fr; }
-  .v7-home .st { grid-template-columns: 1fr; gap: 36px; }
+  .v7-home .st { grid-template-columns: 1fr; gap: 32px; }
   .v7-home .ms { grid-template-columns: repeat(2, 1fr); }
-  .v7-home .cg { grid-template-columns: 1fr; padding: 32px; gap: 32px; }
-  .v7-home .pt { max-width: 260px; margin: auto; }
+  .v7-home .cg { grid-template-columns: 1fr; padding: 28px; gap: 28px; }
+  .v7-home .pt { max-width: 240px; margin: auto; }
 }
 
 @media (max-width: 640px) {
-  .v7-home .hero { padding-top: 85px; }
-  .v7-home .hero h1 { font-size: 38px; }
+  .v7-home .hero { padding-top: 36px; }
+  .v7-home .hero h1 { font-size: 32px; line-height: 1.2; }
   .v7-home .en { flex-direction: column; }
   .v7-home .pill { width: 100%; justify-content: space-between; }
   .v7-home .ms { grid-template-columns: 1fr; }
