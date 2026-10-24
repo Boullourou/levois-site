@@ -1,15 +1,30 @@
-/* LEVOIS public — valeurs normatives de l’identité validée. */
+/* LEVOIS public — valeurs normatives de l'identité harmonisée. */
 :root {
-  --levois-paper:#FAF9F6; --levois-surface:#fff; --levois-ink:#132a22;
-  --levois-muted:#52665e; --levois-line:#e2e7e3; --levois-accent:#ea580c;
-  --levois-human:#ea580c; /* Accent d'action et contraste SAFTI. */
-  --levois-hover:#c2410c; --levois-selected:#fff7ed; --levois-dark:#132a22;
-  --levois-dark-field:#1c382e; --levois-on-dark:#d1ded8;
-  --levois-error:#9c352c; --levois-error-bg:#ffefed;
-  --levois-success:#286547; --levois-success-bg:#eaf4ee;
-  --levois-field-radius:8px; --levois-action-radius:9px; --levois-choice-radius:12px;
-  --levois-dock-radius:15px; --levois-sheet-radius:16px;
-  --levois-edge:clamp(24px,4vw,72px); --levois-reading:70ch; --levois-wide:1280px;
-  --levois-fast:180ms; --levois-ease:cubic-bezier(.16,1,.3,1);
-  --levois-shadow:0 16px 48px -16px rgba(19, 42, 34, 0.15);
+  --levois-paper: #FAF9F6;
+  --levois-surface: #ffffff;
+  --levois-ink: #132a22;
+  --levois-muted: #475961;
+  --levois-line: #d6cbb6;
+  --levois-accent: #c25e1a; /* Ambre chaleureux doux, non agressif */
+  --levois-human: #c25e1a;
+  --levois-hover: #9a4313;
+  --levois-selected: #fbf5ef;
+  --levois-dark: #132a22;
+  --levois-dark-field: #1c382e;
+  --levois-on-dark: #e8edea;
+  --levois-error: #9c352c;
+  --levois-error-bg: #ffefed;
+  --levois-success: #286547;
+  --levois-success-bg: #eaf4ee;
+  --levois-field-radius: 10px;
+  --levois-action-radius: 99px;
+  --levois-choice-radius: 14px;
+  --levois-dock-radius: 16px;
+  --levois-sheet-radius: 20px;
+  --levois-edge: clamp(20px, 4vw, 48px);
+  --levois-reading: 68ch;
+  --levois-wide: 1240px;
+  --levois-fast: 180ms;
+  --levois-ease: cubic-bezier(.16, 1, .3, 1);
+  --levois-shadow: 0 12px 36px -10px rgba(19, 42, 34, 0.08);
 }

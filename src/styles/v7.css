@@ -1,84 +1,403 @@
 @import './v7-fonts.css';
-/* Identité partagée issue de l’accueil V7 approuvé. */
-:root { --v7-ink:#132a22; --v7-paper:#FAF9F6; --v7-orange:#ea580c; --v7-rust:#c2410c; --v7-muted:#475961; --v7-line:#d6cbb6; --site-header-h:76px; }
-html { scroll-padding-top:96px; }
-body.levois-v7 { background:var(--v7-paper); color:var(--v7-ink); font-family:'LEVOIS Text',Arial,sans-serif; font-size:17px; line-height:1.6; }
-.levois-v7 ::selection { background:var(--v7-orange); color:var(--v7-ink); }
-.levois-v7 :focus-visible { outline:3px solid var(--v7-rust); outline-offset:4px; }
-.levois-v7 h1,.levois-v7 h2,.levois-v7 h3 { font-family:'LEVOIS Display',Impact,sans-serif!important; font-weight:400!important; letter-spacing:0; }
-.levois-v7 h1,.levois-v7 h2 { text-transform:uppercase; text-wrap:balance; }
-.levois-v7 p,.levois-v7 label,.levois-v7 input,.levois-v7 textarea,.levois-v7 select,.levois-v7 button { font-family:'LEVOIS Text',Arial,sans-serif; }
-.levois-v7 .font-display:not(h1):not(h2):not(h3) { font-family:'LEVOIS Text',Arial,sans-serif; }
-.levois-v7 .text-display { font-size:clamp(46px,6.4vw,88px); line-height:1.03; }
-.levois-v7 .text-h2 { font-size:clamp(32px,4vw,50px); line-height:1.12; }
-.levois-v7 .text-h3 { font-size:clamp(26px,3vw,36px); line-height:1.18; }
-.levois-v7 .eyebrow { color:var(--v7-rust); font-size:12px; line-height:1.5; letter-spacing:.12em; }
-.levois-v7 .btn-primaire,.levois-v7 .btn-sur-encre { background:var(--v7-orange); color:var(--v7-ink); border:1px solid transparent; animation:none; font-weight:600; }
-.levois-v7 .btn-primaire:hover,.levois-v7 .btn-sur-encre:hover { background:var(--v7-ink); color:var(--v7-paper); }
-.levois-v7 .btn-secondaire { border-color:var(--v7-ink); color:var(--v7-ink); }
-.levois-v7 .btn-secondaire:hover { background:var(--v7-ink); color:var(--v7-paper); }
-.levois-v7 .carte { border-radius:24px; border-color:var(--v7-line); }
-.levois-v7 input:not([type=checkbox]):not([type=radio]):not([type=range]),.levois-v7 textarea,.levois-v7 select { border-radius:14px; }
-.levois-v7 input[type=checkbox],.levois-v7 input[type=radio] { accent-color:var(--v7-rust); }
-.v7-inner #content > :is(div,article).max-w-editorial { max-width:880px; }
-.v7-inner #content > :is(div,article) > header:first-child { padding-bottom:36px; border-bottom:2px solid var(--v7-ink); }
-.v7-inner #content { padding-bottom:56px; }
-.v7-inner .resource-grid { gap:22px; border:0; }
-.v7-inner .resource-entry { border:1px solid var(--v7-line); border-radius:26px 80px 26px 26px; background:#eee4d0; }
-.v7-inner .resource-entry:nth-child(3n+1) { background:var(--v7-ink); color:var(--v7-paper); }
-.v7-inner .resource-entry:nth-child(3n+1) :is(.resource-index,.resource-meta strong) { color:var(--v7-orange); }
-.v7-inner .resource-entry:hover { background:var(--v7-rust); color:var(--v7-paper); }
-.v7-inner .resource-entry:hover :is(.resource-index,.resource-meta strong) { color:var(--v7-paper); }
-.v7-inner .resource-entry h2 { font-size:clamp(32px,3vw,46px); line-height:1.08; }
-.v7-inner .resource-chooser { border-radius:26px; }
-.v7-inner .mr-root { background:var(--v7-paper); }
-.v7-inner .mr-barre { background:var(--v7-orange); }
-.v7-inner .vr-page-title { font-size:clamp(42px,6vw,76px); line-height:1.06; }
-.v7-inner .url-hero { border-radius:0 0 56px 0; }
-.v7-inner .url-hero h1 { line-height:1.04; }
-.v7-inner .rounded-card { border-radius:26px; }
-#bar { position:fixed; inset:0 0 auto; height:3px; z-index:80; background:var(--v7-orange); transform:scaleX(0); transform-origin:0; }
-.v7-header { position:sticky; top:0; z-index:70; background:var(--v7-paper); color:var(--v7-ink); border-bottom:1px solid #132a2218; }
-.v7-header--home { position:fixed; left:0; right:0; background:transparent; border:0; color:var(--v7-paper); }
-.v7-header.s,.v7-header.menu-open { background:rgba(246,240,227,.97); color:var(--v7-ink); backdrop-filter:blur(14px); }
-.v7-nav-wrap { width:min(1320px,calc(100% - 48px)); min-height:76px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:28px; }
-.v7-logo { font:32px/1 'LEVOIS Display',Impact,sans-serif; text-decoration:none; white-space:nowrap; }
-.v7-logo span { color:var(--v7-rust); }
-.v7-header--home:not(.s):not(.menu-open) .v7-logo span { color:var(--v7-orange); }
-.v7-nav { display:flex; align-items:center; gap:26px; }
-.v7-nav a { font-size:16px; min-height:44px; display:flex; align-items:center; text-decoration:none; border-bottom:2px solid transparent; }
-.v7-nav a:hover,.v7-nav a[aria-current=page] { border-bottom-color:currentColor; }
-.v7-call { background:var(--v7-orange); color:var(--v7-ink); padding:10px 22px; border-radius:99px; text-decoration:none; font-size:16px; font-weight:600; }
-.v7-menu-toggle { display:none; }
-.v7-footer { margin-top:64px; background:var(--v7-orange); color:var(--v7-ink); border-radius:56px 56px 0 0; padding:58px 0 30px; }
-.v7-footer--flush { margin-top:0; border-radius:0; }
-.v7-footer-inner { width:min(1320px,calc(100% - 48px)); margin:auto; }
-.v7-footer-top { display:flex; justify-content:space-between; align-items:center; gap:30px; padding-bottom:38px; border-bottom:1px solid #132a2250; }
-.v7-footer-top p { margin:0; font-size:20px; }.v7-footer-top p span { font-size:15px; }
-.v7-footer-contact { padding:14px 24px; background:var(--v7-ink); color:var(--v7-paper); border-radius:99px; text-decoration:none; white-space:nowrap; }
-.v7-footer-links { display:flex; flex-wrap:wrap; gap:12px 30px; padding:30px 0; }
-.v7-footer a,.v7-footer button { text-underline-offset:4px; }
-.v7-footer-bottom { border-top:1px solid #132a2250; padding-top:28px; display:grid; grid-template-columns:1fr 1fr; gap:24px; font-size:14px; }
-.v7-footer-bottom p { margin:0; }.v7-footer-bottom nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:12px 22px; align-content:start; }
-.v7-footer-bottom button { text-decoration:underline; cursor:pointer; }
-.v7-copyright { font-size:13px; margin-top:24px; }
-html.mo *,html.mo *::before,html.mo *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
-html.mo .fade-up { opacity:1!important; transform:none!important; }
-@media(max-width:1040px) {
- .v7-nav-wrap { gap:16px; }.v7-logo { margin-right:auto; }
- .v7-menu-toggle { display:flex; align-items:center; gap:12px; padding:10px 12px; min-height:44px; border:1px solid currentColor; border-radius:99px; font-size:15px; cursor:pointer; }
- .v7-menu-toggle span { font-size:21px; line-height:1; }.menu-open .v7-menu-toggle span { transform:rotate(45deg); }
- .v7-nav { display:none; position:absolute; left:0; right:0; top:76px; padding:20px 24px 28px; background:var(--v7-paper); color:var(--v7-ink); border-bottom:1px solid var(--v7-line); box-shadow:0 14px 24px #132a2215; }
- .menu-open .v7-nav { display:grid; gap:5px; }
- .v7-nav a { width:max-content; }
+
+/* ==========================================================================
+   LEVOIS V7 HARMONISÉ — Expérience épurée, apaisée et cohérente
+   ========================================================================== */
+
+:root {
+  --v7-ink: #132a22;         /* Vert encre profond statutaire */
+  --v7-ink-light: #2d4a3e;   /* Vert encre textuel */
+  --v7-paper: #FAF9F6;       /* Papier chaud noble */
+  --v7-surface: #FFFFFF;     /* Blanc pur cartes */
+  --v7-orange: #c25e1a;      /* Ambre chaleureux doux (remplace l'orange criard) */
+  --v7-rust: #9a4313;        /* Ambre sombre d'accent */
+  --v7-muted: #475961;       /* Gris-vert de lecture aéré */
+  --v7-line: #d6cbb6;        /* Trait de séparation fin */
+  --site-header-h: 76px;
 }
-@media(max-width:600px) {
- .v7-nav-wrap,.v7-footer-inner { width:calc(100% - 40px); }.v7-nav-wrap { gap:10px; }.v7-logo { font-size:27px; }.v7-call { padding:10px 15px; font-size:14px; }
- .v7-footer { border-radius:36px 36px 0 0; }.v7-footer--flush { border-radius:0; }
- .v7-footer-top { flex-direction:column; align-items:flex-start; }
- .v7-footer-bottom { grid-template-columns:1fr; }
- .v7-footer-bottom nav { justify-content:flex-start; }
- .v7-homepage .v7-footer { padding-bottom:110px; }
- .v7-inner #content > :is(div,article) > header:first-child { padding-bottom:26px; }
+
+html {
+  scroll-padding-top: 96px;
+  background: var(--v7-paper);
 }
-@media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+
+body.levois-v7 {
+  background: var(--v7-paper);
+  color: var(--v7-ink);
+  font-family: 'LEVOIS Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.levois-v7 ::selection {
+  background: rgba(194, 94, 26, 0.18);
+  color: var(--v7-ink);
+}
+
+.levois-v7 :focus-visible {
+  outline: 3px solid var(--v7-orange);
+  outline-offset: 4px;
+}
+
+/* Typographie naturelle et aérée — fin des blocs compacts en majuscules */
+.levois-v7 h1,
+.levois-v7 h2,
+.levois-v7 h3 {
+  font-family: 'LEVOIS Display', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: none !important; /* Casse phrase naturelle */
+  letter-spacing: -0.015em;
+  color: var(--v7-ink);
+  text-wrap: balance;
+  margin-top: 0;
+}
+
+.levois-v7 h1 {
+  font-size: clamp(34px, 4.4vw, 58px);
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.levois-v7 h2 {
+  font-size: clamp(26px, 3.2vw, 40px);
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+.levois-v7 h3 {
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.35;
+  margin-bottom: 12px;
+}
+
+.levois-v7 p {
+  line-height: 1.65;
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+/* Liens cliquables évidents */
+.levois-v7 a {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+
+.levois-v7 .lv-prose a,
+.levois-v7 .lv-editorial a {
+  text-decoration: underline;
+  text-decoration-color: rgba(19, 42, 34, 0.4);
+  transition: text-decoration-color 0.2s;
+}
+
+.levois-v7 .lv-prose a:hover,
+.levois-v7 .lv-editorial a:hover {
+  text-decoration-color: var(--v7-ink);
+}
+
+.levois-v7 .eyebrow {
+  color: var(--v7-orange);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* Boutons d'action francs et lisibles */
+.levois-v7 .btn-primaire,
+.levois-v7 .btn-sur-encre,
+.levois-v7 .pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 26px;
+  border-radius: 99px;
+  background: var(--v7-ink);
+  color: #FFFFFF !important;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none !important;
+  border: 1px solid transparent;
+  transition: transform .2s, background-color .2s, box-shadow .2s;
+  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.12);
+}
+
+.levois-v7 .btn-primaire:hover,
+.levois-v7 .btn-sur-encre:hover,
+.levois-v7 .pill:hover {
+  background: #1f4236;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(19, 42, 34, 0.18);
+}
+
+.levois-v7 .btn-secondaire,
+.levois-v7 .pill-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 24px;
+  border-radius: 99px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--v7-ink);
+  color: var(--v7-ink) !important;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: transform .2s, background-color .2s;
+}
+
+.levois-v7 .btn-secondaire:hover,
+.levois-v7 .pill-outline:hover {
+  background: rgba(19, 42, 34, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Conteneur universel garanti avec marge de sécurité mobile */
+.w,
+.lv-wrap,
+.v7-nav-wrap,
+.v7-footer-inner {
+  width: min(1200px, 100% - 40px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+  .w,
+  .lv-wrap,
+  .v7-nav-wrap,
+  .v7-footer-inner {
+    width: calc(100% - 32px);
+  }
+}
+
+/* Barre supérieure de progression */
+#bar {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3px;
+  z-index: 80;
+  background: var(--v7-orange);
+  transform: scaleX(0);
+  transform-origin: 0;
+}
+
+/* Header */
+.v7-header {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  background: rgba(250, 249, 246, 0.94);
+  backdrop-filter: blur(12px);
+  color: var(--v7-ink);
+  border-bottom: 1px solid rgba(19, 42, 34, 0.1);
+}
+
+.v7-nav-wrap {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.v7-logo {
+  font-family: 'LEVOIS Display', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  color: var(--v7-ink);
+}
+
+.v7-nav {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.v7-nav a {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--v7-ink);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background-color 0.15s;
+}
+
+.v7-nav a:hover,
+.v7-nav a[aria-current="page"] {
+  background: rgba(19, 42, 34, 0.06);
+}
+
+.v7-call {
+  background: var(--v7-ink);
+  color: #FFFFFF !important;
+  padding: 9px 20px;
+  border-radius: 99px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.v7-call:hover {
+  opacity: 0.9;
+}
+
+.v7-menu-toggle {
+  display: none;
+}
+
+/* FOOTER SOBRE ET STATUTAIRE (Adieu le pavé orange fluo) */
+.v7-footer {
+  margin-top: 80px;
+  background: var(--v7-ink);
+  color: var(--v7-paper);
+  border-radius: 36px 36px 0 0;
+  padding: 56px 0 36px;
+}
+
+.v7-footer--flush {
+  margin-top: 0;
+  border-radius: 0;
+}
+
+.v7-footer a {
+  color: var(--v7-paper);
+  text-decoration: none;
+}
+
+.v7-footer a:hover {
+  text-decoration: underline;
+}
+
+.v7-footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgba(250, 249, 246, 0.15);
+}
+
+.v7-footer-top .v7-logo {
+  color: var(--v7-paper);
+}
+
+.v7-footer-top p {
+  margin: 0;
+  font-size: 16px;
+  color: rgba(250, 249, 246, 0.8);
+}
+
+.v7-footer-top p span {
+  font-size: 13px;
+  color: rgba(250, 249, 246, 0.6);
+}
+
+.v7-footer-contact {
+  padding: 12px 22px;
+  background: rgba(250, 249, 246, 0.12);
+  color: #FFFFFF !important;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid rgba(250, 249, 246, 0.2);
+  transition: background-color 0.2s;
+}
+
+.v7-footer-contact:hover {
+  background: rgba(250, 249, 246, 0.22);
+  text-decoration: none !important;
+}
+
+.v7-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 26px 0;
+  font-size: 14px;
+}
+
+.v7-footer-bottom {
+  border-top: 1px solid rgba(250, 249, 246, 0.15);
+  padding-top: 24px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  font-size: 13px;
+  color: rgba(250, 249, 246, 0.7);
+}
+
+.v7-footer-bottom nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px 20px;
+}
+
+.v7-footer-bottom button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.v7-copyright {
+  font-size: 12px;
+  color: rgba(250, 249, 246, 0.5);
+  margin-top: 24px;
+}
+
+/* Media queries mobile */
+@media (max-width: 1040px) {
+  .v7-menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border: 1px solid var(--v7-ink);
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+  }
+  .v7-nav {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 72px;
+    padding: 20px 24px 28px;
+    background: var(--v7-paper);
+    border-bottom: 1px solid var(--v7-line);
+    box-shadow: 0 16px 30px rgba(19, 42, 34, 0.08);
+  }
+  .menu-open .v7-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .v7-footer-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .v7-footer-bottom {
+    grid-template-columns: 1fr;
+  }
+  .v7-footer-bottom nav {
+    justify-content: flex-start;
+  }
+}
