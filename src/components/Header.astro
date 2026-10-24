@@ -4,19 +4,19 @@ interface Props { transparent?: boolean; homeV2?: boolean }
 const { transparent = false } = Astro.props;
 const links = [
   { href: '/#projet', label: 'Votre projet' },
-  { href: '/votre-rue', label: 'Votre quartier' },
-  { href: '/ressources', label: 'Pour avancer' },
-  { href: '/methode', label: 'La méthode' },
-  { href: '/mouaad', label: 'Mouaad' },
+  { href: '/votre-rue/', label: 'Votre quartier' },
+  { href: '/ressources/', label: 'Pour avancer' },
+  { href: '/methode/', label: 'La méthode' },
+  { href: '/mouaad/', label: 'Mouaad' },
 ];
 ---
 <div id="bar" aria-hidden="true"></div>
 <header id="hd" class="v7-header">
   <div class="v7-nav-wrap">
-    <a class="v7-logo" href="/" aria-label="LEVOIS, accueil">LEVOIS<span>.FR</span></a>
+    <a class="v7-logo" href="/" aria-label="LEVOIS, accueil">LEVOIS</a>
     <button class="v7-menu-toggle" type="button" aria-expanded="false" aria-controls="v7-nav">Menu <span aria-hidden="true">+</span></button>
     <nav class="v7-nav" id="v7-nav" aria-label="Navigation principale">
-      {links.map(link => <a href={link.href} aria-current={Astro.url.pathname.replace(/\/$/, '') === link.href ? 'page' : undefined}>{link.label}</a>)}
+      {links.map(link => <a href={link.href} aria-current={Astro.url.pathname.replace(/\/$/, '') === link.href.replace(/\/$/, '') ? 'page' : undefined}>{link.label}</a>)}
     </nav>
     <a class="v7-call" href={`tel:${site.phone}`}>Appeler</a>
   </div>
