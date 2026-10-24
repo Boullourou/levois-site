@@ -9,7 +9,7 @@ const host = import.meta.env.PUBLIC_POSTHOG_HOST ?? 'https://eu.i.posthog.com';
 <span hidden data-levois-analytics data-token={token} data-host={host} aria-hidden="true"></span>
 <dialog id="analytics-preferences" aria-labelledby="analytics-title">
   <form method="dialog" class="analytics-close"><button type="submit" aria-label="Fermer les choix de confidentialité">Fermer <span aria-hidden="true">×</span></button></form>
-  <h2 id="analytics-title">Votre visite. Votre choix.</h2>
+  <p id="analytics-title" class="analytics-title" style="font-size:20px;font-weight:700;line-height:1.3;margin:0 0 12px;color:var(--ink);">Votre visite. Votre choix.</p>
   <p>La mesure d’audience aide à comprendre quelles pages sont utiles. Elle est facultative et désactivée tant que vous ne l’acceptez pas. Le site fonctionne avec ou sans elle.</p>
   <p>Les textes saisis, coordonnées, adresses recherchées et réponses aux parcours ne sont pas envoyés à l’outil de mesure.</p>
   <p data-analytics-status role="status"></p>
