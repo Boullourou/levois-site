@@ -9,29 +9,131 @@ import '../styles/v7.css';
 import '../styles/v7-production.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-interface Props { homeV7?:boolean; title:string; description?:string; image?:string; noindex?:boolean; headerTransparent?:boolean; homeV2?:boolean; designContract?:string }
-const {title,description=site.description,image='/assets/levois-partage.jpg',noindex=false,homeV7=false}=Astro.props;
-const path=Astro.url.pathname.replace(/\/$/,'')||'/';
-const links=[{href:'/ma-recherche',label:'Acheter'},{href:'/situer-ma-vente',label:'Vendre'},{href:'/vendre-et-acheter',label:'Vendre et acheter'},{href:'/votre-rue',label:'Repères locaux'}];
+
+interface Props { 
+  homeV7?: boolean; 
+  title: string; 
+  description?: string; 
+  image?: string; 
+  noindex?: boolean; 
+  headerTransparent?: boolean; 
+  homeV2?: boolean; 
+  designContract?: string 
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/assets/levois-partage.jpg',
+  noindex = false,
+  homeV7 = false
+} = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const canonicalUrl = Astro.url.pathname.endsWith('/') ? site.url + Astro.url.pathname : site.url + Astro.url.pathname + '/';
+
+const pageTitle = title === 'Accueil'
+  ? 'LEVOIS · Conseil Immobilier & Vente à Lèves et Chartres'
+  : (title.includes('LEVOIS') ? title : `${title} · LEVOIS`);
+
+const schemaOrg = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'RealEstateAgent',
+      '@id': 'https://levois.fr/#agent',
+      name: 'LEVOIS',
+      url: 'https://levois.fr/',
+      logo: 'https://levois.fr/favicon.svg',
+      image: 'https://levois.fr/assets/levois-partage.jpg',
+      telephone: '+33781380121',
+      email: 'mouaad@levois.fr',
+      priceRange: '$$',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Lèves',
+        postalCode: '28300',
+        addressRegion: 'Eure-et-Loir',
+        addressCountry: 'FR'
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: 48.4697,
+        longitude: 1.4816
+      },
+      areaServed: [
+        { '@type': 'City', name: 'Lèves', sameAs: 'https://fr.wikipedia.org/wiki/L%C3%A8ves' },
+        { '@type': 'City', name: 'Chartres', sameAs: 'https://fr.wikipedia.org/wiki/Chartres' },
+        { '@type': 'City', name: 'Mainvilliers' },
+        { '@type': 'City', name: 'Lucé' },
+        { '@type': 'City', name: 'Champhol' },
+        { '@type': 'City', name: 'Le Coudray' },
+        { '@type': 'City', name: 'Luisant' }
+      ],
+      parentOrganization: {
+        '@type': 'Organization',
+        name: 'SAFTI',
+        url: 'https://www.safti.fr',
+        sameAs: 'https://www.societe.com/societe/safti-524675545.html'
+      },
+      founder: {
+        '@type': 'Person',
+        '@id': 'https://levois.fr/#mouaad',
+        name: 'Mouaad Boullourou',
+        jobTitle: 'Conseiller immobilier indépendant SAFTI',
+        telephone: '+33781380121',
+        email: 'mouaad@levois.fr',
+        image: 'https://levois.fr/v7/asset-07.webp',
+        sameAs: [
+          'https://www.safti.fr/votre-conseiller-safti/mouaad-boullourou',
+          'https://www.pappers.fr/entreprise/boullourou-mouaad-824194419'
+        ],
+        identifier: 'RSAC Chartres 824 194 419'
+      }
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://levois.fr/#website',
+      url: 'https://levois.fr/',
+      name: 'LEVOIS',
+      description: 'Conseil immobilier indépendant et observatoire DVF des ventes réelles à Lèves et Chartres Métropole.',
+      publisher: { '@id': 'https://levois.fr/#agent' },
+      inLanguage: 'fr-FR'
+    }
+  ]
+};
 ---
 <!doctype html>
-<html lang="fr"><head>
-<script is:inline>document.documentElement.classList.add("js");</script>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="color-scheme" content="light"/>
-{(noindex||['/composants','/404','/situer-ma-vente/resultat','/lecture','/reprendre'].includes(path))&&<meta name="robots" content="noindex,nofollow"/>}
-<title>{title==='Accueil'?'LEVOIS · Des décisions immobilières plus claires':title+' · LEVOIS'}</title>
-<meta name="theme-color" content="#102635"/><meta name="description" content={description}/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="canonical" href={site.url+Astro.url.pathname}/>
-<link rel="preload" href="/v7/asset-02.woff" as="font" type="font/woff" crossorigin/><link rel="preload" href="/v7/asset-01.woff" as="font" type="font/woff" crossorigin/>
-<meta property="og:title" content={title+' · LEVOIS'}/><meta property="og:description" content={description}/><meta property="og:image" content={site.url+image}/><meta property="og:locale" content="fr_FR"/><meta property="og:type" content="website"/>
-<script type="application/ld+json" set:html={JSON.stringify({'@context':'https://schema.org','@type':'RealEstateAgent',name:'LEVOIS',url:site.url,email:site.email,telephone:site.phone,founder:{'@type':'Person',name:site.mouaad.nom},areaServed:site.communes.map(name=>({'@type':'City',name}))})}/>
-</head><body class:list={['levois-v7',homeV7?'v7-homepage':'reperes-shell plan-vivant v7-inner',{'rp-territoire':path==='/votre-rue'}]}>
-<a class="lv-skip" href="#contenu">Aller au contenu</a>
-<Header transparent={homeV7}/>
-<main id="contenu" tabindex="-1"><slot/></main>
-<Footer flush={homeV7}/>
-<Analytics/>
-<script>
-import '../scripts/public-forms';
-import '../scripts/experience-entry';
-</script>
-</body></html>
+<html lang="fr">
+<head>
+  <script is:inline>document.documentElement.classList.add("js");</script>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="color-scheme" content="light"/>
+  {(noindex || ['/composants', '/404', '/situer-ma-vente/resultat', '/lecture', '/reprendre'].includes(path)) && <meta name="robots" content="noindex,nofollow"/>}
+  <title>{pageTitle}</title>
+  <meta name="theme-color" content="#132a22"/>
+  <meta name="description" content={description}/>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+  <link rel="canonical" href={canonicalUrl}/>
+  <link rel="preload" href="/v7/asset-02.woff" as="font" type="font/woff" crossorigin/>
+  <link rel="preload" href="/v7/asset-01.woff" as="font" type="font/woff" crossorigin/>
+  <meta property="og:title" content={pageTitle}/>
+  <meta property="og:description" content={description}/>
+  <meta property="og:image" content={site.url + image}/>
+  <meta property="og:locale" content="fr_FR"/>
+  <meta property="og:type" content="website"/>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)}/>
+</head>
+<body class:list={['levois-v7', homeV7 ? 'v7-homepage' : 'reperes-shell plan-vivant v7-inner', { 'rp-territoire': path === '/votre-rue' }]}>
+  <a class="lv-skip" href="#contenu">Aller au contenu</a>
+  <Header transparent={homeV7}/>
+  <main id="contenu" tabindex="-1"><slot/></main>
+  <Footer flush={homeV7}/>
+  <Analytics/>
+  <script>
+    import '../scripts/public-forms';
+    import '../scripts/experience-entry';
+  </script>
+</body>
+</html>
