@@ -489,3 +489,215 @@
   border-color: var(--ink);
   background: #FAF9F6;
 }
+
+/* HERO TOP BADGE (INCARNATION SUBTILE DÈS LE PREMIER ÉCRAN) */
+.v7-home .hero-top-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid rgba(19, 42, 34, 0.12);
+  border-radius: 999px;
+  padding: 6px 18px 6px 6px;
+  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.04);
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--ink-light);
+}
+
+.v7-home .hero-advisor-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--or);
+  display: block;
+}
+
+.v7-home .hero-top-badge strong {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+/* SECTION 3 : DÉCLICS DE VIE (LES 97%) */
+.v7-home .life-sec {
+  padding: 88px 0;
+  background: var(--surface);
+  border-top: 1px solid rgba(19, 42, 34, 0.08);
+}
+
+.v7-home .life-header {
+  max-width: 760px;
+  margin-bottom: 48px;
+}
+
+.v7-home .life-header h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.18;
+  margin-bottom: 16px;
+}
+
+.v7-home .life-header p {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-light);
+}
+
+.v7-home .life-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .v7-home .life-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.v7-home .life-card {
+  background: var(--pa);
+  border: 1px solid rgba(19, 42, 34, 0.08);
+  border-radius: 20px;
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.v7-home .life-tag {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--or);
+  margin-bottom: 12px;
+}
+
+.v7-home .life-card h3 {
+  font-size: 22px;
+  line-height: 1.25;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+
+.v7-home .life-card p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-light);
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.v7-home .life-link {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.2s;
+}
+
+.v7-home .life-link:hover {
+  color: var(--or);
+}
+
+/* SECTION 4 : OPPORTUNITÉS & RÉSEAU LOCAL (SAFTI CONNECT & RECONVERSION) */
+.v7-home .opp-sec {
+  padding: 88px 0;
+  background: var(--pa);
+  border-top: 1px solid rgba(19, 42, 34, 0.08);
+}
+
+.v7-home .opp-header {
+  max-width: 760px;
+  margin-bottom: 48px;
+}
+
+.v7-home .opp-header h2 {
+  font-size: clamp(28px, 3.4vw, 44px);
+  line-height: 1.18;
+  margin-bottom: 16px;
+}
+
+.v7-home .opp-header p {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-light);
+}
+
+.v7-home .opp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .v7-home .opp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.v7-home .opp-card {
+  background: var(--surface);
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 20px;
+  padding: 36px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(19, 42, 34, 0.03);
+}
+
+.v7-home .opp-highlight {
+  border-color: var(--or);
+  box-shadow: 0 8px 24px rgba(194, 94, 26, 0.08);
+}
+
+.v7-home .opp-tag {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--or);
+  margin-bottom: 12px;
+}
+
+.v7-home .opp-card h3 {
+  font-size: 22px;
+  line-height: 1.25;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+
+.v7-home .opp-card p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-light);
+  margin-bottom: 28px;
+  flex-grow: 1;
+}
+
+.v7-home .opp-card .btn-primary,
+.v7-home .opp-card .btn-outline {
+  align-self: flex-start;
+}
+
+.v7-home .btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 14px 26px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 15px;
+  border: 1.5px solid rgba(19, 42, 34, 0.2);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.v7-home .btn-outline:hover {
+  border-color: var(--ink);
+  background: var(--pa);
+}
