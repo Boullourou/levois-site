@@ -1,7 +1,329 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import {site} from '../config/site';
+import { site } from '../config/site';
 ---
-<Layout title="La carte de Mouaad" description="Retrouvez Mouaad et choisissez votre premier éclairage : acheter, vendre, coordonner les deux ou explorer les ventes locales.">
-<article class="lv-wrap lv-editorial"><div class="lv-editorial-grid"><header><h1>Enchanté, Mouaad.</h1><p class="lv-intro" style="margin-top:22px">Une question précise ou un projet qui commence. Vous pouvez déjà y voir plus clair.</p><nav class="lv-projects" aria-label="Votre premier éclairage"><a href="/ma-recherche/">Mon achat <span aria-hidden="true">↗</span></a><a href="/situer-ma-vente/">Ma vente <span aria-hidden="true">↗</span></a><a href="/vendre-et-acheter/">Ma vente et mon achat <span aria-hidden="true">↗</span></a></nav><a class="lv-text-link" href="/votre-rue/">Les ventes autour de moi</a></header><div><div class="lv-human-reading" style="margin-top:0"><header><img src="/images/levois-mouaad.webp" width="120" height="150" alt="Mouaad Boullourou" fetchpriority="high" style="width:120px;height:150px"/><div><h2>Mouaad Boullourou</h2><p class="lv-note">Conseiller immobilier indépendant SAFTI<br/>Lèves, Chartres et alentours</p></div></header><div class="lv-actions"><a class="lv-button" href="/contact/">M’écrire</a><a class="lv-secondary" href="/mouaad-boullourou.vcf" download>Garder mon contact</a></div><a class="lv-text-link" href={'tel:'+site.phone}>{site.phoneDisplay}</a></div><div class="lv-history"><a class="lv-text-link" href="/reprendre/">Mouaad m’a déjà partagé un contexte</a><a class="lv-text-link" href="/methode/">Comprendre la méthode LEVOIS</a></div></div></div></article>
+
+<Layout 
+  title="Mouaad Boullourou · Conseiller Immobilier Indépendant SAFTI" 
+  description="Contact direct de Mouaad Boullourou à Lèves et Chartres Métropole. Enregistrez mes coordonnées ou faites le point sur votre projet immobilier."
+>
+  <main class="carte-page">
+    <div class="carte-container">
+
+      <!-- CARTE DE VISITE DIGITALE HAUTE FIDÉLITÉ -->
+      <div class="vcard-card">
+        <div class="vcard-header">
+          <div class="vcard-avatar-wrap">
+            <img 
+              src="/v7/asset-07.webp" 
+              alt="Mouaad Boullourou" 
+              class="vcard-avatar"
+              width="140"
+              height="175"
+              fetchpriority="high"
+            />
+          </div>
+          <div class="vcard-info">
+            <span class="vcard-badge">Conseiller SAFTI · Lèves</span>
+            <h1>Mouaad Boullourou</h1>
+            <p class="vcard-role">Conseiller immobilier indépendant SAFTI (RSAC Chartres)</p>
+            <p class="vcard-loc">Lèves, Chartres et son agglomération</p>
+          </div>
+        </div>
+
+        <!-- ACTIONS IMMÉDIATES DE CONTACT -->
+        <div class="vcard-actions">
+          <a class="btn-vcard-primary" href="tel:+33781380121">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            Appeler (07 81 38 01 21)
+          </a>
+
+          <a class="btn-vcard-secondary" href="/mouaad-boullourou.vcf" download>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Enregistrer dans mes contacts
+          </a>
+
+          <a class="btn-vcard-tertiary" href="/contact/">
+            Envoyer un message direct
+          </a>
+        </div>
+      </div>
+
+      <!-- CHOISIR VOTRE ÉCLAIRAGE -->
+      <section class="carte-section">
+        <h2 class="carte-section-title">Faire le point sur votre projet</h2>
+        <div class="carte-grid">
+          <a class="carte-link-card" href="/situer-ma-vente/">
+            <span class="clc-tag">Vente</span>
+            <h3>Situer ma vente</h3>
+            <p>Vérifiez si votre prix est en phase avec les ventes réelles notariées de votre rue.</p>
+            <span class="clc-arrow">Lancer l'analyse →</span>
+          </a>
+
+          <a class="carte-link-card" href="/ma-recherche/">
+            <span class="clc-tag">Achat</span>
+            <h3>Clarifier ma recherche</h3>
+            <p>Isolez vos critères non négociables et négociez au juste prix à Chartres et Lèves.</p>
+            <span class="clc-arrow">Valider mes critères →</span>
+          </a>
+
+          <a class="carte-link-card" href="/vendre-et-acheter/">
+            <span class="clc-tag">Transition</span>
+            <h3>Vente &amp; Achat simultanés</h3>
+            <p>Coordonnez vos dates, prêt relais et vente préalable pour déménager sereinement.</p>
+            <span class="clc-arrow">Sécuriser mon calendrier →</span>
+          </a>
+
+          <a class="carte-link-card" href="/votre-rue/">
+            <span class="clc-tag">Données DVF</span>
+            <h3>Ventes réelles de votre rue</h3>
+            <p>Consultez l'historique officiel des prix notariés enregistrés dans votre quartier.</p>
+            <span class="clc-arrow">Consulter les ventes →</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- OPPORTUNITÉ SAFTI CONNECT -->
+      <section class="carte-section">
+        <div class="safti-banner">
+          <div>
+            <span class="vcard-badge" style="background: rgba(194, 94, 26, 0.15); color: var(--v7-orange);">Recommandation locale</span>
+            <h3 style="font-family:'Satoshi',sans-serif;font-size:20px;font-weight:700;margin:8px 0;">Vous connaissez quelqu'un qui a un projet ?</h3>
+            <p style="font-size:14px;color:var(--v7-muted);margin:0 0 16px;line-height:1.6;">Téléchargez l'application SAFTI Connect, transmettez l'information et percevez 10% des honoraires d'agence dès la vente conclue (875 € en moyenne).</p>
+          </div>
+          <a class="btn-vcard-secondary" href="/recommander/" style="align-self:flex-start;">En savoir plus sur SAFTI Connect →</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
 </Layout>
+
+<style>
+.carte-page {
+  background: var(--v7-paper);
+  padding: clamp(32px, 5vw, 64px) 16px 80px;
+  min-height: calc(100vh - 160px);
+}
+
+.carte-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.vcard-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 8px 30px rgba(19, 42, 34, 0.05);
+  margin-bottom: 32px;
+}
+
+.vcard-header {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 520px) {
+  .vcard-header {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.vcard-avatar-wrap {
+  width: 110px;
+  height: 135px;
+  border-radius: 18px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(19, 42, 34, 0.12);
+  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.08);
+}
+
+.vcard-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.vcard-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(19, 42, 34, 0.08);
+  color: var(--v7-ink);
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.vcard-info h1 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 700;
+  color: var(--v7-ink);
+  line-height: 1.15;
+  margin: 0 0 6px;
+}
+
+.vcard-role {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--v7-ink);
+  margin: 0 0 4px;
+}
+
+.vcard-loc {
+  font-size: 14px;
+  color: var(--v7-muted);
+  margin: 0;
+}
+
+.vcard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn-vcard-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--v7-ink);
+  color: #FAF9F6;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 16px 24px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-vcard-primary:hover {
+  background: var(--v7-orange);
+  transform: translateY(-2px);
+}
+
+.btn-vcard-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #FAF9F6;
+  color: var(--v7-ink);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(19, 42, 34, 0.2);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-vcard-secondary:hover {
+  border-color: var(--v7-ink);
+  background: #FFFFFF;
+}
+
+.btn-vcard-tertiary {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--v7-muted);
+  text-decoration: underline;
+  padding: 6px;
+}
+
+.btn-vcard-tertiary:hover {
+  color: var(--v7-ink);
+}
+
+.carte-section {
+  margin-top: 36px;
+}
+
+.carte-section-title {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--v7-ink);
+  margin-bottom: 16px;
+}
+
+.carte-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 580px) {
+  .carte-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.carte-link-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.carte-link-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--v7-ink);
+  box-shadow: 0 8px 20px rgba(19, 42, 34, 0.06);
+}
+
+.clc-tag {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--v7-orange);
+  margin-bottom: 6px;
+}
+
+.carte-link-card h3 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--v7-ink);
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.carte-link-card p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--v7-muted);
+  margin: 0 0 14px;
+  flex-grow: 1;
+}
+
+.clc-arrow {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--v7-ink);
+}
+
+.safti-banner {
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+</style>
