@@ -18,7 +18,7 @@ import Layout from '../layouts/Layout.astro';
         </p>
         <div class="rec-hero-cta">
           <a class="btn-primary" href="#comment-ca-marche">Comment ça marche ? <i>↓</i></a>
-          <a class="btn-outline" href="tel:+33781380121">En parler avec Mouaad (07 81 38 01 21)</a>
+          <a class="btn-outline" href="tel:+33781380121">En parler avec Mouaad · <span style="white-space:nowrap;">07 81 38 01 21</span></a>
         </div>
       </header>
 
@@ -103,7 +103,7 @@ import Layout from '../layouts/Layout.astro';
         <h2>Prêt à transmettre un contact ?</h2>
         <p>Vous préférez m'en parler de vive voix avant d'utiliser l'application ? Appelez-moi directement.</p>
         <div class="final-btns">
-          <a class="btn-primary" href="tel:+33781380121">Appeler Mouaad : 07 81 38 01 21</a>
+          <a class="btn-primary" href="tel:+33781380121">Appeler Mouaad · <span style="white-space:nowrap;">07 81 38 01 21</span></a>
           <a class="btn-outline" href="/contact/">M'envoyer un message</a>
         </div>
       </section>
@@ -115,7 +115,7 @@ import Layout from '../layouts/Layout.astro';
 <style>
 .rec-page {
   background: var(--v7-paper);
-  padding: clamp(48px, 6vw, 88px) 0 96px;
+  padding: clamp(72px, 9vw, 110px) 0 96px;
   color: var(--v7-ink);
 }
 
@@ -155,6 +155,7 @@ import Layout from '../layouts/Layout.astro';
   gap: 14px;
 }
 
+.btn-primary, [href^="tel:"] { white-space: nowrap !important; }
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -382,7 +383,8 @@ import Layout from '../layouts/Layout.astro';
   justify-content: center;
 }
 
-.rec-final-cta .btn-primary {
+.rec-final-cta .btn-primary, [href^="tel:"] { white-space: nowrap !important; }
+.btn-primary {
   background: var(--v7-orange);
 }
 
