@@ -19,7 +19,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="join-hero-cta">
           <a class="btn-primary" href="tel:+33781380121">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-            Échanger 15 min avec Mouaad (07 81 38 01 21)
+            Échanger 15 min avec Mouaad · <span style="white-space:nowrap;">07 81 38 01 21</span>
           </a>
           <a class="btn-outline" href="/contact/">Poser une question par écrit</a>
         </div>
@@ -75,7 +75,7 @@ import Layout from '../layouts/Layout.astro';
         <h2>Envie d'en savoir plus ? Parlons-en simplement.</h2>
         <p>Un échange téléphonique de 15 minutes sans engagement pour répondre à vos questions et voir si cela correspond à votre projet de vie.</p>
         <div class="cta-actions">
-          <a class="btn-primary" href="tel:+33781380121">Appeler Mouaad : 07 81 38 01 21</a>
+          <a class="btn-primary" href="tel:+33781380121">Appeler Mouaad · <span style="white-space:nowrap;">07 81 38 01 21</span></a>
           <a class="btn-outline" href="/contact/">M'écrire directement</a>
         </div>
       </section>
@@ -87,7 +87,7 @@ import Layout from '../layouts/Layout.astro';
 <style>
 .join-page {
   background: var(--v7-paper);
-  padding: clamp(48px, 6vw, 88px) 0 96px;
+  padding: clamp(72px, 9vw, 110px) 0 96px;
   color: var(--v7-ink);
 }
 
@@ -127,6 +127,7 @@ import Layout from '../layouts/Layout.astro';
   gap: 14px;
 }
 
+.btn-primary, [href^="tel:"] { white-space: nowrap !important; }
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -312,7 +313,8 @@ import Layout from '../layouts/Layout.astro';
   justify-content: center;
 }
 
-.join-cta-sec .btn-primary {
+.join-cta-sec .btn-primary, [href^="tel:"] { white-space: nowrap !important; }
+.btn-primary {
   background: var(--v7-orange);
 }
 
