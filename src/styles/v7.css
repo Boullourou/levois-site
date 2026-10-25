@@ -5,14 +5,18 @@
    ========================================================================== */
 
 :root {
-  --v7-ink: #141414;
-  --v7-ink-light: #343330;
-  --v7-paper: #F8F7F4;
-  --v7-surface: #FDFCFA;
+  --v7-ink: #141413;
+  --v7-ink-light: #3C3D3A;
+  --v7-body: #3C3D3A;
+  --v7-paper: #F7F6F2;
+  --v7-surface: #FAF9F6;
   --v7-orange: #9a4313;      /* Contraste AA sur les fonds clairs et avec le texte blanc. */
   --v7-rust: #9a4313;        /* Ambre sombre d'accent */
-  --v7-muted: #5b5954;
+  --v7-muted: #5A5D58;
   --v7-line: #dcd9d2;
+  --v7-card-line: rgba(20, 20, 20, .05);
+  --v7-card-shadow: 0 4px 24px -2px rgba(20, 20, 20, .04);
+  --v7-control-line: rgba(20, 20, 20, .12);
   --site-header-h: 81px;
 }
 
@@ -25,7 +29,7 @@ html {
 body.levois-v7 {
   --site-header-h: inherit;
   background: var(--v7-paper);
-  color: var(--v7-ink);
+  color: var(--v7-body);
   font-family: 'Plus Jakarta Sans', 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 17px;
   line-height: 1.65;
@@ -100,7 +104,7 @@ body.levois-v7 {
 }
 
 .levois-v7 .eyebrow {
-  color: var(--v7-orange);
+  color: var(--v7-muted);
   font-size: 13px;
   font-weight: 700;
   line-height: 1.4;
@@ -191,6 +195,7 @@ body.levois-v7 {
 
 .levois-v7 #contenu {
   display: flow-root;
+  background: var(--v7-paper);
   padding-top: 8px;
 }
 

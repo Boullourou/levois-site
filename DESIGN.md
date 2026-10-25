@@ -2,13 +2,17 @@
 name: LEVOIS — Ivoire et encre
 description: Une lecture immobilière claire, des choix explicites et une présence humaine discrète.
 colors:
-  ink: "#141414"
+  ink: "#141413"
   ink-hover: "#343330"
-  paper: "#F8F7F4"
-  surface: "#FDFCFA"
+  door-hover: "#2C2D29"
+  paper: "#F7F6F2"
+  surface: "#FAF9F6"
   white: "#FFFFFF"
-  muted: "#5b5954"
+  body: "#3C3D3A"
+  muted: "#5A5D58"
   line: "#dcd9d2"
+  card-line: "rgba(20, 20, 20, .05)"
+  control-line: "rgba(20, 20, 20, .12)"
   selected: "#eeece7"
   accent: "#9a4313"
   accent-hover: "#76340f"
@@ -24,6 +28,7 @@ rounded:
   nav: "8px"
   field: "10px"
   action-home: "12px"
+  card-home: "12px"
   surface: "14px"
   pill: "99px"
 spacing:
@@ -34,8 +39,10 @@ spacing:
 components:
   button-primary: {backgroundColor: "{colors.ink}", textColor: "{colors.paper}", typography: "{typography.action}", rounded: "{rounded.action-home}", padding: "15px 22px"}
   button-primary-hover: {backgroundColor: "{colors.ink-hover}", textColor: "{colors.paper}"}
-  button-secondary: {backgroundColor: "transparent", textColor: "{colors.ink}", typography: "{typography.action}", rounded: "{rounded.action-home}", padding: "15px 22px"}
-  button-secondary-hover: {backgroundColor: "{colors.selected}", textColor: "{colors.ink}"}
+  button-secondary: {backgroundColor: "{colors.white}", textColor: "{colors.ink}", typography: "{typography.action}", rounded: "{rounded.action-home}", padding: "15px 22px"}
+  button-secondary-hover: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}"}
+  project-door-hover: {backgroundColor: "{colors.door-hover}", textColor: "{colors.paper}"}
+  home-card: {backgroundColor: "{colors.white}", textColor: "{colors.body}", rounded: "{rounded.card-home}", padding: "clamp(20px, 2vw, 28px)"}
   capture: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.surface}", padding: "28px"}
   synthesis-card: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.surface}", padding: "28px 30px"}
   choice: {backgroundColor: "{colors.white}", textColor: "{colors.ink}", rounded: "{rounded.surface}"}
@@ -48,7 +55,7 @@ components:
 
 **Creative North Star: "Une lecture claire, sur un même papier."**
 
-Référence extraite de l’implémentation du **25 octobre 2026** : un fond ivoire continu, une typographie en encre, des actions nettes et des images reliées au sujet. L’accueil, les diagnostics et la synthèse privilégient la lecture et les choix explicites. Les grandes surfaces sombres, le cobalt dominant et le quartier miniature comme composition d’accueil appartiennent aux directions précédentes.
+Référence extraite de l’implémentation du **25 octobre 2026**, affinée le **26 octobre 2026** : un fond ivoire continu, une typographie en encre, des actions nettes et des images reliées au sujet. L’accueil, les diagnostics et la synthèse privilégient la lecture et les choix explicites. Les grandes surfaces sombres, le cobalt dominant et le quartier miniature comme composition d’accueil appartiennent aux directions précédentes.
 
 Ce document décrit le monde actuellement implémenté. Il remplace l’autorité visuelle de septembre ; il ne constitue ni une nouvelle exploration artistique ni une certification d’accessibilité ou de performance. Les ressources historiques peuvent conserver des règles locales de compatibilité.
 
@@ -56,7 +63,7 @@ Ce document décrit le monde actuellement implémenté. Il remplace l’autorit�
 
 - Une même surface ivoire de l’en-tête au pied de page.
 - Des titres Satoshi en casse naturelle et un mot-symbole LEVOIS en capitales espacées.
-- Des actions en encre localisées, des bordures fines et des surfaces secondaires presque blanches.
+- Des actions en encre localisées, des bordures fines et des cartes d’accueil blanches légèrement détachées du papier.
 - Des images documentées, une présence identifiable de Mouaad et une collecte de coordonnées annoncée.
 
 **Sources opérationnelles.** `src/layouts/Layout.astro` charge `public-base.css`, `levois.css`, `editorial.css`, `plan-vivant.css`, puis `v7.css` et `v7-production.css`. Ces deux derniers fichiers portent les tokens et adaptations actifs du site public. `home-v7.css` précise l’accueil ; `diagnostics.css` précise les questionnaires, la capture et la restitution. Les anciennes valeurs de `tokens.css` et les classes conservées ne constituent pas à elles seules la charte actuelle : tenir compte de la cascade complète. Les styles du cockpit restent distincts.
@@ -65,9 +72,9 @@ Les captures et relevés de la passe locale sont conservés dans `artifacts/conv
 
 ## Colors
 
-**Primary.** `ink` porte la lecture, le mot-symbole et les actions principales. `ink-hover` confirme leur survol. Les boutons sombres restent des commandes identifiables, pas des sections pleine largeur utilisées pour séparer la page.
+**Primary.** `ink` porte les titres, le mot-symbole et les actions principales. `ink-hover` confirme le survol des boutons partagés ; `door-hover` s’applique uniquement à la porte principale de l’accueil. Les boutons sombres restent des commandes identifiables, pas des sections pleine largeur utilisées pour séparer la page.
 
-**Neutral.** `paper` est le fond général ; `surface` et `white` différencient légèrement cartes et contrôles. `muted` accompagne les explications sans concurrencer les titres ; `line` sépare ; `selected` indique une sélection avec le contrôle natif et son libellé.
+**Neutral.** `paper` est le fond général ; `surface` reste une variante claire et `white` porte les cartes d’accueil et les actions secondaires. `body` donne sa couleur au texte courant ; `muted` hiérarchise les petites introductions et aides. `line` sépare les sections, `card-line` borde discrètement les cartes d’accueil et `control-line` délimite leurs actions secondaires. `selected` indique une sélection avec le contrôle natif et son libellé.
 
 **Accent fonctionnel.** L’ambre `accent`, exposé aussi sous les noms historiques `--v7-rust` et `--v7-orange`, sert notamment au focus et à certains repères locaux. Il ne remplace pas l’encre des CTA principaux. Les couleurs d’erreur ou de succès restent des états accompagnés d’un texte, pas des variantes de marque.
 
@@ -93,13 +100,13 @@ Sans JavaScript, l’en-tête revient dans le flux et les liens de navigation re
 
 ## Elevation & Depth
 
-Le système courant repose sur les valeurs claires, les bordures et les espaces. Les cartes d’accueil, le formulaire de capture, la synthèse et le panneau de progression n’utilisent pas d’ombre décorative. Les photographies donnent la profondeur utile au contenu. Les anciennes ombres de composants cartographiques ou historiques restent des règles locales, pas un modèle à reproduire sur les nouveaux écrans.
+Le système courant repose sur les valeurs claires, les bordures et les espaces. Les cartes « angles morts », opportunités et ressources de l’accueil utilisent une ombre légère (`0 4px 24px -2px rgba(20, 20, 20, .04)`) et une bordure `card-line`. Le formulaire de capture, la synthèse et le panneau de progression restent sans ombre. Les photographies donnent la profondeur utile au contenu. Les anciennes ombres de composants cartographiques ou historiques restent des règles locales, pas un modèle à reproduire sur les nouveaux écrans.
 
 Les transitions servent la confirmation d’un état : environ 150 à 200 ms pour les fonds, bordures ou liens ; le menu possède une transition propre. Elles ne retardent pas l’accès au contenu. `prefers-reduced-motion` réduit animations et transitions et conserve les mêmes informations et commandes.
 
 ## Shapes
 
-Les actions rectangulaires de l’accueil ont des angles adoucis (12 px), les cartes et panneaux (14 px), les liens de navigation (8 px). Les champs de capture ont une règle spécifique de 10 px. Les commandes partagées des pages intérieures et le bouton d’appel conservent une forme capsule (99 px). Ces différences correspondent aux composants existants : ne pas uniformiser leurs formes par une nouvelle règle globale.
+Les actions rectangulaires et les cartes de l’accueil ont des angles adoucis (12 px), les cartes et panneaux des diagnostics conservent leur rayon de 14 px, les liens de navigation celui de 8 px. Les champs de capture ont une règle spécifique de 10 px. Les commandes partagées des pages intérieures et le bouton d’appel conservent une forme capsule (99 px). Ces différences correspondent aux composants existants : ne pas uniformiser leurs formes par une nouvelle règle globale.
 
 Les avatars restent circulaires. Les photographies éditoriales utilisent principalement des angles discrets (12 à 14 px) ; leurs proportions suivent leur contenu. Les traits fins et les repères de sélection suffisent à séparer les blocs.
 
@@ -107,7 +114,7 @@ Les avatars restent circulaires. Les photographies éditoriales utilisent princi
 
 **Navigation.** Mot-symbole à gauche, liens de parcours et ressources, appel identifiable. Le lien courant et le survol reçoivent une surface neutre. En dessous de 1041 px, un bouton de 44 × 44 px ouvre le menu, expose `aria-expanded` et son libellé d’état ; Échap le ferme et rend le focus au bouton. Le menu reste borné par la hauteur disponible.
 
-**Actions.** Fond encre pour l’action principale, fond transparent ou clair et contour encre pour l’action secondaire. Les boutons d’accueil ont une hauteur minimale de 52 px ; les portes de diagnostic 64 px, puis 56 px sur téléphone. Les longs libellés peuvent revenir à la ligne. Le focus visible utilise un contour ambre de 3 px, sans dépendre du survol.
+**Actions.** Fond encre pour l’action principale ; sur l’accueil, les actions secondaires utilisent un fond blanc et la bordure `control-line`, puis la surface claire et une bordure à 20 % d’opacité au survol. La porte principale possède son propre état `door-hover`, sans changer les variantes partagées. Les boutons d’accueil ont une hauteur minimale de 52 px ; les portes de diagnostic 64 px, puis 56 px sur téléphone. Les longs libellés peuvent revenir à la ligne. Le focus visible utilise un contour ambre de 3 px, sans dépendre du survol.
 
 **Choix de diagnostic.** Le libellé est une cible entière avec radio ou case native, bordure légère et sélection neutre renforcée par la bordure encre. La progression et la commande de validation restent distinctes. Les états ne reposent pas sur la couleur seule.
 
@@ -115,7 +122,7 @@ Les avatars restent circulaires. Les photographies éditoriales utilisent princi
 
 **Restitution et ressources.** Trois blocs courts — constat, angle mort, prochaine étape — puis deux ressources adaptées aux réponses. Les outils de copie, de correction et de reprise restent identifiables. Les liens éditoriaux utilisent le texte, le soulignement ou une flèche pour signaler leur rôle, sans cadre décoratif systématique.
 
-**Images.** Le portrait identifie Mouaad ; le quartier et les scènes de vie accompagnent une explication située. Une illustration ou une représentation de données ne doit pas passer pour une preuve individuelle de prix, de vente ou de résultat commercial.
+**Images.** Le portrait identifie Mouaad. La section locale de l’accueil montre désormais une photographie réelle du pont des Minimes et du moulin de Ponceau à Chartres, prise par Patrick Giraud le 28 mai 2005, sous licence CC BY 2.5. Elle est affichée en 16:10, avec un rayon de 12 px, sans filtre ni modification des couleurs. Les variantes `chartres-eure-*` conservent une définition adaptée à l’écran. La mention d’illustration n’accompagne plus cette photographie ; le lien « Crédits photo » du pied de page mène à `/mentions-legales/#credits-photo`, qui donne l’auteur, la source, la licence et les transformations. Les autres scènes illustrées restent identifiées comme telles. Aucune image ni représentation de données ne doit passer pour une preuve individuelle de prix, de vente ou de résultat commercial.
 
 ## Do's and Don'ts
 

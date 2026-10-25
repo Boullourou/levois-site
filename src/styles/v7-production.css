@@ -1,7 +1,7 @@
 /* Adaptation de la V7 aux parcours de production : aucune logique métier modifiée. */
 :root,.levois-v7.plan-vivant {
- --levois-paper:#F8F7F4;--levois-surface:#FDFCFA;--levois-ink:#141414;--levois-muted:#5b5954;--levois-line:#dcd9d2;--levois-accent:#9a4313;--levois-hover:#76340f;--levois-selected:#eeece7;--levois-dark:#141414;--levois-human:#9a4313;--levois-on-dark:#F8F7F4;
- --lv-ink:#141414;--lv-blue:#9a4313;--lv-muted:#5b5954;--lv-line:#dcd9d2;--lv-info:#eeece7;--lv-condition:#f1e8df;--lv-point:#9a4313;
+ --levois-paper:#F7F6F2;--levois-surface:#FAF9F6;--levois-ink:#141413;--levois-muted:#5A5D58;--levois-line:#dcd9d2;--levois-accent:#9a4313;--levois-hover:#76340f;--levois-selected:#eeece7;--levois-dark:#141413;--levois-human:#9a4313;--levois-on-dark:#F7F6F2;
+ --lv-ink:#141413;--lv-blue:#9a4313;--lv-muted:#5A5D58;--lv-line:#dcd9d2;--lv-info:#eeece7;--lv-condition:#f1e8df;--lv-point:#9a4313;
  --levois-field-radius:12px;--levois-action-radius:99px;--levois-choice-radius:14px;
 }
 body.levois-v7 {margin:0}.levois-v7 *, .levois-v7 *::before,.levois-v7 *::after{box-sizing:border-box}

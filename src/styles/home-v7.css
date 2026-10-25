@@ -10,42 +10,44 @@
 .levois-v7 .hero-kicker, .levois-v7 .sec-ey { margin-bottom: 16px; font-size: 12px; font-weight: 600; letter-spacing: .1em; line-height: 1.5; text-transform: uppercase; color: var(--v7-muted); }
 .levois-v7 .hero-giant-title { max-width: 26ch; margin: 0 0 24px; font-size: clamp(36px, 4.6vw, 66px); line-height: 1.1; letter-spacing: -.035em; }
 .title-highlight { color: inherit; }
-.levois-v7 .hero-manifesto { max-width: 76ch; margin: 0; font-size: clamp(16px, 1.35vw, 18px); line-height: 1.7; color: var(--v7-muted); }
+.levois-v7 .hero-manifesto { max-width: 76ch; margin: 0; font-size: clamp(16px, 1.35vw, 18px); line-height: 1.7; color: var(--v7-body); }
 .hero-doors-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 1030px; }
-.door-card { display: flex; align-items: center; min-height: 64px; padding: 18px 24px; border: 1px solid var(--v7-ink); border-radius: 12px; text-decoration: none; background: transparent; transition: background-color .18s, border-color .18s; }
-.levois-v7 .door-vendre { background: var(--v7-ink); color: var(--v7-paper); }
+.door-card { display: flex; align-items: center; min-height: 64px; padding: 18px 24px; border: 1px solid var(--v7-control-line); border-radius: 12px; text-decoration: none; background: #fff; color: var(--v7-ink); transition: background-color .18s, border-color .18s; }
+.levois-v7 .door-card { color: var(--v7-ink); }
+.levois-v7 .door-vendre { background: var(--v7-ink); border-color: var(--v7-ink); color: var(--v7-paper); }
 .door-action { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; font-weight: 600; }
 .door-arrow { flex-shrink: 0; font-style: normal; font-size: 20px; }
-.door-card:hover { background: #eeece7; }
-.levois-v7 .door-vendre:hover { background: #343330; }
+.door-card:hover { background: var(--v7-surface); border-color: rgba(20, 20, 20, .2); }
+.levois-v7 .door-vendre:hover { background: #2C2D29; border-color: #2C2D29; }
 .hero-local-link { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; margin-top: 15px; font-size: 14px; text-underline-offset: 5px; }
 
-/* The three blind spots read like editorial columns, without decorative counters. */
+/* Quiet raised surfaces keep the validated editorial columns intact. */
 .market-blindspots, .local-market-sec, .life-split-sec, .opp-dramatic-sec, .res-editorial-sec, .advisor-portrait-sec { padding: 76px 0; background: var(--v7-paper); }
 .market-blindspots { border-block: 1px solid var(--v7-line); }
 .market-blindspots-header { max-width: 780px; margin-bottom: 36px; }
 .market-blindspots-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
-.market-blindspot { display: flex; flex-direction: column; min-width: 0; }
+.market-blindspot { display: flex; flex-direction: column; min-width: 0; padding: clamp(20px, 2vw, 28px); }
+.market-blindspot, .opp-ledger-card, .res-cover-card { background: #fff; border: 1px solid var(--v7-card-line); box-shadow: var(--v7-card-shadow); border-radius: 12px; }
 .levois-v7 .market-blindspot h3 { font-size: 25px; line-height: 1.3; margin-bottom: 16px; }
-.levois-v7 .market-blindspot p { font-size: 15px; line-height: 1.8; color: var(--v7-muted); }
+.levois-v7 .market-blindspot p { font-size: 15px; line-height: 1.8; color: var(--v7-body); }
 .chapter-link { display: inline-flex; align-items: baseline; gap: 10px; font-size: 14px; font-weight: 600; line-height: 1.6; text-underline-offset: 4px; }
 .market-blindspot .chapter-link { margin-top: auto; padding-top: 10px; }
 .chapter-link span { flex-shrink: 0; }
 
 .local-market-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
 .local-market-media { margin: 0; min-width: 0; }
-.local-market-media img { display: block; width: 100%; height: auto; border-radius: 14px; }
-.local-market-media figcaption { margin-top: 12px; font-size: 12px; line-height: 1.6; color: var(--v7-muted); }
+.local-market-media img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 12px; }
+.v7-home img { filter: none; opacity: 1; }
 .local-market-copy { min-width: 0; }
 .levois-v7 .local-market-copy h2 { font-size: clamp(28px, 2.7vw, 38px); }
-.local-market-copy p { font-size: 15px; color: var(--v7-muted); }
+.local-market-copy p { font-size: 15px; color: var(--v7-body); }
 
 /* Secondary actions retain one quiet visual language throughout the page. */
 .levois-v7 :is(.btn-primary, .btn-secondary) { display: inline-flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 52px; max-width: 100%; padding: 15px 22px; border: 1px solid var(--v7-ink); border-radius: 12px; font-size: 14px; font-weight: 600; line-height: 1.6; text-decoration: none; white-space: normal; text-align: left; transition: background-color .18s; }
 .levois-v7 .btn-primary { background: var(--v7-ink); color: var(--v7-paper); }
 .levois-v7 .btn-primary:hover { background: #343330; }
-.levois-v7 .btn-secondary { background: transparent; color: var(--v7-ink); }
-.levois-v7 .btn-secondary:hover { background: #eeece7; }
+.levois-v7 .btn-secondary { background: #fff; border-color: var(--v7-control-line); color: var(--v7-ink); }
+.levois-v7 .btn-secondary:hover { background: var(--v7-surface); border-color: rgba(20, 20, 20, .2); }
 :is(.btn-primary, .btn-secondary) > :is(i, span[aria-hidden]) { flex-shrink: 0; font-style: normal; }
 :is(.btn-primary, .btn-secondary) > span:not([aria-hidden]) { min-width: 0; }
 
@@ -58,35 +60,35 @@
 .chapter-card { padding: 24px 0; border-top: 1px solid var(--v7-line); }
 .chapter-tag { margin-bottom: 12px; font-size: 12px; color: var(--v7-muted); }
 .levois-v7 .chapter-card h3 { font-size: 24px; }
-.chapter-card p { font-size: 15px; color: var(--v7-muted); }
+.chapter-card p { font-size: 15px; color: var(--v7-body); }
 
 .opp-sec-header { max-width: 790px; margin-bottom: 32px; }
-.opp-sec-header > p:last-child { font-size: 16px; color: var(--v7-muted); }
+.opp-sec-header > p:last-child { font-size: 16px; color: var(--v7-body); }
 .opp-cards-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.opp-ledger-card { display: flex; flex-direction: column; padding: 30px; border: 1px solid var(--v7-line); border-radius: 14px; background: var(--v7-surface); min-width: 0; }
+.opp-ledger-card { display: flex; flex-direction: column; padding: 30px; min-width: 0; }
 .ledger-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding-bottom: 22px; border-bottom: 1px solid var(--v7-line); font-size: 12px; color: var(--v7-muted); }
 .ledger-badge { font-weight: 600; color: var(--v7-ink); }
 .ledger-stat-block, .team-pitch-block { display: flex; flex-direction: column; gap: 10px; padding-block: 28px; }
 .stat-amount, .team-highlight { font-family: 'Satoshi', sans-serif; font-size: 30px; line-height: 1.2; letter-spacing: -.025em; }
-.stat-label, .team-sub { font-size: 14px; line-height: 1.65; color: var(--v7-muted); }
+.stat-label, .team-sub { font-size: 14px; line-height: 1.65; color: var(--v7-body); }
 .levois-v7 .ledger-body h3 { font-size: 21px; }
-.ledger-body p { font-size: 14px; color: var(--v7-muted); }
+.ledger-body p { font-size: 14px; color: var(--v7-body); }
 .ledger-btn-wrap { padding-top: 12px; margin-top: auto; }
 .ledger-btn-wrap a { width: 100%; }
 
 .res-editorial-header { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: end; margin-bottom: 32px; }
-.header-right p { color: var(--v7-muted); font-size: 15px; }
+.header-right p { color: var(--v7-body); font-size: 15px; }
 .link-all-res { display: inline-block; font-size: 14px; font-weight: 600; padding-block: 8px; }
 .res-cover-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
-.res-cover-card { display: flex; flex-direction: column; min-width: 0; }
+.res-cover-card { display: flex; flex-direction: column; min-width: 0; padding: clamp(20px, 2vw, 24px); }
 .card-cover-photo { position: relative; }
 .card-cover-photo img { display: block; width: 100%; aspect-ratio: 1.5; object-fit: cover; border-radius: 12px; }
 .cover-tag, .cover-duration { display: inline-block; margin-top: 14px; font-size: 11px; color: var(--v7-muted); }
 .cover-tag { margin-right: 14px; }
 .card-cover-content { display: flex; flex-direction: column; flex: 1; padding-top: 16px; }
 .levois-v7 .card-cover-content h3 { font-size: 24px; margin-bottom: 12px; }
-.levois-v7 .card-cover-q { font-size: 15px; line-height: 1.65; color: var(--v7-ink); }
-.levois-v7 .card-cover-b { font-size: 14px; color: var(--v7-muted); }
+.levois-v7 .card-cover-q { font-size: 15px; line-height: 1.65; color: var(--v7-body); }
+.levois-v7 .card-cover-b { font-size: 14px; color: var(--v7-body); }
 .card-cover-link { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: auto; padding-block: 10px; font-size: 14px; font-weight: 600; }
 .card-cover-link i { font-style: normal; flex-shrink: 0; }
 
@@ -102,7 +104,7 @@
 .advisor-credentials strong { font-size: 16px; font-weight: 600; }
 .advisor-credentials span { font-size: 12px; line-height: 1.7; color: var(--v7-muted); }
 .levois-v7 .portrait-lead { font-size: 17px; line-height: 1.75; }
-.levois-v7 .portrait-detail { font-size: 15px; color: var(--v7-muted); }
+.levois-v7 .portrait-detail { font-size: 15px; color: var(--v7-body); }
 .advisor-signature-row { margin-block: 24px; }
 .fee-link-box { font-size: 12px; line-height: 1.8; color: var(--v7-muted); }
 .advisor-cta-row { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
@@ -127,6 +129,11 @@
   .advisor-portrait-card { grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: 28px; align-items: start; }
   .levois-v7 .advisor-portrait-text h2 { font-size: 32px; }
 }
+/* Give the article metadata a shared baseline in the narrow three-column grid. */
+@media (min-width: 641px) and (max-width: 960px) {
+  .cover-tag { display: block; margin-right: 0; }
+  .cover-duration { display: block; margin-top: 4px; }
+}
 @media (max-width: 640px) {
   .hero-dramatic { padding: 24px 0 44px; }
   .hero-top-row { margin-bottom: 28px; }
@@ -141,7 +148,6 @@
   .market-blindspots, .local-market-sec, .life-split-sec, .opp-dramatic-sec, .res-editorial-sec, .advisor-portrait-sec { padding-block: 48px; }
   .market-blindspots-header { margin-bottom: 28px; }
   .market-blindspots-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-  .market-blindspot + .market-blindspot { padding-top: 28px; border-top: 1px solid var(--v7-line); }
   .levois-v7 .market-blindspot h3 { font-size: 24px; }
   .market-blindspot .chapter-link { padding-top: 0; }
   .opp-cards-duo, .res-editorial-header, .res-cover-grid, .advisor-portrait-card { grid-template-columns: minmax(0, 1fr); }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-25T22:48:05.618Z",
+  "generatedAt": "2026-10-25T23:12:45.005Z",
   "title": "Design System: LEVOIS — Ivoire et encre",
   "extensions": {
     "colorMeta": {
@@ -8,14 +8,14 @@
         "role": "primary",
         "displayName": "Encre",
         "tonalRamp": [
-          "#141414",
+          "#141413",
           "#343330",
-          "#5b5954",
+          "#5A5D58",
           "#87837b",
           "#dcd9d2",
           "#eeece7",
-          "#F8F7F4",
-          "#FDFCFA"
+          "#F7F6F2",
+          "#FAF9F6"
         ]
       },
       "ink-hover": {
@@ -26,14 +26,14 @@
         "role": "neutral",
         "displayName": "Ivoire",
         "tonalRamp": [
-          "#141414",
+          "#141413",
           "#343330",
-          "#5b5954",
+          "#5A5D58",
           "#87837b",
           "#dcd9d2",
           "#eeece7",
-          "#F8F7F4",
-          "#FDFCFA"
+          "#F7F6F2",
+          "#FAF9F6"
         ]
       },
       "surface": {
@@ -63,6 +63,22 @@
       "accent-hover": {
         "role": "secondary",
         "displayName": "Ambre renforcé"
+      },
+      "door-hover": {
+        "role": "primary",
+        "displayName": "Survol de la porte principale"
+      },
+      "body": {
+        "role": "neutral",
+        "displayName": "Corps du texte"
+      },
+      "card-line": {
+        "role": "neutral",
+        "displayName": "Bordure de carte à 5 %"
+      },
+      "control-line": {
+        "role": "neutral",
+        "displayName": "Bordure de commande à 12 %"
       }
     },
     "typographyMeta": {
@@ -97,9 +113,14 @@
     },
     "shadows": [
       {
+        "name": "home-card",
+        "value": "0 4px 24px -2px rgba(20, 20, 20, .04)",
+        "purpose": "Détacher légèrement les cartes angles morts, opportunités et ressources sur le papier de l’accueil."
+      },
+      {
         "name": "flat",
         "value": "none",
-        "purpose": "Cartes, capture, synthèse et progression de la version courante. Les ombres historiques locales ne deviennent pas un composant partagé."
+        "purpose": "Capture, synthèse et progression inchangées. Les ombres historiques locales ne deviennent pas un composant partagé."
       }
     ],
     "motion": [
@@ -158,29 +179,29 @@
       "refersTo": "button-primary",
       "description": "Encre localisée, texte ivoire et coins adoucis : action de l’accueil. Les commandes intérieures partagées conservent leur variante capsule.",
       "html": "<a class=\"ds-primary\" href=\"/situer-ma-vente/\"><span>Évaluer ma vente</span><span aria-hidden=\"true\">→</span></a>",
-      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;max-width:100%;padding:15px 22px;border:1px solid var(--v7-ink,#141414);border-radius:12px;background:var(--v7-ink,#141414);color:var(--v7-paper,#F8F7F4);font:600 14px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;white-space:normal;transition:background-color .18s}.ds-primary:hover{background:#343330}.ds-primary:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;max-width:100%;padding:15px 22px;border:1px solid var(--v7-ink,#141413);border-radius:12px;background:var(--v7-ink,#141413);color:var(--v7-paper,#F7F6F2);font:600 14px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;white-space:normal;transition:background-color .18s}.ds-primary:hover{background:#343330}.ds-primary:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
       "name": "Action secondaire",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Contour encre et fond transparent, sans ombre ni grand aplat décoratif.",
+      "description": "Fond blanc et contour discret à 12 % : action secondaire de l’accueil. Le survol passe sur la surface claire avec une bordure renforcée.",
       "html": "<a class=\"ds-secondary\" href=\"/ma-recherche/\"><span>Cadrer ma recherche</span><span aria-hidden=\"true\">→</span></a>",
-      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;max-width:100%;padding:15px 22px;border:1px solid var(--v7-ink,#141414);border-radius:12px;background:transparent;color:var(--v7-ink,#141414);font:600 14px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;white-space:normal;transition:background-color .18s}.ds-secondary:hover{background:#eeece7}.ds-secondary:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;max-width:100%;padding:15px 22px;border:1px solid var(--v7-control-line,rgba(20,20,20,.12));border-radius:12px;background:#fff;color:var(--v7-ink,#141413);font:600 14px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;white-space:normal;transition:background-color .18s}.ds-secondary:hover{background:var(--v7-surface,#FAF9F6);border-color:rgba(20,20,20,.2)}.ds-secondary:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
       "name": "Champ de capture",
       "kind": "input",
       "description": "Libellé visible et champ e-mail requis. Fragment du formulaire ; les états d’erreur et d’envoi sont annoncés textuellement par le contrôleur.",
       "html": "<div class=\"ds-field\"><label for=\"ds-email\">Adresse e-mail</label><input id=\"ds-email\" name=\"email\" type=\"email\" autocomplete=\"email\" maxlength=\"254\" required /></div>",
-      "css": ".ds-field{display:grid;gap:8px;max-width:440px;color:var(--v7-ink,#141414);font:400 15px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-field input{width:100%;min-height:52px;padding:12px 14px;border:1px solid #87837b;border-radius:10px;background:var(--v7-surface,#FDFCFA);color:var(--v7-ink,#141414);font:400 16px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-field input:focus-visible{border-color:var(--v7-ink,#141414);outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}"
+      "css": ".ds-field{display:grid;gap:8px;max-width:440px;color:var(--v7-ink,#141413);font:400 15px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-field input{width:100%;min-height:52px;padding:12px 14px;border:1px solid #87837b;border-radius:10px;background:var(--v7-surface,#FAF9F6);color:var(--v7-ink,#141413);font:400 16px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-field input:focus-visible{border-color:var(--v7-ink,#141413);outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}"
     },
     {
       "name": "Navigation et mot-symbole",
       "kind": "nav",
       "description": "Extrait desktop : LEVOIS textuel et liens sur le même papier. Le composant réel ajoute le menu mobile, le bouton d’appel et la mesure dynamique de hauteur.",
       "html": "<div class=\"ds-nav-wrap\"><a class=\"ds-brand\" href=\"/\" aria-label=\"LEVOIS, accueil\">LEVOIS</a><nav class=\"ds-nav\" aria-label=\"Exemple de navigation\"><a href=\"/situer-ma-vente/\" aria-current=\"page\">Vendre</a><a href=\"/ma-recherche/\">Acheter</a><a href=\"/vendre-et-acheter/\">Vente &amp; Achat</a></nav></div>",
-      "css": ".ds-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;min-height:80px;background:var(--v7-paper,#F8F7F4);border-bottom:1px solid var(--v7-line,#dcd9d2);color:var(--v7-ink,#141414)}.ds-brand{font:700 26px/1 Satoshi,sans-serif;letter-spacing:.11em;text-decoration:none;color:inherit}.ds-nav{display:flex;flex-wrap:wrap;gap:22px}.ds-nav a{padding:11px 12px;border-radius:8px;color:inherit;font:600 15px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;transition:background-color .15s}.ds-nav a:hover,.ds-nav a[aria-current=page]{background:#eeece7}.ds-nav-wrap a:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
+      "css": ".ds-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;min-height:80px;background:var(--v7-paper,#F7F6F2);border-bottom:1px solid var(--v7-line,#dcd9d2);color:var(--v7-ink,#141413)}.ds-brand{font:700 26px/1 Satoshi,sans-serif;letter-spacing:.11em;text-decoration:none;color:inherit}.ds-nav{display:flex;flex-wrap:wrap;gap:22px}.ds-nav a{padding:11px 12px;border-radius:8px;color:inherit;font:600 15px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;transition:background-color .15s}.ds-nav a:hover,.ds-nav a[aria-current=page]{background:#eeece7}.ds-nav-wrap a:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
       "name": "Choix de diagnostic",
@@ -188,7 +209,7 @@
       "refersTo": "choice",
       "description": "Radio native, libellé entier cliquable et sélection visible. La validation est une commande distincte dans le questionnaire.",
       "html": "<label class=\"ds-choice\"><input type=\"radio\" name=\"ds-answer\" value=\"prix\" /><span>Je ne sais pas à quel prix vendre</span></label>",
-      "css": ".ds-choice{display:flex;align-items:center;gap:12px;min-height:54px;padding:15px 14px;border:1.5px solid rgba(19,42,34,.12);border-radius:14px;background:#fff;color:var(--v7-ink,#141414);font:400 16px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;transition:border-color .2s,background-color .2s;cursor:pointer}.ds-choice input{accent-color:var(--v7-ink,#141414);flex-shrink:0}.ds-choice:hover{border-color:rgba(19,42,34,.3)}.ds-choice:has(input:checked){background:#eeece7;border-color:var(--v7-ink,#141414)}.ds-choice:focus-within{outline:3px solid var(--v7-rust,#9a4313);outline-offset:3px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
+      "css": ".ds-choice{display:flex;align-items:center;gap:12px;min-height:54px;padding:15px 14px;border:1.5px solid rgba(19,42,34,.12);border-radius:14px;background:#fff;color:var(--v7-ink,#141413);font:400 16px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;transition:border-color .2s,background-color .2s;cursor:pointer}.ds-choice input{accent-color:var(--v7-ink,#141413);flex-shrink:0}.ds-choice:hover{border-color:rgba(19,42,34,.3)}.ds-choice:has(input:checked){background:#eeece7;border-color:var(--v7-ink,#141413)}.ds-choice:focus-within{outline:3px solid var(--v7-rust,#9a4313);outline-offset:3px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
       "name": "Bloc de synthèse",
@@ -196,16 +217,31 @@
       "refersTo": "synthesis-card",
       "description": "Une idée par bloc, surface claire et trait fin. Les trois blocs réels utilisent le contenu dérivé des réponses, pas cet exemple de mise en forme.",
       "html": "<section class=\"ds-synthesis\" aria-labelledby=\"ds-synthesis-title\"><h2 id=\"ds-synthesis-title\">La prochaine étape utile</h2><p>Une action concrète à préparer cette semaine, liée aux réponses de votre diagnostic.</p></section>",
-      "css": ".ds-synthesis{padding:28px 30px;border:1px solid var(--v7-line,#dcd9d2);border-radius:14px;background:var(--v7-surface,#FDFCFA);color:var(--v7-ink,#141414);box-shadow:none;font:400 17px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-synthesis h2{margin:0 0 12px;font:500 clamp(22px,2.3vw,28px)/1.25 Satoshi,sans-serif;letter-spacing:-.025em}.ds-synthesis p{margin:0}@media(max-width:760px){.ds-synthesis{padding:24px 18px}}"
+      "css": ".ds-synthesis{padding:28px 30px;border:1px solid var(--v7-line,#dcd9d2);border-radius:14px;background:var(--v7-surface,#FAF9F6);color:var(--v7-ink,#141413);box-shadow:none;font:400 17px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-synthesis h2{margin:0 0 12px;font:500 clamp(22px,2.3vw,28px)/1.25 Satoshi,sans-serif;letter-spacing:-.025em}.ds-synthesis p{margin:0;color:var(--v7-body,#3C3D3A)}@media(max-width:760px){.ds-synthesis{padding:24px 18px}}"
+    },
+    {
+      "name": "Carte éditoriale de l’accueil",
+      "kind": "card",
+      "refersTo": "home-card",
+      "description": "Fond blanc, bordure à 5 %, ombre légère et rayon de 12 px. Exemple de mise en forme des angles morts ; les cartes opportunités et ressources partagent ce traitement.",
+      "html": "<article class=\"ds-home-card\"><h3>Le prix ne dit pas tout.</h3><p>Un repère utile pour comprendre votre projet et préparer la prochaine décision.</p><a href=\"/ressources/\">Consulter les ressources <span aria-hidden=\"true\">→</span></a></article>",
+      "css": ".ds-home-card{display:flex;flex-direction:column;gap:16px;padding:clamp(20px,2vw,28px);background:#fff;border:1px solid var(--v7-card-line,rgba(20,20,20,.05));box-shadow:var(--v7-card-shadow,0 4px 24px -2px rgba(20,20,20,.04));border-radius:12px;color:var(--v7-body,#3C3D3A);font:400 15px/1.8 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-home-card h3{margin:0;font:500 25px/1.3 Satoshi,sans-serif;letter-spacing:-.025em;color:var(--v7-ink,#141413)}.ds-home-card p{margin:0}.ds-home-card a{margin-top:auto;color:var(--v7-ink,#141413);font-weight:600;text-underline-offset:4px}.ds-home-card a:hover{text-decoration-thickness:2px}.ds-home-card a:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}"
+    },
+    {
+      "name": "Photographie locale réelle",
+      "kind": "custom",
+      "description": "Pont des Minimes et moulin de Ponceau, Chartres. Patrick Giraud, 28 mai 2005, CC BY 2.5 ; affichage recadré 16:10 et conversion WebP/AVIF, sans modification des couleurs. Le crédit public est accessible depuis le pied de page à /mentions-legales/#credits-photo. Ce fragment ne présente pas un bien en vente ni une transaction DVF.",
+      "html": "<figure class=\"ds-local-photo\"><img src=\"/images/chartres-eure-1000.webp\" width=\"1600\" height=\"1064\" alt=\"Maisons aux façades claires et pont de pierre au bord de l’Eure, dans la basse ville de Chartres.\" /></figure>",
+      "css": ".ds-local-photo{margin:0;max-width:760px}.ds-local-photo img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;border-radius:12px;filter:none;opacity:1}"
     }
   ],
   "narrative": {
     "northStar": "Une lecture claire, sur un même papier.",
-    "overview": "Référence extraite de l’implémentation du **25 octobre 2026** : un fond ivoire continu, une typographie en encre, des actions nettes et des images reliées au sujet. L’accueil, les diagnostics et la synthèse privilégient la lecture et les choix explicites. Les grandes surfaces sombres, le cobalt dominant et le quartier miniature comme composition d’accueil appartiennent aux directions précédentes.\n\nCe document décrit le monde actuellement implémenté. Il remplace l’autorité visuelle de septembre ; il ne constitue ni une nouvelle exploration artistique ni une certification d’accessibilité ou de performance. Les ressources historiques peuvent conserver des règles locales de compatibilité.",
+    "overview": "Référence extraite de l’implémentation du **25 octobre 2026**, affinée le **26 octobre 2026** : un fond ivoire continu, une typographie en encre, des actions nettes et des images reliées au sujet. L’accueil, les diagnostics et la synthèse privilégient la lecture et les choix explicites. Les grandes surfaces sombres, le cobalt dominant et le quartier miniature comme composition d’accueil appartiennent aux directions précédentes.\n\nCe document décrit le monde actuellement implémenté. Il remplace l’autorité visuelle de septembre ; il ne constitue ni une nouvelle exploration artistique ni une certification d’accessibilité ou de performance. Les ressources historiques peuvent conserver des règles locales de compatibilité.",
     "keyCharacteristics": [
       "Une même surface ivoire de l’en-tête au pied de page.",
       "Des titres Satoshi en casse naturelle et un mot-symbole LEVOIS en capitales espacées.",
-      "Des actions en encre localisées, des bordures fines et des surfaces secondaires presque blanches.",
+      "Des actions en encre localisées, des bordures fines et des cartes d’accueil blanches légèrement détachées du papier.",
       "Des images documentées, une présence identifiable de Mouaad et une collecte de coordonnées annoncée."
     ],
     "rules": [
