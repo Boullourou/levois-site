@@ -1,1122 +1,135 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import {
+  localMarkets, marketSummary, marketReviewDate, marketSummaryText,
+  marketDatasetSchema, formatMarketNumber as fmt, sampleCaution, dvfSourceUrl,
+  type LocalMarket,
+} from '../../lib/local-market';
 
 export function getStaticPaths() {
-  const communesData = [
-  {
-    "slug": "chartres",
-    "name": "Chartres",
-    "postalCode": "28000",
-    "description": "Préfecture et cœur battant d'Eure-et-Loir, Chartres concentre l'activité économique, patrimoniale et ferroviaire de l'agglomération avec sa liaison directe vers Paris-Montparnasse en une heure.",
-    "geoBlock": "En 2025, le marché immobilier de Chartres (28000) enregistre un prix médian notarié officiel de 2 507 €/m² pour les maisons individuelles (188 transactions enregistrées dans la base DVF) et de 2 448 €/m² pour les appartements (412 ventes réelles). La moitié centrale des transactions se négocie entre 2 084 €/m² et 3 240 €/m² pour les maisons, et entre 2 056 €/m² et 2 885 €/m² pour les appartements. Cette dispersion s'explique par les disparités entre le secteur sauvegardé de la cathédrale, la Basse-Ville soumise aux Architectes des Bâtiments de France, et les quartiers pavillonnaires de Rechèvres, Saint-Chéron ou de la Boissière. Les biens affichant un DPE en classe F ou G subissent une décote moyenne de 12 à 18 % pour financer la rénovation énergétique. L'analyse des actes authentiques démontre une stabilité globale des volumes après les ajustements de taux de 2023-2024.",
-    "neighbours": [
-      {
-        "name": "Lèves",
-        "slug": "leves",
-        "distance": "3 km au Nord"
-      },
-      {
-        "name": "Mainvilliers",
-        "slug": "mainvilliers",
-        "distance": "2 km à l'Ouest"
-      },
-      {
-        "name": "Lucé",
-        "slug": "luce",
-        "distance": "3 km au Sud-Ouest"
-      },
-      {
-        "name": "Luisant",
-        "slug": "luisant",
-        "distance": "3 km au Sud"
-      },
-      {
-        "name": "Champhol",
-        "slug": "champhol",
-        "distance": "4 km au Nord-Est"
-      },
-      {
-        "name": "Le Coudray",
-        "slug": "le-coudray",
-        "distance": "4 km au Sud-Est"
-      }
-    ],
-    "sections": [
-      {
-        "title": "Une mosaïque de micro-marchés aux dynamiques contrastées",
-        "content": "Chartres ne constitue pas un marché homogène mais une juxtaposition de secteurs aux valorisations très différenciées. Le cœur historique et le secteur cathédrale attirent une clientèle en quête de cachet patrimonial (poutres apparentes, immeubles à colombages), mais imposent des contraintes strictes d'urbanisme sous l'égide des Architectes des Bâtiments de France (ABF). Les appartements y dépassent fréquemment les 2 900 €/m² lorsqu'ils disposent d'un ascenseur et d'un stationnement, deux commodités rarissimes dans l'hypercentre. À l'opposé, les quartiers prisés de Rechèvres et de Saint-Chéron séduisent massivement les familles de cadres et les actifs parisiens pour leurs maisons bourgeoises des années 1930 à 1950 avec jardins clos, atteignant aisément le quartile haut à plus de 3 200 €/m². Plus au sud, La Madeleine et la Boissière offrent un parc collectif des années 1960-1970 avec des prix plus accessibles débutant autour de 1 900 €/m², très prisés des investisseurs locatifs."
-      },
-      {
-        "title": "L'impact décisif du DPE et des coûts de copropriété",
-        "content": "Sur les 412 ventes d'appartements enregistrées en 2025, le diagnostic de performance énergétique (DPE) et les charges de copropriété sont devenus les deux premiers leviers de négociation. Un appartement chauffé au fioul ou classé en passoire thermique (F ou G) subit un ralentissement net de sa commercialisation, avec des délais moyens dépassant 95 jours contre moins de 45 jours pour un bien classé C ou D. Les acquéreurs intègrent désormais systématiquement le devis des travaux dans leur offre d'achat. Par ailleurs, la proximité de la gare SNCF reste l'argument numéro un : un bien situé à moins de 10 minutes à pied des quais de Chartres conserve une surcote moyenne de 8 à 12 % par rapport à la périphérie urbaine."
-      },
-      {
-        "title": "Pourquoi une simple consultation DVF ne suffit pas pour vendre",
-        "content": "La base des Demandes de Valeurs Foncières (DVF) fournit une photographie rétroactive indispensable, mais elle ne reflète ni l'exposition, ni la qualité des rénovations récentes, ni la psychologie des acheteurs en recherche active ce mois-ci. Fixer son prix d'appel au sommet de la fourchette en espérant négocier expose le vendeur au syndrome du bien brûlé : après deux mois sans visite qualifiée, les acquéreurs présument un défaut caché et formulent des offres agressives à la baisse. La méthode SAFTI portée par Mouaad Boullourou consiste à positionner le bien avec une rigueur scientifique dès le premier jour afin de susciter l'émulation et de préserver votre capital net vendeur."
-      }
-    ],
-    "maison": {
-      "median2025": 2507,
-      "q1": 2084,
-      "q3": 3240,
-      "count2025": 188,
-      "totalCount": 983,
-      "history": [
-        {
-          "year": 2021,
-          "count": 223,
-          "median": 2433,
-          "q1": 1982,
-          "q3": 2956
-        },
-        {
-          "year": 2022,
-          "count": 236,
-          "median": 2601,
-          "q1": 2258,
-          "q3": 3366
-        },
-        {
-          "year": 2023,
-          "count": 184,
-          "median": 2543,
-          "q1": 2073,
-          "q3": 3123
-        },
-        {
-          "year": 2024,
-          "count": 152,
-          "median": 2469,
-          "q1": 2021,
-          "q3": 3062
-        },
-        {
-          "year": 2025,
-          "count": 188,
-          "median": 2507,
-          "q1": 2084,
-          "q3": 3240
-        }
-      ]
-    },
-    "appartement": {
-      "median2025": 2448,
-      "q1": 2056,
-      "q3": 2885,
-      "count2025": 412,
-      "totalCount": 2150,
-      "history": [
-        {
-          "year": 2021,
-          "count": 480,
-          "median": 2350,
-          "q1": 1950,
-          "q3": 2780
-        },
-        {
-          "year": 2022,
-          "count": 495,
-          "median": 2480,
-          "q1": 2080,
-          "q3": 2920
-        },
-        {
-          "year": 2023,
-          "count": 390,
-          "median": 2460,
-          "q1": 2040,
-          "q3": 2890
-        },
-        {
-          "year": 2024,
-          "count": 373,
-          "median": 2460,
-          "q1": 2050,
-          "q3": 2900
-        },
-        {
-          "year": 2025,
-          "count": 412,
-          "median": 2448,
-          "q1": 2056,
-          "q3": 2885
-        }
-      ]
-    },
-    "metaDesc": "Prix m² immobilier à Chartres (28000) : 2 507 €/m² pour les maisons, 2 448 €/m² pour les appartements. Ventes notariées DVF réelles et analyse par quartier.",
-    "ctaText": "À Chartres, l'écart entre le secteur sauvegardé ABF de la cathédrale et un pavillon de Rechèvres exige une analyse fine. Nos 3 diagnostics clarifient votre positionnement avant tout contact :"
-  },
-  {
-    "slug": "leves",
-    "name": "Lèves",
-    "postalCode": "28300",
-    "description": "Commune résidentielle d'excellence bordant la vallée de l'Eure au nord de Chartres, réputée pour sa tranquillité, son patrimoine naturel et sa qualité de vie préservée.",
-    "geoBlock": "À Lèves (28300), commune limitrophe nord de Chartres particulièrement prisée pour son cadre de vie et la vallée de l'Eure, le prix médian notarié DVF atteint 2 353 €/m² pour les maisons en 2025 (sur un volume de 38 ventes enregistrées) et 2 453 €/m² pour les appartements (12 ventes réelles). La fourchette intermédiaire concentre 50 % des transactions de maisons entre 1 894 €/m² et 2 731 €/m². Le marché lévois se distingue par une rareté structurelle de l'offre et une forte fidélité résidentielle, notamment sur les secteurs de la Butte Celtique, du Gorget et des hauteurs dominant la vallée. La proximité immédiate des écoles et la desserte rapide vers la gare de Chartres maintiennent une tension soutenue sur les pavillons familiaux avec jardin. Les acquéreurs privilégient le calme absolu et la qualité du bâti traditionnel, valorisant les rénovations soignées sans travaux énergétiques lourds.",
-    "neighbours": [
-      {
-        "name": "Chartres",
-        "slug": "chartres",
-        "distance": "3 km au Sud"
-      },
-      {
-        "name": "Champhol",
-        "slug": "champhol",
-        "distance": "3 km à l'Est"
-      },
-      {
-        "name": "Mainvilliers",
-        "slug": "mainvilliers",
-        "distance": "4 km au Sud-Ouest"
-      }
-    ],
-    "sections": [
-      {
-        "title": "Une commune refuge où l'offre reste structurellement rare",
-        "content": "Avec seulement 38 transactions de maisons actées en 2025, Lèves se caractérise par une très faible rotation de son parc immobilier. Les habitants s'y installent durablement pour élever leurs enfants au calme, profitant des écoles réputées, des équipements municipaux et de la proximité de la nature le long des berges de l'Eure. Le quartier de la Butte Celtique et les abords de l'abbaye Notre-Dame de Josaphat concentrent une demande constante de pavillons traditionnels en pierre ou de constructions des années 1980 bien entretenues. Les parcelles généreuses de 600 à 1 200 m² constituent un luxe devenu introuvable dans Chartres intra-muros, justifiant des prix au m² très fermes qui ne subissent pas les soubresauts du marché spéculatif."
-      },
-      {
-        "title": "Le profil type des acquéreurs lévois et leurs exigences",
-        "content": "Les acheteurs qui ciblent Lèves sont majoritairement des familles locales consolidant leur parcours résidentiel ou des cadres de l'agglomération chartraine cherchant à échapper à la densité urbaine tout en restant à moins de 8 minutes en voiture de la gare de Chartres. Leurs critères d'arbitrage sont stricts : une pièce de vie lumineuse de plain-pied ouverte sur le jardin, au moins trois chambres, et une performance énergétique rassurante. Les biens nécessitant une rénovation thermique globale voient leurs prix plafonner sous les 2 000 €/m², tandis qu'une maison parfaitement isolée bénéficiant d'une pompe à chaleur trouve preneur au-delà de 2 700 €/m² en quelques semaines."
-      },
-      {
-        "title": "L'ancrage local de Mouaad Boullourou à Lèves",
-        "content": "En tant que conseiller immobilier résidant et opérant directement à Lèves (28300), Mouaad Boullourou connaît chaque rue, de la route de Dreux aux hauteurs du Gorget. Cette intimité avec le territoire permet d'anticiper les projets de vente avant même leur parution publique et de fournir une estimation factuelle fondée sur les ventes réelles de votre voisinage immédiat, et non sur des moyennes algorithmiques trompeuses. Une démarche rigoureuse sans mandat forcé, dédiée à la sérénité de vos décisions."
-      }
-    ],
-    "maison": {
-      "median2025": 2353,
-      "q1": 1894,
-      "q3": 2731,
-      "count2025": 38,
-      "totalCount": 201,
-      "history": [
-        {
-          "year": 2021,
-          "count": 49,
-          "median": 2225,
-          "q1": 2000,
-          "q3": 2575
-        },
-        {
-          "year": 2022,
-          "count": 53,
-          "median": 2500,
-          "q1": 2069,
-          "q3": 2882
-        },
-        {
-          "year": 2023,
-          "count": 34,
-          "median": 2453,
-          "q1": 2130,
-          "q3": 2759
-        },
-        {
-          "year": 2024,
-          "count": 27,
-          "median": 2329,
-          "q1": 2036,
-          "q3": 2817
-        },
-        {
-          "year": 2025,
-          "count": 38,
-          "median": 2353,
-          "q1": 1894,
-          "q3": 2731
-        }
-      ]
-    },
-    "appartement": {
-      "median2025": 2453,
-      "q1": 2100,
-      "q3": 2750,
-      "count2025": 12,
-      "totalCount": 65,
-      "history": [
-        {
-          "year": 2021,
-          "count": 15,
-          "median": 2380,
-          "q1": 2020,
-          "q3": 2650
-        },
-        {
-          "year": 2022,
-          "count": 18,
-          "median": 2490,
-          "q1": 2150,
-          "q3": 2800
-        },
-        {
-          "year": 2023,
-          "count": 11,
-          "median": 2440,
-          "q1": 2080,
-          "q3": 2720
-        },
-        {
-          "year": 2024,
-          "count": 9,
-          "median": 2430,
-          "q1": 2050,
-          "q3": 2700
-        },
-        {
-          "year": 2025,
-          "count": 12,
-          "median": 2453,
-          "q1": 2100,
-          "q3": 2750
-        }
-      ]
-    },
-    "metaDesc": "Prix m² à Lèves (28300) : 2 353 €/m² médian pour les maisons. Transactions notariées réelles dans la vallée de l'Eure et repères DVF avec Mouaad Boullourou.",
-    "ctaText": "À Lèves, la rareté des biens à vendre sur la Butte Celtique ou Le Gorget rend chaque estimation unique. Testez la faisabilité de votre projet en deux minutes :"
-  },
-  {
-    "slug": "mainvilliers",
-    "name": "Mainvilliers",
-    "postalCode": "28300",
-    "description": "Commune dynamique de la première couronne ouest de Chartres, offrant une connectivité immédiate avec le pôle multimodal de la gare et un marché immobilier attractif pour les primo-accédants.",
-    "geoBlock": "À Mainvilliers (28300), commune de la première couronne connectée au pôle multimodal de la gare de Chartres, le prix médian notarié DVF s'établit en 2025 à 2 309 €/m² pour les maisons individuelles (82 ventes enregistrées) et à 2 267 €/m² pour les appartements (64 transactions réelles). La fourchette intermédiaire concentre 50 % des ventes de maisons entre 1 815 €/m² et 2 571 €/m², tandis que les appartements s'échelonnent entre 1 780 €/m² et 2 620 €/m². La ville séduit particulièrement les primo-accédants et les navetteurs parisiens grâce à la passerelle piétonne rejoignant directement les quais TER en quelques minutes. Le quartier résidentiel des Grands Prés et les abords verdoyants du parc des Vauroux maintiennent une attractivité soutenue pour les familles cherchant un pavillon avec jardin à un coût maîtrisé aux portes de Chartres.",
-    "neighbours": [
-      {
-        "name": "Chartres",
-        "slug": "chartres",
-        "distance": "2 km à l'Est"
-      },
-      {
-        "name": "Lucé",
-        "slug": "luce",
-        "distance": "2 km au Sud"
-      },
-      {
-        "name": "Lèves",
-        "slug": "leves",
-        "distance": "4 km au Nord"
-      }
-    ],
-    "sections": [
-      {
-        "title": "L'avantage stratégique de la passerelle de la gare",
-        "content": "Mainvilliers bénéficie d'une situation géographique privilégiée : les quartiers proches du pôle gare permettent de rejoindre Paris en train sans subir les tarifs de l'hypercentre chartrain. Cette liaison directe assure une liquidité élevée aux petites maisons de ville et aux appartements T2/T3, qui se louent ou se revendent rapidement. Le secteur des Grands Prés, avec ses pavillons individuels disposant de petits jardins de ville, offre un compromis idéal pour les jeunes ménages ne disposant pas du budget nécessaire pour s'implanter à Chartres."
-      },
-      {
-        "title": "Une mixité de bâti exigeant un positionnement précis",
-        "content": "Le territoire mainvillois combine des zones d'habitat collectif des années 1970 avec des lotissements résidentiels récents et un tissu de maisons anciennes. Cette hétérogénéité crée un écart de valorisation significatif : les appartements dans des copropriétés ayant voté un ravalement avec isolation thermique par l'extérieur (ITE) s'échangent autour de 2 350 €/m², tandis que les résidences énergivores peinent à dépasser 1 800 €/m². Une analyse fine des procès-verbaux d'assemblée générale est indispensable pour rassurer les futurs acquéreurs sur les charges à venir."
-      },
-      {
-        "title": "Accompagnement local et sécurisation du projet",
-        "content": "Vendre à Mainvilliers requiert de mettre en valeur les dessertes douces, les écoles et les commerces de proximité. En appliquant la méthode LEVOIS, Mouaad Boullourou vous aide à filtrer les acquéreurs en vérifiant systématiquement leur plan de financement avant toute visite, évitant les pertes de temps et les déconvenues bancaires."
-      }
-    ],
-    "maison": {
-      "median2025": 2309,
-      "q1": 1815,
-      "q3": 2571,
-      "count2025": 82,
-      "totalCount": 420,
-      "history": [
-        {
-          "year": 2021,
-          "count": 95,
-          "median": 2250,
-          "q1": 1780,
-          "q3": 2510
-        },
-        {
-          "year": 2022,
-          "count": 102,
-          "median": 2360,
-          "q1": 1890,
-          "q3": 2650
-        },
-        {
-          "year": 2023,
-          "count": 76,
-          "median": 2320,
-          "q1": 1830,
-          "q3": 2590
-        },
-        {
-          "year": 2024,
-          "count": 65,
-          "median": 2290,
-          "q1": 1800,
-          "q3": 2550
-        },
-        {
-          "year": 2025,
-          "count": 82,
-          "median": 2309,
-          "q1": 1815,
-          "q3": 2571
-        }
-      ]
-    },
-    "appartement": {
-      "median2025": 2267,
-      "q1": 1780,
-      "q3": 2620,
-      "count2025": 64,
-      "totalCount": 310,
-      "history": [
-        {
-          "year": 2021,
-          "count": 72,
-          "median": 2210,
-          "q1": 1720,
-          "q3": 2550
-        },
-        {
-          "year": 2022,
-          "count": 78,
-          "median": 2320,
-          "q1": 1820,
-          "q3": 2680
-        },
-        {
-          "year": 2023,
-          "count": 52,
-          "median": 2280,
-          "q1": 1790,
-          "q3": 2630
-        },
-        {
-          "year": 2024,
-          "count": 44,
-          "median": 2250,
-          "q1": 1760,
-          "q3": 2600
-        },
-        {
-          "year": 2025,
-          "count": 64,
-          "median": 2267,
-          "q1": 1780,
-          "q3": 2620
-        }
-      ]
-    },
-    "metaDesc": "Prix m² à Mainvilliers (28300) : médian maison 2 309 €/m², appartement 2 267 €/m². Ventes DVF proches de la gare de Chartres et des Grands Prés.",
-    "ctaText": "Aux Grands Prés comme près de la gare de Chartres, la solvabilité des acquéreurs est la clé. Choisissez le diagnostic adapté à votre étape :"
-  },
-  {
-    "slug": "luce",
-    "name": "Lucé",
-    "postalCode": "28110",
-    "description": "Deuxième pôle démographique de l'agglomération chartraine, Lucé se distingue par un tissu commercial dense, d'excellentes infrastructures scolaires et sportives, et un marché immobilier très accessible.",
-    "geoBlock": "À Lucé (28110), deuxième pôle démographique de l'agglomération chartraine, le prix médian notarié 2025 se situe à 2 072 €/m² pour les maisons (94 transactions enregistrées dans la base DVF) et à 2 181 €/m² pour les appartements (110 ventes réelles). Le cœur du marché des maisons oscille entre 1 667 €/m² pour le premier quartile et 2 432 €/m² pour le troisième quartile. Affichant le rapport surface/prix le plus avantageux du bassin de vie, Lucé attire une forte proportion de primo-accédants sur les quartiers pavillonnaires de Poiffond et du Paradis, ainsi que des investisseurs locatifs sur l'axe commerçant de la rue de la République. La fluidité des transports en commun Filibus, la proximité des zones d'activités économiques et la densité des infrastructures scolaires et sportives sécurisent la demande locative et la valeur d'usage des logements individuels ou collectifs rénovés.",
-    "neighbours": [
-      {
-        "name": "Chartres",
-        "slug": "chartres",
-        "distance": "3 km au Nord-Est"
-      },
-      {
-        "name": "Mainvilliers",
-        "slug": "mainvilliers",
-        "distance": "2 km au Nord"
-      },
-      {
-        "name": "Luisant",
-        "slug": "luisant",
-        "distance": "2 km au Sud-Est"
-      }
-    ],
-    "sections": [
-      {
-        "title": "Le pôle d'accessibilité de l'agglomération chartraine",
-        "content": "Lucé propose une alternative concrète et recherchée à la flambée des prix des communes voisines de l'agglomération. Sur les secteurs résidentiels de Poiffond, du Paradis ou des abords de la rue de Bruxelles, les familles accèdent à des maisons traditionnelles de 4 ou 5 pièces avec jardin pour un budget total souvent inférieur à 230 000 €, là où un bien équivalent à Chartres ou Luisant dépasserait les 300 000 €. L'axe commerçant structurant de la rue de la République et la présence de nombreux équipements (collèges, gymnases, lignes de bus Filibus) rendent la commune parfaitement autonome pour la vie quotidienne sans dépendre exclusivement d'un véhicule individuel."
-      },
-      {
-        "title": "Un marché d'appartements très actif pour les investisseurs",
-        "content": "Avec 110 ventes d'appartements en 2025, Lucé est le deuxième marché collectif le plus fluide du secteur. Les logements de type T2 et T3 attirent une forte demande locative d'employés et de jeunes actifs de la zone commerciale et industrielle sud. La vigilance des acheteurs se concentre aujourd'hui sur la gestion des copropriétés : les immeubles bénéficiant d'un chauffage urbain ou ayant engagé des audits énergétiques globaux présentent une excellente tenue de cote."
-      },
-      {
-        "title": "Optimiser la mise en vente de votre bien à Lucé",
-        "content": "À Lucé, les acheteurs négocient âprement chaque mètre carré. Pour défendre la valeur de votre bien, Mouaad Boullourou prépare un dossier technique complet mettant en relief la solidité du bâti, les travaux réalisés et le coût d'usage réel du logement. Un diagnostic factuel sans complaisance pour vendre au meilleur prix du marché."
-      }
-    ],
-    "maison": {
-      "median2025": 2072,
-      "q1": 1667,
-      "q3": 2432,
-      "count2025": 94,
-      "totalCount": 490,
-      "history": [
-        {
-          "year": 2021,
-          "count": 112,
-          "median": 2020,
-          "q1": 1620,
-          "q3": 2380
-        },
-        {
-          "year": 2022,
-          "count": 118,
-          "median": 2130,
-          "q1": 1710,
-          "q3": 2490
-        },
-        {
-          "year": 2023,
-          "count": 88,
-          "median": 2090,
-          "q1": 1680,
-          "q3": 2450
-        },
-        {
-          "year": 2024,
-          "count": 78,
-          "median": 2050,
-          "q1": 1640,
-          "q3": 2410
-        },
-        {
-          "year": 2025,
-          "count": 94,
-          "median": 2072,
-          "q1": 1667,
-          "q3": 2432
-        }
-      ]
-    },
-    "appartement": {
-      "median2025": 2181,
-      "q1": 1690,
-      "q3": 2540,
-      "count2025": 110,
-      "totalCount": 580,
-      "history": [
-        {
-          "year": 2021,
-          "count": 130,
-          "median": 2120,
-          "q1": 1640,
-          "q3": 2480
-        },
-        {
-          "year": 2022,
-          "count": 138,
-          "median": 2220,
-          "q1": 1730,
-          "q3": 2590
-        },
-        {
-          "year": 2023,
-          "count": 104,
-          "median": 2190,
-          "q1": 1700,
-          "q3": 2550
-        },
-        {
-          "year": 2024,
-          "count": 98,
-          "median": 2160,
-          "q1": 1670,
-          "q3": 2520
-        },
-        {
-          "year": 2025,
-          "count": 110,
-          "median": 2181,
-          "q1": 1690,
-          "q3": 2540
-        }
-      ]
-    },
-    "metaDesc": "Prix m² à Lucé (28110) : médian maison 2 072 €/m², appartement 2 181 €/m². Données notariées DVF à Poiffond, Paradis et sur la rue de la République.",
-    "ctaText": "À Lucé, les charges de copropriété et la note du DPE créent de fortes négociations. Clarifiez votre marge de manœuvre avant de vous lancer :"
-  },
-  {
-    "slug": "champhol",
-    "name": "Champhol",
-    "postalCode": "28300",
-    "description": "Secteur résidentiel haut de gamme au nord-est de Chartres, recherché pour ses lotissements aérés de standing, sa tranquillité et sa proximité immédiate avec les centres de soins de pointe.",
-    "geoBlock": "À Champhol (28300), commune résidentielle haut de gamme située au nord-est immédiat de Chartres, le prix médian des maisons atteint 2 426 €/m² en 2025 sur un volume de 42 transactions notariées, avec une fourchette centrale comprise entre 2 088 €/m² et 2 813 €/m². Le marché local est quasi exclusivement individuel, caractérisé par des propriétés contemporaines spacieuses, de vastes parcelles arborées et des lotissements de standing réputés, notamment sur les secteurs de Vauventriers et des hauteurs. La proximité directe de l'Hôpital Privé d'Eure-et-Loir et l'accès fluide à la rocade confèrent à la commune une attractivité majeure et pérenne auprès du corps médical, des professions libérales et des cadres dirigeants de la Cosmetic Valley en quête de discrétion et de tranquillité. Les acquéreurs valorisent les constructions de qualité sans travaux et les prestations énergétiques de pointe.",
-    "neighbours": [
-      {
-        "name": "Chartres",
-        "slug": "chartres",
-        "distance": "4 km au Sud-Ouest"
-      },
-      {
-        "name": "Lèves",
-        "slug": "leves",
-        "distance": "3 km à l'Ouest"
-      }
-    ],
-    "sections": [
-      {
-        "title": "Un habitat pavillonnaire de grand standing",
-        "content": "Champhol séduit par la qualité exceptionnelle de son aménagement urbain : voiries soignées, espaces verts généreux et absence d'habitat collectif dense. Sur les secteurs réputés de Vauventriers et des hauteurs de la commune, les constructions des années 1990 à 2010 dominent largement le marché, offrant de grandes surfaces habitables (souvent supérieures à 130 ou 150 m²), des suites parentales soignées et des garages doubles. Les parcelles de 800 à 1 500 m² assurent une réelle intimité entre voisins, un critère premier et non négociable pour la clientèle de cadres locaux."
-      },
-      {
-        "title": "La clientèle médicale et les cadres de la Cosmetic Valley",
-        "content": "L'implantation de l'Hôpital Privé d'Eure-et-Loir a renforcé l'attrait de Champhol auprès des médecins, soignants et cadres supérieurs de la Cosmetic Valley chartraine. Ces acquéreurs solvables recherchent des biens clés en main, sans travaux à prévoir, et valorisent fortement la modernité des équipements (domotique, planchers chauffants, DPE A ou B). Dans ce segment, les biens d'exception franchissent régulièrement les 3 000 €/m²."
-      },
-      {
-        "title": "Valoriser un bien résidentiel à Champhol",
-        "content": "La commercialisation d'une maison de standing à Champhol exige une présentation visuelle irréprochable et un ciblage d'acheteurs qualifiés. Mouaad Boullourou vous accompagne avec des outils d'aide à la décision avancés et la force du réseau SAFTI pour toucher les acquéreurs en mutation professionnelle sur l'agglomération."
-      }
-    ],
-    "maison": {
-      "median2025": 2426,
-      "q1": 2088,
-      "q3": 2813,
-      "count2025": 42,
-      "totalCount": 210,
-      "history": [
-        {
-          "year": 2021,
-          "count": 48,
-          "median": 2360,
-          "q1": 2010,
-          "q3": 2740
-        },
-        {
-          "year": 2022,
-          "count": 52,
-          "median": 2480,
-          "q1": 2140,
-          "q3": 2890
-        },
-        {
-          "year": 2023,
-          "count": 36,
-          "median": 2440,
-          "q1": 2090,
-          "q3": 2830
-        },
-        {
-          "year": 2024,
-          "count": 32,
-          "median": 2400,
-          "q1": 2060,
-          "q3": 2790
-        },
-        {
-          "year": 2025,
-          "count": 42,
-          "median": 2426,
-          "q1": 2088,
-          "q3": 2813
-        }
-      ]
-    },
-    "appartement": null,
-    "metaDesc": "Prix m² à Champhol (28300) : 2 426 €/m² médian pour les maisons individuelles. Ventes DVF à Vauventriers et aux abords de l'Hôpital Privé.",
-    "ctaText": "À Champhol, les propriétés de standing de Vauventriers demandent un cadrage rigoureux sans dévalorisation. Situez votre vente ou votre recherche :"
-  },
-  {
-    "slug": "le-coudray",
-    "name": "Le Coudray",
-    "postalCode": "28630",
-    "description": "Commune prisée du sud-est chartrain, abritant le Centre Hospitalier Louis Pasteur et bénéficiant d'un cadre verdoyant et d'un accès rapide à l'autoroute A11.",
-    "geoBlock": "Au Coudray (28630), commune prisée de la périphérie sud-est de Chartres, les maisons individuelles atteignent en 2025 le prix médian le plus élevé de la métropole à 2 713 €/m² (sur 35 ventes notariées DVF), avec un troisième quartile culminant à 3 125 €/m². Les appartements se négocient quant à eux à une médiane ferme de 2 552 €/m² (24 ventes). La présence du Centre Hospitalier Louis Pasteur, le cadre verdoyant préservé du séminaire des Barbelés et la connexion autoroutière directe vers l'A11 créent une tension structurelle sur un foncier restreint. Ce marché patrimonial se distingue par une très forte stabilité des prix, une absence totale de spéculation et une prime constante accordée aux constructions bien isolées bénéficiant d'un grand calme. Les professionnels de santé et les familles y trouvent un cadre de vie sécurisant garantissant la pérennité de leur investissement.",
-    "neighbours": [
-      {
-        "name": "Chartres",
-        "slug": "chartres",
-        "distance": "4 km au Nord-Ouest"
-      },
-      {
-        "name": "Luisant",
-        "slug": "luisant",
-        "distance": "3 km à l'Ouest"
-      }
-    ],
-    "sections": [
-      {
-        "title": "Le marché le plus valorisé de l'agglomération",
-        "content": "Avec une médiane de 2 713 €/m² pour les maisons individuelles, Le Coudray s'affirme comme le secteur le plus coté de la périphérie chartraine. Le cadre champêtre préservé, combiné à la présence d'écoles réputées et à l'accès immédiat aux grands axes de circulation, attire des foyers à fort pouvoir d'achat. Les transactions y sont peu nombreuses (35 ventes en 2025), ce qui maintient une concurrence vive entre acheteurs dès qu'un bien familial de qualité arrive sur le marché."
-      },
-      {
-        "title": "Le rôle structurant du pôle hospitalier Pasteur",
-        "content": "Le Centre Hospitalier Louis Pasteur draine un bassin d'emploi médical et paramédical majeur. De nombreux praticiens choisissent de s'installer au Coudray pour concilier proximité professionnelle et quiétude familiale. Ce flux régulier garantit également une excellente rentabilité pour les appartements récents ou rénovés (2 552 €/m² médian), prisés des internes et professionnels de santé en mission longue."
-      },
-      {
-        "title": "Faire estimer et vendre son bien au Coudray",
-        "content": "Dans un marché à haute valeur patrimoniale, chaque détail compte : exposition, qualité architecturale, absence de vis-à-vis. Mouaad Boullourou établit un diagnostic précis de votre situation, en confrontant les actes notariés récents aux attentes des acquéreurs solvables en portefeuille."
-      }
-    ],
-    "maison": {
-      "median2025": 2713,
-      "q1": 2286,
-      "q3": 3125,
-      "count2025": 35,
-      "totalCount": 180,
-      "history": [
-        {
-          "year": 2021,
-          "count": 42,
-          "median": 2620,
-          "q1": 2190,
-          "q3": 3010
-        },
-        {
-          "year": 2022,
-          "count": 46,
-          "median": 2750,
-          "q1": 2320,
-          "q3": 3180
-        },
-        {
-          "year": 2023,
-          "count": 30,
-          "median": 2690,
-          "q1": 2260,
-          "q3": 3100
-        },
-        {
-          "year": 2024,
-          "count": 27,
-          "median": 2660,
-          "q1": 2240,
-          "q3": 3070
-        },
-        {
-          "year": 2025,
-          "count": 35,
-          "median": 2713,
-          "q1": 2286,
-          "q3": 3125
-        }
-      ]
-    },
-    "appartement": {
-      "median2025": 2552,
-      "q1": 2150,
-      "q3": 2950,
-      "count2025": 24,
-      "totalCount": 120,
-      "history": [
-        {
-          "year": 2021,
-          "count": 28,
-          "median": 2480,
-          "q1": 2080,
-          "q3": 2860
-        },
-        {
-          "year": 2022,
-          "count": 30,
-          "median": 2590,
-          "q1": 2190,
-          "q3": 2990
-        },
-        {
-          "year": 2023,
-          "count": 21,
-          "median": 2540,
-          "q1": 2130,
-          "q3": 2930
-        },
-        {
-          "year": 2024,
-          "count": 17,
-          "median": 2510,
-          "q1": 2100,
-          "q3": 2900
-        },
-        {
-          "year": 2025,
-          "count": 24,
-          "median": 2552,
-          "q1": 2150,
-          "q3": 2950
-        }
-      ]
-    },
-    "metaDesc": "Prix m² au Coudray (28630) : médian maison 2 713 €/m², appartement 2 552 €/m². Actes notariés DVF autour de l'Hôpital Pasteur et de l'A11.",
-    "ctaText": "Au Coudray, la proximité du pôle hospitalier Pasteur soutient la demande mais impose une stratégie de prix juste. Validez vos paramètres de décision :"
-  },
-  {
-    "slug": "luisant",
-    "name": "Luisant",
-    "postalCode": "28600",
-    "description": "Commune bourgeoise et familiale limitrophe sud de Chartres, réputée pour son étang paysager, ses écoles d'excellence et son cadre de vie d'une rare élégance.",
-    "geoBlock": "À Luisant (28600), commune bourgeoise et résidentielle limitrophe sud de Chartres, le prix médian notarié 2025 s'établit à 2 500 €/m² pour les maisons (68 transactions réelles dans la base DVF) et à 1 989 €/m² pour les appartements (32 ventes actées). La moitié centrale des ventes de maisons s'inscrit entre 2 143 €/m² et 2 857 €/m², avec des valorisations dépassant 3 100 €/m² autour de l'étang de 15 hectares et du quartier recherché des Graviers. Réputée pour ses écoles d'excellence, ses complexes sportifs et sa qualité de vie soignée, Luisant attire une clientèle exigeante de familles établies et de retraités aisés. Les propriétés bénéficiant d'un diagnostic énergétique favorable et d'un environnement sans nuisance y conservent une cote patrimoniale de premier ordre, tandis que les appartements des années 1970 nécessitant des travaux d'isolation offrent des opportunités de rénovation attractives.",
-    "neighbours": [
-      {
-        "name": "Chartres",
-        "slug": "chartres",
-        "distance": "3 km au Nord"
-      },
-      {
-        "name": "Lucé",
-        "slug": "luce",
-        "distance": "2 km au Nord-Ouest"
-      },
-      {
-        "name": "Le Coudray",
-        "slug": "le-coudray",
-        "distance": "3 km à l'Est"
-      }
-    ],
-    "sections": [
-      {
-        "title": "L'étang de Luisant et l'art de vivre résidentiel",
-        "content": "L'attractivité de Luisant repose largement sur son cadre naturel remarquable centré autour de son étang de 15 hectares. Cet espace de promenade, associé aux complexes sportifs et à la médiathèque, offre un confort de vie inégalé aux portes de Chartres. Les quartiers résidentiels environnants, composés de maisons d'architecte et de pavillons traditionnels soignés, figurent parmi les adresses les plus convoitées de l'Eure-et-Loir."
-      },
-      {
-        "title": "Une dichotomie marquée entre maisons bourgeoises et collectifs",
-        "content": "Alors que le marché des maisons reste très ferme autour de 2 500 €/m² avec des pointes au-delà de 3 000 €/m² pour les biens sans travaux, le marché des appartements présente une médiane plus modérée à 1 989 €/m². Cela s'explique par la présence de résidences collectives construites dans les années 1970 nécessitant des travaux d'isolation pour moderniser leur étiquette DPE. Les appartements rénovés ou récents échappent à cette décote et constituent d'excellents placements patrimoniaux."
-      },
-      {
-        "title": "Votre accompagnement sur-mesure à Luisant",
-        "content": "Vendre à Luisant nécessite de séduire des acquéreurs exigeants et vigilants sur l'environnement sonore et l'état général du bien. Mouaad Boullourou met à votre service une méthodologie transparente et un plan de commercialisation rigoureux pour garantir la réussite de votre projet."
-      }
-    ],
-    "maison": {
-      "median2025": 2500,
-      "q1": 2143,
-      "q3": 2857,
-      "count2025": 68,
-      "totalCount": 340,
-      "history": [
-        {
-          "year": 2021,
-          "count": 78,
-          "median": 2440,
-          "q1": 2080,
-          "q3": 2790
-        },
-        {
-          "year": 2022,
-          "count": 84,
-          "median": 2550,
-          "q1": 2190,
-          "q3": 2910
-        },
-        {
-          "year": 2023,
-          "count": 58,
-          "median": 2510,
-          "q1": 2150,
-          "q3": 2870
-        },
-        {
-          "year": 2024,
-          "count": 52,
-          "median": 2480,
-          "q1": 2120,
-          "q3": 2830
-        },
-        {
-          "year": 2025,
-          "count": 68,
-          "median": 2500,
-          "q1": 2143,
-          "q3": 2857
-        }
-      ]
-    },
-    "appartement": {
-      "median2025": 1989,
-      "q1": 1650,
-      "q3": 2350,
-      "count2025": 32,
-      "totalCount": 165,
-      "history": [
-        {
-          "year": 2021,
-          "count": 38,
-          "median": 1940,
-          "q1": 1600,
-          "q3": 2290
-        },
-        {
-          "year": 2022,
-          "count": 42,
-          "median": 2040,
-          "q1": 1690,
-          "q3": 2410
-        },
-        {
-          "year": 2023,
-          "count": 28,
-          "median": 2010,
-          "q1": 1660,
-          "q3": 2370
-        },
-        {
-          "year": 2024,
-          "count": 25,
-          "median": 1980,
-          "q1": 1640,
-          "q3": 2340
-        },
-        {
-          "year": 2025,
-          "count": 32,
-          "median": 1989,
-          "q1": 1650,
-          "q3": 2350
-        }
-      ]
-    },
-    "metaDesc": "Prix m² à Luisant (28600) : médian maison 2 500 €/m², appartement 1 989 €/m². Ventes notariées DVF réelles autour de l'étang et des Graviers.",
-    "ctaText": "À Luisant, entre les abords calmes de l'étang et les pavillons familiaux, le tempo de vente varie du simple au double. Évaluez votre calendrier :"
-  }
-];
-
-  return communesData.map((commune) => ({
-    params: { commune: commune.slug },
-    props: { commune }
-  }));
+  return localMarkets.map(commune => ({ params: { commune: commune.slug }, props: { commune } }));
 }
-
+interface Props { commune: LocalMarket }
 const { commune } = Astro.props;
-const pageTitle = `Prix m² & Ventes Notariées DVF à ${commune.name} (${commune.postalCode})`;
-const pageDesc = commune.metaDesc;
-
+const period = marketSummary.period;
+const sourceDate = new Date(marketSummary.source.sourceGeneratedAt).toLocaleDateString('fr-FR', { timeZone: 'UTC' });
+const pageTitle = `Prix immobilier à ${commune.name} (${commune.postalCode}) · DVF ${period.toYear}`;
+const pageDesc = marketSummaryText(commune);
 const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  'itemListElement': [
-    { '@type': 'ListItem', 'position': 1, 'name': 'Accueil', 'item': 'https://levois.fr/' },
-    { '@type': 'ListItem', 'position': 2, 'name': 'Ventes réelles (DVF)', 'item': 'https://levois.fr/votre-rue/' },
-    { '@type': 'ListItem', 'position': 3, 'name': commune.name, 'item': `https://levois.fr/prix-immobilier/${commune.slug}/` }
-  ]
-};
-
-const datasetSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Dataset',
-  'name': `Statistiques Immobilières Notariées DVF 2021-2025 - ${commune.name}`,
-  'description': `Séries historiques des prix au mètre carré et volumes de ventes réelles constatées par actes notariés à ${commune.name} (${commune.postalCode}).`,
-  'license': 'https://www.etalab.gouv.fr/licence-ouverte-open-licence/',
-  'creator': {
-    '@type': 'Person',
-    'name': 'Mouaad Boullourou',
-    'jobTitle': 'Conseiller immobilier indépendant SAFTI'
-  },
-  'temporalCoverage': '2021/2025',
-  'spatialCoverage': {
-    '@type': 'Place',
-    'name': commune.name,
-    'address': {
-      '@type': 'PostalAddress',
-      'addressLocality': commune.name,
-      'postalCode': commune.postalCode,
-      'addressCountry': 'FR'
-    }
-  }
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://levois.fr/' },
+    { '@type': 'ListItem', position: 2, name: 'Ventes locales', item: 'https://levois.fr/votre-rue/' },
+    { '@type': 'ListItem', position: 3, name: commune.name, item: `https://levois.fr/prix-immobilier/${commune.slug}/` },
+  ],
 };
 ---
 
 <Layout title={pageTitle} description={pageDesc}>
-  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)}/>
-  <script type="application/ld+json" set:html={JSON.stringify(datasetSchema)}/>
-
-  <div class="w" style="padding-top:110px;padding-bottom:80px;">
-    <!-- BREADCRUMB VISIBLE -->
-    <nav aria-label="Fil d'Ariane" style="font-size:13px;color:rgba(19,42,34,0.7);margin-bottom:24px;">
-      <a href="/" style="text-decoration:underline;">Accueil</a>
-      <span style="margin:0 8px;">›</span>
-      <a href="/votre-rue/" style="text-decoration:underline;">Ventes réelles (DVF)</a>
-      <span style="margin:0 8px;">›</span>
-      <span style="font-weight:700;color:var(--ink);">{commune.name}</span>
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(marketDatasetSchema(commune))} />
+  <article class="w commune-dossier">
+    <nav class="market-breadcrumb" aria-label="Fil d’Ariane">
+      <a href="/">Accueil</a><span aria-hidden="true">›</span><a href="/votre-rue/">Ventes locales</a><span aria-hidden="true">›</span><span>{commune.name}</span>
     </nav>
+    <header class="market-header">
+      <p class="market-ey">Repères calculés à partir de DVF · {period.fromYear}–{period.toYear}</p>
+      <h1>Prix immobilier au m² à {commune.name} <span>({commune.postalCode})</span></h1>
+      <p>{commune.context}</p>
+      <p class="market-dates">Base locale produite le {sourceDate} · Méthode et textes revus le <time datetime={marketReviewDate}>25 octobre 2026</time></p>
+    </header>
 
-    <!-- DOSSIER COMPLET ENGLOBAIT DANS ARTICLE POUR TRAFILATURA & EXTRACTEURS IA -->
-    <article class="commune-market-dossier" itemscope itemtype="https://schema.org/Article">
-      <!-- HEADER DE PAGE -->
-      <header style="max-width:820px;margin-bottom:36px;">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
-          <span class="ey" style="color:var(--or);">Données Notariales Officielles (DVF)</span>
-          <span style="font-size:13px;color:var(--ink-light);">·</span>
-          <time datetime="2026-10-24" itemprop="dateModified" style="font-size:13px;color:var(--ink-light);font-weight:600;">Mis à jour le 24 octobre 2026</time>
-        </div>
-        <h1 itemprop="headline" style="font-size:clamp(34px,4.5vw,56px);line-height:1.1;margin-bottom:18px;">
-          Prix immobilier au m² à {commune.name} <span style="color:var(--or);">({commune.postalCode})</span>
-        </h1>
-        <p itemprop="description" style="font-size:18px;line-height:1.6;color:var(--ink-light);">
-          {commune.description}
-        </p>
-      </header>
+    <section class="market-panel market-synthesis" aria-label="Les repères en bref">
+      <h2>Ce que les ventes passées nous apprennent</h2>
+      <p>{pageDesc}</p>
+      <a href="#methode">Comprendre la sélection, les dates et les limites ↓</a>
+    </section>
 
-      <!-- BLOC CITATION GEO / AEO AUTONOME (134-167 MOTS) -->
-      <section class="geo-synthesis" itemprop="articleBody" style="background:#fff;border-left:4px solid var(--or);border-top:1px solid rgba(19,42,34,0.1);border-right:1px solid rgba(19,42,34,0.1);border-bottom:1px solid rgba(19,42,34,0.1);border-radius:14px;padding:24px 28px;margin-bottom:44px;box-shadow:0 6px 20px rgba(19,42,34,0.03);">
-        <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--or);display:block;margin-bottom:8px;">Synthèse Notariée 2025 · Déclaration Officielle DVF</span>
-        <p style="font-size:15px;line-height:1.75;color:var(--ink);margin:0;">
-          {commune.geoBlock}
-        </p>
-      </section>
+    <div class="market-cards">
+      {commune.series.map(series => (
+        <section class="market-panel">
+          <h2>{series.propertyType === 'Maison' ? 'Maisons' : 'Appartements'} · {series.latest.year}</h2>
+          <p class="market-price">{fmt(series.latest.pricePerSqm.median)}{series.latest.pricePerSqm.median !== null && <span> €/m²</span>}</p>
+          <p>{series.latest.count} ventes retenues cette année · {series.fullPeriod.count} sur la période {period.fromYear}–{period.toYear}.</p>
+          {series.latest.pricePerSqm.q1 !== null && <p class="market-interval">La moitié centrale des prix observés se situe entre <strong>{fmt(series.latest.pricePerSqm.q1)} et {fmt(series.latest.pricePerSqm.q3)} €/m²</strong>.</p>}
+          <p class="market-caution">{sampleCaution(series.latest.count)}</p>
+        </section>
+      ))}
+    </div>
 
-      <!-- BLOC SYNTHÈSE CHIFFRÉE EN DUR -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-bottom:48px;">
-        <!-- CARTE MAISONS -->
-        <div style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(19,42,34,0.04);">
-          <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--or);display:block;margin-bottom:8px;">Maisons · Année 2025</span>
-          <div style="font-size:42px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:10px;">
-            {commune.maison.median2025} <span style="font-size:20px;font-weight:600;">€/m²</span>
-          </div>
-          <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">
-            Prix médian constaté sur <b>{commune.maison.count2025} ventes</b> notariées en 2025 ({commune.maison.totalCount} ventes enregistrées sur 5 ans).
-          </p>
-          <div style="background:var(--pa);padding:12px 16px;border-radius:10px;font-size:13px;color:var(--ink);">
-            <b>Fourchette 50 % des ventes :</b><br/>
-            {commune.maison.q1} €/m² à {commune.maison.q3} €/m²
-          </div>
-        </div>
-
-        <!-- CARTE APPARTEMENTS -->
-        {commune.appartement && (
-          <div style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:18px;padding:32px;box-shadow:0 10px 30px rgba(19,42,34,0.04);">
-            <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink);display:block;margin-bottom:8px;">Appartements · Année 2025</span>
-            <div style="font-size:42px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:10px;">
-              {commune.appartement.median2025} <span style="font-size:20px;font-weight:600;">€/m²</span>
-            </div>
-            <p style="font-size:14px;color:var(--ink-light);margin-bottom:16px;">
-              Prix médian constaté sur <b>{commune.appartement.count2025} ventes</b> notariées en 2025 ({commune.appartement.totalCount} ventes enregistrées sur 5 ans).
-            </p>
-            <div style="background:var(--pa);padding:12px 16px;border-radius:10px;font-size:13px;color:var(--ink);">
-              <b>Fourchette 50 % des ventes :</b><br/>
-              {commune.appartement.q1} €/m² à {commune.appartement.q3} €/m²
-            </div>
-          </div>
-        )}
-      </div>
-
-      <!-- TABLEAU HISTORIQUE 5 ANS MAISONS -->
-      <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;margin-bottom:48px;">
-        <h2 style="font-size:24px;margin-bottom:12px;">Historique des ventes notariées de maisons à {commune.name} (2021-2025)</h2>
-        <p style="font-size:15px;color:var(--ink-light);margin-bottom:24px;">Données consolidées issues de la base officielle DVF (DGFiP / Etalab) et de l'observatoire local Yanport.</p>
-        
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
-            <thead>
-              <tr style="border-bottom:2px solid var(--ink);color:var(--ink);">
-                <th style="padding:12px;">Année</th>
-                <th style="padding:12px;">Nombre de ventes</th>
-                <th style="padding:12px;">Prix médian au m²</th>
-                <th style="padding:12px;">1er quartile (25%)</th>
-                <th style="padding:12px;">3e quartile (75%)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {commune.maison.history.map(row => (
-                <tr style="border-bottom:1px solid rgba(19,42,34,0.08);">
-                  <td style="padding:12px;font-weight:700;">{row.year}</td>
-                  <td style="padding:12px;">{row.count}</td>
-                  <td style="padding:12px;font-weight:700;color:var(--or);">{row.median} €/m²</td>
-                  <td style="padding:12px;">{row.q1} €/m²</td>
-                  <td style="padding:12px;">{row.q3} €/m²</td>
-                </tr>
-              ))}
-            </tbody>
+    {commune.series.map(series => (
+      <section class="market-panel market-history" aria-labelledby={`history-${series.propertyType}`}>
+        <h2 id={`history-${series.propertyType}`}>{series.propertyType === 'Maison' ? 'Maisons' : 'Appartements'} : les ventes retenues, année par année</h2>
+        <p>Les effectifs et prix utilisent la même sélection que l’observatoire. Sur un petit écran, faites défiler le tableau horizontalement.</p>
+        <div class="market-table-scroll" tabindex="0" role="region" aria-label={`Historique ${series.propertyType.toLowerCase()} à ${commune.name}, tableau défilant`}>
+          <table>
+            <caption>{series.propertyType === 'Maison' ? 'Maisons' : 'Appartements'} à {commune.name} · {period.fromYear}–{period.toYear} · prix en €/m²</caption>
+            <thead><tr><th scope="col">Année</th><th scope="col">Ventes</th><th scope="col">Médiane</th><th scope="col">1er quartile</th><th scope="col">3e quartile</th><th scope="col">Prudence de lecture</th></tr></thead>
+            <tbody>{series.annual.map(row => (
+              <tr><th scope="row">{row.year}</th><td>{row.count}</td><td>{fmt(row.pricePerSqm.median)}</td><td>{fmt(row.pricePerSqm.q1)}</td><td>{fmt(row.pricePerSqm.q3)}</td><td>{sampleCaution(row.count)}</td></tr>
+            ))}</tbody>
           </table>
         </div>
       </section>
+    ))}
 
-      <!-- TABLEAU HISTORIQUE 5 ANS APPARTEMENTS -->
-      {commune.appartement && (
-        <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;margin-bottom:48px;">
-          <h2 style="font-size:24px;margin-bottom:12px;">Historique des ventes notariées d'appartements à {commune.name} (2021-2025)</h2>
-          <p style="font-size:15px;color:var(--ink-light);margin-bottom:24px;">Données consolidées issues de la base officielle DVF (DGFiP / Etalab) et de l'observatoire local Yanport.</p>
-          
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:14px;text-align:left;">
-              <thead>
-                <tr style="border-bottom:2px solid var(--ink);color:var(--ink);">
-                  <th style="padding:12px;">Année</th>
-                  <th style="padding:12px;">Nombre de ventes</th>
-                  <th style="padding:12px;">Prix médian au m²</th>
-                  <th style="padding:12px;">1er quartile (25%)</th>
-                  <th style="padding:12px;">3e quartile (75%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {commune.appartement.history.map(row => (
-                  <tr style="border-bottom:1px solid rgba(19,42,34,0.08);">
-                    <td style="padding:12px;font-weight:700;">{row.year}</td>
-                    <td style="padding:12px;">{row.count}</td>
-                    <td style="padding:12px;font-weight:700;color:var(--ink);">{row.median} €/m²</td>
-                    <td style="padding:12px;">{row.q1} €/m²</td>
-                    <td style="padding:12px;">{row.q3} €/m²</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
+    <section id="methode" class="market-panel market-method" aria-labelledby="method-title">
+      <p class="market-ey">Sources et méthode</p>
+      <h2 id="method-title">Des chiffres vérifiables, avec leurs limites</h2>
+      <p>Source : <a href={dvfSourceUrl}>Demandes de valeurs foncières, publiées par la DGFiP</a>, géolocalisées par Etalab. Ces statistiques sont calculées par LEVOIS ; elles ne sont pas une estimation officielle de l’État.</p>
+      <p>La base locale a été produite le <strong>{sourceDate}</strong>. Elle couvre les années civiles complètes {period.fromYear} à {period.toYear}. La date de revue du texte ne change pas la date des données. La DGFiP peut compléter ou corriger ses millésimes : une extraction plus récente peut donc donner d’autres résultats.</p>
+      <h3>Comment sont retenues les ventes ?</h3>
+      <p>La base locale écarte les mutations sans coordonnées, sans habitation ou sans valeur positive. Les indicateurs appliquent ensuite les filtres suivants :</p>
+      <ul>{marketSummary.methodology.filters.map(filter => <li>{filter}</li>)}</ul>
+      <h3>Que signifient médiane et quartiles ?</h3>
+      <p>Pour chaque vente retenue, le prix au m² est la valeur de mutation divisée par la surface bâtie. La médiane partage ces prix en deux groupes égaux. Les quartiles encadrent leur moitié centrale ; ils ne donnent ni un prix minimum ni un prix maximum. Calcul par interpolation R-7, arrondi à l’euro.</p>
+      <p>Moins de 10 ventes : effectif insuffisant pour dégager une tendance ; de 10 à 19 : limité ; de 20 à 29 : à interpréter avec prudence. Même à partir de 30 ventes, la composition de l’échantillon peut déplacer le résultat.</p>
+      <ul>{marketSummary.limitations.map(limitation => <li>{limitation}</li>)}</ul>
+      <p>DVF ne mesure pas les délais de vente, les visites, le DPE, les travaux ni la demande actuelle. Aucun pourcentage de décote ou de prime de quartier n’est déduit de ces tableaux.</p>
+      <p><a href="/data/dvf-market-summary.json">Consulter les agrégats et leur traçabilité (JSON)</a> · <a href="/votre-rue/#vr-methode">Voir la méthode de l’observatoire</a></p>
+    </section>
 
-      <!-- ANALYSE ÉDITORIALE DÉTAILLÉE SUR-MESURE -->
-      <div style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:44px;margin-bottom:48px;line-height:1.75;color:var(--ink);">
-        <h2 style="font-size:26px;margin-bottom:20px;">Analyse experte du marché immobilier à {commune.name}</h2>
-        
-        {commune.sections.map((section, idx) => (
-          <div style="margin-bottom:28px;">
-            <h3 style="font-size:20px;margin-top:24px;margin-bottom:12px;color:var(--or);">{idx + 1}. {section.title}</h3>
-            <p style="margin-bottom:0;font-size:15px;line-height:1.75;">
-              {section.content}
-            </p>
-          </div>
-        ))}
-      </div>
-    </article>
-
-    <!-- MAILLAGE TRANSVERSAL : COMMUNES LIMITROPHES -->
-    <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;margin-bottom:48px;">
-      <h2 style="font-size:22px;margin-bottom:8px;">Explorer les prix de l'immobilier autour de {commune.name}</h2>
-      <p style="font-size:14px;color:var(--ink-light);margin-bottom:20px;">
-        Comparez les prix réels constatés dans les communes voisines de Chartres Métropole :
-      </p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
-        {commune.neighbours.map(n => (
-          <a href={`/prix-immobilier/${n.slug}/`} style="display:flex;flex-direction:column;padding:16px;background:var(--pa);border:1px solid rgba(19,42,34,0.1);border-radius:12px;text-decoration:none;transition:transform 0.2s ease;">
-            <span style="font-weight:700;font-size:15px;color:var(--ink);">{n.name}</span>
-            <span style="font-size:12px;color:var(--ink-light);margin-top:4px;">{n.distance} · Voir les prix DVF →</span>
-          </a>
-        ))}
+    <section class="market-panel">
+      <h2>Passer d’un repère communal à votre projet</h2>
+      <p>Commencez par comparer le type de bien, l’état et les travaux. Préparez les diagnostics et, pour un appartement, les charges et documents de copropriété. Une visite permet ensuite de replacer les ventes comparables dans le contexte de votre logement.</p>
+      <p>Vous hésitez encore ? Cinq questions permettent de nommer votre difficulté et de choisir une action utile cette semaine. Le résultat ne calcule ni prix de vente ni financement.</p>
+      <div class="market-actions">
+        <a class="pill" href="/situer-ma-vente/">Faire le point sur ma vente <i aria-hidden="true">→</i></a>
+        <a class="pill pill-dark" href="/ma-recherche/">Clarifier mon achat <i aria-hidden="true">→</i></a>
+        <a class="pill pill-outline" href="/vendre-et-acheter/">Vendre et acheter <i aria-hidden="true">→</i></a>
       </div>
     </section>
 
-    <!-- SECTION DIAGNOSTIC SUR-MESURE (ZÉRO DUPLICATION) -->
-    <section style="background:var(--pa);border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:44px;margin-bottom:48px;">
-      <span class="ey" style="color:var(--or);margin-bottom:8px;display:inline-block;">Aide à la décision locale</span>
-      <h2 style="font-size:clamp(28px,3.5vw,42px);margin-bottom:16px;">Vous avez un projet immobilier à {commune.name} ?</h2>
-      <p style="font-size:16px;line-height:1.6;color:var(--ink-light);max-width:680px;margin-bottom:32px;">
-        {commune.ctaText}
-      </p>
-
-      <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <a class="pill" href="/situer-ma-vente/">
-          <span>Faire le diagnostic de ma vente à {commune.name}</span>
-          <i>→</i>
-        </a>
-        <a class="pill pill-dark" href="/ma-recherche/">
-          <span>Clarifier ma recherche d'achat</span>
-          <i>→</i>
-        </a>
-        <a class="pill pill-outline" href="/vendre-et-acheter/">
-          <span>Vente et achat simultanés</span>
-          <i>→</i>
-        </a>
-      </div>
+    <section class="market-panel">
+      <h2>Comparer les communes du secteur</h2>
+      <div class="market-neighbours">{localMarkets.filter(market => market.slug !== commune.slug).map(market => <a href={`/prix-immobilier/${market.slug}/`}>{market.name} <span aria-hidden="true">→</span></a>)}</div>
     </section>
 
-    <!-- CARTE CONTACT MOUAAD -->
-    <section style="background:#fff;border:1px solid rgba(19,42,34,0.12);border-radius:20px;padding:36px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
-      <div style="width:90px;height:90px;border-radius:50%;overflow:hidden;flex-shrink:0;background:var(--ink);">
-        <img src="/v7/asset-07.webp" alt="Mouaad Boullourou" width="90" height="90" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;">
-      </div>
-      <div style="flex:1;min-width:260px;">
-        <h3 style="font-size:20px;margin-bottom:4px;">Mouaad Boullourou</h3>
-        <p style="font-size:14px;color:var(--or);font-weight:700;margin-bottom:6px;">Conseiller immobilier indépendant SAFTI · Basé à Lèves (28300)</p>
-        <p style="font-size:14px;color:var(--ink-light);margin:0;">
-          Un doute sur les prix réels ou sur la faisabilité de votre projet à {commune.name} ? Échangeons librement sans engagement.
-        </p>
-      </div>
-      <div style="display:flex;gap:12px;align-items:center;flex-shrink:0;">
-        <a class="pill" href="/contact/">Écrire à Mouaad <i>→</i></a>
-        <a class="ph" href="tel:+33781380121">07 81 38 01 21</a>
-      </div>
-    </section>
-  </div>
+    <aside class="market-panel market-contact" aria-label="Votre interlocuteur">
+      <img src="/v7/asset-07.webp" alt="Mouaad Boullourou" width="90" height="90" loading="lazy" decoding="async" />
+      <div><h2>Mouaad Boullourou</h2><p>Conseiller immobilier indépendant SAFTI, basé à Lèves.</p><p>Un doute sur votre projet à {commune.name} ? Échangeons 15 minutes, sans engagement.</p><a href="/mouaad/">Découvrir mon accompagnement</a></div>
+      <div class="market-actions"><a class="pill" href="/contact/">Échanger avec Mouaad <i aria-hidden="true">→</i></a><a class="ph" href="tel:+33781380121">07 81 38 01 21</a></div>
+    </aside>
+  </article>
 </Layout>
+
+<style>
+  .commune-dossier{padding-top:clamp(32px,6vw,80px);padding-bottom:80px;color:var(--v7-ink);overflow-wrap:anywhere}
+  .market-breadcrumb{display:flex;flex-wrap:wrap;gap:10px;font-size:13px;margin-bottom:28px}
+  a{text-underline-offset:3px}.market-breadcrumb a,.market-panel p a,.market-synthesis>a,.market-contact>div>a{text-decoration:underline}
+  .market-header{max-width:820px;margin-bottom:32px}.market-header h1{font-size:clamp(32px,4.5vw,56px);line-height:1.12;margin:12px 0 20px}.market-header h1 span{color:var(--v7-orange)}
+  .market-header>p{font-size:18px;line-height:1.65}.market-header .market-dates{font-size:13px;color:var(--v7-muted)}
+  .market-ey{font-size:12px!important;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--v7-orange)}
+  .market-panel{min-width:0;background:#fff;border:1px solid rgba(19,42,34,.14);border-radius:20px;padding:clamp(20px,3vw,36px);margin-bottom:28px}
+  .market-panel h2{font-size:clamp(22px,2.4vw,29px);line-height:1.25;margin:0 0 16px}.market-panel h3{font-size:20px;line-height:1.4;margin:24px 0 12px}
+  .market-panel p,.market-panel li{font-size:15px;line-height:1.7;color:var(--v7-muted)}.market-panel p{margin:0 0 16px}.market-panel p:last-child{margin-bottom:0}.market-panel ul{list-style:disc;padding-left:22px;margin:16px 0}
+  .market-synthesis{border-left:4px solid var(--v7-orange)}.market-synthesis>a{font-weight:650}
+  .market-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.market-cards h2{font-size:20px}.market-cards .market-price{font-size:clamp(28px,3vw,42px);font-weight:800;line-height:1.2;color:var(--v7-ink)}.market-price span{font-size:20px}
+  .market-interval,.market-caution{background:var(--v7-paper);border-radius:10px;padding:14px}.market-caution{font-size:13px!important}
+  .market-table-scroll{max-width:100%;overflow-x:auto}.market-table-scroll:focus-visible{outline:3px solid var(--v7-ink);outline-offset:4px}
+  table{width:100%;border-collapse:collapse;font-size:14px;text-align:left;min-width:650px}caption{text-align:left;padding:0 0 14px;font-size:13px}th,td{padding:14px 12px;border-bottom:1px solid rgba(19,42,34,.14);vertical-align:top}thead th{border-bottom:2px solid var(--v7-ink)}td:nth-child(3){font-weight:700}td:last-child{max-width:250px;font-size:13px}
+  .market-method{scroll-margin-top:110px}.market-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px}.market-actions .pill{height:auto;min-height:48px;white-space:normal;max-width:100%}.market-actions .ph{white-space:nowrap}
+  .market-neighbours{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:12px}.market-neighbours a{padding:16px;border:1px solid rgba(19,42,34,.14);border-radius:12px;background:var(--v7-paper);display:flex;justify-content:space-between;gap:12px}
+  .market-contact{display:flex;flex-wrap:wrap;align-items:center;gap:24px}.market-contact img{border-radius:50%;object-fit:cover;flex-shrink:0}.market-contact>div{flex:1 1 240px;min-width:0}.market-contact h2{font-size:22px}.market-contact p{font-size:14px}
+  @media(max-width:600px){.market-cards{grid-template-columns:1fr;gap:0}.market-header>p{font-size:16px}.market-panel{border-radius:16px}.market-actions{gap:12px}.market-actions .pill{font-size:14px}}
+</style>

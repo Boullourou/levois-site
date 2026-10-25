@@ -728,17 +728,23 @@ import {buildLocalReading, getLocalQuestions, localImpact, localContinuation, lo
     dataset=d.data;meta=m.data;
   }
 
-  async function geocoder(q: string, autocomplete: boolean, limit: number) {
+  interface GeocodedFeature {
+    geometry: { coordinates: [number, number] };
+    properties?: { label?: string; name?: string; citycode?: string; postcode?: string; city?: string };
+  }
+  async function geocoder(q: string, autocomplete: boolean, limit: number): Promise<GeocodedFeature[]> {
     const url = new URL(GEOCODE);
     url.searchParams.set('q', q);
     url.searchParams.set('limit', String(limit));
     url.searchParams.set('lon', String(BIAIS.lon));
     url.searchParams.set('lat', String(BIAIS.lat));
     if (autocomplete) url.searchParams.set('autocomplete', '1');
-    const {response:rep,data:json}=await requestJson<any>(url.toString(),{},10000);
+    const {response:rep,data:json}=await requestJson<{features?:GeocodedFeature[]}>(url.toString(),{},10000);
     if (!rep.ok) throw new Error(`geocode ${rep.status}`);
     const feats = Array.isArray(json.features) ? json.features : [];
-    return feats.filter((f: any) => String(f?.properties?.citycode || '').startsWith('28'));
+    return feats.filter(f => String(f?.properties?.citycode || '').startsWith('28')
+      && Array.isArray(f.geometry?.coordinates) && f.geometry.coordinates.length >= 2
+      && f.geometry.coordinates.slice(0, 2).every(Number.isFinite));
   }
 
   function distance(aLat: number, aLon: number, bLat: number, bLon: number) {

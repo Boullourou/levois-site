@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { site } from '../config/site';
 ---
 
 <Layout 
@@ -52,32 +51,33 @@ import { site } from '../config/site';
       <!-- CHOISIR VOTRE ÉCLAIRAGE -->
       <section class="carte-section">
         <h2 class="carte-section-title">Faire le point sur votre projet</h2>
+        <p style="margin:0 0 20px;color:var(--v7-muted);line-height:1.6;">Cinq questions, sans coordonnées à renseigner. Puis une synthèse en trois points : votre situation, le piège à éviter et l’action utile cette semaine.</p>
         <div class="carte-grid">
           <a class="carte-link-card" href="/situer-ma-vente/">
             <span class="clc-tag">Vente</span>
             <h3>Situer ma vente</h3>
-            <p>Vérifiez si votre prix est en phase avec les ventes réelles notariées de votre rue.</p>
-            <span class="clc-arrow">Lancer l'analyse →</span>
+            <p>Prix incertain, visites sans offre ou projet encore flou : identifiez ce qui vous freine et par quoi commencer.</p>
+            <span class="clc-arrow">Faire le point sur ma vente →</span>
           </a>
 
           <a class="carte-link-card" href="/ma-recherche/">
             <span class="clc-tag">Achat</span>
             <h3>Clarifier ma recherche</h3>
-            <p>Isolez vos critères non négociables et négociez au juste prix à Chartres et Lèves.</p>
-            <span class="clc-arrow">Valider mes critères →</span>
+            <p>Bien introuvable, budget à préciser ou compromis difficiles : choisissez votre prochaine action.</p>
+            <span class="clc-arrow">Faire le point sur mon achat →</span>
           </a>
 
           <a class="carte-link-card" href="/vendre-et-acheter/">
             <span class="clc-tag">Transition</span>
             <h3>Vente &amp; Achat simultanés</h3>
-            <p>Coordonnez vos dates, prêt relais et vente préalable pour déménager sereinement.</p>
-            <span class="clc-arrow">Sécuriser mon calendrier →</span>
+            <p>Peur de rester sans logement ou d’un prêt relais : clarifiez votre priorité et les vérifications à faire.</p>
+            <span class="clc-arrow">Faire le point sur les deux projets →</span>
           </a>
 
           <a class="carte-link-card" href="/votre-rue/">
             <span class="clc-tag">Données DVF</span>
             <h3>Ventes réelles de votre rue</h3>
-            <p>Consultez l'historique officiel des prix notariés enregistrés dans votre quartier.</p>
+            <p>Consultez les ventes passées de la base DVF et leurs limites. Une vente voisine n’est pas une estimation.</p>
             <span class="clc-arrow">Consulter les ventes →</span>
           </a>
         </div>
@@ -89,7 +89,7 @@ import { site } from '../config/site';
           <div>
             <span class="vcard-badge" style="background: rgba(194, 94, 26, 0.15); color: var(--v7-orange);">Recommandation locale</span>
             <h3 style="font-family:'Satoshi',sans-serif;font-size:20px;font-weight:700;margin:8px 0;">Vous connaissez quelqu'un qui a un projet ?</h3>
-            <p style="font-size:14px;color:var(--v7-muted);margin:0 0 16px;line-height:1.6;">Téléchargez l'application SAFTI Connect, transmettez l'information et percevez 10% des honoraires d'agence dès la vente conclue (875 € en moyenne).</p>
+            <p style="font-size:14px;color:var(--v7-muted);margin:0 0 16px;line-height:1.6;">Avec l’accord de votre proche, mettez-nous en relation. Découvrez les conditions de rémunération du programme officiel SAFTI Connect.</p>
           </div>
           <a class="btn-vcard-secondary" href="/recommander/" style="align-self:flex-start;">En savoir plus sur SAFTI Connect →</a>
         </div>

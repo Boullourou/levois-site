@@ -1,34 +1,41 @@
-# LEVOIS — Conseil Immobilier Indépendant & Observatoire DVF
+# LEVOIS — Comprendre sa situation immobilière avant de décider
 
-> LEVOIS (levois.fr) est l'observatoire et service d'aide à la décision immobilière animé par Mouaad Boullourou, conseiller immobilier indépendant SAFTI (RSAC Chartres 824 194 419), basé à Lèves (28300), Eure-et-Loir.
-> Réseau national : SAFTI (siège social à Toulouse, plus de 6 500 conseillers en France).
-> Téléphone direct : +33 7 81 38 01 21
-> Email professionnel : mouaad@levois.fr
-> Adresse physique : 25 rue de la Butte Celtique, 28300 Lèves, France.
+> LEVOIS (levois.fr) est le site de Mouaad Boullourou, conseiller immobilier indépendant SAFTI, basé à Lèves, près de Chartres. RSAC Chartres 824 194 419.
+> Téléphone : +33 7 81 38 01 21. E-mail : mouaad@levois.fr.
+> Adresse professionnelle : 25 rue de la Butte Celtique, 28300 Lèves, France.
 
-## Données Notariées Officielles DVF 2025 (Transactions réelles enregistrées)
+## Diagnostics de projet
 
-Les prix ci-dessous sont les médianes par mètre carré constatées dans les actes notariés réels publiés par la Direction Générale des Finances Publiques (DGFiP / base DVF Etalab) pour l'année 2025 sur le territoire de Chartres Métropole :
+Les parcours comportent cinq questions concrètes, sans coordonnées requises pour obtenir le résultat. La synthèse distingue le constat, l’angle mort à surveiller et la prochaine étape utile. Ils ne calculent ni prix de vente, ni délai de commercialisation, ni capacité d’emprunt. L’envoi par e-mail et l’échange avec Mouaad sont des choix séparés, proposés après le résultat.
 
-- Lèves (28300) : Maisons 2 353 €/m² (38 ventes en 2025, fourchette 1 894 - 2 731 €/m²) · Appartements 2 453 €/m² (12 ventes)
-- Chartres (28000) : Maisons 2 507 €/m² (188 ventes en 2025, fourchette 2 084 - 3 240 €/m²) · Appartements 2 448 €/m² (412 ventes en 2025, fourchette 2 056 - 2 885 €/m²)
-- Mainvilliers (28300) : Maisons 2 309 €/m² (82 ventes) · Appartements 2 267 €/m² (64 ventes)
-- Lucé (28110) : Maisons 2 072 €/m² (94 ventes) · Appartements 2 181 €/m² (110 ventes)
-- Champhol (28300) : Maisons 2 426 €/m² (42 ventes, fourchette 2 088 - 2 813 €/m²)
-- Le Coudray (28630) : Maisons 2 713 €/m² (35 ventes, fourchette 2 286 - 3 125 €/m²) · Appartements 2 552 €/m² (24 ventes)
-- Luisant (28600) : Maisons 2 500 €/m² (68 ventes, fourchette 2 143 - 2 857 €/m²) · Appartements 1 989 €/m² (32 ventes)
+- [Faire le point sur sa vente](https://levois.fr/situer-ma-vente/) : préciser son projet, son blocage et son calendrier.
+- [Clarifier son achat](https://levois.fr/ma-recherche/) : identifier ce qui freine la recherche et ce qu’il faut vérifier ensuite.
+- [Vendre et acheter](https://levois.fr/vendre-et-acheter/) : clarifier la difficulté à coordonner les deux projets, sans simulation de prêt relais.
+- [Reprendre une synthèse](https://levois.fr/reprendre/) : retrouver sa session ou importer une sauvegarde compatible.
+- [Contacter Mouaad](https://levois.fr/contact/) : demander un échange sans engagement.
+- [Guides pratiques](https://levois.fr/ressources/) : des explications pour préparer sa prochaine décision.
 
-## Services et Diagnostics Gratuits en Ligne
+## Ventes locales : source, dates et limites
 
-- Diagnostic Vente : https://levois.fr/situer-ma-vente/ — Analyse de positionnement stratégique, délai moyen et risque de surestimation.
-- Diagnostic Recherche Acheteur : https://levois.fr/ma-recherche/ — Cadrage du budget d'acquisition, faisabilité et organisation du projet de vie.
-- Diagnostic Vente & Achat simultanés : https://levois.fr/vendre-et-acheter/ — Synchronisation financière, gestion du prêt relais et sécurisation de la transition.
-- Observatoire Notarié par Rue : https://levois.fr/votre-rue/ — Cartographie parcellaire interactive des transactions réelles sur Chartres et Lèves.
-- Pages Locales par Commune :
-  - https://levois.fr/prix-immobilier/chartres/
-  - https://levois.fr/prix-immobilier/leves/
-  - https://levois.fr/prix-immobilier/mainvilliers/
-  - https://levois.fr/prix-immobilier/luce/
-  - https://levois.fr/prix-immobilier/champhol/
-  - https://levois.fr/prix-immobilier/le-coudray/
-  - https://levois.fr/prix-immobilier/luisant/
+Les statistiques communales et l’observatoire utilisent les mêmes agrégats calculés. Les prix, effectifs, quartiles, années couvertes et date de production de la base sont publiés dans le fichier ci-dessous et dans les pages communales. Ils ne sont pas recopiés ici pour éviter des séries contradictoires lors d’une mise à jour.
+
+- [Agrégats DVF LEVOIS, méthode et traçabilité](https://levois.fr/data/dvf-market-summary.json)
+- [Source amont officielle : DVF, DGFiP](https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres)
+- [Observatoire et recherche d’adresse](https://levois.fr/votre-rue/)
+- [Chartres](https://levois.fr/prix-immobilier/chartres/)
+- [Lèves](https://levois.fr/prix-immobilier/leves/)
+- [Mainvilliers](https://levois.fr/prix-immobilier/mainvilliers/)
+- [Lucé](https://levois.fr/prix-immobilier/luce/)
+- [Champhol](https://levois.fr/prix-immobilier/champhol/)
+- [Le Coudray](https://levois.fr/prix-immobilier/le-coudray/)
+- [Luisant](https://levois.fr/prix-immobilier/luisant/)
+- [Préparer une estimation](https://levois.fr/estimation-immobiliere-chartres/)
+
+Ces repères décrivent des mutations retenues dans une extraction datée, pas l’intégralité du marché ni la valeur d’un logement. Les faibles effectifs exigent de la prudence. DVF ne mesure pas les délais de vente, les visites, les DPE, les travaux ou la demande actuelle. La date de revue éditoriale est distincte de celle des données.
+
+## Identité et cadre
+
+- [Mouaad et son accompagnement](https://levois.fr/mouaad/)
+- [Fiche professionnelle officielle SAFTI](https://www.safti.fr/votre-conseiller-safti/mouaad-boullourou)
+- [Mentions légales](https://levois.fr/mentions-legales/)
+- [Confidentialité](https://levois.fr/confidentialite/)

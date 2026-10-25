@@ -48,11 +48,11 @@ export function parseContext(input:unknown):Context|null {
  ctx.humanNotes=Array.isArray(x.humanNotes)?x.humanNotes.slice(-20).filter((n:any)=>n&&typeof n.text==='string'&&n.text.length<=10000&&typeof n.author==='string'&&typeof n.createdAt==='string'&&Number.isFinite(Date.parse(n.createdAt))&&(!n.source||typeof n.source==='string'&&n.source.length<=12003)).map((n:any)=>({id:String(n.id).slice(0,80),text:n.text,author:n.author.slice(0,100),createdAt:n.createdAt,source:typeof n.source==='string'?n.source:undefined})):[];
  return ctx;
 }
-export function readContext(project:Project,storage?:Storage):Context {
+export function readContext(project:Project,storage?:Pick<Storage,'getItem'>):Context {
  try{const raw=(storage||sessionStorage).getItem(CONTEXT_KEY);if(raw){const c=parseContext(JSON.parse(raw));if(c){if(c.project!==project){if(c.reading)c.history=[...(c.history||[]),{...c.reading,answersSnapshot:{...c.answers},projectSnapshot:c.project,humanNotesSnapshot:[...(c.humanNotes||[])]} as Reading].slice(-20);delete c.reading;c.project=project;}return c;}}}catch{}
  return createContext(project,typeof location!=='undefined'?entryFromUrl(new URL(location.href)):undefined);
 }
-export function saveContext(c:Context,storage?:Storage):boolean{try{(storage||sessionStorage).setItem(CONTEXT_KEY,JSON.stringify(c));return true;}catch{return false;}}
+export function saveContext(c:Context,storage?:Pick<Storage,'setItem'>):boolean{try{(storage||sessionStorage).setItem(CONTEXT_KEY,JSON.stringify(c));return true;}catch{return false;}}
 export function setAnswer(c:Context,id:string,answer:AnswerValue,dependencies:Record<string,string[]>={}):Context {
  if(JSON.stringify(c.answers[id]?.value)===JSON.stringify(answer)&&c.answers[id]?.provenance!=='imported')return c;
  const now=new Date().toISOString();
@@ -71,6 +71,6 @@ export function confirmImported(c:Context,ids:string[]):Context {
 }
 export function contextForReading(context:Context,reading:Reading):Context{return {...context,revision:reading.revision,updatedAt:reading.generatedAt,project:reading.projectSnapshot||context.project,answers:reading.answersSnapshot||context.answers,humanNotes:reading.humanNotesSnapshot||context.humanNotes,reading};}
 export function textReading(r:Reading,context?:Context):string {
- return [r.title,'Version '+r.revision+' · '+r.generatedAt+' · Méthode '+r.methodVersion,...r.sections.flatMap(s=>['',s.title,...s.items.flatMap(i=>[(i.kind==='unknown'?'À vérifier':i.kind==='data'?'Donnée':i.kind==='hypothesis'?'Hypothèse':i.kind==='conditional'?'Sous condition':i.kind==='verified'?'Vérifié':'À partir de vos réponses')+' — '+i.text,i.condition?'Condition : '+i.condition:''].filter(Boolean))]),...(r.options||[]).flatMap(o=>['',o.title,'Conséquence : '+o.consequence,'Condition : '+o.condition,'Limite : '+o.limit]),'',readingDetailsText(r),'','Votre prochaine décision utile',r.nextDecision.text,r.nextDecision.why,r.nextDecision.changesWith||'','','Limites',...r.limits,...(context?.humanNotes||[]).flatMap(n=>['','Apport de '+n.author+' · '+n.createdAt,n.text,n.source?'Source ou fondement : '+n.source:''])].join('\n');
+ return [r.title,'Version '+r.revision+' · '+r.generatedAt+' · Méthode '+r.methodVersion,...r.sections.flatMap(s=>['',s.title,...s.items.flatMap(i=>[(i.kind==='unknown'?'À vérifier':i.kind==='data'?'Donnée':i.kind==='hypothesis'?'Hypothèse':i.kind==='conditional'?'Sous condition':i.kind==='verified'?'Vérifié':'À partir de vos réponses')+' — '+i.text,i.condition?'Condition : '+i.condition:''].filter(Boolean))]),...(r.options||[]).flatMap(o=>['',o.title,'Conséquence : '+o.consequence,'Condition : '+o.condition,'Limite : '+o.limit]),'',readingDetailsText(r),...(r.methodVersion==='diagnostic-2026-10-25'?[]:['','Votre prochaine décision utile',r.nextDecision.text,r.nextDecision.why,r.nextDecision.changesWith||'']),'','Limites',...r.limits,...(context?.humanNotes||[]).flatMap(n=>['','Apport de '+n.author+' · '+n.createdAt,n.text,n.source?'Source ou fondement : '+n.source:''])].join('\n');
 }
 export function escapeHtml(v:unknown):string{return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));}

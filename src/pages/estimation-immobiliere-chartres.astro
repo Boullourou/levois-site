@@ -1,19 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { site } from '../config/site';
+import { localMarkets, marketSummary, formatMarketNumber, sampleCaution, dvfSourceUrl } from '../lib/local-market';
 
 const faq = [
   {
-    q: "Pourquoi les simulateurs d'estimation en ligne sont-ils souvent trompeurs ?",
-    a: "Un algorithme applique un prix moyen au mètre carré à partir d'une adresse et d'une surface déclarée. Il est incapable de voir l'état réel de la toiture, la luminosité du séjour, l'agencement des pièces, la présence d'un vis-à-vis ou la qualité des rénovations. Sur le bassin chartrain, l'écart entre un algorithme automatique et la réalité d'une vente actée oscille couramment entre 10 % et 25 %."
+    q: "À quoi sert une estimation en ligne ?",
+    a: "Un outil en ligne peut donner un premier repère à partir de ses données et de vos déclarations. Son résultat doit être confronté à l’état réel du logement, aux travaux, à la luminosité et aux ventes comparables. Aucun taux d’erreur local n’est établi ici."
   },
   {
     q: "Quelle est la différence entre prix affiché en vitrine et prix notarié réel ?",
-    a: "Le prix en annonce est un souhait de départ : il intègre fréquemment une marge de négociation espérée ou une surestimation de complaisance. Le prix notarié (base officielle DVF des finances publiques) correspond à la somme réellement versée par l'acquéreur lors de la signature authentique. C'est l'unique repère objectif de valeur."
+    a: "Le prix affiché est le prix demandé par le vendeur. La valeur foncière DVF est celle déclarée pour la mutation ; elle peut inclure du terrain et des dépendances. C’est un repère de vente passée, à comparer avec le périmètre exact du bien, et non une estimation de votre logement."
   },
   {
-    q: "Comment est calculée la valeur réelle d'un bien à Chartres ou Lèves ?",
-    a: "Une évaluation fiable repose sur le croisement de trois données concrètes : l'historique des ventes récentes comparables dans votre rue (données notaires DVF), une visite physique minutieuse du bâti et des équipements, et l'analyse de la concurrence active (les 4 ou 5 biens équivalents actuellement visités par les acquéreurs solvables)."
+    q: "Comment préparer une estimation à Chartres ou Lèves ?",
+    a: "Rassemblez les surfaces, diagnostics, travaux et documents de copropriété. Une visite permet ensuite de confronter l’état et les usages du logement à des ventes comparables et aux biens actuellement proposés. Cette analyse sert à discuter un positionnement, sans garantir un prix ou un délai."
   },
   {
     q: "La visite d'estimation physique engage-t-elle à signer un mandat ?",
@@ -21,15 +22,8 @@ const faq = [
   }
 ];
 
-const villes = [
-  { nom: "Lèves", cp: "28300", prix: "2 350 €/m²", tendance: "Recherché pour son cadre préservé en Vallée de l'Eure, écoles et proximité immédiate de Chartres.", slug: "leves" },
-  { nom: "Chartres", cp: "28000", prix: "2 600 €/m²", tendance: "Forte demande sur le cœur historique, les abords de la gare et les quartiers résidentiels calmes.", slug: "chartres" },
-  { nom: "Champhol", cp: "28300", prix: "2 400 €/m²", tendance: "Cadre verdoyant et résidentiel familial très prisé au nord-est de l'agglomération.", slug: "champhol" },
-  { nom: "Mainvilliers", cp: "28300", prix: "2 000 €/m²", tendance: "Attractif pour les primo-accédants et investisseurs, proximité des transports et commerces.", slug: "mainvilliers" },
-  { nom: "Lucé", cp: "28110", prix: "1 950 €/m²", tendance: "Marché dynamique avec de nombreux services, accès direct rocade et bassin d'emplois.", slug: "luce" },
-  { nom: "Luisant", cp: "28600", prix: "2 450 €/m²", tendance: "Secteur résidentiel de premier choix autour des étangs et des axes rapides sud.", slug: "luisant" },
-  { nom: "Le Coudray", cp: "28630", prix: "2 300 €/m²", tendance: "Zone calme avec accès rapide à l'hôpital Pasteur, autoroute A11 et zones d'activité.", slug: "le-coudray" },
-];
+const villes = localMarkets.map(market => ({ ...market, houses: market.series.find(series => series.propertyType === 'Maison')! }));
+const dataDate = new Date(marketSummary.source.sourceGeneratedAt).toLocaleDateString('fr-FR', { timeZone: 'UTC' });
 ---
 
 <Layout
@@ -77,10 +71,10 @@ const villes = [
         Estimation immobilière à Chartres & Lèves :<br>pourquoi aucun algorithme ne remplace la réalité du terrain.
       </h1>
       <p class="lv-intro" style="font-size:19px;line-height:1.6;color:var(--v7-muted);margin-top:20px;">
-        Les simulateurs automatiques sur internet promettent une estimation en 3 clics en échange de votre adresse email et de votre numéro de téléphone. En réalité, un algorithme ne voit ni le calme de votre jardin, ni l'état de votre toiture, ni la luminosité de vos pièces. Voici comment s'établit la vraie valeur d'un logement, basée sur les ventes notariées officielles (DVF) et une méthode rigoureuse.
+        Un prix au m² donne un repère. Pour parler de votre logement, il faut aussi regarder son état, ses usages et les alternatives proposées aux acheteurs. Voici les informations à réunir avant de choisir un prix de mise en vente.
       </p>
       <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:28px;">
-        <a class="pill" href="/situer-ma-vente/" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:99px;background:#ea580c;color:#fff;font-weight:700;text-decoration:none;">Faire le point sur ma vente <i>→</i></a>
+        <a class="pill" href="/situer-ma-vente/" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:99px;background:var(--v7-orange);color:#fff;font-weight:700;text-decoration:none;">Faire le point sur ma vente <i>→</i></a>
         <a class="pill" href="/votre-rue/" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:99px;background:#132a22;color:#fff;font-weight:700;text-decoration:none;">Consulter les ventes de ma rue <i>→</i></a>
       </div>
     </header>
@@ -88,24 +82,24 @@ const villes = [
     <div class="lv-prose" style="margin-top:48px;">
       <!-- SECTION 1 -->
       <section aria-labelledby="piege-simulateurs">
-        <h2 id="piege-simulateurs">1. Le piège des simulateurs automatiques : entre 10 % et 25 % d'erreur</h2>
+        <h2 id="piege-simulateurs">1. Ce qu’un premier repère en ligne ne suffit pas à vérifier</h2>
         <p>
-          Sur le bassin chartrain, deux maisons situées dans la même rue, avec une superficie habitable identique, peuvent afficher <strong>un écart de valeur réel de plus de 40 000 €</strong>.
+          Deux maisons de même surface dans la même rue ne sont pas nécessairement comparables. Une estimation doit expliquer les différences retenues, sans appliquer une décote ou une prime automatique.
         </p>
         <p>
-          Pourquoi un outil en ligne est-il systématiquement incapable de mesurer cet écart ?
+          Les points à examiner sur place et dans les documents :
         </p>
         <ul>
-          <li><strong>L'exposition et la luminosité :</strong> Un séjour orienté plein sud donnant sur un jardin sans vis-à-vis n'a pas la même valeur qu'un rez-de-chaussée sombre donnant sur une rue passante.</li>
+          <li><strong>L’exposition et la luminosité :</strong> observer les pièces, les vis-à-vis et les nuisances à différents moments de la journée.</li>
           <li><strong>La structure et les éléments invisibles :</strong> Qualité de la charpente, étanchéité de la toiture, isolation thermique réelle, conformité de l'assainissement, présence d'amiante ou de plomb.</li>
-          <li><strong>L'optimisation des volumes :</strong> 110 m² bien agencés avec 4 vraies chambres et une pièce de vie ouverte valent davantage que 130 m² encombrés de couloirs sombres et de surfaces perdues sous pente.</li>
-          <li><strong>Le DPE (Diagnostic de Performance Énergétique) :</strong> Depuis les réformes récentes, la note énergétique a un impact direct de 5 % à 15 % sur le budget d'acquisition négocié par les banques pour les acheteurs.</li>
+          <li><strong>L’agencement :</strong> vérifier les surfaces utiles, la circulation entre les pièces et la possibilité d’adapter le logement à ses besoins.</li>
+          <li><strong>Le DPE et les travaux :</strong> lire les diagnostics, chiffrer les travaux envisagés et faire vérifier leur financement. Ces éléments ne justifient pas à eux seuls un pourcentage de baisse de prix.</li>
         </ul>
         <div style="background:#FAF9F6;border-left:4px solid #ea580c;padding:18px 22px;margin:28px 0;border-radius:0 12px 12px 0;">
           <p style="margin:0;font-weight:600;color:#132a22;">
             Le danger d'une fausse estimation :<br>
             <span style="font-weight:400;color:#475961;font-size:15px;display:block;margin-top:6px;">
-              Surestimer un bien pour flatter le propriétaire conduit à « brûler » l'annonce : sans appel pendant 4 mois, le logement subit des baisses successives et finit par se vendre <em>en-dessous</em> de son vrai prix de marché.
+              Un prix mal argumenté peut compliquer la vente. Avant de le modifier, regardez les annonces comparables, la présentation du bien et les retours de visite. Un manque d’offres n’a pas une cause unique.
             </span>
           </p>
         </div>
@@ -115,28 +109,28 @@ const villes = [
       <section aria-labelledby="quatre-realites" style="margin-top:44px;">
         <h2 id="quatre-realites">2. La méthode LEVOIS : distinguer les 4 réalités de votre bien</h2>
         <p>
-          Pour réussir une vente sans stress et au meilleur prix, il est indispensable de séparer ce qui relève de votre ressenti et ce qui détermine la décision de l'acheteur :
+          Pour préparer une décision argumentée, distinguez ce qui compte pour vous et les informations qu’un acheteur peut vérifier :
         </p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:20px;margin:28px 0;">
           <div style="background:#fff;border:1px solid #d6cbb6;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(19,42,34,0.04);">
-            <span style="color:#ea580c;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">01 · Réalité affective</span>
+            <span style="color:var(--v7-orange);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">01 · Réalité affective</span>
             <h3 style="font-size:18px;margin:8px 0 10px;color:#132a22;">Votre vécu</h3>
             <p style="font-size:14px;color:#475961;line-height:1.55;margin:0;">Les années passées, les travaux réalisés avec soin, les souvenirs d'enfance. Ce capital émotionnel est légitime, mais il est invisible pour l'acheteur.</p>
           </div>
           <div style="background:#fff;border:1px solid #d6cbb6;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(19,42,34,0.04);">
-            <span style="color:#ea580c;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">02 · Réalité technique</span>
+            <span style="color:var(--v7-orange);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">02 · Réalité technique</span>
             <h3 style="font-size:18px;margin:8px 0 10px;color:#132a22;">Le bâti réel</h3>
             <p style="font-size:14px;color:#475961;line-height:1.55;margin:0;">L'âge de la chaudière, l'épaisseur de l'isolation, l'électricité, la facture énergétique. Ce sont les chiffres que l'acquéreur va soumettre à son courtier.</p>
           </div>
           <div style="background:#fff;border:1px solid #d6cbb6;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(19,42,34,0.04);">
-            <span style="color:#ea580c;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">03 · Réalité d'usage</span>
+            <span style="color:var(--v7-orange);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">03 · Réalité d'usage</span>
             <h3 style="font-size:18px;margin:8px 0 10px;color:#132a22;">La vie quotidienne</h3>
             <p style="font-size:14px;color:#475961;line-height:1.55;margin:0;">Accès à pied aux écoles, lignes de bus Filibus, commerces de Lèves, calme du voisinage. Ce confort dicte le coup de cœur à la visite.</p>
           </div>
           <div style="background:#fff;border:1px solid #d6cbb6;border-radius:16px;padding:22px;box-shadow:0 4px 16px rgba(19,42,34,0.04);">
-            <span style="color:#ea580c;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">04 · Réalité de marché</span>
+            <span style="color:var(--v7-orange);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;">04 · Réalité de marché</span>
             <h3 style="font-size:18px;margin:8px 0 10px;color:#132a22;">La concurrence active</h3>
-            <p style="font-size:14px;color:#475961;line-height:1.55;margin:0;">Ce que l'acheteur compare le même samedi après-midi avec son budget validé en banque. C'est elle qui fixe le prix final.</p>
+            <p style="font-size:14px;color:#475961;line-height:1.55;margin:0;">Les autres logements proposés aux acheteurs. Les comparer aide à discuter un positionnement, mais ne détermine pas à lui seul le prix final.</p>
           </div>
         </div>
       </section>
@@ -145,26 +139,27 @@ const villes = [
       <section aria-labelledby="reperes-territoire" style="margin-top:44px;">
         <h2 id="reperes-territoire">3. Les prix réels des ventes notariées (DVF) sur Chartres Métropole</h2>
         <p>
-          Pour avoir des repères solides, nous nous appuyons sur les <strong>données officielles des notaires et de l'État (DVF)</strong>. Voici les médianes constatées sur les 7 communes pilotes du secteur :
+          Voici les <strong>médianes des maisons en {marketSummary.period.toYear}</strong>, calculées sur notre sélection DVF. Chaque commune renvoie aux séries détaillées, aux appartements et à la méthode. Ces chiffres ne sont pas une estimation individuelle.
         </p>
-        <div style="overflow-x:auto;margin:28px 0;">
+        <p>Base locale produite le {dataDate} · Texte revu le 25 octobre 2026. <a href={dvfSourceUrl}>Source officielle DGFiP</a> · <a href="/prix-immobilier/leves/#methode">Sélection et limites</a>.</p>
+        <div class="estimation-table" tabindex="0" role="region" aria-label="Prix des maisons par commune, tableau défilant" style="overflow-x:auto;margin:28px 0;">
           <table style="width:100%;border-collapse:collapse;font-size:15px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(19,42,34,0.06);border:1px solid #d6cbb6;">
             <thead>
               <tr style="background:#132a22;color:#fff;text-align:left;">
                 <th style="padding:14px 18px;font-weight:600;">Commune</th>
                 <th style="padding:14px 18px;font-weight:600;">Code postal</th>
-                <th style="padding:14px 18px;font-weight:600;">Prix médian DVF</th>
-                <th style="padding:14px 18px;font-weight:600;">Dynamique locale</th>
+                <th style="padding:14px 18px;font-weight:600;">Médiane maisons {marketSummary.period.toYear}</th>
+                <th style="padding:14px 18px;font-weight:600;">Ventes retenues et prudence</th>
                 <th style="padding:14px 18px;font-weight:600;">Détails</th>
               </tr>
             </thead>
             <tbody>
               {villes.map((v, i) => (
                 <tr style={`border-bottom:1px solid #eee;${i % 2 === 1 ? 'background:#faf9f6;' : ''}`}>
-                  <td style="padding:14px 18px;font-weight:700;color:#132a22;">{v.nom}</td>
-                  <td style="padding:14px 18px;color:#475961;">{v.cp}</td>
-                  <td style="padding:14px 18px;font-weight:700;color:#ea580c;">{v.prix}</td>
-                  <td style="padding:14px 18px;color:#475961;font-size:14px;">{v.tendance}</td>
+                  <td style="padding:14px 18px;font-weight:700;color:#132a22;">{v.name}</td>
+                  <td style="padding:14px 18px;color:#475961;">{v.postalCode}</td>
+                  <td style="padding:14px 18px;font-weight:700;color:var(--v7-orange);">{formatMarketNumber(v.houses.latest.pricePerSqm.median)} €/m²</td>
+                  <td style="padding:14px 18px;color:#475961;font-size:14px;">{v.houses.latest.count} ventes. {sampleCaution(v.houses.latest.count)}</td>
                   <td style="padding:14px 18px;">
                     <a href={`/prix-immobilier/${v.slug}/`} style="color:#132a22;text-decoration:underline;font-weight:600;font-size:13px;">Voir DVF →</a>
                   </td>
@@ -196,10 +191,10 @@ const villes = [
       <section aria-labelledby="contact-mouaad" style="margin-top:48px;background:#FAF9F6;padding:32px 36px;border-radius:20px;border:1px solid #d6cbb6;">
         <h2 id="contact-mouaad" style="margin-top:0;">Faire évaluer votre bien sur le terrain avec Mouaad</h2>
         <p style="color:#2d4a3e;line-height:1.65;font-size:16px;">
-          Installé avec ma famille à Lèves, j'accompagne les propriétaires de Chartres Métropole avec une règle simple : <strong>dire ce qui est vrai, pas ce qui fait plaisir</strong>. Une visite sur place permet d'examiner chaque atout et chaque point de vigilance pour bâtir une stratégie de prix défendable et efficace.
+          Basé à Lèves, Mouaad Boullourou accompagne les propriétaires de Chartres Métropole. Une visite sur place permet d’examiner les atouts et les points à vérifier pour discuter un prix argumenté et les étapes de votre vente.
         </p>
         <p style="font-size:14px;color:#475961;margin-bottom:24px;">
-          Barème officiel des honoraires consultable en toute transparence — <a href="/honoraires/" style="color:#ea580c;font-weight:700;text-decoration:underline;">consulter notre barème</a>.
+          Barème officiel des honoraires consultable en toute transparence — <a href="/honoraires/" style="color:var(--v7-orange);font-weight:700;text-decoration:underline;">consulter notre barème</a>.
         </p>
         <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;">
           <a class="pill" href="/contact/" style="display:inline-flex;align-items:center;gap:12px;padding:14px 26px;border-radius:99px;background:#132a22;color:#fff;font-weight:700;text-decoration:none;">Demander une visite d'estimation <i>→</i></a>

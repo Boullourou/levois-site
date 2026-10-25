@@ -64,3 +64,11 @@ body.levois-v7 {margin:0}.levois-v7 *, .levois-v7 *::before,.levois-v7 *::after{
 .v7-inner .lv-question-actions .lv-button{min-width:180px;justify-content:center;padding:14px 28px}
 .v7-inner .lv-question-actions [data-back]{color:var(--v7-muted);font-size:14px;background:none;border:none;cursor:pointer;padding:8px 12px;font-family:inherit}
 .v7-inner .lv-question-actions [data-back]:hover{color:var(--v7-ink)}
+
+/* Reflow: controls must shrink inside a narrow mobile viewport. */
+.rp-data-controls > *, .rp-data-controls fieldset, .rp-data-controls select {min-width:0;max-width:100%}
+.rp-segment {max-width:100%;flex-wrap:wrap}
+.rp-segment button {white-space:normal;min-width:0}
+html:not(.js) .v7-menu-toggle {display:none}
+html:not(.js) .v7-nav-wrap {flex-wrap:wrap}
+html:not(.js) .v7-nav {display:flex;position:static;flex-wrap:wrap;flex-basis:100%;padding:8px 0;max-height:none;box-shadow:none}

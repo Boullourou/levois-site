@@ -1,103 +1,145 @@
 # LEVOIS — levois.fr
 
-**Une expérience numérique de décision immobilière.** L'acheteur clarifie sa
-recherche, le vendeur lit ses signaux, puis chacun reçoit une première lecture
-utile avant de transmettre ses coordonnées, seulement s'il le souhaite.
+LEVOIS aide à clarifier un achat, une vente ou un projet de vente et d’achat avant de transmettre ses coordonnées. Chaque diagnostic comporte **5 questions**, puis une synthèse en trois parties : le constat, l’angle mort à surveiller et la prochaine étape utile. Deux ressources sont proposées selon les réponses.
 
-Voir `PRODUCT.md` et `DESIGN.md` pour l'état actif. `PROPOSITION.md` est une
-archive de cadrage supersédée.
+La synthèse reste accessible sans contact. Le visiteur peut la télécharger, demander son envoi par e-mail avec enregistrement de son projet auprès de Mouaad, ou choisir un échange direct. L’envoi par e-mail n’inscrit à aucune newsletter et ne demande aucun appel automatique.
 
-## Stack
+Ce document décrit l’architecture active au **25 octobre 2026**. Les anciens documents de cadrage et recettes restent disponibles comme archives ; ils ne décrivent pas nécessairement les parcours actifs.
 
-- **Astro 4** — statique par défaut, le parcours est la seule « île » interactive
-- **Tailwind CSS** — tokens LEVOIS (papier minéral, encre, cobalt, lime) dans `tailwind.config.mjs`
-- **Archivo Black + Public Sans** auto-hébergées (licences SIL OFL)
-- **Vitest** — le moteur de personnalisation est testé (cas de recette du CdC §17)
-- **Cloudflare Pages** — hébergement, Pages Functions, D1 et données DVF versionnées
+## Socle technique
 
-## Démarrer
+- **Astro 7** génère les pages statiques dans `dist/`. La configuration actuelle n’utilise pas d’adaptateur SSR : les traitements serveur sont assurés par les **Cloudflare Pages Functions** dans `functions/`.
+- **TypeScript**, CSS du site et intégration **Tailwind CSS 4** via Vite. La charte publique active utilise un fond écru, des verts profonds et un orange assombri pour le contraste. Les polices **Plus Jakarta Sans** et **Satoshi** sont auto-hébergées dans `public/fonts/`.
+- Les questionnaires et la lecture fonctionnent dans le navigateur. Le contexte anonyme reste dans `sessionStorage`. Les lectures exportées et les anciens contextes conservent leur version.
+- **Cloudflare D1** conserve les données transmises volontairement et les données des outils professionnels. Les séries DVF sont préparées séparément, versionnées et servies en JSON.
+- **Vitest**, SQLite, workerd/Miniflare et **Playwright/Axe** couvrent le domaine, les API et les parcours. Les versions reproductibles sont dans `package-lock.json`.
 
-```bash
-npx --yes npm@10.9.2 ci
-npm run dev        # http://localhost:4321
-npm test           # moteur de signaux + formulaires Cloudflare
-npm run test:market # calculs et filtres du résumé DVF
-npm run build      # production dans dist/
+## Installer et vérifier
+
+Utiliser la version Node de `.node-version` (24.14.1 lors de cette mise à jour), puis :
+
+```powershell
+npm ci
+npm run dev
 ```
 
-## Cockpit privé V1
+Le serveur Astro de développement démarre normalement sur `http://localhost:4321`. Il ne remplace pas le runtime des Pages Functions.
 
-Le cockpit est une tranche privée séparée des parcours publics : Astro sans donnée
-métier dans le HTML, Pages Functions, services métier et binding D1 `COCKPIT_DB`.
-La configuration locale ne contient aucun identifiant D1 distant et la preview
-reste fermée tant que Cloudflare Access et une D1 preview séparée ne sont pas
-configurés.
-
-```bash
-npm run test:cockpit          # domaine, D1/SQLite, BFF, sécurité et export
-npm run test:cockpit:security # frontière Access + CSRF + erreurs BFF
-
-npm run db:cockpit:migrate:local
-npm run db:cockpit:seed:local # fixtures exclusivement fictives
-npm run dev:cockpit           # build puis Pages Functions local
+```powershell
+npm run check
+npm test
+npm run test:market
+npm run build
 ```
 
-La documentation d’installation, de sécurité, de sauvegarde/restauration et de
-recette est dans [`docs/cockpit/README.md`](docs/cockpit/README.md).
+- `check` vérifie les types TypeScript et les composants Astro.
+- `test` comprend les diagnostics, la compatibilité historique, les API, l’import et les tests d’envoi simulé. Le test de capture utilise aussi une **vraie base D1 locale dans workerd**, avec le schéma SQL livré, sans accès réseau extérieur.
+- `test:market` contrôle les règles de calcul DVF.
+- `build` produit le site compilé sans publier ni modifier les données distantes.
 
-## Architecture du contenu (administrable sans toucher aux composants)
+Sous Windows, SQLite/workerd peut échouer avec `internal error` si `TEMP` désigne un chemin de worktree trop long. Pour les tests, choisir un dossier temporaire court :
 
-| Quoi | Où |
+```powershell
+$env:TEMP = Join-Path $env:LOCALAPPDATA 'Temp\levois-tests'
+$env:TMP = $env:TEMP
+New-Item -ItemType Directory -Force -Path $env:TEMP | Out-Null
+npm test
+```
+
+### Recette sur le site compilé
+
+Après le build, lancer dans un terminal :
+
+```powershell
+npm run preview -- --host 127.0.0.1 --port 4346
+```
+
+Dans un second terminal :
+
+```powershell
+$env:LEVOIS_TEST_URL = 'http://127.0.0.1:4346'
+npm run test:public
+$env:LEVOIS_QA_BASE = $env:LEVOIS_TEST_URL
+node scripts/qa-resume-final.mjs
+```
+
+La recette publique utilise le DOM compilé, sans importer de modules `/src` depuis le navigateur. Elle couvre les trois diagnostics à 320, 390 et 1440 px, les corrections, la restitution et les transmissions simulées. La recette de reprise ajoute import, remplacement explicite, code de reprise simulé, clavier et fonctionnement sans JavaScript. Les preuves sont écrites sous `artifacts/`, exclu de Git. Les scripts refusent un serveur distant et n’envoient pas de demande réelle.
+
+Chrome est utilisé par défaut sur Windows. Sur les autres plateformes, installer Chromium avec `npx playwright install chromium`. Le workflow `.github/workflows/site-checks.yml` exécute les vérifications et la recette compilée sur les pull requests et les pushes vers `main`.
+
+## Où modifier quoi
+
+| Fonction | Fichiers actifs |
 |---|---|
-| Coordonnées, textes de rôle | `src/config/site.ts` |
-| Les 5 situations : questions, options, signaux, résultats | `src/data/situations.ts` |
-| Les 6 ressources : métadonnées | `src/data/resources.ts` |
-| Les 6 ressources : contenu complet | `src/data/resourceContent.ts` |
-| Manifeste des images (slots, alt, recadrages) | `src/data/images.ts` |
-| Moteur de décision | `src/lib/engine.ts` (+ tests `engine.test.ts`) |
-| Résumé local du marché | `scripts/build-market-summary.mjs` + `src/data/dvf-market-summary.json` |
+| Coordonnées et identité professionnelle | `src/config/site.ts` |
+| Accueil | `src/pages/index.astro`, `src/components/home/v7-content.html`, `src/styles/home-v7.css` |
+| Structure et styles publics | `src/layouts/Layout.astro`, `src/components/Header.astro`, `src/components/Footer.astro`, `src/styles/v7.css`, `src/styles/v7-production.css` |
+| Questions, synthèses et choix des deux ressources | `src/lib/experience/diagnostics.ts` |
+| Affichage des questionnaires | `src/components/ExperienceJourney.astro`, `src/scripts/experience-journey.ts` |
+| Restitution et formulaire e-mail | `src/pages/lecture.astro`, `src/scripts/diagnostic-reading.ts`, `src/styles/diagnostics.css` |
+| Contexte, versions et export | `src/lib/experience/context.ts`, `types.ts`, `export.ts` |
+| Reprise de session, import et accès protégé | `src/pages/reprendre.astro`, `src/scripts/experience-resume.ts`, `src/lib/experience/resume.ts` |
+| Ressources éditoriales | `src/data/resources.ts`, `src/data/resourceContent.ts`, `src/pages/ressources/` |
+| Enregistrement et envoi des synthèses | `functions/api/experience/actions.ts`, `functions/_lib/experience/email-leads.ts` |
+| API de reprise par code | `functions/api/experience/reprise.ts` |
+| Données communales et présentation DVF | `src/data/dvf-market-summary.json`, `src/lib/local-market.ts`, `src/pages/prix-immobilier/[commune].astro`, `src/components/LocalObservatory.astro` |
+| Analyse des ventes autour d’une adresse | `src/pages/votre-rue.astro`, `public/data/dvf-secteur.json`, `public/data/dvf-meta.json` |
 
-**Règle absolue** : après toute modification de `situations.ts`, lancer `npm test` —
-les trois exemples du cahier des charges (§17) doivent continuer de passer.
+Les anciens modèles de `src/data/situations.ts`, `src/lib/engine.ts` et les parcours longs ne pilotent pas les nouveaux diagnostics. Certains restent nécessaires pour lire des liens, exports ou réponses historiques : ne pas les supprimer sans vérifier leurs usages et tests de compatibilité. Les anciennes recettes sont identifiées dans `scripts/verify-public-pre-diagnostics.mjs` et `scripts/verify-public-legacy.mjs`.
 
-## Images et données locales
+Les médias publiés se trouvent notamment dans `public/v7/`, `public/images/`, `public/assets/` et `public/fonts/`. Conserver leurs chemins lors d’une mise à jour.
 
-Les images publiées vivent dans `/public/images/` et sont décrites dans
-`src/data/images.ts` avec leurs dimensions, textes alternatifs et recadrages.
-Le héros utilise une photographie réelle de Chartres, créditée dans l’interface.
+## DVF : une source calculée commune
 
-Les ventes DVF sont préparées hors build et versionnées. Le workflow
-`.github/workflows/dvf-update.yml` régénère à la fois le dataset de `/votre-rue`
-et le résumé chiffré de l’accueil.
+Les pages communales et l’observatoire utilisent le même `dvf-market-summary.json`. Les séries de ventes, médianes et quartiles ne doivent plus être recopiées à la main dans les pages éditoriales. `src/lib/local-market.ts` ajoute les informations de présentation et les précautions liées aux faibles effectifs.
 
-## Formulaires (transmission à Mouaad + contact)
+```powershell
+npm run data:dvf
+npm run data:market
+npm run data:verify
+npm run test:market
+```
 
-Routes Cloudflare Pages Functions :
+Ces commandes régénèrent les fichiers de données : les lancer lors d’une mise à jour DVF, pas pour une simple modification de texte ou de style. `data:market` produit les copies concordantes dans `src/data/` et `public/data/`. Le workflow `dvf-update.yml` prépare les actualisations. Distinguer la période des ventes, la date de production des données et la date de relecture éditoriale ; une révision de page ne constitue pas une nouvelle extraction.
 
-- `functions/api/lead.ts` pour le contact, la lecture vendeur et `/votre-rue` ;
-- `functions/api/recherche.ts` pour le parcours acheteur et sa persistance D1.
+La base DVF fournit des repères sur les transactions retenues. Elle ne démontre pas à elle seule un délai de commercialisation, une décote DPE ni la valeur d’un logement particulier. Toute nouvelle affirmation chiffrée doit préciser sa source, sa période et sa méthode.
 
-Variables d'environnement à définir dans Cloudflare Pages :
+## Données, e-mails et reprise
 
-| Variable | Rôle |
+La nouvelle action `synthesis-email` enregistre le contexte approuvé, la synthèse, l’e-mail et le consentement `2026-10-25` dans `experience_email_leads`, avant toute tentative d’envoi. La copie visiteur et la notification à Mouaad ont des états indépendants. Une acceptation par le prestataire ne prouve ni réception ni lecture. Un résultat incertain n’est jamais réémis automatiquement ; les reprises autorisées gardent la même référence et ne créent pas de doublon.
+
+L’ancien `email-copy` reste compatible : il envoie seulement une copie au visiteur, sans créer de lead. Les actions historiques de relecture et d’échange restent distinctes. Les endpoints historiques `/api/lead` et `/api/recherche` peuvent encore servir leurs écrans de compatibilité ; ils ne pilotent pas la nouvelle capture de synthèse.
+
+| Réglage existant | Usage |
 |---|---|
-| `RESEND_API_KEY` | Clé API [Resend](https://resend.com) — voie principale lorsqu’elle est configurée |
-| `FORMSPREE_ENDPOINT` | Endpoint Formspree de secours (défaut : formulaire historique `xnjynroj`) |
-| `LEAD_TO_EMAIL` | Destinataire (défaut : mouaad@levois.fr) |
-| `LEAD_FROM_EMAIL` | Expéditeur vérifié Resend (défaut : onboarding@resend.dev) |
-| `RECHERCHE_DB` | Binding D1 requis par `/api/recherche` |
-| `RATE_LIMIT` | Binding KV optionnel pour partager la limitation de `/api/lead` |
+| `RECHERCHE_DB` | Binding D1 pour les demandes de synthèse, dossiers de continuité et accès protégés |
+| `RESEND_API_KEY` | Envoi de la synthèse au visiteur et des codes de reprise ; expéditeur Resend vérifié requis |
+| `LEAD_FROM_EMAIL`, `LEAD_TO_EMAIL` | Expéditeur et destinataire professionnels ; les alias historiques `LEAD_FROM`, `LEAD_TO` restent reconnus |
+| `FORMSPREE_ENDPOINT` | Relais professionnel existant si Resend n’est pas configuré ; jamais un substitut à l’envoi visiteur ou au code OTP |
+| `EXPERIENCE_ACCESS_SECRET` | Secret nécessaire à la reprise protégée par code, avec la D1 et Resend |
+| `EXPERIENCE_PUBLIC_ORIGIN` | Origine publique des liens partagés, si explicitement configurée |
+| `RATE_LIMIT` | KV optionnel pour une limitation partagée ; sans lui, limitation technique en mémoire de l’instance |
 
-Sans clé Resend, le serveur utilise le Formspree historique. Il ne confirme la demande que si l’un des deux services
-a réellement accepté la notification ; sinon, il affiche les coordonnées directes sans fausse confirmation.
+Ne pas copier de secrets dans Git ni dans les rapports. Les réglages Cloudflare existants doivent être vérifiés et conservés lors de la publication. Sans stockage disponible, aucune demande de synthèse n’est confirmée ni envoyée. Sans Resend, le projet peut être enregistré, mais l’envoi visiteur reste explicitement indisponible.
 
-## Déploiement
+### Schémas D1
 
-- `main` → production (`levois.fr`) via Cloudflare Pages
-- branches → prévisualisations Cloudflare Pages
-- Redirections des anciennes URLs : `public/_redirects`
+Les schémas publics concernent **RECHERCHE_DB** : `db/schema.sql` pour l’historique, `db/experience.sql` pour les dossiers et accès protégés, puis **`db/experience-email-leads.sql` pour la nouvelle capture**. Ce dernier est additif et réexécutable ; il doit être appliqué à la base publique existante avant de publier le nouveau formulaire. Les migrations `db/migrations/` concernent le cockpit privé et ne doivent pas être confondues avec cette base.
 
-## Propriété
+La procédure, le contrat API et les règles de consultation/suppression sont décrits dans [docs/SYNTHESE_EMAIL_2026-10-25.md](docs/SYNTHESE_EMAIL_2026-10-25.md). L’application distante reste une opération explicite : les tests et le build ne l’effectuent pas. Aucun effacement automatique ni durée de conservation arbitraire ne sont annoncés.
 
-Code, créations, contenus, domaine, données et comptes techniques appartiennent
-à Mouaad Boullourou. Licences typographiques : SIL OFL (aucun achat requis).
+### Démonstration locale avec Functions
+
+```powershell
+npm run dev:experience
+```
+
+Ce lanceur reconstruit le site puis utilise une D1 locale isolée sur `http://127.0.0.1:4333`. Il applique les trois schémas publics, n’importe pas les secrets de production et désactive l’envoi des e-mails et codes. `astro preview` seul ne sert pas les Pages Functions.
+
+Le cockpit privé utilise ses propres services, contrôles Cloudflare Access/CSRF et le binding `COCKPIT_DB`. Voir [docs/cockpit/README.md](docs/cockpit/README.md). La présence du code cockpit ne garantit pas l’activation de ses bindings dans chaque environnement ; ne pas élargir la configuration de production pour une modification publique.
+
+## Publication et propriété
+
+Le dépôt est `Boullourou/levois-site`, projet Cloudflare Pages `levois-site`. La branche `main` alimente la production `levois.fr` via l’intégration Git. Les redirections historiques sont dans `public/_redirects` ; `/reprendre` est désormais une vraie page et ne doit plus rediriger vers le vendeur. Vérifier le déploiement et ses routes après le push, en conservant les réglages existants.
+
+Code, créations, contenus, domaine, données et comptes techniques appartiennent à Mouaad Boullourou. Conserver les fichiers de licence associés aux polices et ressources distribuées.

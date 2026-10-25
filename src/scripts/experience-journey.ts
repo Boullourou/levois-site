@@ -2,17 +2,22 @@ import {buyerJourney,buyerDependencies} from '../lib/experience/buyer';
 import {transitionJourney,transitionDependencies} from '../lib/experience/transition';
 import {sellerJourney,sellerInactiveAnswerIds} from '../lib/experience/seller';
 import {parseLegacySeller} from '../lib/experience/legacy-seller';
-import {readContext,saveContext,setAnswer,createContext,confirmImported,escapeHtml as e} from '../lib/experience/context';
+import {readContext,saveContext,setAnswer,escapeHtml as e} from '../lib/experience/context';
 import {keepReading} from '../lib/experience/export';
 import {readingDetailsHTML} from '../lib/experience/reading-details';
 import {readingSectionsHTML,nextHTML,limitsHTML,comparisonHTML} from '../lib/experience/render';
-import type {Context,Project,Question,AnswerValue} from '../lib/experience/types';
+import type {Project,Question,AnswerValue} from '../lib/experience/types';
+import {getDiagnosticJourney} from '../lib/experience/diagnostics';
+import {diagnosticProgress} from '../lib/experience/diagnostic-reading-state';
+import {mountDiagnosticReading} from './diagnostic-reading';
 
 const root=document.querySelector<HTMLElement>('[data-journey]');
 if(root){
  const project=root.dataset.journey as Project;
- const journey=project==='buyer'?buyerJourney:project==='transition'?transitionJourney:sellerJourney;
- const dependencies=project==='buyer'?buyerDependencies:project==='transition'?transitionDependencies:{};
+ const editRequested=new URLSearchParams(location.search).get('edit');
+ const legacyEdit=!!editRequested&&!editRequested.startsWith('diag_');
+ const journey=legacyEdit?(project==='buyer'?buyerJourney:project==='transition'?transitionJourney:sellerJourney):getDiagnosticJourney(project as 'buyer'|'seller'|'transition');
+ const dependencies=legacyEdit?(project==='buyer'?buyerDependencies:project==='transition'?transitionDependencies:{}):{};
  const panel=root.querySelector<HTMLElement>('[data-question-panel]')!,side=root.querySelector<HTMLElement>('[data-journey-side]')!;
  let ctx=readContext(project),index=0,editing=false;
  const params=new URLSearchParams(location.search),editId=params.get('edit');
@@ -37,19 +42,31 @@ if(root){
   const wasAnswered=Object.hasOwn(ctx.answers,q.id);
   const changed=JSON.stringify(ctx.answers[q.id]?.value)!==JSON.stringify(v);
   ctx=setAnswer(ctx,q.id,v,dependencies);
-  if(project==='seller'&&q.id==='seller_situation')for(const id of sellerInactiveAnswerIds(ctx))delete ctx.answers[id];
+  if(legacyEdit&&project==='seller'&&q.id==='seller_situation')for(const id of sellerInactiveAnswerIds(ctx))delete ctx.answers[id];
   persist();
   if(wasAnswered&&changed)event('answer_corrected',{step:q.sequence});
  }
 
  function showReading(){
+  const missing = !legacyEdit ? diagnosticProgress(ctx)?.missingQuestionIds[0] : undefined;
+  if(missing){index=Math.max(0,questions().findIndex(q=>q.id===missing));editing=false;render(true);return;}
   ctx.reading=journey.buildReading(ctx);
   event('result_viewed');
   if(persist()){
-   location.assign('/lecture');
+   location.assign('/lecture/');
    return;
   }
   const reading=ctx.reading;
+  if(!legacyEdit){
+   side.hidden=true;
+   panel.setAttribute('data-reading-root','');
+   mountDiagnosticReading(panel,ctx,true,id=>{
+    panel.classList.remove('lv-simple-reading');panel.removeAttribute('data-reading-root');side.hidden=false;
+    index=Math.max(0,questions().findIndex(q=>q.id===id));editing=true;render(true);
+   });
+   panel.scrollIntoView();
+   return;
+  }
   panel.innerHTML='<h1>'+e(reading.title)+'</h1><p class="lv-limit">Le stockage de session est bloqué. Votre lecture reste ici et peut être téléchargée avant de quitter cette page.</p>'+readingSectionsHTML(reading,ctx)+(reading.options?.length?comparisonHTML(reading.options):'')+readingDetailsHTML(reading)+nextHTML(reading)+limitsHTML(reading)+'<div class="lv-actions"><button class="lv-button" data-memory-keep>Garder cette lecture</button><button class="lv-secondary" data-memory-back>Corriger mes réponses</button><button class="lv-text-link" data-memory-print>Imprimer la lecture complète</button></div>';
   panel.querySelector('[data-memory-keep]')?.addEventListener('click',()=>keepReading(ctx,reading));
   panel.querySelector('[data-memory-back]')?.addEventListener('click',()=>render(true));
@@ -64,7 +81,7 @@ if(root){
   const q=qs[index];
   const answer=ctx.answers[q.id]?.value;
 
-  side.innerHTML='<h2>Votre projet<br/>prend forme.</h2><ol class="lv-sequences">'+journey.sequences.map((s,i)=>'<li'+(q.sequence===i+1?' aria-current="step"':'')+'><span>'+String(i+1).padStart(2,'0')+'</span>'+e(s)+'</li>').join('')+'</ol><p class="lv-note">Une décision à la fois. Vos choix affinent votre diagnostic en temps réel.</p>';
+  side.innerHTML='<h2>Un point clair.<br/>Un prochain pas.</h2><ol class="lv-sequences">'+journey.sequences.map((s,i)=>'<li'+(q.sequence===i+1?' aria-current="step"':'')+'><span>'+String(i+1).padStart(2,'0')+'</span>'+e(s)+'</li>').join('')+'</ol><p class="lv-note">Votre synthèse sera disponible dès la dernière réponse, sans laisser vos coordonnées.</p>';
 
   let controls='';
   if(q.type==='choice'||q.type==='multiple'){
@@ -74,7 +91,7 @@ if(root){
   }
 
   const isLast=index===qs.length-1;
-  const buttonLabel=editing?'Actualiser ma lecture':isLast?'Lire mon projet':'Continuer';
+  const buttonLabel=editing?'Actualiser ma synthèse':isLast?'Voir ma synthèse':'Continuer';
 
   panel.innerHTML='<div class="lv-progress-label"><span>'+e(q.sequenceTitle||journey.sequences[q.sequence-1])+'</span><span>'+q.sequence+' sur '+journey.sequences.length+'</span></div>'+
    '<div class="lv-progress" role="progressbar" aria-label="Séquence du projet" aria-valuemin="0" aria-valuemax="'+journey.sequences.length+'" aria-valuenow="'+q.sequence+'"><i style="width:'+(q.sequence/journey.sequences.length*100)+'%"></i></div>'+
@@ -114,7 +131,7 @@ if(root){
    ev.preventDefault();
    const v=collect();
    if(v===undefined){
-    error.textContent='Veuillez sélectionner une option pour continuer.';
+    if(q.type==='choice'||q.type==='multiple')error.textContent='Choisissez la réponse qui vous ressemble le plus.';
     error.hidden=false;
     return;
    }
@@ -139,10 +156,11 @@ if(root){
  else if(legacy.kind==='invalid'){panel.innerHTML='<h1>Ce lien ne suffit pas à retrouver une lecture.</h1><p class="lv-intro">'+e(legacy.reason)+'</p><a class="lv-button" href="/situer-ma-vente">Situer ma vente aujourd’hui</a>';}
  else{
   if(legacy.kind==='situation'){ctx=setAnswer(ctx,'seller_situation',legacy.situationId,dependencies);}
-  if(params.get('depth')==='deep')ctx.depth='deep';
+  if(legacyEdit&&params.get('depth')==='deep')ctx.depth='deep';
   if(editId){const found=questions().findIndex(q=>q.id===editId);if(found>=0){index=found;editing=true;}}
   else{
-   const pending=questions().findIndex(q=>!Object.hasOwn(ctx.answers,q.id));
+   const missing = !legacyEdit ? diagnosticProgress(ctx)?.missingQuestionIds[0] : undefined;
+   const pending=questions().findIndex(q=>legacyEdit?!Object.hasOwn(ctx.answers,q.id):q.id===missing);
    index=pending<0?0:pending;
   }
   persist();

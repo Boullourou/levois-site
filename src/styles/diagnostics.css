@@ -1,0 +1,53 @@
+/* Shared visual contract of the short diagnostics and their three-part synthesis. */
+.lv-simple-reading { max-width: 1000px; margin-inline: auto; }
+.lv-synthesis-header { max-width: 760px; margin-bottom: 28px; }
+.lv-simple-reading .lv-synthesis-header h1 { font-size: clamp(30px, 4vw, 48px); line-height: 1.15; }
+.lv-synthesis-cards { display: grid; gap: 14px; }
+.lv-synthesis-card { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 18px; padding: 28px; border: 1px solid var(--v7-line); background: #fff; border-radius: 18px; }
+.lv-synthesis-card:last-child { background: #eef4ef; border-color: #c3d3c7; }
+.lv-synthesis-number { font-size: 13px; font-weight: 700; color: var(--v7-rust); padding-top: 4px; }
+.levois-v7 .lv-synthesis-card h2 { font-size: clamp(20px, 2.3vw, 26px); margin-bottom: 10px; }
+.lv-synthesis-card p:last-child { margin-bottom: 0; }
+.lv-synthesis-limit { margin-top: 16px; }
+.lv-synthesis-contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; margin: 32px 0; padding: 30px; border-radius: 20px; background: #e9f0e9; }
+.levois-v7 .lv-synthesis-contact h2, .levois-v7 .lv-synthesis-email h2, .levois-v7 .lv-synthesis-resources h2 { font-size: clamp(22px, 2.3vw, 28px); }
+.lv-contact-actions { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 6px; }
+.lv-contact-actions .lv-button { width: 100%; text-align: center; justify-content: center; background: var(--v7-ink); border-color: var(--v7-ink); }
+.lv-synthesis-email { padding-block: 24px; border-block: 1px solid var(--v7-line); margin-bottom: 34px; }
+.lv-synthesis-email form { max-width: 670px; }
+.lv-synthesis-email .lv-field input { background: #fff; border-radius: 10px; font-size: 16px; width: 100%; }
+.lv-synthesis-email [role=status] { margin: 16px 0 0; }
+.lv-synthesis-resources > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.lv-resource-card { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--v7-line); border-radius: 16px; padding: 22px; text-decoration: none; background: #fff; }
+.lv-resource-card strong { font-size: 18px; line-height: 1.4; }
+.lv-resource-card span { font-size: 14px; color: var(--v7-muted); }
+.lv-resource-card:hover { border-color: var(--v7-rust); }
+.lv-resource-card > span:last-child { color: var(--v7-rust); font-size: 24px; }
+.lv-synthesis-tools { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-block: 22px; }
+.lv-correction-links { display: grid; gap: 6px; }
+.lv-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(100%); }
+.lv-simple-reading :is(.lv-button, .lv-text-link) { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
+.lv-simple-reading .lv-preview { white-space: pre-wrap; overflow-wrap: anywhere; }
+.lv-human-notes { overflow-wrap: anywhere; }
+.lv-question-form .lv-choice input { flex-shrink: 0; }
+.lv-question-form .lv-choice:focus-within { outline: 3px solid var(--v7-rust); outline-offset: 3px; }
+@media (min-width: 761px) {
+  .lv-journey .lv-journey-grid { grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr); gap: clamp(32px, 5vw, 72px); }
+  .v7-inner .lv-journey .lv-question-panel h1 { font-size: clamp(34px, 3.2vw, 46px); max-width: 23ch; }
+}
+@media (max-width: 760px) {
+  .lv-journey-head { flex-wrap: wrap; gap: 8px; }
+  .lv-synthesis-card { padding: 20px 16px; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; }
+  .lv-synthesis-contact { grid-template-columns: minmax(0, 1fr); padding: 24px 18px; gap: 14px; }
+  .lv-synthesis-contact p { margin-bottom: 0; }
+  .lv-synthesis-resources > div { grid-template-columns: minmax(0, 1fr); }
+  .lv-synthesis-tools { gap: 4px 14px; }
+  .lv-synthesis-email .lv-button { width: 100%; justify-content: center; }
+  .v7-inner .lv-question-actions .lv-button { min-width: 0; flex: 1; }
+  .v7-inner .lv-question-panel h1 { font-size: clamp(28px, 7.5vw, 38px); }
+  .v7-inner .lv-choice { padding: 15px 14px; min-height: 54px; }
+}
+@media print {
+  .lv-synthesis-email, .lv-synthesis-tools, .lv-synthesis-contact { display: none; }
+  .lv-synthesis-card { break-inside: avoid; }
+}

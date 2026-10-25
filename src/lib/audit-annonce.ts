@@ -124,7 +124,7 @@ export function computeAudit(a: AuditAnswers): AuditResult {
     };
   }
 
-  if (a.duree === 'moins-7' && (a.vues === 'faibles' || a.vues === 'inconnu') && a.contacts === 'aucun') {
+  if (a.duree === 'moins-7' && a.vues === 'faibles' && a.contacts === 'aucun') {
     return {
       ...commun,
       code: 'trop-tot', etape: 0,

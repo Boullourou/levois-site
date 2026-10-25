@@ -3,10 +3,11 @@ import {
   database, email, failure, invalid, isoDate, json, line, object,
   rateLimit, readJson, sendMail, sha256, string, uuid, validateContext,
 } from '../../_lib/experience/common';
+import { captureSynthesis } from '../../_lib/experience/email-leads';
 
 export interface ActionInput {
   requestId: string;
-  action: 'email-copy' | 'review' | 'exchange';
+  action: 'email-copy' | 'synthesis-email' | 'review' | 'exchange';
   channel: 'email' | 'phone';
   email: string;
   phone: string;
@@ -14,7 +15,7 @@ export interface ActionInput {
   question: string;
   context?: Record<string, unknown>;
   synthesis: string;
-  consent: { purpose: 'copy' | 'review' | 'exchange'; textVersion: string; acceptedAt: string };
+  consent: { purpose: 'copy' | 'synthesis' | 'review' | 'exchange'; textVersion: string; acceptedAt: string };
 }
 export interface RequestRow {
   id: string; payload_hash: string; action: 'review' | 'exchange'; created_at: string;
@@ -25,10 +26,11 @@ export interface RequestRow {
 }
 
 function validate(body: Record<string, unknown>): ActionInput {
-  if (!['email-copy', 'review', 'exchange'].includes(String(body.action))) invalid('Choisissez la suite souhaitée.');
+  if (!['email-copy', 'synthesis-email', 'review', 'exchange'].includes(String(body.action))) invalid('Choisissez la suite souhaitée.');
   const action = body.action as ActionInput['action'];
-  const purpose = action === 'email-copy' ? 'copy' : action;
-  if (body.approved !== true || !object(body.consent) || body.consent.purpose !== purpose || body.consent.textVersion !== '2026-09-10') {
+  const purpose = action === 'email-copy' ? 'copy' : action === 'synthesis-email' ? 'synthesis' : action;
+  const textVersion = action === 'synthesis-email' ? '2026-10-25' : '2026-09-10';
+  if (body.approved !== true || !object(body.consent) || body.consent.purpose !== purpose || body.consent.textVersion !== textVersion) {
     invalid('Confirmez cette version et la suite précise que vous avez choisie.');
   }
   const acceptedAt = isoDate(body.consent.acceptedAt);
@@ -39,12 +41,12 @@ function validate(body: Record<string, unknown>): ActionInput {
   const phone = channel === 'phone' ? line(body.phone, 30, true) : '';
   if (phone && (!/^\+?[\d () .-]{8,30}$/.test(phone) || phone.replace(/\D/g, '').length < 8 || phone.replace(/\D/g, '').length > 15)) invalid('Indiquez un numéro de téléphone complet.');
   if ((channel === 'email' && body.phone) || (channel === 'phone' && body.email)) invalid('Indiquez seulement la coordonnée utile au canal choisi.');
-  if (action === 'email-copy' && (body.firstName || body.question)) invalid('Seule votre adresse e-mail est nécessaire pour recevoir une copie.');
+  if (['email-copy', 'synthesis-email'].includes(action) && (body.firstName || body.question)) invalid('Seule votre adresse e-mail est nécessaire pour recevoir une synthèse.');
   return {
     requestId: uuid(body.requestId), action, channel: channel as ActionInput['channel'],
     email: emailAddress, phone, firstName: line(body.firstName, 80), question: string(body.question, 2500),
     ...(action === 'email-copy' ? {} : { context: validateContext(body.context) }), synthesis: string(body.synthesis, 30_000, true),
-    consent: { purpose, textVersion: '2026-09-10', acceptedAt },
+    consent: { purpose, textVersion, acceptedAt },
   };
 }
 
@@ -91,6 +93,7 @@ export const onRequest = async ({ request, env }: ExperienceContext): Promise<Re
     if (body.site_web) return json({ ok: false, code: 'INVALID_INPUT', message: 'La demande n’a pas été transmise.' }, 400);
     const input = validate(body);
     await rateLimit(request, env, 'actions');
+    if (input.action === 'synthesis-email') return await captureSynthesis(input, env);
     if (input.action === 'email-copy') {
       // No D1 writes, no human fallback, no copy to the advisor, no lead.
       const sent = await sendMail(env, {

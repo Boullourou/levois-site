@@ -54,7 +54,7 @@ const config='name = "levois-experience-local"\npages_build_output_dir = "./site
 await fs.writeFile(path.join(runtime,'wrangler.toml'),config);
 await fs.writeFile(path.join(runtime,'.dev.vars'),Object.entries(localVars).map(([key,value])=>key+'='+JSON.stringify(value)).join('\n')+'\n');
 await fs.writeFile(path.join(runtime,'.env'),'');
-for(const schema of ['db/schema.sql','db/experience.sql'])await run(wrangler,['d1','execute','levois-experience-local','--local','--persist-to',state,'--file',path.join(root,schema)],runtime);
+for(const schema of ['db/schema.sql','db/experience.sql','db/experience-email-leads.sql'])await run(wrangler,['d1','execute','levois-experience-local','--local','--persist-to',state,'--file',path.join(root,schema)],runtime);
 console.log('\nLEVOIS — local demonstration only');
 console.log('Public:   http://127.0.0.1:4333');
 console.log('Operator: http://127.0.0.1:4333/cockpit/relectures/');

@@ -15,8 +15,9 @@ const project={schemaVersion:1,id:'test-project',revision:1,project:'buyer',entr
 function payload(action='review',patch:Record<string,unknown>={}){return {requestId:crypto.randomUUID(),action,channel:'email',email:'visiteur@example.test',approved:true,context:project,synthesis:'Version exacte approuvée.\nBudget estimé ; financement non vérifié.',consent:{purpose:action==='email-copy'?'copy':action,textVersion:'2026-09-10',acceptedAt:now},...patch};}
 function context(body:unknown,env:ExperienceEnv={},path='actions',headers:Record<string,string>={}){return {request:new Request('https://levois.test/api/experience/'+path,{method:'POST',headers:{origin:'https://levois.test','content-type':'application/json','cf-connecting-ip':'test-'+(++sequence),...headers},body:JSON.stringify(body)}),env};}
 function database(){
-  const db=new DatabaseSync(':memory:');db.exec(readFileSync('db/schema.sql','utf8'));db.exec(readFileSync('db/experience.sql','utf8'));databases.push(db);
-  const binding={prepare(sql:string){let values:any[]=[];return {bind(...args:any[]){values=args;return this;},async first(){return db.prepare(sql).get(...values)??null;},async run(){const r=db.prepare(sql).run(...values);return {success:true,results:[],meta:{changes:r.changes}};},async all(){return {success:true,results:db.prepare(sql).all(...values),meta:{}};}};}} as D1Database;
+  const db=new DatabaseSync(':memory:');db.exec(readFileSync('db/schema.sql','utf8'));db.exec(readFileSync('db/experience.sql','utf8'));db.exec(readFileSync('db/experience-email-leads.sql','utf8'));databases.push(db);
+  // This fixture implements only the used D1 methods; the workerd integration checks native D1.
+  const binding={prepare(sql:string){let values:any[]=[];return {bind(...args:any[]){values=args;return this;},async first(){return db.prepare(sql).get(...values)??null;},async run(){const r=db.prepare(sql).run(...values);return {success:true,results:[],meta:{changes:r.changes}};},async all(){return {success:true,results:db.prepare(sql).all(...values),meta:{}};}};}} as unknown as D1Database;
   return {db,env:{RECHERCHE_DB:binding,RESEND_API_KEY:'fixture-no-live-key',LEAD_FROM:'LEVOIS <source@example.test>',LEAD_TO:'mouaad@example.test',EXPERIENCE_ACCESS_SECRET:'fixture-access-secret-long-enough-for-tests',EXPERIENCE_PUBLIC_ORIGIN:'https://levois.test',COCKPIT_LOCAL_BYPASS:'1',COCKPIT_CSRF_SECRET:'fixture-csrf-secret-long-enough-for-tests'} satisfies ExperienceEnv};
 }
 async function operate(env:ExperienceEnv,body:Record<string,unknown>){
@@ -157,4 +158,88 @@ describe('Minimisation de la copie',()=>{
   for(const action of ['review','exchange'])expect((await actions(context(payload(action,{context:undefined})))).status).toBe(400);
   expect(fetch).not.toHaveBeenCalled();
  });
+});
+
+describe('Synthèse demandée et projet conservé avec accord explicite', () => {
+  const synthesisPayload = (patch: Record<string, unknown> = {}) => payload('synthesis-email', {
+    consent: { purpose: 'synthesis', textVersion: '2026-10-25', acceptedAt: now }, ...patch,
+  });
+  it('enregistre le projet avant les deux envois et garde leurs finalités distinctes', async () => {
+    const { db, env } = database(); const input = synthesisPayload();
+    vi.mocked(fetch).mockImplementation(async () => {
+      expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 1 });
+      return new Response('{}');
+    });
+    const result = await (await actions(context(input, env))).json();
+    expect(result).toMatchObject({ ok: true, saved: true, requestId: input.requestId, copySent: true, copyState: 'sent', advisorNotificationSent: true, advisorNotificationState: 'sent' });
+    const row: any = db.prepare('SELECT * FROM experience_email_leads').get();
+    expect(row.contact_email).toBe(input.email); expect(row.synthesis).toBe(input.synthesis);
+    expect(JSON.parse(row.context_json)).toEqual(project);
+    expect(JSON.parse(row.consent_json)).toMatchObject({ purpose: 'synthesis', textVersion: '2026-10-25', recordedAt: now });
+    expect(db.prepare('SELECT count(*) AS n FROM experience_requests').get()).toMatchObject({ n: 0 });
+    const mails = vi.mocked(fetch).mock.calls.map(([, init]) => JSON.parse(String(init?.body)));
+    expect(mails.map(mail => mail.to[0]).sort()).toEqual(['mouaad@example.test', 'visiteur@example.test']);
+    for (const mail of mails) { expect(mail).not.toHaveProperty('bcc'); expect(mail.text).toContain(input.synthesis); expect(mail.text).toContain('Aucun appel'); }
+    expect(mails.find(mail => mail.to[0] === 'visiteur@example.test').text).not.toContain('answers');
+  });
+  it('exige le nouveau consentement et les réponses approuvées sans élargir l’ancienne copie', async () => {
+    const { db, env } = database();
+    for (const patch of [
+      { approved: false }, { context: undefined }, { firstName: 'Nom inutile' },
+      { consent: { purpose: 'copy', textVersion: '2026-09-10', acceptedAt: now } },
+      { consent: { purpose: 'synthesis', textVersion: '2026-09-10', acceptedAt: now } },
+      { channel: 'phone', email: undefined, phone: '0781380121' },
+    ]) expect((await actions(context(synthesisPayload(patch), env))).status).toBe(400);
+    expect(fetch).not.toHaveBeenCalled();
+    await actions(context(payload('email-copy'), env));
+    expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 0 });
+  });
+  it('déduplique une validation concurrente et refuse une modification sous la même référence', async () => {
+    const { db, env } = database(); const input = synthesisPayload();
+    await Promise.all([actions(context(input, env)), actions(context(input, env))]);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 1 });
+    expect((await actions(context({ ...input, synthesis: 'Une autre synthèse' }, env))).status).toBe(409);
+    await actions(context(input, env)); expect(fetch).toHaveBeenCalledTimes(2);
+  });
+  it('conserve le projet quand la copie est refusée puis ne réessaie que ce destinataire', async () => {
+    const { db, env } = database(); const input = synthesisPayload(); let visitorAttempts = 0;
+    vi.mocked(fetch).mockImplementation(async (_url, init) => {
+      const mail = JSON.parse(String(init?.body));
+      if (mail.to[0] === input.email && ++visitorAttempts === 1) return new Response('{}', { status: 429 });
+      return new Response('{}');
+    });
+    expect(await (await actions(context(input, env))).json()).toMatchObject({ saved: true, copySent: false, copyState: 'failed', advisorNotificationSent: true });
+    expect(await (await actions(context(input, env))).json()).toMatchObject({ saved: true, copySent: true, advisorNotificationSent: true });
+    expect(fetch).toHaveBeenCalledTimes(3);
+    const copyKeys = vi.mocked(fetch).mock.calls.filter(([, init]) => JSON.parse(String(init?.body)).to[0] === input.email).map(([, init]) => new Headers(init?.headers).get('idempotency-key'));
+    expect(copyKeys[0]).toBe(copyKeys[1]);
+    expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 1 });
+  });
+  it('ne redouble aucun envoi incertain et expose les deux états réels', async () => {
+    const { db, env } = database(); const input = synthesisPayload();
+    vi.mocked(fetch).mockRejectedValue(new Error('Mock timeout'));
+    expect(await (await actions(context(input, env))).json()).toMatchObject({ ok: true, saved: true, copyState: 'unknown', advisorNotificationState: 'unknown' });
+    await actions(context(input, env)); expect(fetch).toHaveBeenCalledTimes(2);
+    expect(db.prepare('SELECT copy_attempts,advisor_attempts FROM experience_email_leads').get()).toMatchObject({ copy_attempts: 1, advisor_attempts: 1 });
+  });
+  it('ne détourne pas la copie vers Formspree quand Resend manque', async () => {
+    const { env } = database();
+    const result = await (await actions(context(synthesisPayload(), { ...env, RESEND_API_KEY: undefined }))).json();
+    expect(result).toMatchObject({ saved: true, copyState: 'unavailable', advisorNotificationSent: true });
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(String(vi.mocked(fetch).mock.calls[0][0])).toContain('formspree.io');
+    expect(String(vi.mocked(fetch).mock.calls[0][1]?.body)).toContain('SYNTH');
+  });
+  it('échoue sans envoyer si le stockage ou le schéma est absent', async () => {
+    expect((await actions(context(synthesisPayload()))).status).toBe(503);
+    const { db, env } = database(); db.exec('DROP TABLE experience_email_leads');
+    expect((await actions(context(synthesisPayload(), env))).status).toBe(503); expect(fetch).not.toHaveBeenCalled();
+  });
+  it('applique le schéma de façon additive et répétable', () => {
+    const { db } = database(); db.exec(readFileSync('db/experience-email-leads.sql', 'utf8'));
+    for (const table of ['lectures_recherche', 'experience_requests', 'experience_email_leads']) {
+      expect(db.prepare("SELECT name FROM sqlite_master WHERE name=?").get(table)).toMatchObject({ name: table });
+    }
+  });
 });

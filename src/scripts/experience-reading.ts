@@ -11,10 +11,11 @@ import {answersText} from '../lib/experience/labels';
 import {readingDetailsHTML} from '../lib/experience/reading-details';
 import {requestJson} from '../lib/request-json';
 import type {Context,Reading,Project} from '../lib/experience/types';
+import {mountDiagnosticReading} from './diagnostic-reading';
 const root=document.querySelector<HTMLElement>('[data-reading-root]');
 const routes:Record<Project,string>={buyer:'/ma-recherche',seller:'/situer-ma-vente',transition:'/vendre-et-acheter',local:'/votre-rue',audit:'/audit-annonce'};
 const journeyFor=(p:Project)=>p==='buyer'?buyerJourney:p==='seller'?sellerJourney:p==='transition'?transitionJourney:p==='local'?localJourney:null;
-if(root){
+if(root&&!mountDiagnosticReading(root)){
  let ctx:Context|null=null,reading:Reading|null=null,isLegacy=false;
  let legacyAnswers:Record<string,string>|null=null;
  try{ctx=parseContext(JSON.parse(sessionStorage.getItem(CONTEXT_KEY)||'null'));}catch{}

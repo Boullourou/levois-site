@@ -1,0 +1,75 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="Reprendre votre projet" description="Retrouvez votre projet LEVOIS sur cet appareil ou importez la lecture que vous avez gardée." noindex>
+  <div class="lv-reading resume-page" data-resume-root>
+    <p class="resume-eyebrow">À votre rythme</p>
+    <h1>Reprenons là où vous en étiez.</h1>
+    <p class="lv-intro">Votre achat, votre vente ou les deux : retrouvez votre projet sans tout recommencer.</p>
+
+    <section class="resume-card" data-current-project hidden aria-labelledby="current-title">
+      <h2 id="current-title">Sur cet appareil</h2>
+      <p data-current-description></p>
+      <a class="lv-button" data-current-link href="/lecture">Continuer mon projet</a>
+      <button class="lv-text-link" type="button" data-current-download hidden>Garder une copie avant de changer de projet</button>
+    </section>
+
+    <section class="resume-card" data-protected-access hidden aria-labelledby="protected-title">
+      <h2 id="protected-title">Un contexte partagé par Mouaad</h2>
+      <p>Pour protéger vos informations, demandez un code à l’adresse e-mail convenue avec Mouaad.</p>
+      <button class="lv-button" type="button" data-challenge>Recevoir mon code</button>
+      <p class="lv-note" data-access-status role="status" hidden></p>
+      <form data-code-form hidden>
+        <div class="lv-field">
+          <label for="resume-code">Le code reçu par e-mail</label>
+          <input id="resume-code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" minlength="8" maxlength="8" required aria-describedby="code-help" />
+          <p class="lv-note" id="code-help">8 chiffres. Le code reste valable 10 minutes.</p>
+        </div>
+        <button class="lv-button" type="submit">Vérifier le code</button>
+      </form>
+    </section>
+
+    <section class="resume-card" aria-labelledby="import-title">
+      <h2 id="import-title">Vous avez gardé un fichier ?</h2>
+      <p>Choisissez la lecture LEVOIS téléchargée sur votre appareil. Son contenu reste dans votre navigateur.</p>
+      <div class="lv-field">
+        <label for="resume-file">Votre fichier LEVOIS (.html ou .json, 1 Mo maximum)</label>
+        <input id="resume-file" type="file" accept=".html,.htm,.json,text/html,application/json" />
+      </div>
+    </section>
+
+    <section class="resume-card resume-preview" data-resume-compare hidden aria-labelledby="resume-preview-title">
+      <h2 id="resume-preview-title">Le projet à ouvrir</h2>
+      <p data-candidate-description></p>
+      <p class="lv-note" data-replace-warning hidden>Un projet est déjà ouvert sur cet appareil. Vous pouvez le continuer ou en garder une copie ci-dessus. Le bouton suivant le remplacera par le projet choisi.</p>
+      <button class="lv-button" type="button" data-resume-confirm>Ouvrir ce projet</button>
+    </section>
+    <p class="lv-error" data-resume-error role="alert" hidden></p>
+
+    <div class="resume-new">
+      <h2>Ou partir de votre situation actuelle</h2>
+      <nav class="lv-projects" aria-label="Commencer un projet">
+        <a href="/ma-recherche">Je cherche un logement <span aria-hidden="true">↗</span></a>
+        <a href="/situer-ma-vente">Je prépare ou je vends un bien <span aria-hidden="true">↗</span></a>
+        <a href="/vendre-et-acheter">Je vends pour acheter <span aria-hidden="true">↗</span></a>
+      </nav>
+      <a class="lv-text-link" href="/contact">Besoin d’un coup de main ? Contacter Mouaad</a>
+    </div>
+    <noscript><p>La reprise d’un fichier ou d’une session nécessite JavaScript. Votre fichier téléchargé reste lisible directement sur votre appareil. Les liens vers les parcours et le contact ci-dessus restent accessibles.</p></noscript>
+  </div>
+</Layout>
+<script>import '../scripts/experience-resume';</script>
+<style>
+  .resume-page { max-width: 940px; }
+  .resume-eyebrow { color: #834019; font-size: .8rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .resume-card { padding: clamp(20px, 4vw, 32px); margin: 24px 0; border: 1px solid #d8dfd9; border-radius: 20px; background: #fff; }
+  .resume-card h2 { font-size: clamp(1.25rem, 3vw, 1.65rem); margin: 0 0 12px; }
+  .resume-card p { max-width: 65ch; }
+  .resume-preview { border-color: #1e3a2f; background: #f0f4ee; }
+  .resume-new { margin-top: 48px; }
+  .resume-card :global(input[type=file]) { max-width: 100%; width: 100%; font: inherit; overflow: hidden; }
+  .resume-card :global(input::file-selector-button) { max-width: 100%; padding: 10px; border: 1px solid #1e3a2f; background: #f0f4ee; border-radius: 6px; font: inherit; margin: 0 8px 8px 0; cursor: pointer; }
+  .resume-card :global(.lv-text-link) { display: block; margin-top: 18px; }
+  .resume-page :global([hidden]) { display: none !important; }
+  .resume-page :global(button), .resume-page :global(a) { overflow-wrap: anywhere; }
+</style>

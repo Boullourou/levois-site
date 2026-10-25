@@ -1,0 +1,51 @@
+name: Vérifications du site LEVOIS
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run test:market
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Vérifier les parcours sur le site compilé
+        env:
+          LEVOIS_TEST_URL: http://127.0.0.1:4346
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4346 > /tmp/levois-preview.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent "$LEVOIS_TEST_URL/" > /dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent "$LEVOIS_TEST_URL/" > /dev/null
+          npm run test:public
+          node scripts/qa-resume-final.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: levois-parcours
+          path: |
+            artifacts/final/diagnostics/
+            artifacts/final-validation/reprise/
+          if-no-files-found: ignore

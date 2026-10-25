@@ -34,7 +34,7 @@ document.addEventListener('click',event=>{const el=event.target as Element|null;
 window.addEventListener('storage',event=>{if(event.key===ANALYTICS_CONSENT_KEY){memoryChoice=null;setPreferenceStatus();if(allowed())void startAnalytics();}});
 setPreferenceStatus();if(allowed())void startAnalytics();
 async function startAnalytics(){
- if(!allowed())return;
+ if(!token || !allowed())return;
  if(started)return;
  started=true;
  let posthog:typeof import('posthog-js/dist/module.slim').default;

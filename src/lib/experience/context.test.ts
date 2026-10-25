@@ -11,7 +11,7 @@ describe('Contexte, versions et export public',()=>{
   expect(c.history?.[0].id).toBe(old.id);expect(contextForReading(c,c.history![0]).answers.buyer_budget.value).toBe(240000);
  });
  it('changer de projet conserve les réponses utiles et la lecture historique attribuée',()=>{
-  let raw='';const storage={getItem:()=>raw,setItem:(_:string,v:string)=>raw=v} as Storage;
+  let raw='';const storage: Pick<Storage,'getItem'|'setItem'>={getItem:()=>raw,setItem:(_:string,v:string)=>{raw=v;}};
   let c=setAnswer(createContext('buyer'),'buyer_goal','quiet');c.reading=buyerJourney.buildReading(c);saveContext(c,storage);
   const next=readContext('transition',storage);expect(next.reading).toBeUndefined();expect(next.answers.buyer_goal.value).toBe('quiet');expect(next.history?.[0].projectSnapshot).toBe('buyer');
  });

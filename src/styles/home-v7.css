@@ -189,21 +189,22 @@
 }
 
 .door-vendre .door-num-badge {
-  color: #C25E1A;
+  color: var(--v7-orange);
+  opacity: 1;
 }
 
 .door-vendre .door-ey {
-  color: #C25E1A;
+  color: var(--v7-orange);
   background: rgba(194, 94, 26, 0.1);
 }
 
 .door-vendre .door-action {
-  color: #C25E1A;
+  color: var(--v7-orange);
   border-top-color: rgba(194, 94, 26, 0.15);
 }
 
 .door-vendre:hover {
-  border-color: #C25E1A;
+  border-color: var(--v7-orange);
   box-shadow: 0 18px 36px rgba(194, 94, 26, 0.12);
 }
 
@@ -239,21 +240,22 @@
 }
 
 .door-transition .door-num-badge {
-  color: #8A671C;
+  color: #765610;
+  opacity: 1;
 }
 
 .door-transition .door-ey {
-  color: #8A671C;
+  color: #765610;
   background: rgba(138, 103, 28, 0.1);
 }
 
 .door-transition .door-action {
-  color: #8A671C;
+  color: #765610;
   border-top-color: rgba(138, 103, 28, 0.15);
 }
 
 .door-transition:hover {
-  border-color: #8A671C;
+  border-color: #765610;
   box-shadow: 0 18px 36px rgba(138, 103, 28, 0.12);
 }
 
@@ -460,6 +462,7 @@
 }
 
 .opp-ledger-card {
+  min-width: 0;
   border-radius: 22px;
   padding: 38px 34px;
   display: flex;
@@ -486,6 +489,8 @@
 
 .ledger-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
@@ -520,7 +525,7 @@
 .stat-amount {
   display: block;
   font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(48px, 6vw, 68px);
+  font-size: clamp(30px, 4vw, 48px);
   font-weight: 900;
   line-height: 1;
   color: var(--v7-ink);
@@ -926,6 +931,17 @@
 
 .btn-secondary:hover i {
   transform: translateX(3px);
+}
+
+/* Long card actions must wrap inside their padded column on narrow screens. */
+.ledger-btn-wrap :is(.btn-primary, .btn-secondary) {
+  max-width: 100%;
+  white-space: normal !important;
+  text-align: center;
+}
+
+.ledger-btn-wrap :is(.btn-primary, .btn-secondary) i {
+  flex-shrink: 0;
 }
 
 .phone-btn {
