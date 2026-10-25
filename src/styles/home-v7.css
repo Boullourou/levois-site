@@ -1,25 +1,21 @@
 
 /* ==========================================================================
-   DIRECTION ARTISTIQUE ÉDITORIALE SURPRENANTE & HAUTE CONVERSION (AWWWARDS-GRADE)
-   Inspiration : MotionSites + Tony Robbins + Esprit Presse 70s / Sabri Suby
+   DIRECTION ARTISTIQUE ÉDITORIALE ET COULEURS SUBTILES (NON FLASHY)
+   Harmonie : Terracotta doux, Sauge minérale, Sable chaud, Vert encre
    ========================================================================== */
 
-/* 1. HERO DRAMATIQUE & CINÉMATIQUE */
+/* 1. HERO ÉPURÉ & STATUTAIRE */
 .hero-dramatic {
   padding: clamp(36px, 5vw, 64px) 0 80px;
   background: var(--v7-paper);
   border-bottom: 1px solid rgba(19, 42, 34, 0.08);
-  position: relative;
-  overflow: hidden;
 }
 
 .hero-top-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(19, 42, 34, 0.06);
 }
@@ -56,42 +52,9 @@
   color: var(--v7-muted);
 }
 
-.local-stamp {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--v7-ink);
-  background: rgba(19, 42, 34, 0.04);
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.stamp-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #10B981;
-}
-
-/* 2. SPLIT ÉDITORIAL DU HERO */
-.hero-editorial-split {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(32px, 5vw, 64px);
-  align-items: center;
-  margin-bottom: 56px;
-}
-
-@media (max-width: 960px) {
-  .hero-editorial-split {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
+.hero-editorial-center {
+  max-width: 860px;
+  margin-bottom: 52px;
 }
 
 .hero-kicker {
@@ -105,18 +68,16 @@
 
 .hero-giant-title {
   font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(34px, 4.4vw, 54px);
+  font-size: clamp(34px, 4.5vw, 54px);
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.035em;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
   color: var(--v7-ink);
   margin: 0 0 24px;
 }
 
 .title-highlight {
   color: var(--v7-orange);
-  position: relative;
-  display: inline-block;
 }
 
 .hero-manifesto {
@@ -131,118 +92,69 @@
   font-weight: 700;
 }
 
-.hero-visual-frame {
-  position: relative;
-}
-
-.visual-wrapper {
-  position: relative;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 20px 48px rgba(19, 42, 34, 0.12);
-  border: 1px solid rgba(19, 42, 34, 0.1);
-  aspect-ratio: 4 / 3;
-}
-
-.hero-scenic-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.visual-wrapper:hover .hero-scenic-img {
-  transform: scale(1.03);
-}
-
-.visual-overlay-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20px 24px;
-  background: linear-gradient(to top, rgba(19, 42, 34, 0.92) 0%, rgba(19, 42, 34, 0.6) 70%, transparent 100%);
-  color: #FAF9F6;
-}
-
-.caption-tag {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--v7-orange);
-  margin-bottom: 4px;
-}
-
-.visual-overlay-caption strong {
-  display: block;
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 17px;
-  font-weight: 700;
-  margin-bottom: 2px;
-}
-
-.visual-overlay-caption p {
-  font-size: 13px;
-  margin: 0;
-  opacity: 0.85;
-}
-
-/* 3. TRIPTYQUE DES 3 PORTES D'ENTRÉE ASYMÉTRIQUES */
+/* 2. TRIPTYQUE DES 3 PORTES EN COULEURS DOUCES & DISTINCTES */
 .hero-doors-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1fr 1fr;
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 @media (max-width: 960px) {
   .hero-doors-grid {
     grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
 .door-card {
   position: relative;
-  border-radius: 20px;
-  padding: 32px 28px;
+  border-radius: 22px;
+  padding: 34px 28px;
   text-decoration: none;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s, border-color 0.25s;
-  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(19, 42, 34, 0.04);
+}
+
+.door-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
 .door-num-badge {
   font-family: 'Satoshi', sans-serif !important;
-  font-size: 40px;
+  font-size: 38px;
   font-weight: 800;
   line-height: 1;
-  margin-bottom: 20px;
-  opacity: 0.2;
+  opacity: 0.8;
 }
 
 .door-ey {
-  display: block;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
 .door-body h2 {
   font-family: 'Satoshi', sans-serif !important;
   font-size: 24px;
   font-weight: 700;
-  line-height: 1.2;
-  margin: 0 0 12px;
+  line-height: 1.25;
+  margin: 0 0 14px;
+  color: var(--v7-ink);
 }
 
 .door-body p {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: rgba(19, 42, 34, 0.8);
   margin: 0 0 28px;
 }
 
@@ -250,9 +162,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
-  padding-top: 16px;
+  padding-top: 18px;
   border-top: 1px solid rgba(19, 42, 34, 0.08);
 }
 
@@ -270,79 +182,84 @@
   transform: translateX(5px);
 }
 
-/* PORTE 01 : CARTE MAÎTRESSE EN VERT ENCRE NOBLE & OR */
-.door-master {
-  background: var(--v7-ink);
-  color: #FAF9F6;
-  border: 1px solid rgba(19, 42, 34, 0.3);
-  box-shadow: 0 16px 36px rgba(19, 42, 34, 0.16);
+/* PORTE 01 : TERRACOTTA DOUX */
+.door-vendre {
+  background: #FAF4EF;
+  border: 1.5px solid #EAD5C8;
 }
 
-.door-master .door-num-badge {
-  color: var(--v7-orange);
-  opacity: 0.6;
+.door-vendre .door-num-badge {
+  color: #C25E1A;
 }
 
-.door-master .door-ey {
-  color: var(--v7-orange);
+.door-vendre .door-ey {
+  color: #C25E1A;
+  background: rgba(194, 94, 26, 0.1);
 }
 
-.door-master .door-body h2 {
-  color: #FAF9F6;
+.door-vendre .door-action {
+  color: #C25E1A;
+  border-top-color: rgba(194, 94, 26, 0.15);
 }
 
-.door-master .door-body p {
-  color: rgba(250, 249, 246, 0.82);
+.door-vendre:hover {
+  border-color: #C25E1A;
+  box-shadow: 0 18px 36px rgba(194, 94, 26, 0.12);
 }
 
-.door-master .door-action {
-  color: #FFFFFF;
-  border-top-color: rgba(250, 249, 246, 0.15);
+/* PORTE 02 : VERT SAUGE MINÉRAL */
+.door-acheter {
+  background: #F3F7F5;
+  border: 1.5px solid #CFDDD6;
 }
 
-.door-master:hover {
-  box-shadow: 0 24px 50px rgba(19, 42, 34, 0.25);
-  border-color: var(--v7-orange);
+.door-acheter .door-num-badge {
+  color: #265946;
 }
 
-/* PORTES SECONDAIRES 02 & 03 : PAPIER ARCHITECTURAL BLANC */
-.door-secondary,
-.door-tertiary {
-  background: #FFFFFF;
-  color: var(--v7-ink);
-  border: 1px solid rgba(19, 42, 34, 0.12);
-  box-shadow: 0 8px 20px rgba(19, 42, 34, 0.04);
+.door-acheter .door-ey {
+  color: #265946;
+  background: rgba(38, 89, 70, 0.1);
 }
 
-.door-secondary .door-num-badge,
-.door-tertiary .door-num-badge {
-  color: var(--v7-ink);
+.door-acheter .door-action {
+  color: #265946;
+  border-top-color: rgba(38, 89, 70, 0.15);
 }
 
-.door-secondary .door-ey,
-.door-tertiary .door-ey {
-  color: var(--v7-muted);
+.door-acheter:hover {
+  border-color: #265946;
+  box-shadow: 0 18px 36px rgba(38, 89, 70, 0.12);
 }
 
-.door-secondary .door-body p,
-.door-tertiary .door-body p {
-  color: var(--v7-muted);
+/* PORTE 03 : SABLE DORÉ CHAUD */
+.door-transition {
+  background: #FAF7EE;
+  border: 1.5px solid #E8DFCB;
 }
 
-.door-secondary .door-action,
-.door-tertiary .door-action {
-  color: var(--v7-ink);
+.door-transition .door-num-badge {
+  color: #8A671C;
 }
 
-.door-secondary:hover,
-.door-tertiary:hover {
-  border-color: var(--v7-ink);
-  box-shadow: 0 16px 32px rgba(19, 42, 34, 0.08);
+.door-transition .door-ey {
+  color: #8A671C;
+  background: rgba(138, 103, 28, 0.1);
+}
+
+.door-transition .door-action {
+  color: #8A671C;
+  border-top-color: rgba(138, 103, 28, 0.15);
+}
+
+.door-transition:hover {
+  border-color: #8A671C;
+  box-shadow: 0 18px 36px rgba(138, 103, 28, 0.12);
 }
 
 /* TICKER COMMUNES */
 .communes-ticker {
-  margin-top: 48px;
+  margin-top: 56px;
   overflow: hidden;
   white-space: nowrap;
   padding: 14px 0;
@@ -375,7 +292,7 @@
   100% { transform: translate3d(-50%, 0, 0); }
 }
 
-/* 4. SECTION DÉCLICS DE VIE (SPLIT ÉDITORIAL CINÉMATIQUE) */
+/* 3. SECTION DÉCLICS DE VIE (SPLIT ÉDITORIAL SANS 4D) */
 .life-split-sec {
   padding: 96px 0;
   background: #FFFFFF;
@@ -397,10 +314,10 @@
 
 .life-photo-wrapper {
   position: relative;
-  border-radius: 24px;
+  border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 20px 48px rgba(19, 42, 34, 0.1);
-  border: 1px solid rgba(19, 42, 34, 0.1);
+  box-shadow: 0 20px 48px rgba(19, 42, 34, 0.08);
+  border: 1px solid rgba(19, 42, 34, 0.08);
 }
 
 .life-doc-img {
@@ -416,12 +333,12 @@
   left: 0;
   right: 0;
   padding: 24px 28px;
-  background: linear-gradient(to top, rgba(19, 42, 34, 0.94) 0%, rgba(19, 42, 34, 0.7) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(19, 42, 34, 0.92) 0%, rgba(19, 42, 34, 0.6) 70%, transparent 100%);
   color: #FAF9F6;
 }
 
 .caption-quote {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.5;
   font-style: italic;
   display: block;
@@ -450,7 +367,7 @@
 .life-chapters {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .chapter-card {
@@ -486,14 +403,14 @@
 }
 
 .chapter-card p {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.6;
   color: var(--v7-muted);
   margin: 0 0 16px;
 }
 
 .chapter-link {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--v7-ink);
   text-decoration: none;
@@ -504,7 +421,7 @@
   color: var(--v7-orange);
 }
 
-/* 5. OPPORTUNITÉS LOCALES (BILLET D'AFFAIRES & RECRUTEMENT) */
+/* 4. SECTION OPPORTUNITÉS LOCALES */
 .opp-dramatic-sec {
   padding: 96px 0;
   background: var(--v7-paper);
@@ -543,12 +460,12 @@
 }
 
 .opp-ledger-card {
-  border-radius: 24px;
-  padding: 40px 36px;
+  border-radius: 22px;
+  padding: 38px 34px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid rgba(19, 42, 34, 0.12);
+  border: 1.5px solid rgba(19, 42, 34, 0.12);
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
@@ -558,13 +475,13 @@
 }
 
 .safti-connect-box {
-  background: #FFFFFF;
+  background: #FAF7EE;
+  border-color: #E8DFCB;
 }
 
 .team-join-box {
-  background: var(--v7-ink);
-  color: #FAF9F6;
-  border-color: rgba(19, 42, 34, 0.4);
+  background: #F3F7F5;
+  border-color: #CFDDD6;
 }
 
 .ledger-header {
@@ -580,14 +497,14 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--v7-orange);
-  background: rgba(194, 94, 26, 0.08);
+  background: rgba(194, 94, 26, 0.1);
   padding: 4px 12px;
   border-radius: 999px;
 }
 
 .team-badge {
-  color: #FAF9F6;
-  background: rgba(250, 249, 246, 0.12);
+  color: #265946;
+  background: rgba(38, 89, 70, 0.1);
 }
 
 .ledger-share {
@@ -596,12 +513,8 @@
   color: var(--v7-muted);
 }
 
-.team-join-box .ledger-share {
-  color: rgba(250, 249, 246, 0.75);
-}
-
 .ledger-stat-block {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .stat-amount {
@@ -622,7 +535,7 @@
 }
 
 .team-pitch-block {
-  margin-bottom: 24px;
+  margin-bottom: 22px;
 }
 
 .team-highlight {
@@ -631,13 +544,13 @@
   font-size: clamp(26px, 3.2vw, 36px);
   font-weight: 800;
   line-height: 1.15;
-  color: var(--v7-orange);
+  color: #265946;
   margin-bottom: 6px;
 }
 
 .team-sub {
   font-size: 13px;
-  color: rgba(250, 249, 246, 0.75);
+  color: var(--v7-muted);
 }
 
 .ledger-body h3 {
@@ -646,63 +559,21 @@
   font-weight: 700;
   line-height: 1.3;
   margin: 0 0 12px;
-}
-
-.team-join-box .ledger-body h3 {
-  color: #FAF9F6;
+  color: var(--v7-ink);
 }
 
 .ledger-body p {
-  font-size: 14px;
+  font-size: 14.5px;
   line-height: 1.6;
   color: var(--v7-muted);
   margin: 0 0 32px;
 }
 
-.team-join-box .ledger-body p {
-  color: rgba(250, 249, 246, 0.8);
+.ledger-btn-wrap {
+  padding-top: 10px;
 }
 
-.btn-ledger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--v7-ink);
-  color: #FAF9F6;
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.btn-ledger:hover {
-  background: var(--v7-orange);
-}
-
-.btn-ledger-dark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--v7-orange);
-  color: #FFFFFF;
-  padding: 14px 28px;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: 14px;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.btn-ledger-dark:hover {
-  background: #FFFFFF;
-  color: var(--v7-ink);
-}
-
-/* 6. LE CENTRE DE RESSOURCES ÉDITORIAL (PHOTOS COUVERTURES) */
+/* 5. CENTRE DE RESSOURCES ÉDITORIAL */
 .res-editorial-sec {
   padding: 96px 0;
   background: #FFFFFF;
@@ -738,7 +609,7 @@
 }
 
 .link-all-res {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--v7-orange);
   text-decoration: none;
@@ -751,7 +622,7 @@
 .res-cover-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  gap: 26px;
 }
 
 @media (max-width: 960px) {
@@ -838,7 +709,7 @@
 }
 
 .card-cover-q {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
   line-height: 1.5;
   color: var(--v7-ink);
@@ -846,7 +717,7 @@
 }
 
 .card-cover-b {
-  font-size: 13px;
+  font-size: 13.5px;
   line-height: 1.6;
   color: var(--v7-muted);
   margin-bottom: 20px;
@@ -854,7 +725,7 @@
 }
 
 .card-cover-link {
-  font-size: 14px;
+  font-size: 14.5px;
   font-weight: 700;
   color: var(--v7-ink);
   text-decoration: none;
@@ -868,7 +739,7 @@
   color: var(--v7-orange);
 }
 
-/* 7. PORTRAIT TERRAIN MOUAAD */
+/* 6. PORTRAIT TERRAIN MOUAAD & BOUTONS ALIGNÉS IMPECCABLES */
 .advisor-portrait-sec {
   padding: 96px 0;
   background: var(--v7-paper);
@@ -986,9 +857,105 @@
   font-weight: 600;
 }
 
+/* BOUTONS PARFAITEMENT ALIGNÉS EN TOUTES CIRCONSTANCES */
 .advisor-cta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 14px;
   align-items: center;
+  gap: 16px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--v7-ink, #132a22);
+  color: #FAF9F6 !important;
+  padding: 13px 26px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.12);
+  white-space: nowrap !important;
+}
+
+.btn-primary:hover {
+  background: var(--v7-orange, #c25e1a);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.btn-primary i {
+  font-style: normal;
+  transition: transform 0.2s;
+}
+
+.btn-primary:hover i {
+  transform: translateX(3px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #265946;
+  color: #ffffff !important;
+  padding: 13px 26px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(38, 89, 70, 0.15);
+  white-space: nowrap !important;
+}
+
+.btn-secondary:hover {
+  background: var(--v7-ink, #132a22);
+  transform: translateY(-1px);
+}
+
+.btn-secondary i {
+  font-style: normal;
+  transition: transform 0.2s;
+}
+
+.btn-secondary:hover i {
+  transform: translateX(3px);
+}
+
+.phone-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffffff;
+  color: var(--v7-ink, #132a22) !important;
+  border: 1.5px solid rgba(19, 42, 34, 0.18);
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap !important;
+}
+
+.phone-btn:hover {
+  border-color: var(--v7-ink, #132a22);
+  background: rgba(19, 42, 34, 0.04);
+}
+
+.phone-btn svg {
+  flex-shrink: 0;
+  color: var(--v7-orange, #c25e1a);
+}
+
+.phone-nowrap,
+[href^="tel:"] {
+  white-space: nowrap !important;
 }
