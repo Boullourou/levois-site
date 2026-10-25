@@ -59,3 +59,8 @@ body.levois-v7 {margin:0}.levois-v7 *, .levois-v7 *::before,.levois-v7 *::after{
 .v7-inner .vr-plan-figure [fill='#eaf0ff']{fill:#eee4d0}
 /* Navigation native stable ; les animations propres à l’accueil V7 sont conservées. */
 @view-transition{navigation:none}
+
+.v7-inner .lv-question-actions{display:flex;align-items:center;gap:20px;margin-top:30px}
+.v7-inner .lv-question-actions .lv-button{min-width:180px;justify-content:center;padding:14px 28px}
+.v7-inner .lv-question-actions [data-back]{color:var(--v7-muted);font-size:14px;background:none;border:none;cursor:pointer;padding:8px 12px;font-family:inherit}
+.v7-inner .lv-question-actions [data-back]:hover{color:var(--v7-ink)}
