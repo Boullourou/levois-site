@@ -707,3 +707,117 @@
 [href^="tel:"] {
   white-space: nowrap !important;
 }
+
+/* SECTION RESSOURCES HOME (SEO & AUTORITÉ LOCALE) */
+.res-home-sec {
+  padding: 80px 0;
+  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
+}
+
+.res-home-header {
+  max-width: 760px;
+  margin-bottom: 48px;
+}
+
+.res-home-header h2 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: clamp(28px, 3.8vw, 42px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 12px 0 16px;
+}
+
+.res-home-header p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--v7-muted);
+}
+
+.res-home-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 960px) {
+  .res-home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.res-home-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 20px;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s, border-color 0.25s;
+  box-shadow: 0 4px 16px rgba(19, 42, 34, 0.03);
+}
+
+.res-home-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(19, 42, 34, 0.08);
+  border-color: rgba(19, 42, 34, 0.25);
+}
+
+.res-home-tag {
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--v7-orange);
+  background: rgba(194, 94, 26, 0.08);
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.res-home-card h3 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 12px;
+  color: var(--v7-ink);
+}
+
+.res-home-q {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--v7-ink);
+  margin-bottom: 10px;
+}
+
+.res-home-d {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--v7-muted);
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.res-home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--v7-ink);
+  text-decoration: none;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.res-home-card:hover .res-home-link {
+  color: var(--v7-orange);
+  transform: translateX(4px);
+}
+
+.res-home-cta-wrap {
+  text-align: center;
+  padding-top: 16px;
+}
