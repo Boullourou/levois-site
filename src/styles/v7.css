@@ -183,11 +183,14 @@ body.levois-v7 {
 .v7-header {
   position: sticky;
   top: 0;
-  z-index: 70;
-  background: rgba(250, 249, 246, 0.94);
-  backdrop-filter: blur(12px);
+  z-index: 100;
+  background: var(--v7-paper);
   color: var(--v7-ink);
-  border-bottom: 1px solid rgba(19, 42, 34, 0.1);
+  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
+}
+
+h1, h2, h3, section {
+  scroll-margin-top: 88px;
 }
 
 .v7-nav-wrap {
@@ -245,6 +248,50 @@ body.levois-v7 {
 
 .v7-menu-toggle {
   display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(19, 42, 34, 0.2);
+  border-radius: 999px;
+  cursor: pointer;
+  background: transparent;
+  padding: 0;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.v7-menu-toggle:hover {
+  border-color: var(--v7-ink);
+  background: rgba(19, 42, 34, 0.04);
+}
+
+.v7-hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 18px;
+  height: 12px;
+}
+
+.v7-hamburger-icon span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--v7-ink);
+  border-radius: 2px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s;
+}
+
+.menu-open .v7-hamburger-icon span:nth-child(1) {
+  transform: translateY(5px) rotate(45deg);
+}
+
+.menu-open .v7-hamburger-icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-open .v7-hamburger-icon span:nth-child(3) {
+  transform: translateY(-5px) rotate(-45deg);
 }
 
 /* FOOTER SOBRE ET STATUTAIRE (Adieu le pavé orange fluo) */
@@ -354,16 +401,7 @@ body.levois-v7 {
 /* Media queries mobile */
 @media (max-width: 1040px) {
   .v7-menu-toggle {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 16px;
-    border: 1px solid var(--v7-ink);
-    border-radius: 99px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    background: transparent;
+    display: inline-flex;
   }
   .v7-nav {
     display: none;
