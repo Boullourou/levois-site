@@ -48,7 +48,7 @@
   html {
     font-family: 'Public Sans', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -59,7 +59,7 @@
 
   body {
     @apply bg-papier text-encre;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   h1, h2, h3, .font-display {
