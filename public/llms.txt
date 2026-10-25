@@ -6,7 +6,7 @@
 
 ## Diagnostics de projet
 
-Les parcours comportent cinq questions concrètes, sans coordonnées requises pour obtenir le résultat. La synthèse distingue le constat, l’angle mort à surveiller et la prochaine étape utile. Ils ne calculent ni prix de vente, ni délai de commercialisation, ni capacité d’emprunt. L’envoi par e-mail et l’échange avec Mouaad sont des choix séparés, proposés après le résultat.
+Les parcours comportent cinq questions concrètes. À la dernière étape, le prénom et l’adresse e-mail sont demandés pour recevoir et consulter la synthèse complète ; cette étape est annoncée à l’entrée. Le téléphone est facultatif : le renseigner demande un échange direct avec Mouaad au sujet de ce projet. La synthèse distingue le constat, l’angle mort à surveiller et la prochaine étape utile. Ces diagnostics ne calculent ni prix de vente, ni délai de commercialisation, ni capacité d’emprunt. La demande n’inscrit à aucune newsletter.
 
 - [Faire le point sur sa vente](https://levois.fr/situer-ma-vente/) : préciser son projet, son blocage et son calendrier.
 - [Clarifier son achat](https://levois.fr/ma-recherche/) : identifier ce qui freine la recherche et ce qu’il faut vérifier ensuite.

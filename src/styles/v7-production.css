@@ -1,50 +1,51 @@
 /* Adaptation de la V7 aux parcours de production : aucune logique métier modifiée. */
 :root,.levois-v7.plan-vivant {
- --levois-paper:#f6f0e3;--levois-surface:#fffaf0;--levois-ink:#102635;--levois-muted:#475961;--levois-line:#d6cbb6;--levois-accent:#a9330d;--levois-hover:#852708;--levois-selected:#f4e5d6;--levois-dark:#102635;--levois-human:#ff5b22;--levois-on-dark:#f6f0e3;
- --lv-ink:#102635;--lv-blue:#a9330d;--lv-muted:#475961;--lv-line:#d6cbb6;--lv-info:#eee4d0;--lv-condition:#f4d4bf;--lv-point:#a9330d;
- --levois-field-radius:14px;--levois-action-radius:99px;--levois-choice-radius:16px;--site-header-h:76px;
+ --levois-paper:#F8F7F4;--levois-surface:#FDFCFA;--levois-ink:#141414;--levois-muted:#5b5954;--levois-line:#dcd9d2;--levois-accent:#9a4313;--levois-hover:#76340f;--levois-selected:#eeece7;--levois-dark:#141414;--levois-human:#9a4313;--levois-on-dark:#F8F7F4;
+ --lv-ink:#141414;--lv-blue:#9a4313;--lv-muted:#5b5954;--lv-line:#dcd9d2;--lv-info:#eeece7;--lv-condition:#f1e8df;--lv-point:#9a4313;
+ --levois-field-radius:12px;--levois-action-radius:99px;--levois-choice-radius:14px;
 }
 body.levois-v7 {margin:0}.levois-v7 *, .levois-v7 *::before,.levois-v7 *::after{box-sizing:border-box}
-.levois-v7 a{color:inherit}.levois-v7 .v7-footer-contact{color:var(--v7-paper)}
+.levois-v7 a{color:inherit}
 .levois-v7 :is(.v7-header,.v7-footer) button{background:none;color:inherit;border:0;font:inherit}.levois-v7 .v7-header .v7-menu-toggle{border:1px solid currentColor;font-size:15px}
-.v7-inner :is(h1,h2,h3){letter-spacing:0;line-height:1.08}
+.v7-inner :is(h1,h2,h3){letter-spacing:-.025em;line-height:1.18}
 .v7-inner .lv-editorial>header h1{font-size:clamp(42px,5.6vw,80px);max-width:23ch}
 .v7-inner .lv-editorial>header{max-width:1080px}
 .v7-inner .lv-editorial>header .lv-intro{max-width:62ch}
 .v7-inner :is(.lv-button,.lv-secondary,.world-button){border-radius:99px;font-family:'Plus Jakarta Sans', 'Satoshi', sans-serif;font-weight:600}
-.v7-inner .lv-button{background:var(--v7-orange);border-color:var(--v7-orange);color:#FFFFFF!important}
-.v7-inner .lv-button:hover{background:var(--v7-ink);border-color:var(--v7-ink);color:var(--v7-paper)!important}
+.v7-inner .lv-button{background:var(--v7-ink);border-color:var(--v7-ink);color:#FFFFFF!important}
+.v7-inner .lv-button:hover{background:#343330;border-color:#343330;color:var(--v7-paper)!important}
 .v7-inner .lv-secondary{background:#FFFFFF;border:1.5px solid rgba(19,42,34,0.2);color:var(--v7-ink)!important}
 .v7-inner .lv-secondary:hover{background:rgba(19,42,34,0.04);border-color:var(--v7-ink)}
 .v7-inner .lv-choice{border-radius:14px;background:#FFFFFF;border:1.5px solid rgba(19,42,34,0.12);transition:all 0.2s}
 .v7-inner .lv-choice:hover{border-color:rgba(19,42,34,0.3)}
-.v7-inner .lv-choice:has(input:checked){background:#FAF4EF;border-color:var(--v7-orange);color:var(--v7-ink)}
+.v7-inner .lv-choice:has(input:checked){background:#eeece7;border-color:var(--v7-ink);color:var(--v7-ink)}
 .v7-inner .lv-progress{background:var(--v7-line);height:5px;border-radius:5px;overflow:hidden}
-.v7-inner .lv-progress i{background:var(--v7-orange)}
-.v7-inner .lv-journey-side{padding:36px 30px;background:#FFFFFF;color:var(--v7-ink);border:1.5px solid rgba(19,42,34,0.12);border-radius:24px;box-shadow:0 10px 30px rgba(19,42,34,0.04)}
+.v7-inner .lv-progress i{background:var(--v7-ink)}
+.v7-inner .lv-journey-side{padding:28px;background:var(--v7-surface);color:var(--v7-ink);border:1px solid var(--v7-line);border-radius:14px;box-shadow:none;top:calc(var(--site-header-h) + 24px)}
 .v7-inner .lv-journey-side h2,.v7-inner .lv-journey-side-title{font-family:'Satoshi',sans-serif!important;color:var(--v7-ink)!important;font-size:22px;font-weight:700;line-height:1.25;margin-bottom:20px}
 .v7-inner .lv-journey-side :is(.lv-note,.lv-text-link){color:var(--v7-muted)!important}
 .v7-inner .lv-journey-side .lv-sequences{border-color:rgba(19,42,34,0.08)}
 .v7-inner .lv-journey-side .lv-sequences li{color:var(--v7-muted);border-color:rgba(19,42,34,0.08);font-size:14px;padding:10px 0}
 .v7-inner .lv-journey-side .lv-sequences li[aria-current]{color:var(--v7-ink)!important;font-weight:700}
-.v7-inner .lv-journey-side .lv-sequences li span{color:var(--v7-orange);font-weight:700}
+.v7-inner .lv-journey-side .lv-sequences li span{display:none}
 .v7-inner .lv-question-panel h1{font-size:clamp(36px,4vw,55px);line-height:1.1}
-.v7-inner .lv-resource-list article{border:1px solid var(--v7-line);border-radius:24px 64px 24px 24px;padding:30px;margin-top:20px;background:#eee4d0}
-.v7-inner .lv-resource-list article:nth-child(3n+1){background:var(--v7-ink);color:var(--v7-paper)}
-.v7-inner .lv-resource-list article:nth-child(3n+1) :is(.lv-note,.lv-text-link,.lv-resource-index){color:var(--v7-paper)!important}
+.v7-inner .lv-resource-list article{border:1px solid var(--v7-line);border-radius:14px;padding:30px;margin-top:20px;background:var(--v7-surface)}
+.v7-inner .lv-resource-list article:nth-child(3n+1){background:var(--v7-surface);color:var(--v7-ink)}
+.v7-inner .lv-resource-list article:nth-child(3n+1) :is(.lv-note,.lv-text-link,.lv-resource-index){color:var(--v7-muted)!important}
 .v7-inner .lv-resource-list h2{font-size:clamp(27px,3vw,38px)}
-.v7-inner [data-direct-contact]{background:#fffaf0;padding:32px;border:1px solid var(--v7-line);border-radius:28px}
+.v7-inner [data-direct-contact]{background:var(--v7-surface);padding:32px;border:1px solid var(--v7-line);border-radius:14px}
 .v7-inner .lv-editorial img[src='/images/levois-mouaad.webp']{border-radius:180px 180px 18px 18px;max-width:430px!important;max-height:570px!important}
 .v7-inner :is(.lv-reading-section,.lv-history,.lv-live,.lv-limit){border-radius:16px}
 .v7-inner .lv-reading h1{font-size:clamp(38px,5vw,66px)}
-.v7-nav{max-height:calc(100dvh - 76px);overflow-y:auto}
+.v7-nav{max-height:calc(100dvh - var(--site-header-h));overflow-y:auto}
+.v7-inner :is(.lv-reading-opening,.lv-editorial-index){top:calc(var(--site-header-h) + 24px)}
 @media(max-width:760px){
  .v7-inner .lv-resource-list article{padding:24px 18px;gap:12px}
  .v7-inner [data-direct-contact]{padding:24px 18px}
  .v7-inner .lv-question-actions{gap:10px}
  .v7-inner .lv-question-actions :is(.lv-button,.lv-secondary){gap:12px;padding:13px 16px}
 }
-@media print{.v7-header,.v7-footer,#bar{display:none!important}.v7-inner #contenu{padding:0}body.levois-v7{background:white;color:#102635}}
+@media print{.v7-header,.v7-footer,#bar{display:none!important}.v7-inner #contenu{padding:0}body.levois-v7{padding-top:0;background:white;color:#141414}}
 /* Les diagrammes conservent leur taille propre, distincte de celle des icônes. */
 .levois-v7 .vr-plan-figure svg{width:100%!important;height:auto!important}
 .levois-v7 .world-territory-map>svg{width:100%!important;height:100%!important}

@@ -99,7 +99,7 @@ async function startAnalytics(){
     const detail = (rawEvent as CustomEvent<Record<string, unknown>>).detail ?? {};
     const event = typeof detail.event === 'string' ? detail.event : '';
     const allowed = new Set([
-      'journey_started',
+      'journey_started', 'diagnostic_completed', 'capture_viewed',
       'first_value_seen', 'answer_corrected', 'reading_kept', 'reading_copy_requested', 'review_requested', 'exchange_requested',
       'journey_step_completed',
       'journey_completed',

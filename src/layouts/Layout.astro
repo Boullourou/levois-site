@@ -32,9 +32,11 @@ const {
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const canonicalUrl = Astro.url.pathname.endsWith('/') ? site.url + Astro.url.pathname : site.url + Astro.url.pathname + '/';
 
-const pageTitle = title === 'Accueil'
+const normalizedTitle = title.replace(/\bLEVOIS\.FR\b/gi, 'LEVOIS');
+const pageTitle = normalizedTitle === 'Accueil'
   ? 'LEVOIS · Conseil Immobilier & Vente à Lèves et Chartres'
-  : (title.includes('LEVOIS') ? title : `${title} · LEVOIS`);
+  : (normalizedTitle.includes('LEVOIS') ? normalizedTitle : `${normalizedTitle} · LEVOIS`);
+const shareImage = new URL(image, site.url).href;
 
 const schemaOrg = {
   '@context': 'https://schema.org',
@@ -113,16 +115,22 @@ const schemaOrg = {
   <meta name="color-scheme" content="light"/>
   {(noindex || ['/composants', '/404', '/situer-ma-vente/resultat', '/lecture', '/reprendre'].includes(path)) && <meta name="robots" content="noindex,nofollow"/>}
   <title>{pageTitle}</title>
-  <meta name="theme-color" content="#132a22"/>
+  <meta name="theme-color" content="#F8F7F4"/>
   <meta name="description" content={description}/>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
   <link rel="canonical" href={canonicalUrl}/>
   <meta property="og:url" content={canonicalUrl}/>
   <meta property="og:title" content={pageTitle}/>
   <meta property="og:description" content={description}/>
-  <meta property="og:image" content={site.url + image}/>
+  <meta property="og:image" content={shareImage}/>
+  <meta property="og:image:alt" content="LEVOIS · Conseil immobilier avec Mouaad Boullourou à Lèves et Chartres"/>
+  <meta property="og:site_name" content="LEVOIS"/>
   <meta property="og:locale" content="fr_FR"/>
   <meta property="og:type" content="website"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content={pageTitle}/>
+  <meta name="twitter:description" content={description}/>
+  <meta name="twitter:image" content={shareImage}/>
   <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)}/>
 </head>
 <body class:list={['levois-v7', homeV7 ? 'v7-homepage' : 'reperes-shell plan-vivant v7-inner', { 'rp-territoire': path === '/votre-rue' }]}>

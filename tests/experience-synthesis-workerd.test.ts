@@ -9,7 +9,7 @@ let runtime: Miniflare;
 let database: Awaited<ReturnType<Miniflare['getD1Database']>>;
 let scenario: 'success' | 'copy-refused-once' | 'concurrent' | 'uncertain' = 'success';
 let sequence = 0;
-let messages: { to: string; key: string | null; savedBeforeSend: number }[] = [];
+let messages: { to: string; key: string | null; savedBeforeSend: number; text: string }[] = [];
 
 function payload() {
   const now = new Date().toISOString();
@@ -57,12 +57,12 @@ beforeAll(async () => {
       if (request.url !== 'https://api.resend.com/emails' || request.method !== 'POST') {
         throw new Error('External network forbidden in this integration test.');
       }
-      const body = await request.json() as { to: string[] };
+      const body = await request.json() as { to: string[]; text: string };
       if (body.to.length !== 1 || !['visitor@example.test', 'advisor@example.test'].includes(body.to[0])) {
         throw new Error('A fictional recipient is required.');
       }
       const saved = await database.prepare('SELECT count(*) AS n FROM experience_email_leads').first<{ n: number }>();
-      messages.push({ to: body.to[0], key: request.headers.get('idempotency-key'), savedBeforeSend: saved?.n || 0 });
+      messages.push({ to: body.to[0], key: request.headers.get('idempotency-key'), savedBeforeSend: saved?.n || 0, text: body.text });
       const copyAttempts = messages.filter(message => message.to === 'visitor@example.test').length;
       // Keep the claimed sends in flight while the duplicate requests arrive.
       if (scenario === 'concurrent') await new Promise(resolve => setTimeout(resolve, 200));
@@ -123,5 +123,32 @@ describe('Capture synthèse dans workerd et D1 réels', () => {
     expect(await request(input)).toMatchObject({ saved: true, copyState: 'unknown', advisorNotificationState: 'unknown' });
     expect(messages).toHaveLength(2);
     expect(await database.prepare('SELECT count(*) AS n FROM experience_email_leads').first()).toMatchObject({ n: 1 });
+  }, 20_000);
+  it('conserve le contact arbitrage dans l’accord, reprend un refus et garde le contexte anonyme intact', async () => {
+    scenario = 'copy-refused-once';
+    const original = payload();
+    const input = { ...original, firstName: 'Élodie-Anne', phone: '+33 7 81 38 01 21',
+      consent: { ...original.consent, textVersion: '2026-10-25-arbitrage' } };
+    expect(await request(input)).toMatchObject({ saved: true, copyState: 'failed', firstName: 'Élodie-Anne', phoneExchangeRequested: true });
+    expect(await request(input)).toMatchObject({ saved: true, copySent: true, firstName: 'Élodie-Anne', phoneExchangeRequested: true });
+    const row = await database.prepare('SELECT * FROM experience_email_leads').first<Record<string, unknown>>();
+    expect(JSON.parse(String(row?.context_json))).toEqual(original.context);
+    expect(JSON.parse(String(row?.consent_json))).toMatchObject({ contact: { firstName: 'Élodie-Anne', phone: '+33 7 81 38 01 21' }, phoneExchangeRequested: true });
+    const notifications = messages.filter(message => message.to === 'advisor@example.test');
+    expect(notifications).toHaveLength(1);
+    expect(notifications[0].text).toContain('Téléphone : +33 7 81 38 01 21');
+    expect(notifications[0].text).toContain('Échange direct par téléphone demandé');
+    expect(messages.filter(message => message.to === 'visitor@example.test')).toHaveLength(2);
+    expect(await database.prepare('SELECT count(*) AS n FROM experience_email_leads').first()).toMatchObject({ n: 1 });
+  }, 20_000);
+  it('déduplique le nouveau contrat concurrent sans créer de demande d’appel quand le téléphone est absent', async () => {
+    scenario = 'concurrent'; const original = payload();
+    const input = { ...original, firstName: 'Maël', consent: { ...original.consent, textVersion: '2026-10-25-arbitrage' } };
+    const responses = await Promise.all([request(input), request(input), request(input)]);
+    expect(responses.every(response => response.saved === true && response.firstName === 'Maël' && response.phoneExchangeRequested === false)).toBe(true);
+    expect(messages).toHaveLength(2);
+    const row = await database.prepare('SELECT consent_json FROM experience_email_leads').first<{ consent_json: string }>();
+    expect(JSON.parse(row!.consent_json)).toMatchObject({ contact: { firstName: 'Maël', phone: null }, phoneExchangeRequested: false });
+    expect(messages.find(message => message.to === 'advisor@example.test')?.text).toContain('Aucun échange téléphonique demandé.');
   }, 20_000);
 });

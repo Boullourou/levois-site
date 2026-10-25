@@ -1,50 +1,80 @@
-/* Shared visual contract of the short diagnostics and their three-part synthesis. */
-.lv-simple-reading { max-width: 1000px; margin-inline: auto; }
-.lv-synthesis-header { max-width: 760px; margin-bottom: 28px; }
-.lv-simple-reading .lv-synthesis-header h1 { font-size: clamp(30px, 4vw, 48px); line-height: 1.15; }
-.lv-synthesis-cards { display: grid; gap: 14px; }
-.lv-synthesis-card { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 18px; padding: 28px; border: 1px solid var(--v7-line); background: #fff; border-radius: 18px; }
-.lv-synthesis-card:last-child { background: #eef4ef; border-color: #c3d3c7; }
-.lv-synthesis-number { font-size: 13px; font-weight: 700; color: var(--v7-rust); padding-top: 4px; }
-.levois-v7 .lv-synthesis-card h2 { font-size: clamp(20px, 2.3vw, 26px); margin-bottom: 10px; }
+/* Five-question journeys and their capture/reading share the same paper surface. */
+.lv-diagnostic-intro { max-width: 930px; margin-bottom: 38px; }
+.levois-v7 .lv-diagnostic-intro h1 { font-size: clamp(34px, 3.8vw, 54px); line-height: 1.16; max-width: 28ch; margin-bottom: 20px; }
+.lv-diagnostic-intro > p { max-width: 74ch; font-size: 16px; color: var(--v7-muted); }
+.lv-diagnostic-intro > .lv-note { max-width: 80ch; font-size: 13px; }
+.v7-inner .lv-question-panel [data-question-title] { font-size: clamp(28px, 2.7vw, 38px); line-height: 1.2; max-width: 27ch; margin-bottom: 16px; }
+.lv-question-form .lv-choice input { flex-shrink: 0; accent-color: var(--v7-ink); }
+.lv-question-form .lv-choice:focus-within { outline: 3px solid var(--v7-rust); outline-offset: 3px; }
+.lv-journey-grid:has(.lv-simple-reading) { display: block; }
+.lv-journey-grid:has(.lv-simple-reading) .lv-journey-side { display: none; }
+.lv-journey-grid:has(.lv-simple-reading) .lv-question-panel { max-width: none; }
+.lv-simple-reading { max-width: 940px; margin-inline: auto; }
+.lv-synthesis-header { max-width: 800px; margin-bottom: 30px; }
+.levois-v7 .lv-simple-reading .lv-synthesis-header h1 { font-size: clamp(32px, 3.7vw, 48px); line-height: 1.17; max-width: 26ch; }
+.lv-synthesis-cards { display: grid; gap: 16px; }
+.lv-synthesis-card { padding: 28px 30px; border: 1px solid var(--v7-line); background: var(--v7-surface); border-radius: 14px; }
+.lv-synthesis-card:last-child { background: #efede7; }
+.lv-synthesis-number { display: none; }
+.levois-v7 .lv-synthesis-card h2 { font-size: clamp(22px, 2.3vw, 28px); margin-bottom: 12px; }
+.lv-synthesis-card p { max-width: 72ch; }
 .lv-synthesis-card p:last-child { margin-bottom: 0; }
-.lv-synthesis-limit { margin-top: 16px; }
-.lv-synthesis-contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; margin: 32px 0; padding: 30px; border-radius: 20px; background: #e9f0e9; }
-.levois-v7 .lv-synthesis-contact h2, .levois-v7 .lv-synthesis-email h2, .levois-v7 .lv-synthesis-resources h2 { font-size: clamp(22px, 2.3vw, 28px); }
-.lv-contact-actions { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 6px; }
-.lv-contact-actions .lv-button { width: 100%; text-align: center; justify-content: center; background: var(--v7-ink); border-color: var(--v7-ink); }
+.lv-synthesis-limit { margin-top: 18px; }
+.lv-synthesis-contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; margin: 34px 0; padding: 30px 0; border-block: 1px solid var(--v7-line); }
+.levois-v7 :is(.lv-synthesis-contact, .lv-synthesis-email, .lv-synthesis-resources) h2 { font-size: clamp(22px, 2.3vw, 28px); }
+.lv-contact-actions { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 8px; }
+.lv-contact-actions .lv-button { width: 100%; text-align: center; justify-content: center; }
 .lv-synthesis-email { padding-block: 24px; border-block: 1px solid var(--v7-line); margin-bottom: 34px; }
-.lv-synthesis-email form { max-width: 670px; }
-.lv-synthesis-email .lv-field input { background: #fff; border-radius: 10px; font-size: 16px; width: 100%; }
+.lv-synthesis-email form { max-width: 700px; }
+.levois-v7 .lv-simple-reading .lv-synthesis-email .lv-field input { background: var(--v7-surface); border: 1px solid #87837b; border-radius: 10px; font: inherit; font-size: 16px; width: 100%; }
+.levois-v7 .lv-simple-reading .lv-synthesis-email .lv-field input:focus-visible { border-color: var(--v7-ink); }
 .lv-synthesis-email [role=status] { margin: 16px 0 0; }
+.lv-capture-gate { max-width: 800px; padding-bottom: 24px; }
+.lv-capture-context { max-width: 68ch; margin-bottom: 28px; color: var(--v7-muted); font-size: 15px; }
+.lv-capture { padding: 28px; border: 1px solid var(--v7-line); border-radius: 14px; background: var(--v7-surface); }
+.lv-capture form { max-width: none; }
+.lv-capture-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; }
+.lv-capture .lv-field { font-size: 15px; }
+.lv-capture .lv-note { font-size: 13px; }
+.lv-capture .lv-button { width: 100%; justify-content: space-between; white-space: normal; text-align: left; line-height: 1.5; min-height: 56px; }
+.lv-capture .lv-button:disabled { cursor: wait; opacity: .7; }
 .lv-synthesis-resources > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.lv-resource-card { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--v7-line); border-radius: 16px; padding: 22px; text-decoration: none; background: #fff; }
+.lv-resource-card { display: flex; flex-direction: column; gap: 12px; border: 1px solid var(--v7-line); border-radius: 14px; padding: 22px; text-decoration: none; background: var(--v7-surface); }
 .lv-resource-card strong { font-size: 18px; line-height: 1.4; }
 .lv-resource-card span { font-size: 14px; color: var(--v7-muted); }
-.lv-resource-card:hover { border-color: var(--v7-rust); }
-.lv-resource-card > span:last-child { color: var(--v7-rust); font-size: 24px; }
+.lv-resource-card:hover { border-color: var(--v7-ink); }
+.lv-resource-card > span:last-child { color: var(--v7-ink); font-size: 24px; }
 .lv-synthesis-tools { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-block: 22px; }
 .lv-correction-links { display: grid; gap: 6px; }
 .lv-honeypot { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(100%); }
 .lv-simple-reading :is(.lv-button, .lv-text-link) { white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
 .lv-simple-reading .lv-preview { white-space: pre-wrap; overflow-wrap: anywhere; }
 .lv-human-notes { overflow-wrap: anywhere; }
-.lv-question-form .lv-choice input { flex-shrink: 0; }
-.lv-question-form .lv-choice:focus-within { outline: 3px solid var(--v7-rust); outline-offset: 3px; }
-@media (min-width: 761px) {
+@media (min-width: 1024px) {
   .lv-journey .lv-journey-grid { grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr); gap: clamp(32px, 5vw, 72px); }
-  .v7-inner .lv-journey .lv-question-panel h1 { font-size: clamp(34px, 3.2vw, 46px); max-width: 23ch; }
+  .lv-journey .lv-journey-grid:has(.lv-simple-reading) { display: block; }
+}
+@media (max-width: 1023px) {
+  .lv-journey .lv-journey-grid { display: block; }
+  .lv-journey .lv-journey-side { display: none; }
+  .lv-question-panel { max-width: 800px; }
 }
 @media (max-width: 760px) {
   .lv-journey-head { flex-wrap: wrap; gap: 8px; }
-  .lv-synthesis-card { padding: 20px 16px; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; }
-  .lv-synthesis-contact { grid-template-columns: minmax(0, 1fr); padding: 24px 18px; gap: 14px; }
+  .lv-diagnostic-intro { margin-bottom: 30px; }
+  .levois-v7 .lv-diagnostic-intro h1 { font-size: clamp(30px, 7.7vw, 40px); line-height: 1.18; }
+  .lv-diagnostic-intro > p { font-size: 15px; }
+  .lv-synthesis-card { padding: 24px 18px; }
+  .lv-synthesis-contact { grid-template-columns: minmax(0, 1fr); padding: 24px 0; gap: 14px; }
   .lv-synthesis-contact p { margin-bottom: 0; }
-  .lv-synthesis-resources > div { grid-template-columns: minmax(0, 1fr); }
+  .lv-synthesis-resources > div, .lv-capture-fields { grid-template-columns: minmax(0, 1fr); }
+  .lv-capture-fields { gap: 0; }
+  .lv-capture { padding: 24px 18px; }
+  .lv-capture .lv-button { padding-inline: 18px; border-radius: 12px; font-size: 15px; }
   .lv-synthesis-tools { gap: 4px 14px; }
   .lv-synthesis-email .lv-button { width: 100%; justify-content: center; }
   .v7-inner .lv-question-actions .lv-button { min-width: 0; flex: 1; }
-  .v7-inner .lv-question-panel h1 { font-size: clamp(28px, 7.5vw, 38px); }
+  .v7-inner .lv-question-panel [data-question-title] { font-size: clamp(26px, 6.5vw, 34px); }
   .v7-inner .lv-choice { padding: 15px 14px; min-height: 54px; }
 }
 @media print {

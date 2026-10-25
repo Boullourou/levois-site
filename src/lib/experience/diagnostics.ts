@@ -269,7 +269,7 @@ function buildReading(project: DiagnosticProject, context: Context): Reading {
   const sourceAnswerIds = definitions[project].map(question => question.id).filter(id => answer(context, id) !== 'unknown');
   return {
     id: `${context.id}-${project}-diagnostic-${context.revision}`, revision: context.revision,
-    title: projectTitles[project], methodVersion: DIAGNOSTIC_METHOD_VERSION, generatedAt: context.updatedAt,
+    title: projectTitles[project], methodVersion: DIAGNOSTIC_METHOD_VERSION, generatedAt: context.updatedAt, deliveryMode: 'email-arbitrage-v1',
     sections: [
       { id: 'constat', title: 'Le constat', items: [{ text: advice.observation, kind: sourceAnswerIds.length ? 'declared' : 'unknown', sourceAnswerIds }] },
       { id: 'angle-mort', title: 'L’angle mort à surveiller', items: [{ text: advice.blindSpot, kind: 'conditional', sourceAnswerIds }] },

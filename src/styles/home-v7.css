@@ -1,977 +1,161 @@
+/* Homepage: continuous paper, restrained ink, three clear project actions. */
+.hero-dramatic { padding: clamp(28px, 4.5vw, 60px) 0 64px; background: var(--v7-paper); }
+.hero-top-row { display: flex; align-items: center; margin-bottom: 36px; }
+.advisor-trust-badge { display: inline-flex; align-items: center; gap: 12px; }
+.advisor-avatar-circle { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+.advisor-trust-text { display: flex; flex-direction: column; gap: 2px; }
+.advisor-name { font-size: 14px; font-weight: 600; color: var(--v7-ink); }
+.advisor-role { font-size: 12px; color: var(--v7-muted); }
+.hero-editorial-center { max-width: 1030px; margin-bottom: 32px; }
+.levois-v7 .hero-kicker, .levois-v7 .sec-ey { margin-bottom: 16px; font-size: 12px; font-weight: 600; letter-spacing: .1em; line-height: 1.5; text-transform: uppercase; color: var(--v7-muted); }
+.levois-v7 .hero-giant-title { max-width: 26ch; margin: 0 0 24px; font-size: clamp(36px, 4.6vw, 66px); line-height: 1.1; letter-spacing: -.035em; }
+.title-highlight { color: inherit; }
+.levois-v7 .hero-manifesto { max-width: 76ch; margin: 0; font-size: clamp(16px, 1.35vw, 18px); line-height: 1.7; color: var(--v7-muted); }
+.hero-doors-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; max-width: 1030px; }
+.door-card { display: flex; align-items: center; min-height: 64px; padding: 18px 24px; border: 1px solid var(--v7-ink); border-radius: 12px; text-decoration: none; background: transparent; transition: background-color .18s, border-color .18s; }
+.levois-v7 .door-vendre { background: var(--v7-ink); color: var(--v7-paper); }
+.door-action { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; font-weight: 600; }
+.door-arrow { flex-shrink: 0; font-style: normal; font-size: 20px; }
+.door-card:hover { background: #eeece7; }
+.levois-v7 .door-vendre:hover { background: #343330; }
+.hero-local-link { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; margin-top: 15px; font-size: 14px; text-underline-offset: 5px; }
 
-/* ==========================================================================
-   DIRECTION ARTISTIQUE ÉDITORIALE ET COULEURS SUBTILES (NON FLASHY)
-   Harmonie : Terracotta doux, Sauge minérale, Sable chaud, Vert encre
-   ========================================================================== */
+/* The three blind spots read like editorial columns, without decorative counters. */
+.market-blindspots, .local-market-sec, .life-split-sec, .opp-dramatic-sec, .res-editorial-sec, .advisor-portrait-sec { padding: 76px 0; background: var(--v7-paper); }
+.market-blindspots { border-block: 1px solid var(--v7-line); }
+.market-blindspots-header { max-width: 780px; margin-bottom: 36px; }
+.market-blindspots-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.market-blindspot { display: flex; flex-direction: column; min-width: 0; }
+.levois-v7 .market-blindspot h3 { font-size: 25px; line-height: 1.3; margin-bottom: 16px; }
+.levois-v7 .market-blindspot p { font-size: 15px; line-height: 1.8; color: var(--v7-muted); }
+.chapter-link { display: inline-flex; align-items: baseline; gap: 10px; font-size: 14px; font-weight: 600; line-height: 1.6; text-underline-offset: 4px; }
+.market-blindspot .chapter-link { margin-top: auto; padding-top: 10px; }
+.chapter-link span { flex-shrink: 0; }
 
-/* 1. HERO ÉPURÉ & STATUTAIRE */
-.hero-dramatic {
-  padding: clamp(36px, 5vw, 64px) 0 80px;
-  background: var(--v7-paper);
-  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
-}
+.local-market-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
+.local-market-media { margin: 0; min-width: 0; }
+.local-market-media img { display: block; width: 100%; height: auto; border-radius: 14px; }
+.local-market-media figcaption { margin-top: 12px; font-size: 12px; line-height: 1.6; color: var(--v7-muted); }
+.local-market-copy { min-width: 0; }
+.levois-v7 .local-market-copy h2 { font-size: clamp(28px, 2.7vw, 38px); }
+.local-market-copy p { font-size: 15px; color: var(--v7-muted); }
 
-.hero-top-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 36px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid rgba(19, 42, 34, 0.06);
-}
+/* Secondary actions retain one quiet visual language throughout the page. */
+.levois-v7 :is(.btn-primary, .btn-secondary) { display: inline-flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 52px; max-width: 100%; padding: 15px 22px; border: 1px solid var(--v7-ink); border-radius: 12px; font-size: 14px; font-weight: 600; line-height: 1.6; text-decoration: none; white-space: normal; text-align: left; transition: background-color .18s; }
+.levois-v7 .btn-primary { background: var(--v7-ink); color: var(--v7-paper); }
+.levois-v7 .btn-primary:hover { background: #343330; }
+.levois-v7 .btn-secondary { background: transparent; color: var(--v7-ink); }
+.levois-v7 .btn-secondary:hover { background: #eeece7; }
+:is(.btn-primary, .btn-secondary) > :is(i, span[aria-hidden]) { flex-shrink: 0; font-style: normal; }
+:is(.btn-primary, .btn-secondary) > span:not([aria-hidden]) { min-width: 0; }
 
-.advisor-trust-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-}
+.life-split-layout { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: clamp(28px, 5vw, 80px); align-items: start; }
+.life-photo-wrapper { margin: 0; }
+.life-doc-img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 14px; }
+.life-photo-caption { padding: 18px 0; color: var(--v7-muted); font-size: 14px; }
+.caption-quote { line-height: 1.65; }
+.life-sec-header { margin-bottom: 26px; }
+.chapter-card { padding: 24px 0; border-top: 1px solid var(--v7-line); }
+.chapter-tag { margin-bottom: 12px; font-size: 12px; color: var(--v7-muted); }
+.levois-v7 .chapter-card h3 { font-size: 24px; }
+.chapter-card p { font-size: 15px; color: var(--v7-muted); }
 
-.advisor-avatar-circle {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  object-fit: cover;
-  border: 2px solid var(--v7-orange);
-  box-shadow: 0 4px 12px rgba(194, 94, 26, 0.15);
-}
+.opp-sec-header { max-width: 790px; margin-bottom: 32px; }
+.opp-sec-header > p:last-child { font-size: 16px; color: var(--v7-muted); }
+.opp-cards-duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.opp-ledger-card { display: flex; flex-direction: column; padding: 30px; border: 1px solid var(--v7-line); border-radius: 14px; background: var(--v7-surface); min-width: 0; }
+.ledger-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding-bottom: 22px; border-bottom: 1px solid var(--v7-line); font-size: 12px; color: var(--v7-muted); }
+.ledger-badge { font-weight: 600; color: var(--v7-ink); }
+.ledger-stat-block, .team-pitch-block { display: flex; flex-direction: column; gap: 10px; padding-block: 28px; }
+.stat-amount, .team-highlight { font-family: 'Satoshi', sans-serif; font-size: 30px; line-height: 1.2; letter-spacing: -.025em; }
+.stat-label, .team-sub { font-size: 14px; line-height: 1.65; color: var(--v7-muted); }
+.levois-v7 .ledger-body h3 { font-size: 21px; }
+.ledger-body p { font-size: 14px; color: var(--v7-muted); }
+.ledger-btn-wrap { padding-top: 12px; margin-top: auto; }
+.ledger-btn-wrap a { width: 100%; }
 
-.advisor-trust-text {
-  display: flex;
-  flex-direction: column;
-}
+.res-editorial-header { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px; align-items: end; margin-bottom: 32px; }
+.header-right p { color: var(--v7-muted); font-size: 15px; }
+.link-all-res { display: inline-block; font-size: 14px; font-weight: 600; padding-block: 8px; }
+.res-cover-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; }
+.res-cover-card { display: flex; flex-direction: column; min-width: 0; }
+.card-cover-photo { position: relative; }
+.card-cover-photo img { display: block; width: 100%; aspect-ratio: 1.5; object-fit: cover; border-radius: 12px; }
+.cover-tag, .cover-duration { display: inline-block; margin-top: 14px; font-size: 11px; color: var(--v7-muted); }
+.cover-tag { margin-right: 14px; }
+.card-cover-content { display: flex; flex-direction: column; flex: 1; padding-top: 16px; }
+.levois-v7 .card-cover-content h3 { font-size: 24px; margin-bottom: 12px; }
+.levois-v7 .card-cover-q { font-size: 15px; line-height: 1.65; color: var(--v7-ink); }
+.levois-v7 .card-cover-b { font-size: 14px; color: var(--v7-muted); }
+.card-cover-link { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: auto; padding-block: 10px; font-size: 14px; font-weight: 600; }
+.card-cover-link i { font-style: normal; flex-shrink: 0; }
 
-.advisor-name {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--v7-ink);
-}
-
-.advisor-role {
-  font-size: 13px;
-  color: var(--v7-muted);
-}
-
-.hero-editorial-center {
-  max-width: 860px;
-  margin-bottom: 52px;
-}
-
-.hero-kicker {
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--v7-orange);
-  margin-bottom: 16px;
-}
-
-.hero-giant-title {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(34px, 4.5vw, 54px);
-  font-weight: 800;
-  line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: var(--v7-ink);
-  margin: 0 0 24px;
-}
-
-.title-highlight {
-  color: var(--v7-orange);
-}
-
-.hero-manifesto {
-  font-size: clamp(17px, 1.8vw, 19px);
-  line-height: 1.65;
-  color: rgba(19, 42, 34, 0.85);
-  margin: 0;
-}
-
-.hero-manifesto strong {
-  color: var(--v7-ink);
-  font-weight: 700;
-}
-
-/* 2. TRIPTYQUE DES 3 PORTES EN COULEURS DOUCES & DISTINCTES */
-.hero-doors-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-
-@media (max-width: 960px) {
-  .hero-doors-grid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-}
-
-.door-card {
-  position: relative;
-  border-radius: 22px;
-  padding: 34px 28px;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s, border-color 0.25s;
-  box-shadow: 0 6px 20px rgba(19, 42, 34, 0.04);
-}
-
-.door-card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.door-num-badge {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 38px;
-  font-weight: 800;
-  line-height: 1;
-  opacity: 0.8;
-}
-
-.door-ey {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-.door-body h2 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.25;
-  margin: 0 0 14px;
-  color: var(--v7-ink);
-}
-
-.door-body p {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: rgba(19, 42, 34, 0.8);
-  margin: 0 0 28px;
-}
-
-.door-action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14.5px;
-  font-weight: 700;
-  padding-top: 18px;
-  border-top: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.door-arrow {
-  font-style: normal;
-  font-size: 18px;
-  transition: transform 0.2s;
-}
-
-.door-card:hover {
-  transform: translateY(-4px);
-}
-
-.door-card:hover .door-arrow {
-  transform: translateX(5px);
-}
-
-/* PORTE 01 : TERRACOTTA DOUX */
-.door-vendre {
-  background: #FAF4EF;
-  border: 1.5px solid #EAD5C8;
-}
-
-.door-vendre .door-num-badge {
-  color: var(--v7-orange);
-  opacity: 1;
-}
-
-.door-vendre .door-ey {
-  color: var(--v7-orange);
-  background: rgba(194, 94, 26, 0.1);
-}
-
-.door-vendre .door-action {
-  color: var(--v7-orange);
-  border-top-color: rgba(194, 94, 26, 0.15);
-}
-
-.door-vendre:hover {
-  border-color: var(--v7-orange);
-  box-shadow: 0 18px 36px rgba(194, 94, 26, 0.12);
-}
-
-/* PORTE 02 : VERT SAUGE MINÉRAL */
-.door-acheter {
-  background: #F3F7F5;
-  border: 1.5px solid #CFDDD6;
-}
-
-.door-acheter .door-num-badge {
-  color: #265946;
-}
-
-.door-acheter .door-ey {
-  color: #265946;
-  background: rgba(38, 89, 70, 0.1);
-}
-
-.door-acheter .door-action {
-  color: #265946;
-  border-top-color: rgba(38, 89, 70, 0.15);
-}
-
-.door-acheter:hover {
-  border-color: #265946;
-  box-shadow: 0 18px 36px rgba(38, 89, 70, 0.12);
-}
-
-/* PORTE 03 : SABLE DORÉ CHAUD */
-.door-transition {
-  background: #FAF7EE;
-  border: 1.5px solid #E8DFCB;
-}
-
-.door-transition .door-num-badge {
-  color: #765610;
-  opacity: 1;
-}
-
-.door-transition .door-ey {
-  color: #765610;
-  background: rgba(138, 103, 28, 0.1);
-}
-
-.door-transition .door-action {
-  color: #765610;
-  border-top-color: rgba(138, 103, 28, 0.15);
-}
-
-.door-transition:hover {
-  border-color: #765610;
-  box-shadow: 0 18px 36px rgba(138, 103, 28, 0.12);
-}
-
-/* TICKER COMMUNES */
-.communes-ticker {
-  margin-top: 56px;
-  overflow: hidden;
-  white-space: nowrap;
-  padding: 14px 0;
-  border-top: 1px solid rgba(19, 42, 34, 0.06);
-  border-bottom: 1px solid rgba(19, 42, 34, 0.06);
-}
-
-.ticker-inner {
-  display: inline-block;
-  animation: ticker 35s linear infinite;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--v7-muted);
-}
-
-.ticker-inner span {
-  margin: 0 12px;
-}
-
-.ticker-inner i {
-  font-style: normal;
-  color: var(--v7-orange);
-  font-size: 10px;
-}
-
-@keyframes ticker {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
-}
-
-/* 3. SECTION DÉCLICS DE VIE (SPLIT ÉDITORIAL SANS 4D) */
-.life-split-sec {
-  padding: 96px 0;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.life-split-layout {
-  display: grid;
-  grid-template-columns: 0.95fr 1.05fr;
-  gap: clamp(40px, 6vw, 72px);
-  align-items: center;
-}
+.advisor-portrait-sec { padding-bottom: 88px; }
+.advisor-portrait-card { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(36px, 6vw, 88px); align-items: center; }
+.advisor-portrait-media { max-width: 430px; }
+.advisor-field-img { display: block; width: 100%; height: auto; aspect-ratio: 800 / 1202; object-fit: cover; border-radius: 14px; }
+.field-badge { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 14px; font-size: 12px; color: var(--v7-muted); }
+.field-badge strong { font-weight: 500; }
+.advisor-portrait-text { min-width: 0; }
+.levois-v7 .advisor-portrait-text h2 { max-width: 20ch; font-size: clamp(30px, 3.2vw, 44px); line-height: 1.18; margin-bottom: 24px; }
+.advisor-credentials { display: flex; flex-direction: column; gap: 5px; margin-bottom: 24px; }
+.advisor-credentials strong { font-size: 16px; font-weight: 600; }
+.advisor-credentials span { font-size: 12px; line-height: 1.7; color: var(--v7-muted); }
+.levois-v7 .portrait-lead { font-size: 17px; line-height: 1.75; }
+.levois-v7 .portrait-detail { font-size: 15px; color: var(--v7-muted); }
+.advisor-signature-row { margin-block: 24px; }
+.fee-link-box { font-size: 12px; line-height: 1.8; color: var(--v7-muted); }
+.advisor-cta-row { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.advisor-call { width: 100%; }
+.phone-number { white-space: nowrap; }
+.phone-btn { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; text-underline-offset: 5px; }
 
 @media (max-width: 960px) {
-  .life-split-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.life-photo-wrapper {
-  position: relative;
-  border-radius: 22px;
-  overflow: hidden;
-  box-shadow: 0 20px 48px rgba(19, 42, 34, 0.08);
-  border: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.life-doc-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.life-photo-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 24px 28px;
-  background: linear-gradient(to top, rgba(19, 42, 34, 0.92) 0%, rgba(19, 42, 34, 0.6) 70%, transparent 100%);
-  color: #FAF9F6;
-}
-
-.caption-quote {
-  font-size: 14.5px;
-  line-height: 1.5;
-  font-style: italic;
-  display: block;
-  opacity: 0.95;
-}
-
-.sec-ey {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--v7-orange);
-  margin-bottom: 12px;
-}
-
-.life-sec-header h2 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(28px, 3.8vw, 42px);
-  font-weight: 800;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--v7-ink);
-  margin: 0 0 36px;
-}
-
-.life-chapters {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.chapter-card {
-  background: var(--v7-paper);
-  border: 1px solid rgba(19, 42, 34, 0.1);
-  border-radius: 18px;
-  padding: 26px 28px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.chapter-card:hover {
-  border-color: var(--v7-ink);
-  box-shadow: 0 8px 24px rgba(19, 42, 34, 0.06);
-}
-
-.chapter-tag {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--v7-orange);
-  margin-bottom: 8px;
-}
-
-.chapter-card h3 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 19px;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0 0 10px;
-  color: var(--v7-ink);
-}
-
-.chapter-card p {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: var(--v7-muted);
-  margin: 0 0 16px;
-}
-
-.chapter-link {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--v7-ink);
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.chapter-card:hover .chapter-link {
-  color: var(--v7-orange);
-}
-
-/* 4. SECTION OPPORTUNITÉS LOCALES */
-.opp-dramatic-sec {
-  padding: 96px 0;
-  background: var(--v7-paper);
-  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.opp-sec-header {
-  max-width: 780px;
-  margin-bottom: 48px;
-}
-
-.opp-sec-header h2 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(28px, 3.8vw, 42px);
-  font-weight: 800;
-  line-height: 1.2;
-  margin: 10px 0 14px;
-}
-
-.opp-sec-header p {
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--v7-muted);
-}
-
-.opp-cards-duo {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 28px;
-}
-
-@media (max-width: 860px) {
-  .opp-cards-duo {
-    grid-template-columns: 1fr;
-  }
-}
-
-.opp-ledger-card {
-  min-width: 0;
-  border-radius: 22px;
-  padding: 38px 34px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: 1.5px solid rgba(19, 42, 34, 0.12);
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-
-.opp-ledger-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(19, 42, 34, 0.08);
-}
-
-.safti-connect-box {
-  background: #FAF7EE;
-  border-color: #E8DFCB;
-}
-
-.team-join-box {
-  background: #F3F7F5;
-  border-color: #CFDDD6;
-}
-
-.ledger-header {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.ledger-badge {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--v7-orange);
-  background: rgba(194, 94, 26, 0.1);
-  padding: 4px 12px;
-  border-radius: 999px;
-}
-
-.team-badge {
-  color: #265946;
-  background: rgba(38, 89, 70, 0.1);
-}
-
-.ledger-share {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--v7-muted);
-}
-
-.ledger-stat-block {
-  margin-bottom: 22px;
-}
-
-.stat-amount {
-  display: block;
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(30px, 4vw, 48px);
-  font-weight: 900;
-  line-height: 1;
-  color: var(--v7-ink);
-  letter-spacing: -0.04em;
-  margin-bottom: 6px;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: var(--v7-muted);
-  font-weight: 600;
-}
-
-.team-pitch-block {
-  margin-bottom: 22px;
-}
-
-.team-highlight {
-  display: block;
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(26px, 3.2vw, 36px);
-  font-weight: 800;
-  line-height: 1.15;
-  color: #265946;
-  margin-bottom: 6px;
-}
-
-.team-sub {
-  font-size: 13px;
-  color: var(--v7-muted);
-}
-
-.ledger-body h3 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0 0 12px;
-  color: var(--v7-ink);
-}
-
-.ledger-body p {
-  font-size: 14.5px;
-  line-height: 1.6;
-  color: var(--v7-muted);
-  margin: 0 0 32px;
-}
-
-.ledger-btn-wrap {
-  padding-top: 10px;
-}
-
-/* 5. CENTRE DE RESSOURCES ÉDITORIAL */
-.res-editorial-sec {
-  padding: 96px 0;
-  background: #FFFFFF;
-  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.res-editorial-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-.header-left h2 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(28px, 3.8vw, 42px);
-  font-weight: 800;
-  line-height: 1.2;
-  margin: 8px 0 0;
-}
-
-.header-right {
-  max-width: 440px;
-}
-
-.header-right p {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--v7-muted);
-  margin: 0 0 10px;
-}
-
-.link-all-res {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--v7-orange);
-  text-decoration: none;
-}
-
-.link-all-res:hover {
-  text-decoration: underline;
-}
-
-.res-cover-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
-}
-
-@media (max-width: 960px) {
-  .res-cover-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.res-cover-card {
-  background: var(--v7-paper);
-  border: 1px solid rgba(19, 42, 34, 0.1);
-  border-radius: 20px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.25s, box-shadow 0.25s;
-}
-
-.res-cover-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(19, 42, 34, 0.08);
-}
-
-.card-cover-photo {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: var(--v7-ink);
-}
-
-.card-cover-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease;
-}
-
-.res-cover-card:hover .card-cover-photo img {
-  transform: scale(1.04);
-}
-
-.cover-tag {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: #FFFFFF;
-  background: rgba(19, 42, 34, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-.cover-duration {
-  position: absolute;
-  bottom: 14px;
-  right: 14px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #FAF9F6;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(8px);
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-.card-cover-content {
-  padding: 26px 24px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card-cover-content h3 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: 19px;
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 0 0 10px;
-  color: var(--v7-ink);
-}
-
-.card-cover-q {
-  font-size: 13.5px;
-  font-weight: 600;
-  line-height: 1.5;
-  color: var(--v7-ink);
-  margin-bottom: 8px;
-}
-
-.card-cover-b {
-  font-size: 13.5px;
-  line-height: 1.6;
-  color: var(--v7-muted);
-  margin-bottom: 20px;
-  flex-grow: 1;
-}
-
-.card-cover-link {
-  font-size: 14.5px;
-  font-weight: 700;
-  color: var(--v7-ink);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  transition: color 0.2s;
-}
-
-.res-cover-card:hover .card-cover-link {
-  color: var(--v7-orange);
-}
-
-/* 6. PORTRAIT TERRAIN MOUAAD & BOUTONS ALIGNÉS IMPECCABLES */
-.advisor-portrait-sec {
-  padding: 96px 0;
-  background: var(--v7-paper);
-}
-
-.advisor-portrait-card {
-  background: #FFFFFF;
-  border: 1px solid rgba(19, 42, 34, 0.12);
-  border-radius: 28px;
-  padding: clamp(32px, 5vw, 56px);
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: clamp(36px, 6vw, 64px);
-  align-items: center;
-  box-shadow: 0 16px 40px rgba(19, 42, 34, 0.05);
-}
-
-@media (max-width: 900px) {
-  .advisor-portrait-card {
-    grid-template-columns: 1fr;
-  }
-}
-
-.advisor-portrait-media {
-  position: relative;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 12px 32px rgba(19, 42, 34, 0.1);
-  border: 1px solid rgba(19, 42, 34, 0.1);
-  aspect-ratio: 4 / 5;
-}
-
-.advisor-field-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.field-badge {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  background: rgba(19, 42, 34, 0.88);
-  backdrop-filter: blur(8px);
-  color: #FAF9F6;
-  padding: 12px 18px;
-  border-radius: 12px;
-}
-
-.field-badge span {
-  display: block;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--v7-orange);
-  font-weight: 700;
-}
-
-.field-badge strong {
-  font-size: 14px;
-}
-
-.advisor-portrait-text h2 {
-  font-family: 'Satoshi', sans-serif !important;
-  font-size: clamp(28px, 3.6vw, 40px);
-  font-weight: 800;
-  line-height: 1.2;
-  margin: 8px 0 14px;
-}
-
-.advisor-credentials {
-  margin-bottom: 20px;
-}
-
-.advisor-credentials strong {
-  display: block;
-  font-size: 17px;
-  color: var(--v7-ink);
-}
-
-.advisor-credentials span {
-  font-size: 13px;
-  color: var(--v7-orange);
-  font-weight: 600;
-}
-
-.portrait-lead {
-  font-size: 16px;
-  line-height: 1.65;
-  color: var(--v7-ink);
-  margin-bottom: 14px;
-}
-
-.portrait-detail {
-  font-size: 14px;
-  line-height: 1.65;
-  color: var(--v7-muted);
-  margin-bottom: 24px;
-}
-
-.advisor-signature-row {
-  margin-bottom: 28px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(19, 42, 34, 0.08);
-}
-
-.fee-link-box {
-  font-size: 13px;
-  color: var(--v7-muted);
-}
-
-.fee-link-box a {
-  color: var(--v7-ink);
-  font-weight: 600;
-}
-
-/* BOUTONS PARFAITEMENT ALIGNÉS EN TOUTES CIRCONSTANCES */
-.advisor-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--v7-ink, #132a22);
-  color: #FAF9F6 !important;
-  padding: 13px 26px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(19, 42, 34, 0.12);
-  white-space: nowrap !important;
-}
-
-.btn-primary:hover {
-  background: var(--v7-orange, #c25e1a);
-  color: #ffffff !important;
-  transform: translateY(-1px);
-}
-
-.btn-primary i {
-  font-style: normal;
-  transition: transform 0.2s;
-}
-
-.btn-primary:hover i {
-  transform: translateX(3px);
-}
-
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: #265946;
-  color: #ffffff !important;
-  padding: 13px 26px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(38, 89, 70, 0.15);
-  white-space: nowrap !important;
-}
-
-.btn-secondary:hover {
-  background: var(--v7-ink, #132a22);
-  transform: translateY(-1px);
-}
-
-.btn-secondary i {
-  font-style: normal;
-  transition: transform 0.2s;
-}
-
-.btn-secondary:hover i {
-  transform: translateX(3px);
-}
-
-/* Long card actions must wrap inside their padded column on narrow screens. */
-.ledger-btn-wrap :is(.btn-primary, .btn-secondary) {
-  max-width: 100%;
-  white-space: normal !important;
-  text-align: center;
-}
-
-.ledger-btn-wrap :is(.btn-primary, .btn-secondary) i {
-  flex-shrink: 0;
-}
-
-.phone-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: #ffffff;
-  color: var(--v7-ink, #132a22) !important;
-  border: 1.5px solid rgba(19, 42, 34, 0.18);
-  padding: 12px 24px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  white-space: nowrap !important;
-}
-
-.phone-btn:hover {
-  border-color: var(--v7-ink, #132a22);
-  background: rgba(19, 42, 34, 0.04);
-}
-
-.phone-btn svg {
-  flex-shrink: 0;
-  color: var(--v7-orange, #c25e1a);
-}
-
-.phone-nowrap,
-[href^="tel:"] {
-  white-space: nowrap !important;
+  .hero-dramatic { padding-bottom: 48px; }
+  .hero-doors-grid { gap: 10px; }
+  .door-card { padding: 16px; }
+  .door-action { font-size: 14px; gap: 10px; }
+  .market-blindspots-grid { gap: 24px; }
+  .levois-v7 .market-blindspot h3 { font-size: 22px; }
+  .local-market-layout, .life-split-layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .local-market-media { max-width: 760px; }
+  .local-market-copy { max-width: 700px; }
+  .life-photo-side { max-width: 680px; }
+  .life-doc-img { aspect-ratio: 3 / 2; }
+  .res-cover-grid { gap: 18px; }
+  .levois-v7 .card-cover-content h3 { font-size: 22px; }
+  .advisor-portrait-card { grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .levois-v7 .advisor-portrait-text h2 { font-size: 32px; }
+}
+@media (max-width: 640px) {
+  .hero-dramatic { padding: 24px 0 44px; }
+  .hero-top-row { margin-bottom: 28px; }
+  .hero-editorial-center { margin-bottom: 26px; }
+  .levois-v7 .hero-kicker { font-size: 11px; margin-bottom: 16px; }
+  .levois-v7 .hero-giant-title { font-size: clamp(33px, 9.4vw, 48px); line-height: 1.13; letter-spacing: -.03em; margin-bottom: 22px; }
+  .levois-v7 .hero-manifesto { font-size: 15px; line-height: 1.75; }
+  .hero-doors-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .door-card { min-height: 56px; padding: 15px 18px; }
+  .door-action { font-size: 15px; }
+  .hero-local-link { font-size: 13px; margin-top: 12px; }
+  .market-blindspots, .local-market-sec, .life-split-sec, .opp-dramatic-sec, .res-editorial-sec, .advisor-portrait-sec { padding-block: 48px; }
+  .market-blindspots-header { margin-bottom: 28px; }
+  .market-blindspots-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .market-blindspot + .market-blindspot { padding-top: 28px; border-top: 1px solid var(--v7-line); }
+  .levois-v7 .market-blindspot h3 { font-size: 24px; }
+  .market-blindspot .chapter-link { padding-top: 0; }
+  .opp-cards-duo, .res-editorial-header, .res-cover-grid, .advisor-portrait-card { grid-template-columns: minmax(0, 1fr); }
+  .opp-ledger-card { padding: 24px 20px; }
+  .stat-amount, .team-highlight { font-size: 27px; }
+  .res-editorial-header { gap: 8px; margin-bottom: 28px; }
+  .res-cover-grid { gap: 38px; }
+  .card-cover-content { padding-top: 12px; }
+  .advisor-portrait-media { max-width: 100%; }
+  .advisor-field-img { max-height: 510px; object-position: center 24%; }
+  .advisor-portrait-card { gap: 32px; }
+  .levois-v7 .advisor-portrait-text h2 { font-size: 34px; }
+  .advisor-cta-row { align-items: stretch; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .door-card, .btn-primary, .btn-secondary { transition: none; }
 }

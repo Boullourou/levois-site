@@ -59,12 +59,14 @@ Mouaad ne se présente pas comme un agent qui « prospecte autrement ». Il acco
 
 Capacités existantes :
 
-- parcours vendeur adaptatif avec moteur de signaux déterministe ;
+- trois diagnostics déterministes de cinq questions pour vendre, acheter ou coordonner vente et achat ;
 - audit public d’annonce hybride croisant le lien avec trois réponses contextuelles, deux actions déterministes, résultat avant coordonnées et transmission humaine facultative même lorsque le portail bloque ;
 - ressources éducatives gratuites ;
 - lecture locale DVF par adresse ;
-- parcours acheteur « Situer ma recherche », avec restitution avant demande de contact ;
-- formulaire transmis seulement après restitution de valeur ;
+- après les cinq réponses, prénom et e-mail requis pour recevoir et consulter la synthèse complète ; cette étape est annoncée dès l’entrée du diagnostic ;
+- téléphone facultatif : le renseigner demande un échange direct avec Mouaad au sujet de ce projet ; aucune inscription à une newsletter ;
+- synthèse en trois blocs et deux ressources contextuelles, consultables dès confirmation de l’enregistrement même si l’envoi par e-mail échoue ;
+- reprise de session sans changement de projet imposé ; lectures historiques et import explicite de sauvegardes complètes accessibles sans nouvelle demande de coordonnées ;
 - liens profonds entre contenus sociaux et parcours du site.
 
 Capacités requises mais pas encore livrées :
@@ -92,18 +94,18 @@ Contraintes :
 ## Brand Commitments
 
 - Nom conservé pour le lancement : **LEVOIS**. Il est court, disponible sur `levois.fr`, mémorisable et possède un ancrage réel à Lèves sans enfermer l'activité dans une adresse. Un changement de nom ne sera envisagé qu'après un test comparatif explicite, pas comme une correction esthétique improvisée.
-- Le mot-symbole actuel en Archivo Black est une signature de lancement, pas encore un logo propriétaire définitif. Il peut rester tant que la marque construit sa reconnaissance ; une personnalisation typographique viendra seulement si elle apporte un signe réellement distinctif.
+- Le mot-symbole public actuel est **LEVOIS**, composé en Satoshi, en capitales espacées. La charte implémentée au 25 octobre 2026 repose sur l’ivoire et l’encre, des titres Satoshi et un corps Plus Jakarta Sans. `DESIGN.md` décrit cette référence ; les anciennes directions cobalt, forêt/orange et Archivo Black ne gouvernent plus le site public.
 - Porte-parole et visage : Mouaad Boullourou.
 - Ton : direct, calme, précis, pédagogique, sans pression commerciale.
-- La valeur doit être donnée avant toute demande de coordonnées.
-- Le site conduit de la curiosité vers la méthode : verdict visible, preuves, limites franches, première lecture, puis analyse humaine comme suite logique.
+- La collecte doit être annoncée et expliquée. Pour les trois nouveaux diagnostics, les cinq réponses précèdent la demande de prénom et d’e-mail, puis l’affichage de la synthèse complète après confirmation de l’enregistrement. Le téléphone reste facultatif ; les lectures déjà détenues restent accessibles.
+- Le site conduit de la curiosité vers la méthode : questions concrètes, synthèse structurée, sources et limites explicites, puis échange humain choisi. Les guides et l’observatoire local restent des entrées de compréhension libres.
 - Le diagnostic automatique doit annoncer clairement sa frontière. Mouaad compare ensuite les scénarios et leurs conséquences ; l’acheteur ou le propriétaire garde la décision.
-- Les parcours à choix unique avancent dès la sélection ; seuls les champs à saisir, les choix multiples et la transmission finale demandent une validation explicite.
+- Les cinq questions se parcourent avec une sélection puis une validation explicite « Continuer » ; les réponses restent vérifiables et corrigeables. La transmission finale des coordonnées exige une action explicite.
 - Acheteurs et vendeurs doivent être représentés avec la même dignité et la même importance.
 - L'intelligence artificielle est un avantage opérationnel assumé mais discret : elle accélère l'analyse et la production sans remplacer le jugement, la négociation ou la relation.
 - La mention du réseau SAFTI sert de preuve de cadre professionnel et de crédibilité, sans devoir gouverner l'identité LEVOIS ni occuper le premier plan.
 - L'identité doit être résolument moderne et cohérente entre le site, les vidéos et les supports de communication.
-- L'univers visuel de la première version du site n'est pas une source d'inspiration. Sa palette papier/argile, sa typographie éditoriale et son motif « deux lectures » ne doivent pas être conservés par inertie.
+- La référence visuelle est l’implémentation actuelle documentée dans `DESIGN.md` : surfaces ivoire continues, texte encre et actions contrastées. Les anciens logos, palettes, illustrations d’accueil et motifs ne doivent pas être réintroduits par inertie.
 - Éviter les codes convenus de l'agent immobilier : maison, toit, clé, poignée de main, beige-or, luxe générique et discours centré sur le mandat.
 
 ## Evidence on Hand
@@ -121,7 +123,7 @@ Contraintes :
 ## Product Principles
 
 1. **Deux côtés, une seule boucle.** Les besoins acheteurs renforcent la proposition vendeurs, et inversement.
-2. **La valeur avant le contact.** Chaque parcours livre une compréhension utile avant de demander une coordonnée.
+2. **Une collecte annoncée et proportionnée.** Les diagnostics expliquent dès l’entrée les cinq questions et la demande finale de prénom/e-mail. L’échange téléphonique reste facultatif, les ressources libres et les lectures déjà détenues restent accessibles.
 3. **Le signal avant la conclusion.** Montrer ce qui est observé, ce qui est supposé et ce qui reste à vérifier.
 4. **La technologie en infrastructure.** Automatiser ce qui peut l'être pour réserver l'humain aux décisions qui comptent.
 5. **La preuve locale plutôt que la posture.** La précision, les données explicables et la continuité du service construisent la crédibilité.

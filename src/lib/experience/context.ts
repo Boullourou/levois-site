@@ -17,6 +17,7 @@ export function createContext(project:Project,entry:Entry={door:'unknown',source
  return {schemaVersion:1,id:crypto.randomUUID(),revision:0,project,entry,initialEntry:{...entry},answers:{},createdAt:now,updatedAt:now,depth:'intermediate',history:[]};
 }
 export function parseReading(x:any):Reading|null {
+ if(x?.deliveryMode!==undefined&&x.deliveryMode!=='email-arbitrage-v1')return null;
  if(!x||typeof x!=='object'||typeof x.id!=='string'||typeof x.title!=='string'||!Number.isInteger(x.revision)||!Array.isArray(x.sections)||x.sections.length>15||!Array.isArray(x.limits)||!x.limits.every((s:unknown)=>typeof s==='string')||typeof x.nextDecision?.text!=='string'||typeof x.nextDecision?.why!=='string'||typeof x.methodVersion!=='string'||typeof x.generatedAt!=='string'||!Number.isFinite(Date.parse(x.generatedAt)))return null;
  if(JSON.stringify(x).length>80000||!x.sections.every((s:any)=>s&&typeof s.id==='string'&&typeof s.title==='string'&&Array.isArray(s.items)&&s.items.length<=40&&s.items.every((i:any)=>i&&typeof i.text==='string'&&['declared','solid','conditional','unknown','data','hypothesis','verified'].includes(i.kind)&&(!i.sourceAnswerIds||Array.isArray(i.sourceAnswerIds)&&i.sourceAnswerIds.every((id:unknown)=>typeof id==='string'))&&(!i.condition||typeof i.condition==='string'))))return null;
  if(x.options&&(!Array.isArray(x.options)||x.options.length>6||!x.options.every((o:any)=>o&&['id','title','consequence','condition','limit'].every(k=>typeof o[k]==='string'))))return null;

@@ -1,138 +1,136 @@
 ---
-name: LEVOIS — Une vie derrière chaque adresse
-description: Un quartier à explorer, des faits à comprendre, une relation à choisir.
+name: LEVOIS — Ivoire et encre
+description: Une lecture immobilière claire, des choix explicites et une présence humaine discrète.
 colors:
-  accent: "#2545df"
-  accent-hover: "#1732b5"
-  human: "#f47b20"
-  ink: "#111a30"
-  paper: "#f5f6fa"
-  muted: "#596378"
-  line: "#dce0e9"
-  surface: "#ffffff"
-  selected: "#edf1ff"
-  dark: "#182447"
-  dark-field: "#223155"
-  on-dark: "#c6cfe5"
-  error: "#9c352c"
-  error-bg: "#ffefed"
-  success: "#286547"
-  success-bg: "#eaf4ee"
+  ink: "#141414"
+  ink-hover: "#343330"
+  paper: "#F8F7F4"
+  surface: "#FDFCFA"
+  white: "#FFFFFF"
+  muted: "#5b5954"
+  line: "#dcd9d2"
+  selected: "#eeece7"
+  accent: "#9a4313"
+  accent-hover: "#76340f"
 typography:
-  display: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(56px, 5.4vw, 82px)", fontWeight: 400, lineHeight: 1.04, letterSpacing: "-0.035em"}
-  headline: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(38px, 4.25vw, 62px)", fontWeight: 400, lineHeight: 1.12, letterSpacing: "-0.035em"}
-  page: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(36px, 4.2vw, 60px)", fontWeight: 400, lineHeight: 1.1, letterSpacing: "-0.035em"}
-  question: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(30px, 3.25vw, 46px)", fontWeight: 400, lineHeight: 1.12, letterSpacing: "-0.03em"}
-  body: {fontFamily: "Satoshi, sans-serif", fontSize: "16px", fontWeight: 400, lineHeight: 1.6}
-  action: {fontFamily: "Satoshi, sans-serif", fontSize: "15px", fontWeight: 500, lineHeight: 1.4}
+  display: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(36px, 4.6vw, 66px)", fontWeight: 500, lineHeight: 1.1, letterSpacing: "-0.035em"}
+  headline: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(26px, 3.2vw, 40px)", fontWeight: 500, lineHeight: 1.25, letterSpacing: "-0.025em"}
+  question: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(28px, 2.7vw, 38px)", fontWeight: 500, lineHeight: 1.2, letterSpacing: "-0.025em"}
+  reading: {fontFamily: "Satoshi, sans-serif", fontSize: "clamp(32px, 3.7vw, 48px)", fontWeight: 500, lineHeight: 1.17, letterSpacing: "-0.025em"}
+  body: {fontFamily: "Plus Jakarta Sans, Satoshi, sans-serif", fontSize: "17px", fontWeight: 400, lineHeight: 1.65}
+  action: {fontFamily: "Plus Jakarta Sans, Satoshi, sans-serif", fontSize: "14px", fontWeight: 600, lineHeight: 1.6}
+  wordmark: {fontFamily: "Satoshi, sans-serif", fontSize: "26px", fontWeight: 700, lineHeight: 1, letterSpacing: "0.11em"}
 rounded:
-  field: "8px"
-  action: "9px"
-  choice: "12px"
-  dock: "15px"
-  sheet: "16px"
+  nav: "8px"
+  field: "10px"
+  action-home: "12px"
+  surface: "14px"
+  pill: "99px"
 spacing:
-  edge: "clamp(24px, 4vw, 72px)"
-  mobile-edge: "22px"
+  edge: "20px"
+  mobile-edge: "16px"
+  section: "76px"
+  mobile-section: "48px"
 components:
-  button-primary: {backgroundColor: "{colors.accent}", textColor: "{colors.surface}", typography: "{typography.action}", rounded: "{rounded.action}", padding: "16px 24px"}
-  button-primary-hover: {backgroundColor: "{colors.accent-hover}", textColor: "{colors.surface}"}
-  button-secondary: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.action}", padding: "14px 24px"}
-  choice: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.choice}", padding: "20px 42px 20px 20px"}
-  choice-selected: {backgroundColor: "{colors.selected}", textColor: "{colors.ink}", rounded: "{rounded.choice}"}
-  address-dock: {backgroundColor: "rgba(255,255,255,0.97)", rounded: "{rounded.dock}", padding: "18px 20px 12px"}
+  button-primary: {backgroundColor: "{colors.ink}", textColor: "{colors.paper}", typography: "{typography.action}", rounded: "{rounded.action-home}", padding: "15px 22px"}
+  button-primary-hover: {backgroundColor: "{colors.ink-hover}", textColor: "{colors.paper}"}
+  button-secondary: {backgroundColor: "transparent", textColor: "{colors.ink}", typography: "{typography.action}", rounded: "{rounded.action-home}", padding: "15px 22px"}
+  button-secondary-hover: {backgroundColor: "{colors.selected}", textColor: "{colors.ink}"}
+  capture: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.surface}", padding: "28px"}
+  synthesis-card: {backgroundColor: "{colors.surface}", textColor: "{colors.ink}", rounded: "{rounded.surface}", padding: "28px 30px"}
+  choice: {backgroundColor: "{colors.white}", textColor: "{colors.ink}", rounded: "{rounded.surface}"}
+  choice-selected: {backgroundColor: "{colors.selected}", textColor: "{colors.ink}", rounded: "{rounded.surface}"}
 ---
 
 # Design System: LEVOIS
 
 ## Overview
 
-**Creative North Star: "Une vie derrière chaque adresse."**
+**Creative North Star: "Une lecture claire, sur un même papier."**
 
-Identité finale validée par l’utilisateur le **6 septembre 2026**, applicable à **tout le site public**. L’exploration artistique est close. Le quartier miniature, Satoshi et le cobalt relient une adresse, les faits du marché, le projet personnel et l’accompagnement de Mouaad.
+Référence extraite de l’implémentation du **25 octobre 2026** : un fond ivoire continu, une typographie en encre, des actions nettes et des images reliées au sujet. L’accueil, les diagnostics et la synthèse privilégient la lecture et les choix explicites. Les grandes surfaces sombres, le cobalt dominant et le quartier miniature comme composition d’accueil appartiennent aux directions précédentes.
 
-L’interface est lumineuse, calme et concrète. La composition, le rythme et les images portent l’émotion ; les outils et les textes longs gardent la même identité avec moins de mise en scène. La première compréhension précède les coordonnées facultatives.
+Ce document décrit le monde actuellement implémenté. Il remplace l’autorité visuelle de septembre ; il ne constitue ni une nouvelle exploration artistique ni une certification d’accessibilité ou de performance. Les ressources historiques peuvent conserver des règles locales de compatibilité.
 
 **Key Characteristics:**
 
-- Un quartier illustré reconnaissable et une action réelle immédiatement accessible.
-- Une seule famille de lecture ; des titres amples et réguliers.
-- Le cobalt pour agir ou sélectionner, l’encre pour comprendre.
-- Des surfaces sobres, des séparations fines et une présence humaine continue.
+- Une même surface ivoire de l’en-tête au pied de page.
+- Des titres Satoshi en casse naturelle et un mot-symbole LEVOIS en capitales espacées.
+- Des actions en encre localisées, des bordures fines et des surfaces secondaires presque blanches.
+- Des images documentées, une présence identifiable de Mouaad et une collecte de coordonnées annoncée.
 
-**Autorité opérationnelle.** [tokens.css](src/styles/tokens.css) porte les valeurs normatives ; le frontmatter ci-dessus en est le relevé avec les rôles typographiques du code. [Layout.astro](src/layouts/Layout.astro) est l’unique layout public et charge, dans cet ordre, [public-base.css](src/styles/public-base.css), [levois.css](src/styles/levois.css), puis [editorial.css](src/styles/editorial.css). [tailwind.public.config.mjs](tailwind.public.config.mjs) est autonome. Le [sidecar](.impeccable/design.json) complète ce document sans ajouter de palette.
+**Sources opérationnelles.** `src/layouts/Layout.astro` charge `public-base.css`, `levois.css`, `editorial.css`, `plan-vivant.css`, puis `v7.css` et `v7-production.css`. Ces deux derniers fichiers portent les tokens et adaptations actifs du site public. `home-v7.css` précise l’accueil ; `diagnostics.css` précise les questionnaires, la capture et la restitution. Les anciennes valeurs de `tokens.css` et les classes conservées ne constituent pas à elles seules la charte actuelle : tenir compte de la cascade complète. Les styles du cockpit restent distincts.
 
-**Frontière.** Les 24 routes publiques sont contrôlées par [verify-public.mjs](scripts/verify-public.mjs). Les noms historiques de classes ou d’alias (`rp-*`, `mr-*`, `vr-*`, `argile`, `papier`, `--rp-yellow`) assurent la compatibilité du code ; ils ne désignent pas une autre identité. `global.css` et `tailwind.config.mjs` appartiennent exclusivement au cockpit privé via `CockpitLayout.astro`. Les [anciennes autorités](docs/archive/visual-authorities/README.md) sont archivées et ne contraignent plus le public.
+Les captures et relevés de la passe locale sont conservés dans `artifacts/conversion/design/`. Ils documentent des écrans précis ; ils ne prouvent pas une conformité générale. Le sidecar `.impeccable/design.json` contient des extraits représentatifs des composants et les extensions du format.
 
 ## Colors
 
-**Primary.** Le cobalt `accent` marque actions principales, sélections et mesures dominantes. `accent-hover` confirme le survol ; `selected` accompagne une sélection sans masquer son libellé ni son indicateur.
+**Primary.** `ink` porte la lecture, le mot-symbole et les actions principales. `ink-hover` confirme leur survol. Les boutons sombres restent des commandes identifiables, pas des sections pleine largeur utilisées pour séparer la page.
 
-**Neutral.** `paper` est le fond froid ; `surface` détache les commandes ; `ink`, `muted` et `line` hiérarchisent lecture, explications et séparations. `dark`, `dark-field` et `on-dark` servent les séquences de méthode et de transmission, avec leurs contrastes propres.
+**Neutral.** `paper` est le fond général ; `surface` et `white` différencient légèrement cartes et contrôles. `muted` accompagne les explications sans concurrencer les titres ; `line` sépare ; `selected` indique une sélection avec le contrôle natif et son libellé.
 
-**États métier.** Erreur et succès utilisent les couples sémantiques du frontmatter. Le parcours acheteur conserve aussi des signaux locaux vert discret et ocre, accompagnés d’un texte explicatif. Ces états ne deviennent jamais des accents de marque.
+**Accent fonctionnel.** L’ambre `accent`, exposé aussi sous les noms historiques `--v7-rust` et `--v7-orange`, sert notamment au focus et à certains repères locaux. Il ne remplace pas l’encre des CTA principaux. Les couleurs d’erreur ou de succès restent des états accompagnés d’un texte, pas des variantes de marque.
 
-**Accents maîtrisés.** Le cobalt reste la couleur des actions et des données principales. L’orange humain `human` (#f47b20) est le seul accent secondaire : point du i, détail du portrait, numéros sur fond nuit. Aucune grande surface ni bouton orange, aucun dégradé bleu-orange, aucun état communiqué par l’orange seul. Les bleus et neutres dominent ; l’orange reste nettement sous 10 % de la composition. Contraste mesuré : 5,57:1 sur `dark`, utilisable pour les petits numéros ; 2,53:1 sur `paper`, réservé aux éléments décoratifs et au point du logo.
+**The Continuous Paper Rule.** L’accueil, les diagnostics, leurs panneaux d’aide et le pied de page partagent une lecture claire sur fond clair ; ne pas réintroduire de grandes bandes cobalt, forêt ou nuit pour fabriquer du contraste.
 
 ## Typography
 
-**Display Font / Body Font:** Satoshi, repli `sans-serif`. Les trois WOFF2 auto-hébergés (`satoshi-400`, `satoshi-500`, `satoshi-700`) couvrent lecture, actions et emphases. Les grands titres sont réguliers ; les données gardent unités, période et effectif à proximité.
+**Titres et marque :** Satoshi, auto-hébergée. Les titres utilisent la graisse 500, une approche légèrement serrée et une casse naturelle. Le mot-symbole est un lien textuel **LEVOIS**, en graisse 700 ; il n’utilise ni Archivo Black ni l’ancien SVG en minuscules.
 
-**Signature:** mot-symbole vectoriel « levois », encre et point orange, avec liaison v–o et contreforme fermée du o. Les cinq SVG normatifs sont dans [public/brand](public/brand/README.md) et [favicon.svg](public/favicon.svg). Le dessin est issu de contours DM Serif Display adaptés ; aucune police supplémentaire n’est chargée. Archivo Black et le signe de porte historiques ne doivent plus servir de logo public.
+**Texte et commandes :** la pile active commence par Plus Jakarta Sans, puis Satoshi et les polices système. Les deux familles sont servies en WOFF2 avec `font-display: swap` dans `v7-fonts.css`. Ne pas documenter une police unique alors que les deux rôles restent effectivement distincts dans le code.
 
-La hiérarchie du frontmatter distingue accueil, sections, pages, questions, corps et actions. Les articles utilisent des sous-titres en 500 et une lecture plus aérée ; les champs d’adresse mobiles restent à 16 px. Les légendes du quartier sont à 11 px minimum ; la réassurance, la légende humaine et les liens de footer sont à 12 px minimum.
+La taille d’accueil est bornée plutôt qu’étendue à tout l’écran. À 640 px et moins, son titre utilise `clamp(33px, 9.4vw, 48px)` et une interligne de 1,13. Les questions, la capture et la synthèse ont leurs propres échelles, indiquées dans le frontmatter. Les champs de capture gardent un texte de 16 px ; les aides restent visuellement secondaires mais lisibles. Les rares capitales servent les petites indications de contexte, pas les longs titres.
 
 ## Layout
 
-Les largeurs de référence sont `--levois-wide` (1280 px) et `--levois-reading` (70 ch). Les familles existantes conservent leurs ajustements : panneau d’entrée de l’accueil (940 px, puis 680 px sous 900 px), article éditorial (840 px), parcours et données en colonnes. Le rythme provient des marges, de l’alternance image/texte et des traits, sans enfermer chaque paragraphe.
+Le conteneur partagé est limité à 1200 px avec 20 px de marge minimale par côté ; à 640 px et moins, la marge passe à 16 px. Sur l’accueil, les séquences éditoriales ont 76 px d’espacement vertical, puis 48 px sur mobile. Les trois entrées de diagnostic sont sur une ligne au desktop et deviennent une colonne sur téléphone. Les colonnes de contenu se replient sans imposer une largeur minimale aux textes.
 
-Le header passe de 88 à 72 px sous 900 px ; les accès métier deviennent un menu avec état ouvert, Échap et retour du focus. Le logo garde 129 × 40 px sur desktop et 110 × 34 px dans l’en-tête mobile, sans augmenter la hauteur du header. Le nom et le portrait de Mouaad persistent. La fiche acheteur latérale devient un récapitulatif compact ; les colonnes de lecture, formulaires et cartes s’empilent selon leur contenu.
+L’en-tête fixe réserve sa hauteur réelle dans le document via `--site-header-h`. Les valeurs CSS initiales sont 81 px, puis 73 px à 1040 px et moins. `Header.astro` remesure cette hauteur avec `ResizeObserver` et après le chargement des polices. Le défilement tient compte de cette mesure et ajoute une respiration de 16 px aux cibles ; ne pas ajouter une seconde compensation fixe sur chaque page.
 
-Seuils effectivement utilisés : 1100, 900, 700, 600 et 359 px, complétés par les utilitaires responsives. Les marges générales passent à 28 px puis 22 px ; les panneaux ont leurs propres marges. À moins de 600 px, le dock empile saisie et action. Le titre d’accueil passe à 65, 43 puis 36 px selon les seuils 900, 600 et 359 px.
+Les questionnaires disposent d’un panneau de progression latéral à partir de 1024 px. Il disparaît en dessous et dans la restitution. La synthèse est limitée à 940 px ; la capture initiale à 800 px. Prénom et e-mail sont côte à côte au desktop et empilés à 760 px et moins.
 
-Toute évolution conserve une lecture sans débordement aux formats 1440 × 900, 768 px, 390 × 844, 320 px et au zoom réel de 200 %. Ces formats sont des contrôles de livraison, pas de nouveaux breakpoints. Les résultats de vérification restent dans les artefacts et le rapport de mission.
+Sans JavaScript, l’en-tête revient dans le flux et les liens de navigation restent visibles. Les questionnaires interactifs annoncent leur besoin de JavaScript et proposent méthode, guides et contact ; ils ne prétendent pas exécuter le diagnostic sans script.
 
 ## Elevation & Depth
 
-La profondeur vient d’abord du quartier illustré. Les contenus restent plats ; une ombre situe une commande ou une couche superposée. `--levois-shadow` porte le dock et la fenêtre de confidentialité ; la liste d’adresses dispose d’une ombre locale. Les cartes éditoriales sont des entrées séparées par un trait, sans ombre ni cadre arrondi.
+Le système courant repose sur les valeurs claires, les bordures et les espaces. Les cartes d’accueil, le formulaire de capture, la synthèse et le panneau de progression n’utilisent pas d’ombre décorative. Les photographies donnent la profondeur utile au contenu. Les anciennes ombres de composants cartographiques ou historiques restent des règles locales, pas un modèle à reproduire sur les nouveaux écrans.
 
-Le mouvement accompagne un état ou une continuité : transition rapide commune (`--levois-fast`, 180 ms), survol d’action (200 ms), question (300 ms), navigation native (220 ms ; éléments partagés 350 ms, `--levois-ease`). Sous `prefers-reduced-motion: reduce`, animations, transitions et défilement doux sont désactivés ; le contenu reste complet.
+Les transitions servent la confirmation d’un état : environ 150 à 200 ms pour les fonds, bordures ou liens ; le menu possède une transition propre. Elles ne retardent pas l’accès au contenu. `prefers-reduced-motion` réduit animations et transitions et conserve les mêmes informations et commandes.
 
 ## Shapes
 
-Les rayons du frontmatter distinguent champs, actions, choix, dock et fenêtres. Les portraits et le territoire schématique peuvent former une arche ; cette silhouette ne s’applique pas à tous les conteneurs. Les ressources et textes légaux privilégient alignements, espace et séparations horizontales.
+Les actions rectangulaires de l’accueil ont des angles adoucis (12 px), les cartes et panneaux (14 px), les liens de navigation (8 px). Les champs de capture ont une règle spécifique de 10 px. Les commandes partagées des pages intérieures et le bouton d’appel conservent une forme capsule (99 px). Ces différences correspondent aux composants existants : ne pas uniformiser leurs formes par une nouvelle règle globale.
 
-**Iconographie.** Réutiliser [WorldIcon.astro](src/components/WorldIcon.astro) : SVG 24 × 24, trait 1,5, `currentColor`, extrémités et jonctions arrondies. Les pictogrammes accompagnent un texte ou un nom accessible. Maison, clé et repère servent des actions précises, jamais un nouveau logo immobilier décoratif.
-
-**Images.** Le quartier est une illustration éditoriale, ni un bien réel, ni une carte factuelle, ni une preuve de transaction. Les cartes de données restent identifiées comme schématiques. Utiliser les portraits réels et les images existantes avec recadrage responsive et qualification adaptée ; aucun chiffre, bouton ou texte fonctionnel ne doit être rasterisé dans une image.
+Les avatars restent circulaires. Les photographies éditoriales utilisent principalement des angles discrets (12 à 14 px) ; leurs proportions suivent leur contenu. Les traits fins et les repères de sélection suffisent à séparer les blocs.
 
 ## Components
 
-- **Actions.** Primaire cobalt, secondaire blanche bordée, action texte cobalt et variante claire sur fond nuit. Le primaire courant mesure au moins 56 px de haut ; le secondaire au moins 48 px. Survol plus sombre, léger déplacement du primaire et de sa flèche ; focus visible cobalt. Le bouton acheteur désactivé devient gris et reste inactif.
-- **Navigation.** Lien courant et survol soulignés, cibles du header d’au moins 44 px, lien d’évitement, menus nommés et état annoncé. Les accès légaux, partenaires et confidentialité restent au footer.
-- **Champs et choix.** Libellé visible, aide associée, fond blanc et bord fin ; focus cobalt, erreur textuelle et `aria-invalid`. Choix inactif, survol et sélection se distinguent par bord, fond et indicateur. Un choix unique avance ; saisie, choix multiples et envoi demandent validation explicite. Le retour permet de corriger.
-- **Entrée de l’accueil.** « Qu’est-ce qui vous amène ? » précède trois portes visibles : « Je cherche un logement », « Je prépare ou je vends un bien », « Je consulte les ventes près de chez moi ». Achat et vente ouvrent leurs parcours ; seul le troisième choix révèle l’adresse, avec retour au projet. Sans JavaScript, les trois portes sont des liens utilisables. La révélation dure 220 ms avec mouvement autorisé et reste immédiate en mouvement réduit. Styles limités à `index.astro`.
-- **Adresse.** Après le choix des ventes locales, le dock et sa combobox rendent visibles suggestions, chargement, absence de correspondance et erreur. La personne choisit une adresse proposée ; le résultat ne retient pas silencieusement la première correspondance. L’extrait `address-dock` décrit cet état, pas l’entrée initiale.
-- **Données.** Filtres segmentés avec état sélectionné ; chiffres avec unité, périmètre, période, source, effectif et limites. État vide explicite. L’adresse confirmée et la référence communale restent distinctes ; les 6 318 mutations DVF du jeu réel ne sont pas une estimation individuelle.
-- **Conteneurs.** Choix et saisies peuvent être encadrés ; synthèses, ressources et résultats utilisent surtout l’espace et les traits. Les réserves disposent d’un encart à bord gauche cobalt. Une fenêtre narrative révèle une explication sans inventer une preuve.
-- **Formulaires.** Prévoir attente, validation, erreur, succès et indisponibilité avec messages compréhensibles et annonces accessibles. L’audit d’annonce conserve son parcours de secours et ses questions lorsque la lecture du lien échoue ; son résultat précède la transmission humaine facultative.
-- **Confidentialité.** Mesure d’audience désactivée par défaut ; la fenêtre optionnelle s’ouvre depuis « Mes choix de confidentialité » au footer. Refus et acceptation ont une importance visuelle comparable ; fermer ne vaut pas accepter.
+**Navigation.** Mot-symbole à gauche, liens de parcours et ressources, appel identifiable. Le lien courant et le survol reçoivent une surface neutre. En dessous de 1041 px, un bouton de 44 × 44 px ouvre le menu, expose `aria-expanded` et son libellé d’état ; Échap le ferme et rend le focus au bouton. Le menu reste borné par la hauteur disponible.
 
-**Applications de référence.** Page émotionnelle : `/`, quartier et choix de la situation ; adresse seulement après le choix des ventes locales ; ensuite un fait local expliqué, la méthode, Mouaad puis la prochaine action. La section « Un prix ne raconte jamais toute l’histoire » donne la médiane réelle et son contexte, avec un seul lien vers les ventes locales ; elle ne répète plus les trois portes. Formulaire : `/ma-recherche`, question lisible et fiche révisable, restitution avant coordonnées. Données : `/votre-rue`, adresse confirmée puis atlas communal, mesures et limites. Les ressources, pages légales, accompagnement et partenaires prolongent cette identité avec une composition plus sobre.
+**Actions.** Fond encre pour l’action principale, fond transparent ou clair et contour encre pour l’action secondaire. Les boutons d’accueil ont une hauteur minimale de 52 px ; les portes de diagnostic 64 px, puis 56 px sur téléphone. Les longs libellés peuvent revenir à la ligne. Le focus visible utilise un contour ambre de 3 px, sans dépendre du survol.
+
+**Choix de diagnostic.** Le libellé est une cible entière avec radio ou case native, bordure légère et sélection neutre renforcée par la bordure encre. La progression et la commande de validation restent distinctes. Les états ne reposent pas sur la couleur seule.
+
+**Capture.** Après les cinq réponses, les nouveaux diagnostics demandent prénom et e-mail obligatoires ; cette étape est annoncée dès l’entrée. Le téléphone est facultatif et son aide explique la demande d’échange direct. Les libellés restent visibles, les erreurs sont textuelles et l’état d’envoi possède une annonce accessible. La synthèse s’affiche après confirmation de l’enregistrement, même si le prestataire d’e-mail échoue ; l’interface ne transforme pas cette confirmation en promesse de réception. Les lectures historiques et les imports complets restent accessibles.
+
+**Restitution et ressources.** Trois blocs courts — constat, angle mort, prochaine étape — puis deux ressources adaptées aux réponses. Les outils de copie, de correction et de reprise restent identifiables. Les liens éditoriaux utilisent le texte, le soulignement ou une flèche pour signaler leur rôle, sans cadre décoratif systématique.
+
+**Images.** Le portrait identifie Mouaad ; le quartier et les scènes de vie accompagnent une explication située. Une illustration ou une représentation de données ne doit pas passer pour une preuve individuelle de prix, de vente ou de résultat commercial.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** reprendre les tokens publics, Satoshi et les composants existants pour toute route publique.
-- **Do** donner une première compréhension avant les coordonnées et conserver une sortie volontaire.
-- **Do** joindre aux chiffres leurs sources et limites, et aux états une explication indépendante de la couleur.
-- **Do** préserver clavier, focus visible, lecture mobile et fonctionnement sans mouvement.
+- **Do** partir des styles V7 actifs et de leur cascade pour réutiliser un composant.
+- **Do** conserver les surfaces claires continues et réserver l’encre pleine aux commandes et petits repères.
+- **Do** distinguer titres Satoshi et corps Plus Jakarta Sans tels qu’ils sont implémentés.
+- **Do** annoncer la capture, rendre les états explicites et préserver les anciennes lectures.
+- **Do** maintenir les libellés, le focus visible, le repli mobile et la lecture sans mouvement.
 
 ### Don't:
 
-- **Don't** rouvrir une direction, une palette ou une composition générale sans défaut concret d’usage, d’accessibilité ou de faisabilité.
-- **Don't** importer le thème privé ou appliquer une ancienne autorité visuelle au public.
-- **Don't** accumuler cartes, cadres arrondis, ombres, effets décoratifs ou familles typographiques.
-- **Don't** présenter une illustration, une maquette ou des données DVF comme une preuve commerciale individuelle.
-- **Don't** promettre une validation d’accessibilité ou une performance mesurée à partir de cette documentation.
+- **Don't** réintroduire l’ancienne autorité cobalt de septembre, Archivo Black ou le logo SVG historique dans l’en-tête actuel.
+- **Don't** accumuler grands aplats sombres, ombres, ornements ou animations pour compenser une hiérarchie faible.
+- **Don't** remplacer la mesure du header par des espacements arbitraires propres à chaque route.
+- **Don't** présenter une acceptation d’envoi comme une réception garantie ni demander le téléphone comme condition de la synthèse.
+- **Don't** annoncer une certification d’accessibilité, un niveau de concours de design ou une performance mesurée à partir de cette documentation.

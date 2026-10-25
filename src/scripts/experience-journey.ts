@@ -51,7 +51,7 @@ if(root){
   const missing = !legacyEdit ? diagnosticProgress(ctx)?.missingQuestionIds[0] : undefined;
   if(missing){index=Math.max(0,questions().findIndex(q=>q.id===missing));editing=false;render(true);return;}
   ctx.reading=journey.buildReading(ctx);
-  event('result_viewed');
+  event(legacyEdit?'result_viewed':'diagnostic_completed');
   if(persist()){
    location.assign('/lecture/');
    return;
@@ -59,9 +59,11 @@ if(root){
   const reading=ctx.reading;
   if(!legacyEdit){
    side.hidden=true;
+   root!.querySelector<HTMLElement>('.lv-diagnostic-intro')!.hidden=true;
    panel.setAttribute('data-reading-root','');
    mountDiagnosticReading(panel,ctx,true,id=>{
-    panel.classList.remove('lv-simple-reading');panel.removeAttribute('data-reading-root');side.hidden=false;
+    panel.classList.remove('lv-simple-reading','lv-capture-gate');panel.removeAttribute('data-reading-root');side.hidden=false;
+    root!.querySelector<HTMLElement>('.lv-diagnostic-intro')!.hidden=false;
     index=Math.max(0,questions().findIndex(q=>q.id===id));editing=true;render(true);
    });
    panel.scrollIntoView();
@@ -81,7 +83,7 @@ if(root){
   const q=qs[index];
   const answer=ctx.answers[q.id]?.value;
 
-  side.innerHTML='<h2>Un point clair.<br/>Un prochain pas.</h2><ol class="lv-sequences">'+journey.sequences.map((s,i)=>'<li'+(q.sequence===i+1?' aria-current="step"':'')+'><span>'+String(i+1).padStart(2,'0')+'</span>'+e(s)+'</li>').join('')+'</ol><p class="lv-note">Votre synthèse sera disponible dès la dernière réponse, sans laisser vos coordonnées.</p>';
+  side.innerHTML='<h2>Votre analyse, étape par étape.</h2><ol class="lv-sequences">'+journey.sequences.map((s,i)=>'<li'+(q.sequence===i+1?' aria-current="step"':'')+'>'+e(s)+'</li>').join('')+'</ol><p class="lv-note">Après les cinq questions, indiquez votre prénom et votre e-mail pour recevoir votre analyse d’arbitrage.</p>';
 
   let controls='';
   if(q.type==='choice'||q.type==='multiple'){
@@ -91,11 +93,11 @@ if(root){
   }
 
   const isLast=index===qs.length-1;
-  const buttonLabel=editing?'Actualiser ma synthèse':isLast?'Voir ma synthèse':'Continuer';
+  const buttonLabel=editing?'Actualiser mon analyse':isLast?'Préparer mon analyse':'Continuer';
 
   panel.innerHTML='<div class="lv-progress-label"><span>'+e(q.sequenceTitle||journey.sequences[q.sequence-1])+'</span><span>'+q.sequence+' sur '+journey.sequences.length+'</span></div>'+
    '<div class="lv-progress" role="progressbar" aria-label="Séquence du projet" aria-valuemin="0" aria-valuemax="'+journey.sequences.length+'" aria-valuenow="'+q.sequence+'"><i style="width:'+(q.sequence/journey.sequences.length*100)+'%"></i></div>'+
-   '<h1 tabindex="-1">'+e(q.title)+'</h1>'+(q.help?'<p class="lv-intro">'+e(q.help)+'</p>':'')+
+   '<h2 tabindex="-1" data-question-title>'+e(q.title)+'</h2>'+(q.help?'<p class="lv-intro">'+e(q.help)+'</p>':'')+
    '<form class="lv-question-form" novalidate>'+controls+
    '<p class="lv-error" data-error role="alert" hidden></p>'+
    '<div class="lv-question-actions">'+
@@ -149,7 +151,7 @@ if(root){
    render(true);
   });
 
-  if(focus){panel.querySelector<HTMLElement>('h1')?.focus({preventScroll:true});panel.scrollIntoView({block:'start',behavior:'instant'});}
+  if(focus){panel.querySelector<HTMLElement>('[data-question-title]')?.focus({preventScroll:true});panel.scrollIntoView({block:'start',behavior:'instant'});}
  }
 
  if(legacy.kind==='result'){location.replace('/situer-ma-vente/resultat'+location.search);}

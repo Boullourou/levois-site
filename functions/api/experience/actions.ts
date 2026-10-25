@@ -3,7 +3,7 @@ import {
   database, email, failure, invalid, isoDate, json, line, object,
   rateLimit, readJson, sendMail, sha256, string, uuid, validateContext,
 } from '../../_lib/experience/common';
-import { captureSynthesis } from '../../_lib/experience/email-leads';
+import { ARBITRAGE_CONSENT_VERSION, captureSynthesis } from '../../_lib/experience/email-leads';
 
 export interface ActionInput {
   requestId: string;
@@ -29,22 +29,28 @@ function validate(body: Record<string, unknown>): ActionInput {
   if (!['email-copy', 'synthesis-email', 'review', 'exchange'].includes(String(body.action))) invalid('Choisissez la suite souhaitée.');
   const action = body.action as ActionInput['action'];
   const purpose = action === 'email-copy' ? 'copy' : action === 'synthesis-email' ? 'synthesis' : action;
-  const textVersion = action === 'synthesis-email' ? '2026-10-25' : '2026-09-10';
+  const arbitrage = action === 'synthesis-email' && object(body.consent) && body.consent.textVersion === ARBITRAGE_CONSENT_VERSION;
+  const textVersion = action === 'synthesis-email' ? (arbitrage ? ARBITRAGE_CONSENT_VERSION : '2026-10-25') : '2026-09-10';
   if (body.approved !== true || !object(body.consent) || body.consent.purpose !== purpose || body.consent.textVersion !== textVersion) {
     invalid('Confirmez cette version et la suite précise que vous avez choisie.');
   }
   const acceptedAt = isoDate(body.consent.acceptedAt);
   if (Date.parse(acceptedAt) > Date.now() + 300_000) invalid();
+  if (arbitrage && [body.firstName, body.email, body.phone].some(value => typeof value === 'string' && /[\u0000-\u001f\u007f<>]/.test(value))) {
+    invalid('Indiquez vos coordonnées sans balise ni retour à la ligne.');
+  }
   const channel = body.channel ?? 'email';
   if (!['email', 'phone'].includes(String(channel)) || (action !== 'exchange' && channel !== 'email')) invalid('La relecture est écrite. Un appel se choisit séparément.');
   const emailAddress = channel === 'email' ? email(body.email) : '';
-  const phone = channel === 'phone' ? line(body.phone, 30, true) : '';
+  const phone = channel === 'phone' ? line(body.phone, 30, true) : arbitrage ? line(body.phone, 30) : '';
   if (phone && (!/^\+?[\d () .-]{8,30}$/.test(phone) || phone.replace(/\D/g, '').length < 8 || phone.replace(/\D/g, '').length > 15)) invalid('Indiquez un numéro de téléphone complet.');
-  if ((channel === 'email' && body.phone) || (channel === 'phone' && body.email)) invalid('Indiquez seulement la coordonnée utile au canal choisi.');
-  if (['email-copy', 'synthesis-email'].includes(action) && (body.firstName || body.question)) invalid('Seule votre adresse e-mail est nécessaire pour recevoir une synthèse.');
+  if ((channel === 'email' && body.phone && !arbitrage) || (channel === 'phone' && body.email)) invalid('Indiquez seulement la coordonnée utile au canal choisi.');
+  if (['email-copy', 'synthesis-email'].includes(action) && ((!arbitrage && body.firstName) || body.question)) invalid('Indiquez seulement les coordonnées demandées pour recevoir votre synthèse.');
+  const firstName = arbitrage ? line(body.firstName, 80, true).normalize('NFC') : line(body.firstName, 80);
+  if (arbitrage && !/^[\p{L}][\p{L}\p{M} '\u2019\u02bc-]{0,79}$/u.test(firstName)) invalid('Indiquez votre prénom avec des lettres, espaces, apostrophes ou tirets.');
   return {
     requestId: uuid(body.requestId), action, channel: channel as ActionInput['channel'],
-    email: emailAddress, phone, firstName: line(body.firstName, 80), question: string(body.question, 2500),
+    email: emailAddress, phone, firstName, question: string(body.question, 2500),
     ...(action === 'email-copy' ? {} : { context: validateContext(body.context) }), synthesis: string(body.synthesis, 30_000, true),
     consent: { purpose, textVersion, acceptedAt },
   };

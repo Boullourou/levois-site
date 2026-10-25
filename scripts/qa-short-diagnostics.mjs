@@ -7,26 +7,33 @@ import AxeBuilder from '@axe-core/playwright';
 const base = process.env.LEVOIS_TEST_URL || process.env.LEVOIS_QA_BASE || 'http://127.0.0.1:4345';
 if (!['127.0.0.1', 'localhost'].includes(new URL(base).hostname)) throw new Error('Cette recette exige un serveur local.');
 const output = path.resolve(process.env.LEVOIS_QA_OUTPUT || 'artifacts/final/diagnostics');
+const scenarioFilter = process.env.LEVOIS_QA_FILTER ? new RegExp(process.env.LEVOIS_QA_FILTER) : null;
 await mkdir(output, { recursive: true });
 const key = 'levois:experience:v1';
 const method = 'diagnostic-2026-10-25';
-const widths = [1440, 390, 320];
+const widths = [1440, 768, 375];
+const deliveryKey = 'levois:diagnostic-delivery:v1';
+const contact = { firstName: 'Camille', email: 'camille.qa@example.invalid', phone: '' };
 const projects = {
   buyer: { route: '/ma-recherche/', values: ['searching', 'no_matches', 'space', 'not_started', 'months'], edit: 'diag_buyer_blocker', correction: 'tradeoff' },
   seller: { route: '/situer-ma-vente/', values: ['move', 'visits', 'no_offer', 'months', 'visits'], edit: 'diag_seller_blocker', correction: 'no_contacts' },
   transition: { route: '/vendre-et-acheter/', values: ['move', 'found', 'gap', 'no_temporary', 'talking'], edit: 'diag_transition_fear', correction: 'bridge' },
 };
-const report = { startedAt: new Date().toISOString(), base, method, scenarios: [], accessibility: [], blockedRequests: [], completedAt: null };
+const report = { startedAt: new Date().toISOString(), base, method, filter: scenarioFilter?.source || null, scenarios: [], accessibility: [], blockedRequests: [], completedAt: null };
 const stored = new Map();
 const browser = await chromium.launch({ headless: true, ...(process.env.LEVOIS_BROWSER_CHANNEL ? { channel: process.env.LEVOIS_BROWSER_CHANNEL } : process.platform === 'win32' ? { channel: 'chrome' } : {}) });
 let currentPage;
 
-async function createContext(width = 390, extra = {}, onAction) {
+async function createContext(width = 375, extra = {}, onAction) {
   const context = await browser.newContext({ viewport: { width, height: width === 1440 ? 900 : 844 }, locale: 'fr-FR', reducedMotion: 'reduce', acceptDownloads: true, ...extra });
   await context.route('**/*', async route => {
     const request = route.request();
     if (['GET', 'HEAD'].includes(request.method())) return route.continue();
-    if (new URL(request.url()).pathname === '/api/experience/actions' && request.method() === 'POST' && onAction) return onAction(route, request.postDataJSON());
+    if (new URL(request.url()).origin === new URL(base).origin && new URL(request.url()).pathname === '/api/experience/actions' && request.method() === 'POST' && onAction) {
+      const payload = request.postDataJSON();
+      assert.match(payload.email, /@example\.invalid$/, 'Only fixture contacts may reach a mocked action');
+      return onAction(route, payload);
+    }
     report.blockedRequests.push({ method: request.method(), path: new URL(request.url()).pathname });
     return route.fulfill({ status: 403, contentType: 'application/json', body: JSON.stringify({ ok: false, message: 'Écriture bloquée par la recette locale.' }) });
   });
@@ -42,6 +49,7 @@ async function newPage(context) {
   return page;
 }
 async function scenario(name, fn) {
+  if (scenarioFilter && !scenarioFilter.test(name)) return;
   const item = { name, status: 'running', startedAt: new Date().toISOString() };
   report.scenarios.push(item);
   try { await fn(); item.status = 'passed'; console.log(`PASS ${name}`); }
@@ -69,56 +77,118 @@ async function axe(page, label) {
   report.accessibility.push({ label, url: page.url(), width: page.viewportSize().width, violations: result.violations.map(({ id, impact, description, helpUrl, nodes }) => ({ id, impact, description, helpUrl, nodes: nodes.map(({ target, failureSummary }) => ({ target, failureSummary })) })) });
   assert.equal(result.violations.length, 0, `${label}: Axe ${result.violations.map(item => `${item.id} (${item.nodes.length})`).join(', ')}`);
 }
+async function belowHeader(locator, label) {
+  const position = await locator.evaluate(element => {
+    const target = element.getBoundingClientRect(), header = document.querySelector('#hd')?.getBoundingClientRect();
+    return { top: target.top, bottom: target.bottom, headerBottom: header?.bottom || 0 };
+  });
+  assert.ok(position.top >= position.headerBottom - 1, label + ': titre masqué sous le header ' + JSON.stringify(position));
+}
+async function assertGate(page) {
+  await expect(page.locator('.lv-capture-gate')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Où devons-nous vous envoyer votre synthèse d’arbitrage personnalisée ?', exact: true })).toBeVisible();
+  await expect(page.locator('.lv-synthesis-card, [data-keep], [data-print]')).toHaveCount(0);
+  await expect(page.locator('#synthesis-first-name')).toHaveAttribute('required', '');
+  await expect(page.locator('#synthesis-email')).toHaveAttribute('required', '');
+  await expect(page.locator('#synthesis-phone')).not.toHaveAttribute('required', '');
+  await expect(page.locator('#synthesis-phone-help')).toContainText('vous demandez à Mouaad de vous contacter');
+  await expect(page.locator('#synthesis-privacy')).toContainText('transmises à Mouaad et conservées');
+  await fits(page, 'Étape de réception');
+}
+async function fillContact(page, values = contact) {
+  await page.locator('#synthesis-first-name').fill(values.firstName);
+  await page.locator('#synthesis-email').fill(values.email);
+  await page.locator('#synthesis-phone').fill(values.phone || '');
+}
+function assertPayload(payload, project = 'buyer') {
+  assert.equal(payload.action, 'synthesis-email');
+  assert.equal(payload.approved, true);
+  assert.equal(payload.channel, 'email');
+  assert.equal(payload.consent.purpose, 'synthesis');
+  assert.equal(payload.consent.textVersion, '2026-10-25-arbitrage');
+  assert.equal(payload.context.project, project);
+  assert.equal(payload.context.reading.methodVersion, method);
+  assert.equal(payload.context.reading.deliveryMode, 'email-arbitrage-v1');
+  for (const title of ['Le constat', 'L’angle mort à surveiller', 'La prochaine étape utile']) assert.ok(payload.synthesis.includes(title));
+  for (const value of [payload.email, payload.firstName, payload.phone].filter(Boolean)) {
+    assert.ok(!JSON.stringify(payload.context).includes(value), 'Les coordonnées ont fui dans le contexte de réponses');
+  }
+}
 async function assertReading(page, project, memory = false) {
+  await expect(page.locator('.lv-capture-gate')).toHaveCount(0);
   await expect(page.locator('.lv-synthesis-card')).toHaveCount(3);
   assert.deepEqual(await page.locator('.lv-synthesis-card h2').allTextContents(), ['Le constat', 'L’angle mort à surveiller', 'La prochaine étape utile']);
   await expect(page.locator('.lv-synthesis-resources .lv-resource-card')).toHaveCount(2);
   const hrefs = await page.locator('.lv-resource-card').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
   assert.equal(new Set(hrefs).size, 2);
-  for (const href of hrefs) assert.equal((await page.request.get(new URL(href, base).href)).status(), 200, `Ressource inaccessible : ${href}`);
+  for (const href of hrefs) assert.equal((await page.request.get(new URL(href, base).href)).status(), 200, 'Ressource inaccessible : ' + href);
   await expect(page.locator('[data-contact-call]')).toHaveAttribute('href', /^tel:\+/);
   await expect(page.locator('[data-contact-call]')).toHaveText('Échanger 15 min avec Mouaad (sans engagement)');
   await expect(page.locator('[data-synthesis-form] input[type=email]')).toHaveCount(1);
+  await expect(page.locator('[data-keep]')).toBeVisible();
   if (!memory) {
     assert.equal(new URL(page.url()).pathname.replace(/\/$/, ''), '/lecture');
     const saved = await page.evaluate(key => JSON.parse(sessionStorage.getItem(key)), key);
     assert.equal(saved.project, project);
     assert.equal(saved.reading.methodVersion, method);
-    assert.equal(Object.keys(saved.answers).filter(id => id.startsWith(`diag_${project}_`)).length, 5);
+    assert.equal(Object.keys(saved.answers).filter(id => id.startsWith('diag_' + project + '_')).length, 5);
+    assert.ok(!JSON.stringify(saved).includes('@example.invalid'), 'E-mail stocké dans la session de diagnostic');
     stored.set(project, saved);
   }
-  await fits(page, `${project} synthèse`);
+  await fits(page, project + ' synthèse');
   assert.deepEqual(page.errors, [], 'Erreur JavaScript dans le parcours');
 }
-async function complete(page, project, { navigation = true, memory = false, screenshot = false, audit = false } = {}) {
+async function capture(page, project, { memory = false, values = contact } = {}) {
+  await assertGate(page);
+  await fillContact(page, values);
+  await page.locator('[data-synthesis-form] [type=submit]').click();
+  await assertReading(page, project, memory);
+}
+async function complete(page, project, { navigation = true, memory = false, screenshot = false, audit = false, deliver = true } = {}) {
   const config = projects[project];
   await page.goto(new URL(config.route, base).href, { waitUntil: 'networkidle' });
   await expect(page.locator('.lv-question-form')).toBeVisible();
-  if (screenshot) await page.screenshot({ path: path.join(output, `${project}-question-${page.viewportSize().width}.png`), fullPage: true });
-  if (audit) await axe(page, `${project} question`);
+  await expect(page.locator('.lv-diagnostic-intro h1')).toHaveCount(1);
+  await expect(page.locator('.lv-diagnostic-intro')).toContainText('prénom et votre e-mail');
+  if (screenshot) await page.screenshot({ path: path.join(output, project + '-question-' + page.viewportSize().width + '.png'), fullPage: true });
+  if (audit) await axe(page, project + ' question');
   for (let index = 0; index < 5; index++) {
     const form = page.locator('.lv-question-form');
     await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', String(index + 1));
+    assert.equal(await page.locator('[data-question-title]').evaluate(element => element.tagName), 'H2');
     await expect(page.locator('[data-journey] input[type=email], [data-journey] input[type=tel]')).toHaveCount(0);
-    await fits(page, `${project} question ${index + 1}`);
+    await fits(page, project + ' question ' + (index + 1));
     if (navigation && index === 2) {
       await page.reload({ waitUntil: 'networkidle' });
       await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
     }
-    await form.locator(`input[value="${config.values[index]}"]`).check();
+    await form.locator('input[value="' + config.values[index] + '"]').check();
     if (navigation && index === 1) {
       await form.locator('[data-back]').click();
       await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
-      await expect(page.locator(`.lv-question-form input[value="${config.values[0]}"]`)).toBeChecked();
+      await expect(page.locator('.lv-question-form input[value="' + config.values[0] + '"]')).toBeChecked();
       await page.locator('.lv-question-form [type=submit]').click();
       await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2');
-      await expect(page.locator(`.lv-question-form input[value="${config.values[1]}"]`)).toBeChecked();
+      await expect(page.locator('.lv-question-form input[value="' + config.values[1] + '"]')).toBeChecked();
     }
     await page.locator('.lv-question-form [type=submit]').click();
+    if (index < 4) {
+      await expect(page.locator('[data-question-title]')).toBeFocused();
+      await belowHeader(page.locator('[data-question-title]'), 'Question ' + (index + 2));
+    }
   }
-  await assertReading(page, project, memory);
-  if (screenshot) await page.screenshot({ path: path.join(output, `${project}-reading-${page.viewportSize().width}.png`), fullPage: true });
-  if (audit) await axe(page, `${project} synthèse`);
+  await assertGate(page);
+  if (screenshot) await page.screenshot({ path: path.join(output, project + '-capture-' + page.viewportSize().width + '.png'), fullPage: true });
+  if (audit) await axe(page, project + ' capture');
+  if (!deliver) return;
+  await capture(page, project, { memory });
+  if (screenshot) await page.screenshot({ path: path.join(output, project + '-reading-' + page.viewportSize().width + '.png'), fullPage: true });
+  if (audit) await axe(page, project + ' synthèse');
+}
+async function seed(context, saved) {
+  await context.addInitScript(({ key, saved }) => {
+    if (!sessionStorage.getItem(key)) sessionStorage.setItem(key, JSON.stringify(saved));
+  }, { key, saved });
 }
 async function download(page, filename) {
   const pending = page.waitForEvent('download');
@@ -131,82 +201,168 @@ async function download(page, filename) {
   assert.ok(raw, 'Export HTML sans contexte importable');
   return { path: destination, context: JSON.parse(raw) };
 }
-const success = (route, payload) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, saved: true, requestId: payload.requestId, copySent: true, copyState: 'sent', advisorNotificationSent: true, advisorNotificationState: 'sent' }) });
+const success = (route, payload) => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, saved: true, requestId: payload.requestId, copySent: true, copyState: 'sent', advisorNotificationSent: true, advisorNotificationState: 'sent', phoneExchangeRequested: !!payload.phone }) });
 
 try {
   for (const width of widths) for (const project of Object.keys(projects)) await scenario(`${project} / ${width}px / parcours, retour, rechargement, synthèse`, async () => {
-    const context = await createContext(width);
+    const context = await createContext(width, {}, (route, payload) => { assertPayload(payload, project); return success(route, payload); });
     try {
       const page = await newPage(context);
-      await complete(page, project, { screenshot: true, audit: width === 390 });
+      await complete(page, project, { screenshot: true, audit: width === 375 });
       if (width === 1440) {
         const before = await page.locator('.lv-synthesis-card').allTextContents();
         await page.locator('#corrections summary').click();
         await page.locator(`a[href*="edit=${projects[project].edit}"]`).click();
         await page.locator(`.lv-question-form input[value="${projects[project].correction}"]`).check();
-        await page.getByRole('button', { name: 'Actualiser ma synthèse', exact: true }).click();
-        await assertReading(page, project);
+        await page.getByRole('button', { name: 'Actualiser mon analyse', exact: true }).click();
+        await capture(page, project);
         assert.notDeepEqual(await page.locator('.lv-synthesis-card').allTextContents(), before, 'La correction ne change pas la lecture');
         assert.ok((await page.evaluate(key => JSON.parse(sessionStorage.getItem(key)).history.length, key)) >= 1, 'Version précédente perdue');
       }
     } finally { await context.close(); }
   });
 
-  await scenario('E-mail : validation, capture explicite, échec/reprise avec même référence, double clic neutralisé', async () => {
+  await scenario('Capture : prénom/e-mail/téléphone, échec sans résultat, copie échouée et reprises sans doublon', async () => {
     const requests = [];
     let releaseFirst;
-    const context = await createContext(390, {}, async (route, payload) => {
-      requests.push(payload);
+    const context = await createContext(375, {}, async (route, payload) => {
+      assertPayload(payload); requests.push(payload);
       if (requests.length === 1) {
         await new Promise(resolve => { releaseFirst = resolve; });
         return route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false }) });
       }
+      if (requests.length === 2) return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+        ok: true, saved: true, requestId: payload.requestId, copySent: false, copyState: 'failed',
+      }) });
       return success(route, payload);
     });
     try {
-      assert.ok(stored.get('buyer'), 'La recette acheteur doit fournir une vraie synthèse');
-      await context.addInitScript(({ key, saved }) => sessionStorage.setItem(key, JSON.stringify(saved)), { key, saved: stored.get('buyer') });
+      assert.ok(stored.get('buyer'));
+      await seed(context, stored.get('buyer'));
       const page = await newPage(context);
-      await page.goto(`${base}/lecture/`, { waitUntil: 'networkidle' });
-      const form = page.locator('[data-synthesis-form]');
-      const button = form.locator('[type=submit]');
+      await page.goto(base + '/lecture/', { waitUntil: 'networkidle' });
+      await assertGate(page);
+      const form = page.locator('[data-synthesis-form]'), button = form.locator('[type=submit]');
       await button.click();
-      assert.equal(requests.length, 0, 'Une adresse vide a déclenché une requête');
-      await page.locator('#synthesis-email').fill('qa-levois@example.invalid');
+      assert.equal(requests.length, 0, 'Les champs vides ont déclenché une requête');
+      await fillContact(page, { firstName: 'Camille', email: 'adresse-incomplete', phone: '' });
+      await button.click(); assert.equal(requests.length, 0, 'E-mail incorrect transmis');
+      await fillContact(page, { ...contact, firstName: '12345' });
+      await button.click();
+      assert.equal(await page.locator('#synthesis-first-name').evaluate(input => input.validity.valid), false);
+      assert.equal(requests.length, 0, 'Prénom incorrect transmis');
+      await fillContact(page, { ...contact, phone: 'pas-un-numero' });
+      await button.click();
+      assert.equal(await page.locator('#synthesis-phone').evaluate(input => input.validity.valid), false);
+      assert.equal(requests.length, 0, 'Téléphone incorrect transmis');
+      await fillContact(page);
       await button.click();
       await expect.poll(() => requests.length).toBe(1);
       await expect(button).toBeDisabled();
-      await expect(page.locator('#synthesis-email')).toHaveAttribute('readonly', '');
+      for (const id of ['first-name', 'email', 'phone']) await expect(page.locator('#synthesis-' + id)).toHaveAttribute('readonly', '');
       await form.evaluate(element => { element.requestSubmit(); element.requestSubmit(); });
-      assert.equal(requests.length, 1, 'Une soumission concurrente est passée');
+      assert.equal(requests.length, 1, 'Soumission concurrente passée');
       releaseFirst();
       await expect(button).toBeEnabled();
-      await expect(page.locator('#synthesis-status')).toContainText('ne sont pas confirmés');
+      await expect(page.locator('#synthesis-status')).toContainText('pas été confirmée');
+      await assertGate(page);
       await button.click();
-      await expect(page.locator('#synthesis-status')).toContainText('Votre projet est enregistré');
-      assert.equal(requests.length, 2);
-      assert.equal(requests[0].requestId, requests[1].requestId, 'La reprise a créé une nouvelle référence');
-      const payload = requests[1];
-      assert.equal(payload.action, 'synthesis-email');
-      assert.equal(payload.approved, true);
-      assert.equal(payload.channel, 'email');
-      assert.equal(payload.consent.purpose, 'synthesis');
-      assert.equal(payload.consent.textVersion, '2026-10-25');
-      assert.equal(payload.context.project, 'buyer');
-      assert.equal(payload.context.reading.methodVersion, method);
-      for (const title of ['Le constat', 'L’angle mort à surveiller', 'La prochaine étape utile']) assert.ok(payload.synthesis.includes(title));
+      await assertReading(page, 'buyer');
+      await expect(page.locator('#synthesis-status')).toContainText('l’envoi n’est pas confirmé');
+      await expect(button).toHaveText('Réessayer l’envoi de mon analyse');
+      await expect(button).toBeEnabled();
+      assert.deepEqual(requests[1], requests[0], 'La reprise backend a changé la demande figée');
+      await button.click();
+      await expect(page.locator('#synthesis-status')).toContainText('service d’envoi');
       await expect(button).toBeDisabled();
+      assert.equal(requests.length, 3);
+      assert.deepEqual(requests[2], requests[0], 'La reprise e-mail a changé la demande figée');
+      assert.equal(requests[2].firstName, contact.firstName);
+      assert.equal(requests[2].phone, '', 'Le téléphone facultatif a été imposé');
       await page.locator('#synthesis-email').fill('autre-qa@example.invalid');
       await expect(button).toBeEnabled();
       await button.click();
-      await expect.poll(() => requests.length).toBe(3);
-      await expect(page.locator('#synthesis-status')).toContainText('Votre projet est enregistré');
-      assert.notEqual(requests[2].requestId, requests[1].requestId, 'Une autre adresse a réutilisé une référence figée');
+      await expect.poll(() => requests.length).toBe(4);
+      await expect(button).toBeDisabled();
+      assert.notEqual(requests[3].requestId, requests[2].requestId, 'Une autre adresse a réutilisé la même référence');
     } finally { releaseFirst?.(); await context.close(); }
   });
 
+  await scenario('Capture : une confirmation incomplète ou d’une autre demande ne révèle rien', async () => {
+    const requests = [];
+    const context = await createContext(375, {}, (route, payload) => {
+      requests.push(payload);
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+        ok: true, saved: requests.length !== 1, requestId: requests.length === 2 ? crypto.randomUUID() : payload.requestId,
+        copySent: true, copyState: 'sent',
+      }) });
+    });
+    try {
+      await seed(context, stored.get('seller'));
+      const page = await newPage(context);
+      await page.goto(base + '/lecture/', { waitUntil: 'networkidle' });
+      await fillContact(page);
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        await page.locator('[data-synthesis-form] [type=submit]').click();
+        await expect.poll(() => requests.length).toBe(attempt);
+        await expect(page.locator('#synthesis-status')).toContainText('pas été confirmée');
+        await assertGate(page);
+      }
+      assert.deepEqual(requests[0], requests[1]);
+      assert.equal(await page.evaluate(key => sessionStorage.getItem(key), deliveryKey), null);
+    } finally { await context.close(); }
+  });
+
+  for (const state of ['unknown', 'sending']) await scenario('Envoi incertain ' + state + ' : résultat conservé, aucun renvoi automatique', async () => {
+    const requests = [];
+    const context = await createContext(375, {}, (route, payload) => {
+      requests.push(payload);
+      return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+        ok: true, saved: true, requestId: payload.requestId, copySent: false, copyState: state,
+      }) });
+    });
+    try {
+      await seed(context, stored.get('transition'));
+      const page = await newPage(context);
+      await page.goto(base + '/lecture/', { waitUntil: 'networkidle' });
+      await capture(page, 'transition');
+      const button = page.locator('[data-synthesis-form] [type=submit]');
+      await expect(button).toBeDisabled();
+      await expect(button).toHaveText('Demande enregistrée · envoi à vérifier');
+      await page.locator('#synthesis-email').focus(); await page.keyboard.press('Enter');
+      assert.equal(requests.length, 1, 'Une confirmation incertaine a déclenché un nouveau POST');
+      await page.reload({ waitUntil: 'networkidle' });
+      await assertReading(page, 'transition');
+      assert.equal(requests.length, 1, 'Le rechargement a renvoyé la demande');
+      const receipts = await page.evaluate(key => JSON.parse(sessionStorage.getItem(key) || '[]'), deliveryKey);
+      assert.ok(receipts.includes(stored.get('transition').reading.id), 'La session oublie le résultat enregistré');
+    } finally { await context.close(); }
+  });
+
+  await scenario('Téléphone facultatif : intention explicite et coordonnées hors diagnostic/export', async () => {
+    const requests = [];
+    const context = await createContext(375, {}, (route, payload) => { assertPayload(payload, 'seller'); requests.push(payload); return success(route, payload); });
+    try {
+      await seed(context, stored.get('seller'));
+      const page = await newPage(context);
+      await page.goto(base + '/lecture/', { waitUntil: 'networkidle' });
+      await capture(page, 'seller', { values: { ...contact, phone: '+33 6 00 00 00 00' } });
+      await expect(page.locator('#synthesis-status')).toContainText('demande d’échange téléphonique');
+      assert.equal(requests.length, 1);
+      assert.equal(requests[0].phone, '+33 6 00 00 00 00');
+      const file = await download(page, 'phone-contact-free-export.html');
+      const snapshot = JSON.stringify(file.context);
+      for (const value of [contact.firstName, contact.email, requests[0].phone]) assert.ok(!snapshot.includes(value));
+      await page.reload({ waitUntil: 'networkidle' });
+      await assertReading(page, 'seller');
+      assert.equal(requests.length, 1);
+      await expect(page.locator('#synthesis-email')).toHaveValue('');
+      await expect(page.locator('#synthesis-phone')).toHaveValue('');
+    } finally { await context.close(); }
+  });
+
   await scenario('Reprise : session préservée, export HTML, confirmation avant remplacement et fichier invalide', async () => {
-    const context = await createContext(390);
+    const context = await createContext(375, {}, success);
     let file;
     try {
       const page = await newPage(context);
@@ -220,7 +376,7 @@ try {
       await expect(page.locator('[data-resume-error]')).toContainText('Rien n’a été remplacé');
       assert.equal((await page.evaluate(key => JSON.parse(sessionStorage.getItem(key)), key)).project, 'buyer');
     } finally { await context.close(); }
-    const imported = await createContext(390);
+    const imported = await createContext(375);
     try {
       assert.ok(stored.get('seller'));
       await imported.addInitScript(({ key, saved }) => {
@@ -240,34 +396,78 @@ try {
     } finally { await imported.close(); }
   });
 
-  await scenario('Stockage bloqué : synthèse sur place, correction, copie HTML et demande e-mail disponibles', async () => {
+  await scenario('Stockage bloqué : réception sur place, correction, seconde réception et export', async () => {
     const requests = [];
-    const context = await createContext(320, {}, (route, payload) => { requests.push(payload); return success(route, payload); });
+    const context = await createContext(320, {}, (route, payload) => { assertPayload(payload, 'seller'); requests.push(payload); return success(route, payload); });
     try {
       await context.addInitScript(() => {
         for (const storage of ['localStorage', 'sessionStorage']) Object.defineProperty(window, storage, { configurable: true, get() { throw new DOMException('Storage disabled for QA', 'SecurityError'); } });
       });
       const page = await newPage(context);
-      await complete(page, 'seller', { navigation: false, memory: true });
+      await complete(page, 'seller', { navigation: false, memory: true, deliver: false });
       assert.equal(new URL(page.url()).pathname, '/situer-ma-vente/');
+      await capture(page, 'seller', { memory: true });
+      assert.equal(requests.length, 1);
       await page.locator('#corrections summary').click();
       await page.locator('[data-correct="diag_seller_blocker"]').click();
       await page.locator('.lv-question-form input[value=price]').check();
-      await page.getByRole('button', { name: 'Actualiser ma synthèse', exact: true }).click();
-      await assertReading(page, 'seller', true);
+      await page.getByRole('button', { name: 'Actualiser mon analyse', exact: true }).click();
+      await capture(page, 'seller', { memory: true });
       const file = await download(page, 'storage-blocked-export.html');
       assert.equal(file.context.project, 'seller');
-      await page.locator('#synthesis-email').fill('storage-qa@example.invalid');
-      await page.locator('[data-synthesis-form] [type=submit]').click();
-      await expect(page.locator('#synthesis-status')).toContainText('Votre projet est enregistré');
-      assert.equal(requests.length, 1);
-      assert.equal(requests[0].context.answers.diag_seller_blocker.value, 'price');
+      assert.equal(requests.length, 2);
+      assert.equal(requests[1].context.answers.diag_seller_blocker.value, 'price');
+      assert.notEqual(requests[1].requestId, requests[0].requestId);
       await page.screenshot({ path: path.join(output, 'storage-blocked-320.png'), fullPage: true });
     } finally { await context.close(); }
   });
 
+  await scenario('Reflow 200 % équivalent : 720 px, parcours et réception entièrement au clavier', async () => {
+    const requests = [];
+    const context = await createContext(720, { viewport: { width: 720, height: 450 } }, (route, payload) => {
+      requests.push(payload); return success(route, payload);
+    });
+    try {
+      const page = await newPage(context);
+      await page.goto(base + '/ma-recherche/', { waitUntil: 'networkidle' });
+      // 1440/2 by 900/2 CSS pixels models browser 200% reflow; it does not claim native browser zoom.
+      report.zoom = { type: '200% reflow equivalent', baseViewport: [1440, 900], cssViewport: [720, 450] };
+      for (let index = 0; index < 5; index++) {
+        const radio = page.locator('.lv-question-form input[type=radio]').first();
+        if (index === 0) {
+          for (let step = 0; step < 35 && !await radio.evaluate(element => element === document.activeElement); step++) await page.keyboard.press('Tab');
+        } else await page.keyboard.press('Tab');
+        await expect(radio).toBeFocused();
+        await page.keyboard.press('Space');
+        await page.keyboard.press('Tab');
+        await expect(page.locator('.lv-question-form [type=submit]')).toBeFocused();
+        await page.keyboard.press('Enter');
+        if (index < 4) {
+          await expect(page.locator('[data-question-title]')).toBeFocused();
+          await belowHeader(page.locator('[data-question-title]'), 'Clavier question ' + (index + 2));
+          await fits(page, 'Reflow question ' + (index + 2));
+        }
+      }
+      await assertGate(page);
+      const first = page.locator('#synthesis-first-name');
+      for (let step = 0; step < 35 && !await first.evaluate(element => element === document.activeElement); step++) await page.keyboard.press('Tab');
+      await expect(first).toBeFocused();
+      await belowHeader(first, 'Champ prénom au clavier');
+      await page.keyboard.type(contact.firstName);
+      await page.keyboard.press('Tab'); await expect(page.locator('#synthesis-email')).toBeFocused(); await page.keyboard.type(contact.email);
+      await page.keyboard.press('Tab'); await expect(page.locator('#synthesis-phone')).toBeFocused();
+      await page.keyboard.press('Tab'); await expect(page.locator('#synthesis-privacy a')).toBeFocused();
+      await page.keyboard.press('Tab'); await expect(page.locator('[data-synthesis-form] [type=submit]')).toBeFocused();
+      await page.keyboard.press('Enter');
+      await assertReading(page, 'buyer');
+      assert.equal(requests.length, 1);
+      await fits(page, 'Reflow résultat');
+      await page.screenshot({ path: path.join(output, 'keyboard-reflow-200.png'), fullPage: true });
+    } finally { await context.close(); }
+  });
+
   await scenario('Diagnostic incomplet : /lecture propose de continuer sans inventer une synthèse historique', async () => {
-    const context = await createContext(390);
+    const context = await createContext(375);
     try {
       const page = await newPage(context);
       await page.goto(`${base}/ma-recherche/`, { waitUntil: 'networkidle' });
@@ -286,7 +486,7 @@ try {
   });
 
   await scenario('Menu mobile au clavier et navigation sans JavaScript', async () => {
-    const context = await createContext(390);
+    const context = await createContext(375);
     try {
       const page = await newPage(context);
       await page.goto(base, { waitUntil: 'networkidle' });
@@ -300,7 +500,7 @@ try {
       await expect(toggle).toBeFocused();
       await fits(page, 'Accueil menu fermé');
     } finally { await context.close(); }
-    const noJs = await createContext(390, { javaScriptEnabled: false });
+    const noJs = await createContext(375, { javaScriptEnabled: false });
     try {
       const page = await newPage(noJs);
       await page.goto(base, { waitUntil: 'networkidle' });
@@ -318,13 +518,13 @@ try {
     } finally { await noJs.close(); }
   });
 
-  for (const width of [390, 320]) for (const route of ['/', '/reprendre/', '/contact/', '/votre-rue/', '/prix-immobilier/leves/']) await scenario(`Finition publique ${route} / ${width}px`, async () => {
+  for (const width of [375, 320]) for (const route of ['/', '/reprendre/', '/contact/', '/votre-rue/', '/prix-immobilier/leves/']) await scenario(`Finition publique ${route} / ${width}px`, async () => {
     const context = await createContext(width);
     try {
       const page = await newPage(context);
       assert.equal((await page.goto(new URL(route, base).href, { waitUntil: 'networkidle' })).status(), 200);
       await fits(page, route);
-      if (width === 390) await axe(page, route);
+      if (width === 375) await axe(page, route);
       assert.deepEqual(page.errors, []);
       await page.screenshot({ path: path.join(output, `public-${route.replaceAll('/', '-').replace(/^-|-$/g, '') || 'home'}-${width}.png`), fullPage: true });
     } finally { await context.close(); }

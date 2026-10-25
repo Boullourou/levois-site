@@ -6,7 +6,7 @@ export interface Entry { door: 'direct' | 'video' | 'google' | 'qr' | 'recommend
 export interface ReadingItem { text: string; kind: 'declared' | 'solid' | 'conditional' | 'unknown' | 'data' | 'hypothesis' | 'verified'; sourceAnswerIds?: string[]; condition?: string }
 export interface ReadingSection { id: string; title: string; items: ReadingItem[] }
 export interface ComparisonOption { id: string; title: string; consequence: string; condition: string; limit: string }
-export interface Reading { id: string; revision: number; title: string; sections: ReadingSection[]; nextDecision: { text: string; why: string; changesWith?: string }; limits: string[]; methodVersion: string; generatedAt: string; options?: ComparisonOption[]; answersSnapshot?: Record<string,Answer>; projectSnapshot?: Project; humanNotesSnapshot?: HumanNote[] }
+export interface Reading { id: string; revision: number; title: string; sections: ReadingSection[]; nextDecision: { text: string; why: string; changesWith?: string }; limits: string[]; methodVersion: string; generatedAt: string; deliveryMode?: 'email-arbitrage-v1'; options?: ComparisonOption[]; answersSnapshot?: Record<string,Answer>; projectSnapshot?: Project; humanNotesSnapshot?: HumanNote[] }
 export interface HumanNote { id: string; text: string; author: string; createdAt: string; source?: string }
 export interface Context { schemaVersion: 1; id: string; revision: number; project: Project; entry: Entry; answers: Record<string, Answer>; createdAt: string; updatedAt: string; reading?: Reading; history?: Reading[]; humanNotes?: HumanNote[]; depth?: 'micro' | 'intermediate' | 'deep'; initialEntry?: Entry }
 export interface Choice { value: string; label: string; detail?: string }

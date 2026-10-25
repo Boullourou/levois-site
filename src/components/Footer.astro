@@ -5,13 +5,11 @@ const { flush = false } = Astro.props;
 ---
 <footer class:list={['v7-footer', { 'v7-footer--flush': flush }]}>
   <div class="v7-footer-inner">
-    {!flush && (
-      <div class="v7-footer-top">
+    <div class="v7-footer-top">
         <a class="v7-logo" href="/">LEVOIS</a>
-        <p>Aide à la décision immobilière.<br /><span>Chartres & Agglomération (Lèves).</span></p>
+        <p>Conseil immobilier indépendant.<br /><span>Lèves &amp; Chartres Métropole.</span></p>
         <a class="v7-footer-contact" href="/contact/">Écrire à Mouaad <span aria-hidden="true">→</span></a>
-      </div>
-    )}
+    </div>
     <nav class="v7-footer-links" aria-label="Navigation de pied de page">
       <a href="/situer-ma-vente/">Vendre</a>
       <a href="/ma-recherche/">Acheter</a>
@@ -32,6 +30,6 @@ const { flush = false } = Astro.props;
         <a href="/honoraires/">Barème d'honoraires</a>
       </nav>
     </div>
-    <p class="v7-copyright">© {new Date().getFullYear()} LEVOIS · Zéro appel automatique · Vous gardez la décision.</p>
+    <p class="v7-copyright">© {new Date().getFullYear()} LEVOIS · Mouaad Boullourou.</p>
   </div>
 </footer>

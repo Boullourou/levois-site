@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import type { D1Database } from '@cloudflare/workers-types';
 import { onRequest as actions } from '../functions/api/experience/actions';
 import { onRequest as resume } from '../functions/api/experience/reprise';
@@ -241,5 +242,92 @@ describe('Synthèse demandée et projet conservé avec accord explicite', () => 
     for (const table of ['lectures_recherche', 'experience_requests', 'experience_email_leads']) {
       expect(db.prepare("SELECT name FROM sqlite_master WHERE name=?").get(table)).toMatchObject({ name: table });
     }
+  });
+});
+
+describe('Synthèse d’arbitrage : prénom et préférence de contact explicites', () => {
+  const arbitragePayload = (patch: Record<string, unknown> = {}) => payload('synthesis-email', {
+    firstName: 'Élodie', consent: { purpose: 'synthesis', textVersion: '2026-10-25-arbitrage', acceptedAt: now }, ...patch,
+  });
+  it('garde le prénom hors du contexte anonyme et ne demande aucun appel sans numéro', async () => {
+    const { db, env } = database(); const input = arbitragePayload({ firstName: '  E\u0301lodie-Anne  ' });
+    const result = await (await actions(context(input, env))).json();
+    expect(result).toMatchObject({ ok: true, saved: true, firstName: 'Élodie-Anne', phoneExchangeRequested: false, copySent: true });
+    const row: any = db.prepare('SELECT * FROM experience_email_leads').get();
+    expect(JSON.parse(row.context_json)).toEqual(project);
+    expect(JSON.parse(row.consent_json)).toMatchObject({
+      textVersion: '2026-10-25-arbitrage', contact: { firstName: 'Élodie-Anne', phone: null }, phoneExchangeRequested: false,
+    });
+    const mails = vi.mocked(fetch).mock.calls.map(([, init]) => JSON.parse(String(init?.body)));
+    expect(mails.find(mail => mail.to[0] === input.email).text).toContain('Bonjour Élodie-Anne,');
+    expect(mails.find(mail => mail.to[0] === 'mouaad@example.test').text).toContain('Aucun échange téléphonique demandé.');
+  });
+  it('enregistre le téléphone facultatif comme demande explicite d’échange limitée au projet', async () => {
+    const { db, env } = database(); const input = arbitragePayload({ phone: '+33 7 81 38 01 21' });
+    const result = await (await actions(context(input, env))).json();
+    expect(result).toMatchObject({ saved: true, firstName: 'Élodie', phoneExchangeRequested: true });
+    expect(JSON.stringify(result)).not.toContain('+33 7 81 38 01 21');
+    const row: any = db.prepare('SELECT * FROM experience_email_leads').get();
+    expect(JSON.parse(row.consent_json)).toMatchObject({ contact: { firstName: 'Élodie', phone: '+33 7 81 38 01 21' }, phoneExchangeRequested: true });
+    expect(JSON.parse(row.context_json)).toEqual(project);
+    const mails = vi.mocked(fetch).mock.calls.map(([, init]) => JSON.parse(String(init?.body)));
+    const advisor = mails.find(mail => mail.to[0] === 'mouaad@example.test');
+    expect(advisor.text).toContain('Téléphone : +33 7 81 38 01 21');
+    expect(advisor.text).toContain('Échange direct par téléphone demandé, limité à ce projet.');
+    expect(advisor.text).not.toContain('Aucun échange téléphonique demandé.');
+    expect(mails.find(mail => mail.to[0] === input.email).text).toContain('Vous avez demandé un échange direct par téléphone');
+  });
+  it.each(['李', 'Maël', 'D’Angelo', 'Anne Marie'])('accepte un prénom Unicode courant : %s', async firstName => {
+    const { env } = database();
+    expect(await (await actions(context(arbitragePayload({ firstName }), env))).json()).toMatchObject({ saved: true, firstName });
+  });
+  it.each([
+    { firstName: undefined }, { firstName: '' }, { firstName: '  ' }, { firstName: '<b>Anna</b>' },
+    { firstName: 'Anna\nBcc: autre@example.test' }, { firstName: 'A'.repeat(81) }, { firstName: 'Anna1' }, { firstName: '\u0301' },
+    { email: undefined }, { email: 'incomplet@' }, { phone: '1234' }, { phone: '1'.repeat(16) },
+    { phone: '0781380121\n' }, { phone: '07<script>' }, { phone: true }, { channel: 'phone' },
+  ])('refuse un contact incomplet ou injecté : %j', async patch => {
+    const { db, env } = database();
+    expect((await actions(context(arbitragePayload(patch), env))).status).toBe(400);
+    expect(fetch).not.toHaveBeenCalled();
+    expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 0 });
+  });
+  it('déduplique les validations simultanées et refuse de changer le contact sous la même référence', async () => {
+    const { db, env } = database(); const input = arbitragePayload({ phone: '07 81 38 01 21' });
+    await Promise.all([actions(context(input, env)), actions(context(input, env))]);
+    expect(fetch).toHaveBeenCalledTimes(2);
+    for (const patch of [{ firstName: 'Autre' }, { phone: '' }, { email: 'autre@example.test' }]) {
+      expect((await actions(context({ ...input, ...patch }, env))).status).toBe(409);
+    }
+    expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 1 });
+  });
+  it('reprend un dossier ancien avec exactement la même empreinte normalisée', async () => {
+    const { db, env } = database();
+    const input = payload('synthesis-email', { consent: { purpose: 'synthesis', textVersion: '2026-10-25', acceptedAt: now } });
+    // Exact pre-arbitrage normalization, including key order and empty fields.
+    const previousInput = {
+      requestId: input.requestId, action: 'synthesis-email', channel: 'email',
+      email: input.email, phone: '', firstName: '', question: '', context: project,
+      synthesis: input.synthesis, consent: input.consent,
+    };
+    const previousHash = createHash('sha256').update(JSON.stringify(previousInput)).digest('hex');
+    db.prepare(`INSERT INTO experience_email_leads
+      (id,payload_hash,created_at,contact_email,context_json,synthesis,consent_json,copy_state,advisor_state)
+      VALUES (?,?,?,?,?,?,?,'sent','sent')`).run(input.requestId, previousHash, now, input.email, JSON.stringify(project), input.synthesis, JSON.stringify({ ...input.consent, recordedAt: now }));
+    const response = await actions(context(input, env)); expect(response.status).toBe(200);
+    const result = await response.json();
+    expect(result).toMatchObject({ saved: true, copySent: true, advisorNotificationSent: true });
+    expect(result).not.toHaveProperty('firstName'); expect(result).not.toHaveProperty('phoneExchangeRequested');
+    expect(fetch).not.toHaveBeenCalled();
+    expect(db.prepare('SELECT payload_hash FROM experience_email_leads').get()).toMatchObject({ payload_hash: previousHash });
+  });
+  it('ne greffe pas les nouveaux contacts aux anciens consentements', async () => {
+    const { db, env } = database();
+    for (const action of ['email-copy', 'synthesis-email']) {
+      const consent = { purpose: action === 'email-copy' ? 'copy' : 'synthesis', textVersion: action === 'email-copy' ? '2026-09-10' : '2026-10-25', acceptedAt: now };
+      expect((await actions(context(payload(action, { firstName: 'Élodie', phone: '0781380121', consent }), env))).status).toBe(400);
+    }
+    expect(db.prepare('SELECT count(*) AS n FROM experience_email_leads').get()).toMatchObject({ n: 0 });
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

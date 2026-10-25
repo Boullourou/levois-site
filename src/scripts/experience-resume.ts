@@ -3,6 +3,7 @@ import { keepReading } from '../lib/experience/export';
 import { MAX_RESUME_FILE_BYTES, PROJECT_NAMES, parseResumeFile, resumeDestination, sharedContext } from '../lib/experience/resume';
 import { requestJson } from '../lib/request-json';
 import type { Context } from '../lib/experience/types';
+import { deliveryIds, rememberDelivery } from '../lib/experience/diagnostic-delivery';
 
 const root = document.querySelector<HTMLElement>('[data-resume-root]');
 if (root) {
@@ -30,7 +31,7 @@ if (root) {
     select<HTMLElement>('[data-current-description]').textContent = describe(existing);
     select<HTMLAnchorElement>('[data-current-link]').href = resumeDestination(existing);
     const download = select<HTMLButtonElement>('[data-current-download]');
-    download.hidden = !existing.reading;
+    download.hidden = !existing.reading || existing.reading.deliveryMode === 'email-arbitrage-v1' && !deliveryIds().includes(existing.reading.id);
     download.addEventListener('click', () => { if (existing.reading) keepReading(existing, existing.reading); });
   }
   select<HTMLInputElement>('#resume-file').addEventListener('change', async event => {
@@ -47,6 +48,8 @@ if (root) {
   confirm.addEventListener('click', () => {
     if (!candidate) return;
     if (!saveContext(candidate)) return showError('Le navigateur empêche de conserver ce projet. Rien n’a été remplacé. Autorisez le stockage de session pour reprendre ; votre fichier reste consultable directement sur votre appareil.');
+    // The person already holds this complete exported/shared reading. Do not ask for contact again to reopen it.
+    if(candidate.reading)rememberDelivery(candidate.reading.id);
     location.assign(resumeDestination(candidate));
   });
 

@@ -1,8 +1,8 @@
 # LEVOIS — levois.fr
 
-LEVOIS aide à clarifier un achat, une vente ou un projet de vente et d’achat avant de transmettre ses coordonnées. Chaque diagnostic comporte **5 questions**, puis une synthèse en trois parties : le constat, l’angle mort à surveiller et la prochaine étape utile. Deux ressources sont proposées selon les réponses.
+LEVOIS aide à clarifier un achat, une vente ou un projet de vente et d’achat. Chaque diagnostic comporte **5 questions**, puis demande le prénom et l’adresse e-mail pour recevoir et consulter la synthèse complète. Cette étape est annoncée dès l’entrée du parcours. La synthèse distingue le constat, l’angle mort à surveiller et la prochaine étape utile. Deux ressources sont proposées selon les réponses.
 
-La synthèse reste accessible sans contact. Le visiteur peut la télécharger, demander son envoi par e-mail avec enregistrement de son projet auprès de Mouaad, ou choisir un échange direct. L’envoi par e-mail n’inscrit à aucune newsletter et ne demande aucun appel automatique.
+La demande enregistre le projet et les coordonnées auprès de Mouaad. Le téléphone reste facultatif : le renseigner demande un échange direct au sujet de ce projet. Aucun abonnement à une newsletter n’est demandé. Dès que le serveur confirme l’enregistrement, la synthèse s’affiche et peut être téléchargée, même si l’envoi par e-mail échoue ; cet échec est alors signalé et une nouvelle tentative est proposée lorsque son état le permet. Les lectures historiques et les sauvegardes déjà détenues restent consultables.
 
 Ce document décrit l’architecture active au **25 octobre 2026**. Les anciens documents de cadrage et recettes restent disponibles comme archives ; ils ne décrivent pas nécessairement les parcours actifs.
 
@@ -76,7 +76,7 @@ Chrome est utilisé par défaut sur Windows. Sur les autres plateformes, install
 | Structure et styles publics | `src/layouts/Layout.astro`, `src/components/Header.astro`, `src/components/Footer.astro`, `src/styles/v7.css`, `src/styles/v7-production.css` |
 | Questions, synthèses et choix des deux ressources | `src/lib/experience/diagnostics.ts` |
 | Affichage des questionnaires | `src/components/ExperienceJourney.astro`, `src/scripts/experience-journey.ts` |
-| Restitution et formulaire e-mail | `src/pages/lecture.astro`, `src/scripts/diagnostic-reading.ts`, `src/styles/diagnostics.css` |
+| Restitution, capture et continuité locale | `src/pages/lecture.astro`, `src/scripts/diagnostic-reading.ts`, `src/scripts/diagnostic-capture.ts`, `src/lib/experience/diagnostic-delivery.ts`, `src/styles/diagnostics.css` |
 | Contexte, versions et export | `src/lib/experience/context.ts`, `types.ts`, `export.ts` |
 | Reprise de session, import et accès protégé | `src/pages/reprendre.astro`, `src/scripts/experience-resume.ts`, `src/lib/experience/resume.ts` |
 | Ressources éditoriales | `src/data/resources.ts`, `src/data/resourceContent.ts`, `src/pages/ressources/` |
@@ -106,9 +106,13 @@ La base DVF fournit des repères sur les transactions retenues. Elle ne démontr
 
 ## Données, e-mails et reprise
 
-La nouvelle action `synthesis-email` enregistre le contexte approuvé, la synthèse, l’e-mail et le consentement `2026-10-25` dans `experience_email_leads`, avant toute tentative d’envoi. La copie visiteur et la notification à Mouaad ont des états indépendants. Une acceptation par le prestataire ne prouve ni réception ni lecture. Un résultat incertain n’est jamais réémis automatiquement ; les reprises autorisées gardent la même référence et ne créent pas de doublon.
+L’action `synthesis-email`, avec le consentement `2026-10-25-arbitrage`, enregistre le contexte approuvé, la synthèse, le prénom, l’e-mail et l’éventuelle demande d’échange téléphonique dans `experience_email_leads`, avant toute tentative d’envoi. Le prénom et le téléphone sont conservés dans `consent_json.contact`, avec l’intention explicite `phoneExchangeRequested`. Ils ne sont pas ajoutés au contexte anonyme ni aux exports de lecture. Cette évolution réutilise le schéma existant.
 
-L’ancien `email-copy` reste compatible : il envoie seulement une copie au visiteur, sans créer de lead. Les actions historiques de relecture et d’échange restent distinctes. Les endpoints historiques `/api/lead` et `/api/recherche` peuvent encore servir leurs écrans de compatibilité ; ils ne pilotent pas la nouvelle capture de synthèse.
+La copie visiteur et la notification à Mouaad ont des états indépendants. Une acceptation par le prestataire ne prouve ni réception ni lecture. Un résultat incertain n’est jamais réémis automatiquement ; les nouvelles tentatives autorisées réutilisent le même payload et la même référence. Le serveur rejette la réutilisation d’une référence avec des coordonnées ou un contenu modifiés.
+
+Pour les nouvelles lectures `email-arbitrage-v1`, l’affichage complet attend une réponse positive du serveur avec `saved: true` et la référence attendue. L’état d’envoi de l’e-mail ne bloque pas une demande déjà enregistrée. Le marqueur de continuité en `sessionStorage` conserve uniquement des identifiants de lecture, aucune coordonnée ; il ne donne accès à aucune donnée serveur. Lorsque le stockage du navigateur est bloqué, le parcours ouvert continue en mémoire. L’import explicite d’une sauvegarde complète permet de la relire sans demander à nouveau les coordonnées.
+
+L’ancien contrat `synthesis-email` avec consentement `2026-10-25` reste compatible avec son payload et son empreinte d’origine. L’ancien `email-copy` reste également compatible : il envoie seulement une copie au visiteur, sans créer de lead. Les actions historiques de relecture et d’échange restent distinctes. Les endpoints historiques `/api/lead` et `/api/recherche` peuvent encore servir leurs écrans de compatibilité ; ils ne pilotent pas la nouvelle capture de synthèse.
 
 | Réglage existant | Usage |
 |---|---|

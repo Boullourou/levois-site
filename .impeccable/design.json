@@ -1,291 +1,233 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-06T19:10:44.542Z",
-  "title": "Design System: LEVOIS",
+  "generatedAt": "2026-10-25T22:48:05.618Z",
+  "title": "Design System: LEVOIS — Ivoire et encre",
   "extensions": {
     "colorMeta": {
-      "accent": {
-        "role": "primary",
-        "displayName": "Cobalt — action et sélection"
-      },
-      "accent-hover": {
-        "role": "primary",
-        "displayName": "Cobalt profond — survol"
-      },
       "ink": {
-        "role": "neutral",
-        "displayName": "Encre bleutée — lecture"
+        "role": "primary",
+        "displayName": "Encre",
+        "tonalRamp": [
+          "#141414",
+          "#343330",
+          "#5b5954",
+          "#87837b",
+          "#dcd9d2",
+          "#eeece7",
+          "#F8F7F4",
+          "#FDFCFA"
+        ]
+      },
+      "ink-hover": {
+        "role": "primary",
+        "displayName": "Encre au survol"
       },
       "paper": {
         "role": "neutral",
-        "displayName": "Blanc froid — fond"
-      },
-      "muted": {
-        "role": "neutral",
-        "displayName": "Gris bleuté — explications"
-      },
-      "line": {
-        "role": "neutral",
-        "displayName": "Trait bleuté — séparation"
+        "displayName": "Ivoire",
+        "tonalRamp": [
+          "#141414",
+          "#343330",
+          "#5b5954",
+          "#87837b",
+          "#dcd9d2",
+          "#eeece7",
+          "#F8F7F4",
+          "#FDFCFA"
+        ]
       },
       "surface": {
         "role": "neutral",
-        "displayName": "Blanc — commandes"
+        "displayName": "Surface claire"
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Blanc des contrôles"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Texte secondaire"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Séparation fine"
       },
       "selected": {
-        "role": "state",
-        "displayName": "Bleu pâle — sélection"
-      },
-      "dark": {
-        "role": "surface",
-        "displayName": "Bleu nuit — méthode et transmission"
-      },
-      "dark-field": {
-        "role": "surface",
-        "displayName": "Bleu nuit clair — saisie sur fond sombre"
-      },
-      "on-dark": {
         "role": "neutral",
-        "displayName": "Bleu clair — lecture sur fond sombre"
+        "displayName": "Sélection neutre"
       },
-      "error": {
-        "role": "state",
-        "displayName": "Rouge — erreur"
-      },
-      "error-bg": {
-        "role": "state",
-        "displayName": "Rose pâle — fond d’erreur"
-      },
-      "success": {
-        "role": "state",
-        "displayName": "Vert discret — succès"
-      },
-      "success-bg": {
-        "role": "state",
-        "displayName": "Vert pâle — fond de succès"
-      },
-      "human": {
+      "accent": {
         "role": "secondary",
-        "displayName": "Orange humain — point du logo et détails mesurés"
+        "displayName": "Ambre fonctionnel"
+      },
+      "accent-hover": {
+        "role": "secondary",
+        "displayName": "Ambre renforcé"
       }
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Accueil",
-        "purpose": "Grand titre de l’accueil."
+        "displayName": "Titre d’accueil",
+        "purpose": "Satoshi, taille bornée et casse naturelle."
       },
       "headline": {
-        "displayName": "Section",
-        "purpose": "Titres amples des séquences de l’accueil."
-      },
-      "page": {
-        "displayName": "Page",
-        "purpose": "Titre courant des pages publiques."
+        "displayName": "Titre de section",
+        "purpose": "Satoshi, hiérarchie éditoriale partagée."
       },
       "question": {
         "displayName": "Question",
-        "purpose": "Question du parcours acheteur."
+        "purpose": "Une question concrète par étape."
+      },
+      "reading": {
+        "displayName": "Capture et synthèse",
+        "purpose": "Titre principal des vues de restitution."
       },
       "body": {
-        "displayName": "Lecture",
-        "purpose": "Lecture générale ; les articles et aides adaptent leur rythme."
+        "displayName": "Texte courant",
+        "purpose": "Plus Jakarta Sans, avec Satoshi et système en repli."
       },
       "action": {
-        "displayName": "Action",
-        "purpose": "Action principale en graisse moyenne."
+        "displayName": "Commande",
+        "purpose": "Libellé de bouton à plusieurs lignes si nécessaire."
+      },
+      "wordmark": {
+        "displayName": "Mot-symbole LEVOIS",
+        "purpose": "Lien textuel Satoshi en capitales espacées."
       }
     },
     "shadows": [
       {
-        "name": "levois-shadow",
-        "value": "0 16px 48px -16px #23345744",
-        "purpose": "Dock et fenêtre de confidentialité ; valeur de tokens.css."
-      },
-      {
-        "name": "address-suggestions",
-        "value": "0 12px 40px #17244a26",
-        "purpose": "Liste d’adresses superposée ; valeur locale de levois.css."
+        "name": "flat",
+        "value": "none",
+        "purpose": "Cartes, capture, synthèse et progression de la version courante. Les ombres historiques locales ne deviennent pas un composant partagé."
       }
     ],
     "motion": [
       {
-        "name": "levois-fast",
-        "value": "180ms",
-        "purpose": "Transition rapide commune de public-base.css."
+        "name": "nav-background",
+        "value": "background-color .15s",
+        "purpose": "Confirmer le survol des liens de navigation."
       },
       {
-        "name": "levois-ease",
-        "value": "cubic-bezier(.16,1,.3,1)",
-        "purpose": "Continuité des éléments partagés dans la navigation native."
+        "name": "action-background",
+        "value": "background-color .18s",
+        "purpose": "Confirmer le survol des actions."
       },
       {
-        "name": "action-hover",
-        "value": "200ms",
-        "purpose": "Survol du bouton principal et de sa flèche."
-      },
-      {
-        "name": "question-entry",
-        "value": "300ms ease-out",
-        "purpose": "Apparition d’une question du parcours acheteur."
-      },
-      {
-        "name": "document-transition",
-        "value": "220ms",
-        "purpose": "Transition du document."
-      },
-      {
-        "name": "shared-transition",
-        "value": "350ms",
-        "purpose": "Navigation et quartier partagés."
+        "name": "menu-icon",
+        "value": "transform .25s cubic-bezier(.16,1,.3,1)",
+        "purpose": "Changement d’état de l’icône de menu, sans conditionner l’accès aux liens."
       },
       {
         "name": "reduced-motion",
-        "value": "none",
-        "purpose": "Animations et transitions désactivées, défilement automatique, si prefers-reduced-motion vaut reduce."
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Conserver contenus et commandes en réduisant animations et transitions."
       }
     ],
     "breakpoints": [
       {
-        "name": "compact-desktop",
-        "value": "1100px"
+        "name": "compact-wordmark",
+        "value": "480px"
       },
       {
-        "name": "mobile-navigation",
-        "value": "900px"
+        "name": "home-single-column",
+        "value": "640px"
       },
       {
-        "name": "editorial-and-seller-stack",
-        "value": "700px"
+        "name": "capture-single-column",
+        "value": "760px"
       },
       {
-        "name": "mobile-stack",
-        "value": "600px"
+        "name": "home-content-stack",
+        "value": "960px"
       },
       {
-        "name": "narrow-phone",
-        "value": "359px"
+        "name": "journey-sidebar",
+        "value": "1024px"
+      },
+      {
+        "name": "mobile-navigation-max",
+        "value": "1040px"
       }
-    ],
-    "brandAssets": {
-      "horizontal": "/brand/levois-horizontal.svg",
-      "monochrome": "/brand/levois-monochrome.svg",
-      "inverse": "/brand/levois-inverse.svg",
-      "compact": "/brand/levois-vo.svg",
-      "favicon": "/favicon.svg",
-      "fontLoaded": false
-    }
+    ]
   },
   "components": [
     {
       "name": "Action principale",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Action cobalt commune à l’accueil, au footer et aux parcours publics ; code de levois.css.",
-      "html": "<a class=\"ds-primary\" href=\"/contact\">Poser ma question <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12h15m-6-6 6 6-6 6\"/></svg></a>",
-      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:30px;min-height:56px;padding:16px 24px;border:0;border-radius:var(--levois-action-radius,9px);background:var(--levois-accent,#2545df);color:white;font:500 15px/1.4 Satoshi,sans-serif;text-decoration:none;box-shadow:none;transition:background .2s,transform .2s}.ds-primary svg{width:22px;height:22px;flex-shrink:0;transition:transform .2s}.ds-primary:hover{background:var(--levois-hover,#1732b5);transform:translateY(-2px)}.ds-primary:hover svg{transform:translateX(3px)}.ds-primary:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-primary,.ds-primary svg{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
+      "description": "Encre localisée, texte ivoire et coins adoucis : action de l’accueil. Les commandes intérieures partagées conservent leur variante capsule.",
+      "html": "<a class=\"ds-primary\" href=\"/situer-ma-vente/\"><span>Évaluer ma vente</span><span aria-hidden=\"true\">→</span></a>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;max-width:100%;padding:15px 22px;border:1px solid var(--v7-ink,#141414);border-radius:12px;background:var(--v7-ink,#141414);color:var(--v7-paper,#F8F7F4);font:600 14px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;white-space:normal;transition:background-color .18s}.ds-primary:hover{background:#343330}.ds-primary:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
       "name": "Action secondaire",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "Action blanche bordée de public-base.css ; les pages existantes peuvent conserver un rayon local de 8 px.",
-      "html": "<a class=\"ds-secondary\" href=\"/methode\">Comprendre la méthode <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12h15m-6-6 6 6-6 6\"/></svg></a>",
-      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:14px 24px;border:1px solid var(--levois-line,#dce0e9);border-radius:var(--levois-action-radius,9px);background:var(--levois-surface,#fff);color:var(--levois-ink,#111a30);font:500 16px/1.6 Satoshi,sans-serif;text-decoration:none;transition:background var(--levois-fast,180ms),transform var(--levois-fast,180ms)}.ds-secondary svg{width:22px;height:22px}.ds-secondary:hover{border-color:var(--levois-accent,#2545df);color:var(--levois-accent,#2545df)}.ds-secondary:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-secondary{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
+      "description": "Contour encre et fond transparent, sans ombre ni grand aplat décoratif.",
+      "html": "<a class=\"ds-secondary\" href=\"/ma-recherche/\"><span>Cadrer ma recherche</span><span aria-hidden=\"true\">→</span></a>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:space-between;gap:18px;min-height:52px;max-width:100%;padding:15px 22px;border:1px solid var(--v7-ink,#141414);border-radius:12px;background:transparent;color:var(--v7-ink,#141414);font:600 14px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;white-space:normal;transition:background-color .18s}.ds-secondary:hover{background:#eeece7}.ds-secondary:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Action texte",
-      "kind": "button",
-      "description": "Lien cobalt sans conteneur ; le survol souligne le texte.",
-      "html": "<a class=\"ds-text-action\" href=\"/votre-rue\">Explorer les ventes <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12h15m-6-6 6 6-6 6\"/></svg></a>",
-      "css": ".ds-text-action{display:inline-flex;align-items:center;gap:35px;min-height:48px;color:var(--levois-accent,#2545df);font:500 16px/1.6 Satoshi,sans-serif;text-decoration:none;text-underline-offset:5px}.ds-text-action svg{width:22px;height:22px}.ds-text-action:hover{text-decoration:underline}.ds-text-action:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}"
-    },
-    {
-      "name": "Action sur fond nuit",
-      "kind": "button",
-      "description": "Variante claire de transmission sur une surface sombre ; valeurs de public-base.css et du résultat vendeur.",
-      "html": "<div class=\"ds-dark-surface\"><button class=\"ds-on-dark\" type=\"button\">Envoyer ma demande <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12h15m-6-6 6 6-6 6\"/></svg></button></div>",
-      "css": ".ds-dark-surface{padding:24px;background:var(--levois-dark,#182447);border-radius:var(--levois-sheet-radius,16px)}.ds-on-dark{display:inline-flex;align-items:center;justify-content:center;gap:16px;min-height:48px;padding:14px 24px;border:0;border-radius:var(--levois-action-radius,9px);background:#e3eaff;color:#152b7d;font:500 16px/1.6 Satoshi,sans-serif;transition:background var(--levois-fast,180ms),transform var(--levois-fast,180ms)}.ds-on-dark svg{width:22px;height:22px}.ds-on-dark:hover{background:white}.ds-on-dark:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-on-dark{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
-    },
-    {
-      "name": "Champ de budget",
+      "name": "Champ de capture",
       "kind": "input",
-      "description": "Champ numérique du parcours acheteur ; libellé, aide, focus et erreur associés.",
-      "html": "<div class=\"ds-field\"><label for=\"ds-budget\">Votre budget global</label><input id=\"ds-budget\" type=\"text\" inputmode=\"numeric\" placeholder=\"250 000\" aria-describedby=\"ds-budget-help ds-budget-error\" /><p id=\"ds-budget-help\">Un montant à rapprocher de votre projet.</p><p id=\"ds-budget-error\" class=\"ds-field-error\" role=\"alert\" hidden>Indiquez un montant pour continuer.</p></div>",
-      "css": ".ds-field{color:var(--levois-ink,#111a30);font:400 16px/1.6 Satoshi,sans-serif}.ds-field label{display:block;font-size:12px;margin-bottom:10px}.ds-field input{display:block;width:100%;border:1px solid #c6cfdf;background:white;color:var(--levois-ink,#111a30);border-radius:9px;padding:15px 17px;box-shadow:none;font:400 36px Satoshi,sans-serif;letter-spacing:-.02em}.ds-field input::placeholder{color:#626d81;opacity:1}.ds-field input:focus{outline:2px solid var(--levois-accent,#2545df);outline-offset:3px;border-color:var(--levois-accent,#2545df)}.ds-field p{font-size:12px;line-height:1.7;color:var(--levois-muted,#596378)}.ds-field input[aria-invalid=true]{border-color:var(--levois-error,#9c352c)}.ds-field .ds-field-error{color:var(--levois-error,#9c352c);background:var(--levois-error-bg,#ffefed);padding:13px;border-radius:8px;font-size:13px}.ds-field [hidden]{display:none}"
+      "description": "Libellé visible et champ e-mail requis. Fragment du formulaire ; les états d’erreur et d’envoi sont annoncés textuellement par le contrôleur.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-email\">Adresse e-mail</label><input id=\"ds-email\" name=\"email\" type=\"email\" autocomplete=\"email\" maxlength=\"254\" required /></div>",
+      "css": ".ds-field{display:grid;gap:8px;max-width:440px;color:var(--v7-ink,#141414);font:400 15px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-field input{width:100%;min-height:52px;padding:12px 14px;border:1px solid #87837b;border-radius:10px;background:var(--v7-surface,#FDFCFA);color:var(--v7-ink,#141414);font:400 16px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-field input:focus-visible{border-color:var(--v7-ink,#141414);outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}"
     },
     {
-      "name": "Choix de parcours",
-      "kind": "card",
-      "refersTo": "choice",
-      "description": "Choix acheteur avec indicateur visible ; sélection représentée par aria-pressed dans cet extrait.",
-      "html": "<button class=\"ds-choice\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-choice-label\">Je commence ma recherche</span><span class=\"ds-choice-description\">Je veux préciser ce qui compte pour moi.</span></button>",
-      "css": ".ds-choice{position:relative;min-height:116px;padding:20px 42px 20px 20px;border:1px solid #dce2ee;border-radius:var(--levois-choice-radius,12px);background:white;color:var(--levois-ink,#111a30);text-align:left;box-shadow:none;transition:border-color .16s,background .16s}.ds-choice-label{display:block;font:500 15px/1.4 Satoshi,sans-serif}.ds-choice-description{display:block;margin-top:7px;color:var(--levois-muted,#596378);font:400 12px/1.6 Satoshi,sans-serif}.ds-choice:before{content:'';position:absolute;right:15px;top:22px;width:16px;height:16px;border:1px solid #a5b0c5;border-radius:50%}.ds-choice:after{content:'';position:absolute;right:19px;top:26px;width:8px;height:8px;border-radius:50%;background:var(--levois-accent,#2545df);opacity:0}.ds-choice:hover{border-color:#7e94e5;background:#fafdff}.ds-choice[aria-pressed=true]{border-color:var(--levois-accent,#2545df);background:var(--levois-selected,#edf1ff)}.ds-choice[aria-pressed=true]:before{border-color:var(--levois-accent,#2545df)}.ds-choice[aria-pressed=true]:after{opacity:1}.ds-choice:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-choice{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
-    },
-    {
-      "name": "Navigation publique",
+      "name": "Navigation et mot-symbole",
       "kind": "nav",
-      "description": "Trois entrées métier de Layout.astro ; état courant et survol soulignés.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Navigation principale\"><a href=\"/votre-rue\" aria-current=\"page\">Explorer les ventes</a><a href=\"/ma-recherche\">Acheter</a><a href=\"/situer-ma-vente\">Vendre</a></nav>",
-      "css": ".ds-nav{display:flex;flex-wrap:wrap;gap:38px}.ds-nav a{position:relative;display:flex;align-items:center;min-height:44px;color:var(--levois-ink,#111a30);font:400 14px/1.6 Satoshi,sans-serif;text-decoration:none}.ds-nav a:after{content:'';position:absolute;bottom:4px;left:0;right:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .2s}.ds-nav a:hover:after,.ds-nav a[aria-current]:after{transform:scaleX(1)}.ds-nav a:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-nav a:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
+      "description": "Extrait desktop : LEVOIS textuel et liens sur le même papier. Le composant réel ajoute le menu mobile, le bouton d’appel et la mesure dynamique de hauteur.",
+      "html": "<div class=\"ds-nav-wrap\"><a class=\"ds-brand\" href=\"/\" aria-label=\"LEVOIS, accueil\">LEVOIS</a><nav class=\"ds-nav\" aria-label=\"Exemple de navigation\"><a href=\"/situer-ma-vente/\" aria-current=\"page\">Vendre</a><a href=\"/ma-recherche/\">Acheter</a><a href=\"/vendre-et-acheter/\">Vente &amp; Achat</a></nav></div>",
+      "css": ".ds-nav-wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px;min-height:80px;background:var(--v7-paper,#F8F7F4);border-bottom:1px solid var(--v7-line,#dcd9d2);color:var(--v7-ink,#141414)}.ds-brand{font:700 26px/1 Satoshi,sans-serif;letter-spacing:.11em;text-decoration:none;color:inherit}.ds-nav{display:flex;flex-wrap:wrap;gap:22px}.ds-nav a{padding:11px 12px;border-radius:8px;color:inherit;font:600 15px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif;text-decoration:none;transition:background-color .15s}.ds-nav a:hover,.ds-nav a[aria-current=page]{background:#eeece7}.ds-nav-wrap a:focus-visible{outline:3px solid var(--v7-orange,#9a4313);outline-offset:4px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Filtre segmenté",
-      "kind": "chip",
-      "description": "Filtre de l’observatoire ; le choix actif conserve un état accessible et une surface cobalt.",
-      "html": "<div class=\"ds-segment\" role=\"group\" aria-label=\"Type de bien\"><button type=\"button\" aria-pressed=\"true\">Maisons</button><button type=\"button\" aria-pressed=\"false\">Appartements</button></div>",
-      "css": ".ds-segment{display:inline-flex;gap:4px;background:#e6ebf5;border-radius:8px;padding:4px}.ds-segment button{border:0;background:transparent;border-radius:5px;font:400 12px/1.6 Satoshi,sans-serif;color:var(--levois-muted,#596378);padding:10px 18px;min-height:38px}.ds-segment button[aria-pressed=true]{background:var(--levois-accent,#2545df);color:white}.ds-segment button:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(max-width:600px){.ds-segment button{min-height:42px}}"
-    },
-    {
-      "name": "Conteneur de choix",
-      "kind": "card",
-      "description": "Surface blanche encadrée pour un contenu fonctionnel ; les articles éditoriaux utilisent des traits sans cadre.",
-      "html": "<section class=\"ds-card\" aria-labelledby=\"ds-card-title\"><h3 id=\"ds-card-title\">Votre projet</h3><p>Retrouvez vos réponses et corrigez-les avant de poursuivre.</p></section>",
-      "css": ".ds-card{background:var(--levois-surface,#fff);border:1px solid var(--levois-line,#dce0e9);border-radius:var(--levois-choice-radius,12px);color:var(--levois-ink,#111a30);font:400 16px/1.6 Satoshi,sans-serif;box-shadow:none}.ds-card h3{font-family:Satoshi,sans-serif;font-weight:400}.ds-card p{color:var(--levois-muted,#596378)}"
-    },
-    {
-      "name": "Dock d’adresse",
+      "name": "Choix de diagnostic",
       "kind": "custom",
-      "refersTo": "address-dock",
-      "description": "État d’adresse révélé uniquement après le choix des ventes locales sur l’accueil. Ce fragment ne représente pas l’entrée initiale à trois projets. Le composant réel ajoute la combobox, ses annonces, le retour au projet et la confirmation d’adresse.",
-      "html": "<div class=\"ds-dock\"><form action=\"/votre-rue\" method=\"get\"><div class=\"ds-dock-field\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z M15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0\"/></svg><div><label for=\"ds-address\">Une adresse vous intrigue ?</label><input id=\"ds-address\" name=\"q\" type=\"text\" placeholder=\"Saisissez une adresse\" required /></div></div><button class=\"ds-dock-submit\" type=\"submit\">Voir les ventes <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 12h15m-6-6 6 6-6 6\"/></svg></button></form></div>",
-      "css": ".ds-dock{width:min(820px,100%);padding:18px 20px 12px;border-radius:var(--levois-dock-radius,15px);background:rgba(255,255,255,.97);box-shadow:var(--levois-shadow,0 16px 48px -16px #23345744);color:var(--levois-ink,#111a30);font:400 16px/1.6 Satoshi,sans-serif}.ds-dock form{display:flex;align-items:center;gap:15px}.ds-dock-field{display:flex;align-items:center;gap:15px;flex:1;min-width:0;padding:2px 8px}.ds-dock-field>div{flex:1;min-width:0}.ds-dock svg{width:22px;height:22px;flex-shrink:0}.ds-dock-field>svg{color:var(--levois-accent,#2545df)}.ds-dock label{display:block;font-size:12px;font-weight:500;margin-bottom:2px}.ds-dock input{width:100%;min-height:35px;border:0;background:transparent;color:var(--levois-ink,#111a30);font:400 15px/1.6 Satoshi,sans-serif;padding:6px 0}.ds-dock input::placeholder{color:#626d81;opacity:1}.ds-dock-submit{display:inline-flex;align-items:center;justify-content:space-between;gap:26px;min-height:61px;padding:18px 25px;border:0;border-radius:var(--levois-action-radius,9px);background:var(--levois-accent,#2545df);color:white;font:500 15px/1.4 Satoshi,sans-serif;transition:background .2s,transform .2s}.ds-dock-submit:hover{background:var(--levois-hover,#1732b5);transform:translateY(-2px)}.ds-dock input:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}.ds-dock-submit:focus-visible{outline:3px solid var(--levois-accent,#2545df);outline-offset:5px}@media(max-width:600px){.ds-dock{padding:16px 17px 13px}.ds-dock form{display:block}.ds-dock-field{padding:0;gap:12px}.ds-dock input{font-size:16px;min-height:40px}.ds-dock-submit{width:100%;min-height:50px;padding:13px 18px;margin-top:10px;font-size:14px}}@media(prefers-reduced-motion:reduce){.ds-dock-submit{animation:none!important;transition:none!important;scroll-behavior:auto!important}}"
+      "refersTo": "choice",
+      "description": "Radio native, libellé entier cliquable et sélection visible. La validation est une commande distincte dans le questionnaire.",
+      "html": "<label class=\"ds-choice\"><input type=\"radio\" name=\"ds-answer\" value=\"prix\" /><span>Je ne sais pas à quel prix vendre</span></label>",
+      "css": ".ds-choice{display:flex;align-items:center;gap:12px;min-height:54px;padding:15px 14px;border:1.5px solid rgba(19,42,34,.12);border-radius:14px;background:#fff;color:var(--v7-ink,#141414);font:400 16px/1.6 \"Plus Jakarta Sans\",Satoshi,sans-serif;transition:border-color .2s,background-color .2s;cursor:pointer}.ds-choice input{accent-color:var(--v7-ink,#141414);flex-shrink:0}.ds-choice:hover{border-color:rgba(19,42,34,.3)}.ds-choice:has(input:checked){background:#eeece7;border-color:var(--v7-ink,#141414)}.ds-choice:focus-within{outline:3px solid var(--v7-rust,#9a4313);outline-offset:3px}@media(prefers-reduced-motion:reduce){:host *{transition:none!important;animation:none!important}}"
     },
     {
-      "name": "Mot-symbole vectoriel",
-      "kind": "brand",
-      "description": "Dessin en tracés SVG : levois en minuscules, liaison v–o et point orange. Le lien conserve un nom accessible et une cible de 44 px minimum.",
-      "html": "<a class=\"ds-brand\" href=\"/\" aria-label=\"LEVOIS, accueil\"><img src=\"/brand/levois-horizontal.svg\" width=\"129\" height=\"40\" alt=\"\"></a>",
-      "css": ".ds-brand{display:inline-flex;align-items:center;min-height:44px}.ds-brand img{width:129px;height:40px}.ds-brand:focus-visible{outline:3px solid var(--levois-accent);outline-offset:5px}"
+      "name": "Bloc de synthèse",
+      "kind": "card",
+      "refersTo": "synthesis-card",
+      "description": "Une idée par bloc, surface claire et trait fin. Les trois blocs réels utilisent le contenu dérivé des réponses, pas cet exemple de mise en forme.",
+      "html": "<section class=\"ds-synthesis\" aria-labelledby=\"ds-synthesis-title\"><h2 id=\"ds-synthesis-title\">La prochaine étape utile</h2><p>Une action concrète à préparer cette semaine, liée aux réponses de votre diagnostic.</p></section>",
+      "css": ".ds-synthesis{padding:28px 30px;border:1px solid var(--v7-line,#dcd9d2);border-radius:14px;background:var(--v7-surface,#FDFCFA);color:var(--v7-ink,#141414);box-shadow:none;font:400 17px/1.65 \"Plus Jakarta Sans\",Satoshi,sans-serif}.ds-synthesis h2{margin:0 0 12px;font:500 clamp(22px,2.3vw,28px)/1.25 Satoshi,sans-serif;letter-spacing:-.025em}.ds-synthesis p{margin:0}@media(max-width:760px){.ds-synthesis{padding:24px 18px}}"
     }
   ],
   "narrative": {
-    "northStar": "Une vie derrière chaque adresse.",
-    "overview": "Identité finale validée par l’utilisateur le **6 septembre 2026**, applicable à **tout le site public**. L’exploration artistique est close. Le quartier miniature, Satoshi et le cobalt relient une adresse, les faits du marché, le projet personnel et l’accompagnement de Mouaad.\n\nL’interface est lumineuse, calme et concrète. La composition, le rythme et les images portent l’émotion ; les outils et les textes longs gardent la même identité avec moins de mise en scène. La première compréhension précède les coordonnées facultatives.",
+    "northStar": "Une lecture claire, sur un même papier.",
+    "overview": "Référence extraite de l’implémentation du **25 octobre 2026** : un fond ivoire continu, une typographie en encre, des actions nettes et des images reliées au sujet. L’accueil, les diagnostics et la synthèse privilégient la lecture et les choix explicites. Les grandes surfaces sombres, le cobalt dominant et le quartier miniature comme composition d’accueil appartiennent aux directions précédentes.\n\nCe document décrit le monde actuellement implémenté. Il remplace l’autorité visuelle de septembre ; il ne constitue ni une nouvelle exploration artistique ni une certification d’accessibilité ou de performance. Les ressources historiques peuvent conserver des règles locales de compatibilité.",
     "keyCharacteristics": [
-      "Un quartier illustré reconnaissable et une action réelle immédiatement accessible.",
-      "Une seule famille de lecture ; des titres amples et réguliers.",
-      "Le cobalt pour agir ou sélectionner, l’encre pour comprendre.",
-      "Des surfaces sobres, des séparations fines et une présence humaine continue."
+      "Une même surface ivoire de l’en-tête au pied de page.",
+      "Des titres Satoshi en casse naturelle et un mot-symbole LEVOIS en capitales espacées.",
+      "Des actions en encre localisées, des bordures fines et des surfaces secondaires presque blanches.",
+      "Des images documentées, une présence identifiable de Mouaad et une collecte de coordonnées annoncée."
     ],
     "rules": [
       {
-        "name": "Accents maîtrisés",
-        "body": "Le cobalt reste la couleur des actions et des données principales. L’orange humain human (#f47b20) est le seul accent secondaire : point du i, détail du portrait, numéros sur fond nuit. Aucune grande surface ni bouton orange, aucun dégradé bleu-orange, aucun état communiqué par l’orange seul. Les bleus et neutres dominent ; l’orange reste nettement sous 10 % de la composition.",
+        "name": "Continuous Paper",
+        "body": "L’accueil, les diagnostics, leurs panneaux d’aide et le pied de page partagent une lecture claire sur fond clair ; ne pas réintroduire de grandes bandes cobalt, forêt ou nuit pour fabriquer du contraste.",
         "section": "colors"
       }
     ],
     "dos": [
-      "**Do** reprendre les tokens publics, Satoshi et les composants existants pour toute route publique.",
-      "**Do** donner une première compréhension avant les coordonnées et conserver une sortie volontaire.",
-      "**Do** joindre aux chiffres leurs sources et limites, et aux états une explication indépendante de la couleur.",
-      "**Do** préserver clavier, focus visible, lecture mobile et fonctionnement sans mouvement."
+      "**Do** partir des styles V7 actifs et de leur cascade pour réutiliser un composant.",
+      "**Do** conserver les surfaces claires continues et réserver l’encre pleine aux commandes et petits repères.",
+      "**Do** distinguer titres Satoshi et corps Plus Jakarta Sans tels qu’ils sont implémentés.",
+      "**Do** annoncer la capture, rendre les états explicites et préserver les anciennes lectures.",
+      "**Do** maintenir les libellés, le focus visible, le repli mobile et la lecture sans mouvement."
     ],
     "donts": [
-      "**Don't** rouvrir une direction, une palette ou une composition générale sans défaut concret d’usage, d’accessibilité ou de faisabilité.",
-      "**Don't** importer le thème privé ou appliquer une ancienne autorité visuelle au public.",
-      "**Don't** accumuler cartes, cadres arrondis, ombres, effets décoratifs ou familles typographiques.",
-      "**Don't** présenter une illustration, une maquette ou des données DVF comme une preuve commerciale individuelle.",
-      "**Don't** promettre une validation d’accessibilité ou une performance mesurée à partir de cette documentation."
+      "**Don't** réintroduire l’ancienne autorité cobalt de septembre, Archivo Black ou le logo SVG historique dans l’en-tête actuel.",
+      "**Don't** accumuler grands aplats sombres, ombres, ornements ou animations pour compenser une hiérarchie faible.",
+      "**Don't** remplacer la mesure du header par des espacements arbitraires propres à chaque route.",
+      "**Don't** présenter une acceptation d’envoi comme une réception garantie ni demander le téléphone comme condition de la synthèse.",
+      "**Don't** annoncer une certification d’accessibilité, un niveau de concours de design ou une performance mesurée à partir de cette documentation."
     ]
   }
 }
