@@ -1,21 +1,476 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import {resources} from '../../data/resources';
-import {getResourceContent} from '../../data/resourceContent';
-export function getStaticPaths(){return resources.map(resource=>({params:{slug:resource.slug},props:{resource}}));}
-const {resource}=Astro.props;
-const content=getResourceContent(resource.id);
+import { resources } from '../../data/resources';
+import { getResourceContent } from '../../data/resourceContent';
+
+export function getStaticPaths() {
+  return resources.map((resource) => ({
+    params: { slug: resource.slug },
+    props: { resource },
+  }));
+}
+
+const { resource } = Astro.props;
+const content = getResourceContent(resource.id);
+
+// Autres ressources pour le maillage interne SEO
+const otherResources = resources.filter((r) => r.id !== resource.id).slice(0, 3);
 ---
-<Layout title={resource.titre} description={resource.question+' '+resource.benefice}>
-<article class="lv-wrap lv-editorial"><header><a class="lv-text-link" href="/ressources/">Les six ressources</a><h1>{resource.titre}</h1><p class="lv-intro">{resource.question}</p></header><div class="lv-editorial-grid"><aside class="lv-editorial-index"><a href="/lecture/">Revenir à ma lecture</a><a href={'/situer-ma-vente/?s='+content.situationLiee}>Relier cette ressource à ma vente</a><button type="button" class="lv-text-link" data-resource-print>Imprimer cette ressource</button><p class="lv-note">Consultation libre, sans inscription.</p></aside><div class="lv-prose">
-<section class="lv-next"><h2>La réponse courte</h2><p>{content.reponseCourte}</p></section>
-{content.explication.map(p=><p>{p}</p>)}
-<h2>Exemple illustratif · {content.exemple.titre}</h2><p>{content.exemple.texte}</p><p class="lv-note">Exemple pédagogique, pas le récit d’une transaction réalisée par Mouaad.</p>
-<h2>Les raccourcis à éviter</h2><ul>{content.erreurs.map(item=><li>{item}</li>)}</ul>
-<h2>{content.checklist.titre}</h2><ol>{content.checklist.items.map(item=><li>{item}</li>)}</ol>
-<section class="lv-limit"><h2 style="font-size:21px;margin:0 0 14px">Ce que cette ressource ne peut pas conclure</h2><p>{content.limite}</p></section>
-<h2>Votre prochaine action utile</h2><p>{content.action}</p>
-<div class="lv-actions"><a class="lv-button" href="/lecture/">Revenir à ma lecture</a><a class="lv-secondary" href={'/situer-ma-vente/?s='+content.situationLiee}>Situer ma vente</a></div>
-</div></div></article>
+
+<Layout 
+  title={`${resource.titre} · Guide Immobilier Chartres & Lèves · LEVOIS`} 
+  description={`${resource.question} ${resource.benefice}`}
+>
+  <main class="res-article-page">
+    <div class="w">
+
+      <!-- FIL D'ARIANE ÉDITORIAL -->
+      <nav class="res-breadcrumb" aria-label="Fil d'Ariane">
+        <a href="/ressources/">← Centre de ressources &amp; analyses</a>
+        <span class="sep">/</span>
+        <span class="curr">{resource.titre}</span>
+      </nav>
+
+      <!-- EN-TÊTE DE L'ARTICLE -->
+      <header class="res-art-header">
+        <span class="res-art-tag">Guide Pratique &amp; Analyse Locale</span>
+        <h1>{resource.titre}</h1>
+        <p class="res-art-lead">{resource.question}</p>
+        <div class="res-art-meta">
+          <span>Par <strong>Mouaad Boullourou</strong> · SAFTI Lèves &amp; Chartres</span>
+          <span class="dot">·</span>
+          <span>{resource.duree}</span>
+        </div>
+      </header>
+
+      <!-- CORPS DE L'ARTICLE & SIDEBAR -->
+      <div class="res-art-layout">
+        <article class="res-art-content">
+
+          <!-- RÉPONSE COURTE / RÉSUMÉ EXÉCUTIF -->
+          <div class="res-box-reponse">
+            <span class="res-box-ey">L'essentiel en 30 secondes</span>
+            <h2>La réponse courte</h2>
+            <p>{content.reponseCourte}</p>
+          </div>
+
+          <!-- DÉVELOPPEMENT MÉTHODOLOGIQUE -->
+          <div class="res-prose">
+            {content.explication.map((p) => (
+              <p>{p}</p>
+            ))}
+
+            <h2>Exemple illustratif : {content.exemple.titre}</h2>
+            <p>{content.exemple.texte}</p>
+
+            <h2>Les raccourcis et erreurs à éviter</h2>
+            <ul class="res-list-warn">
+              {content.erreurs.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+
+            <h2>{content.checklist.titre}</h2>
+            <ol class="res-list-check">
+              {content.checklist.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ol>
+
+            <div class="res-box-limit">
+              <h3>Ce que cette ressource ne peut pas remplacer</h3>
+              <p>{content.limite}</p>
+            </div>
+
+            <h2>Votre prochaine action utile</h2>
+            <p>{content.action}</p>
+          </div>
+
+          <!-- ENCART AUTEUR MOUAAD BOULLOUROU -->
+          <div class="res-author-card">
+            <img 
+              src="/v7/asset-07.webp" 
+              alt="Mouaad Boullourou" 
+              class="res-author-img" 
+              width="80" 
+              height="80"
+              loading="lazy"
+            />
+            <div class="res-author-info">
+              <h3>Besoin d'un éclairage concret sur votre situation ?</h3>
+              <p class="res-author-sub">
+                Mouaad Boullourou · Conseiller indépendant SAFTI (RSAC Chartres n° 824 194 419)
+              </p>
+              <p class="res-author-bio">
+                Installé à Lèves, j'accompagne les familles du bassin chartrain avec une approche fondée sur les données réelles des notaires et la franchise de terrain.
+              </p>
+              <div class="res-author-actions">
+                <a class="btn-primary" href="/situer-ma-vente/">Situer ma vente →</a>
+                <a class="phone-btn phone-nowrap" href="tel:+33781380121">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                  <span class="phone-nowrap">07 81 38 01 21</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+        <!-- COLONNE LATÉRALE (SOMMAIRE & AUTRES ARTICLES) -->
+        <aside class="res-art-sidebar">
+          <div class="res-sidebar-box">
+            <h3>Poursuivre votre lecture</h3>
+            <div class="res-sidebar-links">
+              {otherResources.map((other) => (
+                <a class="res-sidebar-item" href={`/ressources/${other.slug}/`}>
+                  <span class="res-sidebar-tag">{other.duree}</span>
+                  <strong>{other.titre}</strong>
+                </a>
+              ))}
+            </div>
+            <div class="res-sidebar-cta">
+              <a class="btn-outline" href="/ressources/">Voir toutes les analyses →</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+    </div>
+  </main>
 </Layout>
-<script>document.querySelector('[data-resource-print]')?.addEventListener('click',()=>window.print());</script>
+
+<style>
+.res-article-page {
+  background: var(--v7-paper);
+  padding: clamp(64px, 8vw, 96px) 0 100px;
+  color: var(--v7-ink);
+}
+
+.res-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  margin-bottom: 32px;
+}
+
+.res-breadcrumb a {
+  color: var(--v7-muted);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.res-breadcrumb a:hover {
+  color: var(--v7-orange);
+}
+
+.res-breadcrumb .sep {
+  color: rgba(19, 42, 34, 0.2);
+}
+
+.res-breadcrumb .curr {
+  color: var(--v7-ink);
+  font-weight: 500;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.res-art-header {
+  max-width: 820px;
+  margin-bottom: 48px;
+  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
+  padding-bottom: 36px;
+}
+
+.res-art-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--v7-orange);
+  background: rgba(194, 94, 26, 0.08);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.res-art-header h1 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: clamp(32px, 4.4vw, 50px);
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+}
+
+.res-art-lead {
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.5;
+  color: var(--v7-muted);
+  margin-bottom: 20px;
+}
+
+.res-art-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--v7-muted);
+}
+
+.res-art-meta .dot {
+  opacity: 0.4;
+}
+
+.res-art-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 56px;
+  align-items: flex-start;
+}
+
+@media (max-width: 960px) {
+  .res-art-layout {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+.res-box-reponse {
+  background: rgba(19, 42, 34, 0.04);
+  border-left: 4px solid var(--v7-ink);
+  border-radius: 0 16px 16px 0;
+  padding: 24px 28px;
+  margin-bottom: 40px;
+}
+
+.res-box-ey {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--v7-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.res-box-reponse h2 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--v7-ink);
+}
+
+.res-box-reponse p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--v7-ink);
+  margin: 0;
+}
+
+.res-prose {
+  font-size: 17px;
+  line-height: 1.7;
+  color: rgba(19, 42, 34, 0.9);
+}
+
+.res-prose h2 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 44px 0 16px;
+  color: var(--v7-ink);
+}
+
+.res-prose p {
+  margin: 0 0 20px;
+}
+
+.res-list-warn,
+.res-list-check {
+  margin: 0 0 28px 24px;
+  padding: 0;
+}
+
+.res-list-warn li,
+.res-list-check li {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.res-box-limit {
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 36px 0;
+}
+
+.res-box-limit h3 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--v7-ink);
+}
+
+.res-box-limit p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--v7-muted);
+}
+
+/* CARTE AUTEUR MOUAAD */
+.res-author-card {
+  margin-top: 56px;
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.12);
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  box-shadow: 0 8px 24px rgba(19, 42, 34, 0.04);
+}
+
+@media (max-width: 640px) {
+  .res-author-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.res-author-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid var(--v7-orange);
+}
+
+.res-author-info h3 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.res-author-sub {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--v7-orange);
+  margin-bottom: 12px;
+}
+
+.res-author-bio {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--v7-muted);
+  margin-bottom: 20px;
+}
+
+.res-author-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .res-author-actions {
+    justify-content: center;
+  }
+}
+
+.phone-nowrap {
+  white-space: nowrap !important;
+}
+
+/* SIDEBAR */
+.res-sidebar-box {
+  background: #FFFFFF;
+  border: 1px solid rgba(19, 42, 34, 0.1);
+  border-radius: 20px;
+  padding: 28px 24px;
+  position: sticky;
+  top: 100px;
+}
+
+.res-sidebar-box h3 {
+  font-family: 'Satoshi', sans-serif !important;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(19, 42, 34, 0.08);
+}
+
+.res-sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.res-sidebar-item {
+  display: block;
+  text-decoration: none;
+  color: var(--v7-ink);
+  transition: transform 0.2s;
+}
+
+.res-sidebar-item:hover {
+  transform: translateX(4px);
+}
+
+.res-sidebar-item:hover strong {
+  color: var(--v7-orange);
+}
+
+.res-sidebar-tag {
+  display: block;
+  font-size: 11px;
+  color: var(--v7-muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.res-sidebar-item strong {
+  font-size: 14px;
+  line-height: 1.4;
+  display: block;
+  transition: color 0.2s;
+}
+
+.res-sidebar-cta {
+  border-top: 1px solid rgba(19, 42, 34, 0.08);
+  padding-top: 16px;
+}
+
+.res-sidebar-cta .btn-outline {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: 1px solid rgba(19, 42, 34, 0.2);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--v7-ink);
+  transition: all 0.2s;
+}
+
+.res-sidebar-cta .btn-outline:hover {
+  border-color: var(--v7-ink);
+  background: rgba(19, 42, 34, 0.04);
+}
+</style>
