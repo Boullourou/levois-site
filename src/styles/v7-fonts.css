@@ -1,2 +1,27 @@
-@font-face{font-family:"LEVOIS Display";src:url(/v7/asset-01.woff) format('woff');font-display:swap}
-@font-face{font-family:"LEVOIS Text";src:url(/v7/asset-02.woff) format('woff');font-display:swap}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-500.woff2') format('woff2');
+  font-weight: 500 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/satoshi-700.woff2') format('woff2');
+  font-weight: 700 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/fonts/plus-jakarta-sans-latin-variable.woff2') format('woff2');
+  font-weight: 300 800;
+  font-display: swap;
+}
