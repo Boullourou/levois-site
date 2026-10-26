@@ -142,6 +142,10 @@ Ce lanceur reconstruit le site puis utilise une D1 locale isolée sur `http://12
 
 Le cockpit privé utilise ses propres services, contrôles Cloudflare Access/CSRF et le binding `COCKPIT_DB`. Voir [docs/cockpit/README.md](docs/cockpit/README.md). La présence du code cockpit ne garantit pas l’activation de ses bindings dans chaque environnement ; ne pas élargir la configuration de production pour une modification publique.
 
+## Textes de l’accueil
+
+L’option 3 « Retrouver de la place pour vivre », validée le 26 octobre 2026, est intégrée dans `src/components/home/v7-content.html`. Les textes complets des options 1 « Choc & Protection » et 2 « Vérité de Terrain » sont conservés pour les futures pages dédiées et les carrousels dans [l’archive de copywriting](docs/COPYWRITING_ACCUEIL_2026-10-26.md).
+
 ## Publication et propriété
 
 Le dépôt est `Boullourou/levois-site`, projet Cloudflare Pages `levois-site`. La branche `main` alimente la production `levois.fr` via l’intégration Git. Les redirections historiques sont dans `public/_redirects` ; `/reprendre` est désormais une vraie page et ne doit plus rediriger vers le vendeur. Vérifier le déploiement et ses routes après le push, en conservant les réglages existants.

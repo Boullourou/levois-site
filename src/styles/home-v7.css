@@ -1,8 +1,6 @@
 /* Homepage: continuous paper, restrained ink, three clear project actions. */
 .v7-home { --home-action-orange: #F97316; }
-/* Three restrained accents: local signature, first action, human hand-off. */
-.hero-kicker::before { content: ''; display: inline-block; width: 22px; height: 2px; margin-right: 10px; vertical-align: middle; background: var(--home-action-orange); }
-.door-vendre .door-arrow, .advisor-call > [aria-hidden] { display: inline-grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: var(--home-action-orange); color: #141413; font-size: 20px; line-height: 1; }
+/* Orange appears only while hovering a project choice. */
 .hero-dramatic { padding: clamp(28px, 4.5vw, 60px) 0 64px; background: var(--v7-paper); }
 .hero-top-row { display: flex; align-items: center; margin-bottom: 36px; }
 .advisor-trust-badge { display: inline-flex; align-items: center; gap: 12px; }
@@ -20,10 +18,14 @@
 .levois-v7 .door-card { color: var(--v7-ink); }
 .levois-v7 .door-vendre { background: var(--v7-ink); border-color: var(--v7-ink); color: var(--v7-paper); }
 .door-action { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; font-size: 15px; font-weight: 600; }
-.door-arrow { flex-shrink: 0; font-style: normal; font-size: 20px; }
+.door-arrow { display: inline-grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; font-style: normal; font-size: 20px; line-height: 1; transition: background-color .18s, color .18s; }
 .door-card:hover { background: var(--v7-surface); border-color: rgba(20, 20, 20, .2); }
 .levois-v7 .door-vendre:hover { background: #2C2D29; border-color: #2C2D29; }
+.levois-v7 .hero-journey-note { max-width: 86ch; margin: 16px 0 0; font-size: 13px; line-height: 1.7; color: var(--v7-muted); }
 .hero-local-link { display: inline-flex; gap: 12px; align-items: center; min-height: 44px; margin-top: 15px; font-size: 14px; text-underline-offset: 5px; }
+@media (hover: hover) and (pointer: fine) {
+  .door-card:hover .door-arrow { background: var(--home-action-orange); color: var(--v7-ink); }
+}
 
 /* Quiet raised surfaces keep the validated editorial columns intact. */
 .market-blindspots, .local-market-sec, .life-split-sec, .opp-dramatic-sec, .res-editorial-sec, .advisor-portrait-sec { padding: 76px 0; background: var(--v7-paper); }
@@ -37,6 +39,12 @@
 .chapter-link { display: inline-flex; align-items: baseline; gap: 10px; font-size: 14px; font-weight: 600; line-height: 1.6; text-underline-offset: 4px; }
 .market-blindspot .chapter-link { margin-top: auto; padding-top: 10px; }
 .chapter-link span { flex-shrink: 0; }
+
+.home-diagnostic-sec { padding: 56px 0; background: var(--v7-paper); border-bottom: 1px solid var(--v7-line); }
+.home-diagnostic-layout { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+.home-diagnostic-copy, .home-diagnostic-action { min-width: 0; }
+.home-diagnostic-copy > p:last-child { max-width: 65ch; color: var(--v7-body); }
+.home-diagnostic-action > p { font-size: 13px; line-height: 1.7; color: var(--v7-muted); margin: 12px 0 0; }
 
 .local-market-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
 .local-market-media { margin: 0; min-width: 0; }
@@ -154,7 +162,10 @@
   .market-blindspots-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .levois-v7 .market-blindspot h3 { font-size: 24px; }
   .market-blindspot .chapter-link { padding-top: 0; }
-  .opp-cards-duo, .res-editorial-header, .res-cover-grid, .advisor-portrait-card { grid-template-columns: minmax(0, 1fr); }
+  .home-diagnostic-sec { padding-block: 40px; }
+  .home-diagnostic-layout { gap: 20px; }
+  .home-diagnostic-action > .btn-primary { width: 100%; }
+  .home-diagnostic-layout, .opp-cards-duo, .res-editorial-header, .res-cover-grid, .advisor-portrait-card { grid-template-columns: minmax(0, 1fr); }
   .opp-ledger-card { padding: 24px 20px; }
   .stat-amount, .team-highlight { font-size: 27px; }
   .res-editorial-header { gap: 8px; margin-bottom: 28px; }
@@ -167,5 +178,5 @@
   .advisor-cta-row { align-items: stretch; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .door-card, .btn-primary, .btn-secondary { transition: none; }
+  .door-card, .door-arrow, .btn-primary, .btn-secondary { transition: none; }
 }
