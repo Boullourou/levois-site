@@ -78,6 +78,8 @@ Les captures et relevés de la passe locale sont conservés dans `artifacts/conv
 
 **Accent fonctionnel.** L’ambre `accent`, exposé aussi sous les noms historiques `--v7-rust` et `--v7-orange`, sert notamment au focus et à certains repères locaux. Il ne remplace pas l’encre des CTA principaux. Les couleurs d’erreur ou de succès restent des états accompagnés d’un texte, pas des variantes de marque.
 
+**Touches orange de l’accueil — essai du 26 octobre.** `--home-action-orange: #F97316` est limité à trois détails : le trait précédant le territoire dans le hero, la pastille de flèche de la porte vendeur, et celle de l’appel final à Mouaad. Les fonds des boutons, les titres et les autres actions restent inchangés. Ces éléments sont décoratifs, sans information accessible uniquement par la couleur. La version sans ces accents reste identifiée par le commit `d6e1360` ; annuler le commit de cet essai restaure la présentation précédente.
+
 **The Continuous Paper Rule.** L’accueil, les diagnostics, leurs panneaux d’aide et le pied de page partagent une lecture claire sur fond clair ; ne pas réintroduire de grandes bandes cobalt, forêt ou nuit pour fabriquer du contraste.
 
 ## Typography

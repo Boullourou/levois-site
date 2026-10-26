@@ -1,4 +1,8 @@
 /* Homepage: continuous paper, restrained ink, three clear project actions. */
+.v7-home { --home-action-orange: #F97316; }
+/* Three restrained accents: local signature, first action, human hand-off. */
+.hero-kicker::before { content: ''; display: inline-block; width: 22px; height: 2px; margin-right: 10px; vertical-align: middle; background: var(--home-action-orange); }
+.door-vendre .door-arrow, .advisor-call > [aria-hidden] { display: inline-grid; place-items: center; flex: 0 0 28px; width: 28px; height: 28px; border-radius: 50%; background: var(--home-action-orange); color: #141413; font-size: 20px; line-height: 1; }
 .hero-dramatic { padding: clamp(28px, 4.5vw, 60px) 0 64px; background: var(--v7-paper); }
 .hero-top-row { display: flex; align-items: center; margin-bottom: 36px; }
 .advisor-trust-badge { display: inline-flex; align-items: center; gap: 12px; }
