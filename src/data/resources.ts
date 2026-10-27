@@ -70,6 +70,16 @@ export const resources: ResourceMeta[] = [
     cta: 'Commencer',
     imageSlot: 'ressource-reprendre-commercialisation',
   },
+  {
+    id: 'marge-negociation-erreur-25000',
+    slug: 'marge-negociation-erreur-25000',
+    titre: "L'erreur de la marge de négociation à 25 000 €",
+    question: "Pourquoi surévaluer de 10 % pour 'se garder une marge' fait perdre de l'argent ?",
+    benefice: "Comprendre la mécanique des alertes acheteurs et pourquoi le juste prix dès le premier jour protège votre capital net vendeur.",
+    duree: '6 min de lecture',
+    cta: 'Comprendre',
+    imageSlot: 'resource-marge-negociation',
+  },
 ];
 
 export function getResource(id: string): ResourceMeta {

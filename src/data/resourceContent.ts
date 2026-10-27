@@ -196,5 +196,38 @@ export const resourceContents:ResourceContent[]=[
     "action": "Reconstituer une chronologie courte puis choisir une information utile à obtenir avant de décider comment poursuivre.",
     "situationLiee": "longtemps"
   }
+,
+  {
+    "id": "marge-negociation-erreur-25000",
+    "reponseCourte": "Afficher un prix supérieur de 10 % pour anticiper une négociation est le réflexe le plus coûteux du marché immobilier actuel. En 2026, les acheteurs solvables filtrent par budget strict et alertes automatiques : un bien surévalué est ignoré dès son lancement, perd sa fraîcheur en 90 jours et finit vendu avec une décote subie supérieure à la marge initiale.",
+    "explication": [
+      "Le mythe de la marge de négociation repose sur une vision dépassée où l'acheteur découvrait les biens en vitrine. Aujourd'hui, les acquéreurs comparent instantanément l'historique DVF des ventes réelles de la rue et les barèmes au mètre carré sur leur smartphone. Lorsqu'une maison est positionnée 10 % au-dessus de sa valeur réelle, elle sort des critères des acheteurs qualifiés et n'apparaît que face à des profils dont les attentes ne correspondent pas au bien.",
+      "L'effet d'usure de l'annonce : les trois premières semaines concentrent 80 % de la visibilité et des contacts qualifiés. Si aucun contact sérieux n'intervient durant cette fenêtre, l'annonce stagne. Au-delà de 90 jours de parution, les acheteurs présument un défaut caché ou une situation de blocage, ce qui ouvre la porte aux offres agressives.",
+      "La création de tension concurrentielle : un bien positionné au juste prix de marché dès le premier jour suscite des visites groupées et des offres au prix, neutralisant toute tentative de négociation à la baisse."
+    ],
+    "exemple": {
+      "titre": "Cas réel d'une maison à Lèves affichée à 275 000 €",
+      "texte": "Pour une maison dont la valeur de marché établie par les ventes DVF récentes était de 250 000 €, les vendeurs ont choisi d'afficher 275 000 € pour 'se garder 25 000 € de marge'. Résultat après 4 mois sans visite qualifiée et deux baisses successives : une offre acceptée à 225 000 €, soit 25 000 € de perte nette par rapport à une mise en vente au prix dès le jour 1."
+    },
+    "erreurs": [
+      "Croire que les acheteurs feront une offre basse s'ils aiment le bien (ils ne visitent tout simplement pas).",
+      "Confondre les prix affichés sur les portails avec les prix réels enregistrés chez les notaires.",
+      "Compenser une marge de négociation imaginaire au détriment de l'effet nouveauté.",
+      "Procéder à des baisses de prix successives et timides qui décrédibilisent l'annonce."
+    ],
+    "checklist": {
+      "titre": "Les 5 vérifications avant de fixer son prix de départ",
+      "items": [
+        "Consulter les transactions réelles DVF dans un rayon de 500 mètres sur les 12 derniers mois.",
+        "Identifier la tranche de prix exacte dans laquelle les alertes des acheteurs se déclenchent.",
+        "Neutraliser l'affectif et les dépenses de décoration non valorisables sur le bâti.",
+        "Vérifier le stock de biens concurrents actuellement disponibles sur Lèves et Chartres.",
+        "Fixer une stratégie de prix d'appel créant la concurrence entre acheteurs."
+      ]
+    },
+    "limite": "Le juste prix de marché ne garantit pas une vente instantanée si les diagnostics ou l'état du bâti comportent des anomalies non levées préalablement.",
+    "action": "Consulter les repères DVF récents de votre secteur ou réaliser une clarification de valeur sur levois.fr avant toute diffusion.",
+    "situationLiee": "preparer"
+  }
 ];
 export function getResourceContent(id:string):ResourceContent{const content=resourceContents.find(r=>r.id===id);if(!content)throw new Error('Ressource inconnue : '+id);return content;}
