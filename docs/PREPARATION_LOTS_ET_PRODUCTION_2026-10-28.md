@@ -2,6 +2,8 @@
 
 État du 28 octobre 2026. Travail conservé dans la [PR de preview nº 5](https://github.com/Boullourou/levois-site/pull/5), branche `codex/editorial-conversion-20261028`. Aucune fusion, migration de production, activation de calendrier ni publication sociale effectuée.
 
+**Recette distante complétée :** quatre demandes réelles fictives, sept acceptations Resend, sept messages reçus selon confirmation de Mouaad, puis deux rejeux sans nouvelle tentative de transport. [Résultats, captures mobiles et limites](RECETTE_DISTANTE_RESULTATS_2026-10-28.md). Le candidat applicatif testé est `70e7abb`.
+
 ## Livré
 
 | Élément | Résultat et contrat |
@@ -33,8 +35,8 @@ Les reçus de publication ont été testés avec transports simulés, y compris 
 
 ## Prérequis restants
 
-1. **Recette navigateur** : ouvrir [la preview stable](https://codex-editorial-conversion-2.levois-site.pages.dev/), terminer Cloudflare Access et confirmer que la page LEVOIS apparaît. Ne communiquer aucun code de connexion. Vérifier ensuite le SHA exact de preview indiqué par la PR avant les essais.
-2. **Destinataires** : confirmer la boîte test et l'adresse effective des notifications conseiller de preview. Quatre soumissions fictives produiront trois copies de synthèse et quatre notifications conseiller, soit sept messages. Aucun envoi n'a encore eu lieu.
+1. **Recette navigateur et livraison** : connexion Access, quatre demandes et sept réceptions désormais confirmées. Deux rejeux conservent les mêmes compteurs et horodatages D1. Voir les résultats distants pour la couverture précise et les contrôles encore uniquement locaux.
+2. **Validation complémentaire** : la suite complète de pannes simulées, stockage refusé, no-JS et Axe n'a pas été rejouée dans le navigateur distant. Aucun résultat local n'est présenté comme distant.
 3. **Recette machine** : vérifier l'autorisation Access propre aux scripts/Actions. Le login humain n'authentifie pas ces outils. Aucun jeton ni politique d'accès n'a été créé.
 4. **Premier lot réel** : fournir les sept SITE.json, une identité de campagne durable, les couvertures finies, les dates et la revue réelles. Les flags de fabrication ne constituent pas cette revue.
 5. **Limova** : vérifier les capacités des connecteurs, la lecture authentifiée des reçus Actions, le journal anti-doublon social et l'alerte en cas de retard. Les présentations Facebook/LinkedIn doivent contenir l'URL de l'article, préparée sans réécriture improvisée.

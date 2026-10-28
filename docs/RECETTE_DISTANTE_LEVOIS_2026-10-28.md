@@ -1,5 +1,7 @@
 # Recette distante LEVOIS — protocole préparé le 28 octobre 2026
 
+**Actualisation :** le protocole ci-dessous conserve son état de préparation historique. La recette exécutée sur le candidat `70e7abb`, les sept réceptions confirmées et les deux rejeux sont consignés dans [les résultats distants](RECETTE_DISTANTE_RESULTATS_2026-10-28.md). Les mentions « en attente » ci-dessous ne décrivent donc plus toutes l'état courant.
+
 **À exécuter après ouverture autorisée de la preview et confirmation des destinataires.** Aucun envoi réel n’a été effectué pour rédiger cette procédure. Elle ne vaut ni validation distante ni autorisation de publication en production.
 
 ## Cible et état des preuves
