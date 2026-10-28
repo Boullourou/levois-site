@@ -1,0 +1,175 @@
+name: Échéances éditoriales LEVOIS (opt-in)
+
+# Dormant until merged to the default branch AND explicitly enabled.
+# UTC wakeups cover both Paris offsets. The script applies the Paris clock.
+# GitHub does not guarantee an on-time start; build + deploy add latency.
+on:
+  schedule:
+    - cron: '0,20,40 5,6,7,8 * * *'
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Environnement à vérifier
+        type: choice
+        options: [preview, production]
+        default: preview
+      deploy:
+        description: Autoriser le déploiement si le catalogue publié a changé
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: levois-editorial-release
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    if: github.event_name == 'workflow_dispatch' || vars.LEVOIS_EDITORIAL_SCHEDULE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Access service credentials are read only in the manifest GET step below.
+    environment: ${{ (inputs.target || vars.LEVOIS_EDITORIAL_TARGET || 'preview') == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
+    outputs:
+      should_build: ${{ steps.due.outputs.should_build }}
+      should_verify: ${{ steps.due.outputs.should_verify }}
+      build_at: ${{ steps.due.outputs.build_at }}
+      target: ${{ steps.target.outputs.target }}
+      branch: ${{ steps.target.outputs.branch }}
+      host: ${{ steps.target.outputs.host }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: npm ci --ignore-scripts
+      - name: Choisir explicitement la destination
+        id: target
+        env:
+          REQUESTED_TARGET: ${{ inputs.target || vars.LEVOIS_EDITORIAL_TARGET || 'preview' }}
+          PRODUCTION_ENABLED: ${{ vars.LEVOIS_EDITORIAL_PRODUCTION_ENABLED }}
+          PREVIEW_HOST: ${{ vars.LEVOIS_EDITORIAL_PREVIEW_HOST || 'https://editorial-preview.levois-site.pages.dev/' }}
+          SOURCE_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [ "$REQUESTED_TARGET" = 'production' ]; then
+            [ "$PRODUCTION_ENABLED" = 'true' ] || { echo 'Production non activée'; exit 1; }
+            [ "$SOURCE_BRANCH" = 'main' ] || { echo 'Production réservée à main'; exit 1; }
+            echo 'target=production' >> "$GITHUB_OUTPUT"
+            echo 'branch=main' >> "$GITHUB_OUTPUT"
+            echo 'host=https://levois.fr/' >> "$GITHUB_OUTPUT"
+          elif [ "$REQUESTED_TARGET" = 'preview' ]; then
+            case "$PREVIEW_HOST" in https://*.levois-site.pages.dev/) ;; *) echo 'Un hôte preview levois-site est requis'; exit 1;; esac
+            echo 'target=preview' >> "$GITHUB_OUTPUT"
+            echo 'branch=editorial-preview' >> "$GITHUB_OUTPUT"
+            echo "host=$PREVIEW_HOST" >> "$GITHUB_OUTPUT"
+          else
+            echo 'Destination inconnue'; exit 1
+          fi
+      - name: Comparer les échéances au catalogue réellement déployé
+        id: due
+        env:
+          EDITORIAL_HOST: ${{ steps.target.outputs.host }}
+          MANUAL_RUN: ${{ github.event_name == 'workflow_dispatch' }}
+          CF_ACCESS_CLIENT_ID: ${{ steps.target.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_ID || '' }}
+          CF_ACCESS_CLIENT_SECRET: ${{ steps.target.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_SECRET || '' }}
+        run: |
+          if [ "$MANUAL_RUN" = 'true' ]; then
+            node scripts/editorial-schedule.mjs --host "$EDITORIAL_HOST" --force
+          else
+            node scripts/editorial-schedule.mjs --host "$EDITORIAL_HOST"
+          fi
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      LEVOIS_EDITORIAL_BUILD_AT: ${{ needs.plan.outputs.build_at }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: node scripts/editorial-check.mjs
+      - run: npm run check
+      - run: npm test
+      # The plan clock is shared by HTML, registry, manifest and confirmation.
+      - run: npm run build
+      - run: node scripts/editorial-schedule.mjs --write-manifest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: editorial-build
+          path: |
+            dist/
+            src/lib/editorial/article-registry.generated.json
+            src/lib/editorial/build-clock.generated.json
+          include-hidden-files: true
+          retention-days: 7
+
+  deploy:
+    needs: [plan, build]
+    if: github.event_name == 'schedule' || inputs.deploy == true
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Deployment credentials stay in the Wrangler step, never content PRs.
+    environment: ${{ needs.plan.outputs.target == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@v4
+        with:
+          name: editorial-build
+          path: .
+      - name: Refuser un build devenu ancien pendant les vérifications
+        env:
+          SOURCE_BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          latest_sha=$(git ls-remote origin "refs/heads/$SOURCE_BRANCH" | cut -f1)
+          [ "$latest_sha" = "$GITHUB_SHA" ] || { echo 'La branche source a avancé ; relancer depuis sa version actuelle.'; exit 1; }
+      - name: Publier le build validé sur la branche choisie
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DEPLOY_BRANCH: ${{ needs.plan.outputs.branch }}
+        run: npx --no-install wrangler pages deploy dist --project-name levois-site --branch "$DEPLOY_BRANCH" --commit-hash "$GITHUB_SHA"
+  verify:
+    needs: [plan, build, deploy]
+    # An already deployed catalogue can be reverified without a second deployment.
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.should_verify == 'true' && (needs.plan.outputs.should_build == 'false' || needs.deploy.result == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ needs.plan.outputs.target == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
+    env:
+      LEVOIS_EDITORIAL_BUILD_AT: ${{ needs.plan.outputs.build_at }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Vérifier le manifeste et chaque URL exacte
+        env:
+          EDITORIAL_HOST: ${{ needs.plan.outputs.host }}
+          CF_ACCESS_CLIENT_ID: ${{ needs.plan.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_ID || '' }}
+          CF_ACCESS_CLIENT_SECRET: ${{ needs.plan.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_SECRET || '' }}
+        run: node scripts/editorial-confirm.mjs --host "$EDITORIAL_HOST" --from-catalog --output artifacts/editorial-publication/receipts.json
+      - name: Conserver les reçus machine, y compris les échecs vérifiés
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-publication-receipts-${{ needs.plan.outputs.target }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/editorial-publication/receipts.json
+          retention-days: 30
+          if-no-files-found: warn

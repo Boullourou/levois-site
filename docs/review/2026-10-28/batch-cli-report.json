@@ -1,0 +1,73 @@
+{
+  "startedAt": "2026-10-28T13:07:55.096Z",
+  "isolatedRoot": "C:\\Users\\PC\\Desktop\\Obsidian Mouaad SAFTI\\levois-site-redesign\\.worktrees\\levois-editorial-20261028\\artifacts\\editorial-20261028\\batch-cli-isolated-g36YAY",
+  "scenarios": [
+    {
+      "name": "npm prepare: seven drafts, no catalog writes, null images, exact Markdown",
+      "state": "passed",
+      "code": 0,
+      "evidence": {
+        "cliState": "prepared",
+        "articles": 7,
+        "catalogFiles": 0,
+        "images": 0,
+        "parisDst": true,
+        "published": false
+      }
+    },
+    {
+      "name": "npm review: validated review still leaves every article draft",
+      "state": "passed",
+      "code": 0,
+      "evidence": {
+        "cliState": "review-record-validated",
+        "catalogFiles": 0,
+        "published": false
+      }
+    },
+    {
+      "name": "npm activate: only the isolated branch receives seven scheduled articles",
+      "state": "passed",
+      "code": 0,
+      "evidence": {
+        "cliState": "staged-scheduled",
+        "catalogFiles": 7,
+        "images": 0,
+        "published": false
+      }
+    },
+    {
+      "name": "npm retry: unchanged actions and byte-identical output/catalog",
+      "state": "passed",
+      "code": 0,
+      "evidence": {
+        "cliState": "staged-scheduled",
+        "actions": [
+          "unchanged",
+          "unchanged",
+          "unchanged",
+          "unchanged",
+          "unchanged",
+          "unchanged",
+          "unchanged"
+        ],
+        "byteIdentical": true,
+        "published": false
+      }
+    },
+    {
+      "name": "npm activate on main: refused before any write",
+      "state": "passed",
+      "code": 0,
+      "evidence": {
+        "refusalExitCode": 1,
+        "catalogByteIdentical": true
+      }
+    }
+  ],
+  "mainCatalogUnchanged": true,
+  "mainEditorialImagesUnchanged": true,
+  "published": false,
+  "completedAt": "2026-10-28T13:08:03.589Z",
+  "dependencyResolution": "ancestor node_modules (junction blocked by sandbox)"
+}

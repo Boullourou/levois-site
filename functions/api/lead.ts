@@ -14,7 +14,12 @@
  *   RATE_LIMIT      : KV optionnel ; à défaut, limitation best effort en mémoire
  */
 
+import type { D1Database } from '@cloudflare/workers-types';
+import { deliverContact } from '../_lib/contact-delivery';
+import { resolveArticleContext } from '../../src/lib/editorial/acquisition-server';
+
 interface Env {
+  RECHERCHE_DB?: D1Database;
   RESEND_API_KEY?: string;
   FORMSPREE_ENDPOINT?: string;
   LEAD_TO_EMAIL?: string;
@@ -322,9 +327,9 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   }
   const body = inconnu;
 
-  // Honeypot : réponse volontairement neutre, sans appel à Resend.
+  // Honeypot: do not fabricate a successful delivery for a rejected request.
   if (typeof body.site_web === 'string' && body.site_web.trim() !== '') {
-    return json({ ok: true });
+    return json({ ok: false, message: 'La demande n’a pas été transmise.' }, 400);
   }
 
   const erreurs: string[] = [];
@@ -352,6 +357,9 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
   const detail = texte(body.detail, 4000);
   const objet = texteLigne(body.objet, 200);
   const message = texte(body.message, 8000);
+  const articleContext = resolveArticleContext(body.articleContext);
+  if (body.articleContext != null && !articleContext) return json({ok:false,message:'L’article joint n’est pas reconnu. Rechargez la page de contact avant de réessayer.'},400);
+  if (body.attachSynthesis === true && (typeof body.synthesis !== 'string' || body.synthesis.length > 30_000)) return json({ok:false,message:'La synthèse jointe est trop volumineuse ou illisible. Décochez son ajout pour transmettre votre message.'},400);
   const contexte = body.contexte && typeof body.contexte === 'object' ? body.contexte as Record<string, any> : null;
   const nomComplet = [prenom, nom].filter(Boolean).join(' ');
 
@@ -382,6 +390,8 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
     annonce ? `Annonce : ${annonce}` : '',
     detail ? `Détail ajouté : ${detail}` : '',
     message ? `Message : ${message}` : '',
+    ...(articleContext ? [`Article consulté : ${articleContext.title}`,`Référence article : ${articleContext.id}`,`Page : https://levois.fr/ressources/${articleContext.slug}/`] : []),
+    ...(body.attachSynthesis === true ? ['','Synthèse LEVOIS jointe avec accord — déclarations du visiteur à vérifier',texte(body.synthesis,30_000)] : []),
   ];
 
   if (estVotreRue) {
@@ -437,6 +447,12 @@ export const onRequestPost = async (ctx: PagesContext<Env>): Promise<Response> =
         }
       }
     }
+  }
+
+  // The current contact form supplies a stable UUID and uses durable receipts.
+  // Older acquisition forms retain their existing transport contract.
+  if (type === 'contact' && body.requestId !== undefined) {
+    return deliverContact(ctx.env, body.requestId, {to,replyTo:email,subject:sujet,text:lignes.filter(Boolean).join('\n')});
   }
 
   if (!apiKey) {

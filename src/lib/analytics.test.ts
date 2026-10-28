@@ -5,9 +5,19 @@ import {
   isAuditEvent,
   journeyForPath,
   safeAuditProperties,
+  safeJourneyProperties,
+  JOURNEY_EVENTS,
 } from './analytics';
 
 describe('analytics privacy contract', () => {
+  it('distinguishes confirmed outcomes and discards personal or free-form labels', () => {
+    expect(JOURNEY_EVENTS.has('synthesis_saved')).toBe(true);
+    expect(JOURNEY_EVENTS.has('contact_message_accepted')).toBe(true);
+    expect(JOURNEY_EVENTS.has('test@example.com')).toBe(false);
+    expect(safeJourneyProperties({step: 2, selected_journey: 'seller', email: 'test@example.com', step_name: '25 rue privée', consent_type: 'texte libre', requestId: 'secret', answers: {budget: 100000}})).toEqual({step: 2, selected_journey: 'seller'});
+    expect(safeAuditProperties('audit_url_readable', {source:'test@example.com'})).toEqual({});
+    expect(safeAuditProperties('audit_result_viewed', {result:'réponse personnelle'})).toEqual({});
+  });
   it('removes query strings and fragments from tracked URLs', () => {
     expect(cleanAnalyticsUrl('https://levois.fr/audit-annonce/?email=test@example.com#outil'))
       .toBe('https://levois.fr/audit-annonce');

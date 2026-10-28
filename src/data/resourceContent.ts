@@ -1,4 +1,4 @@
-/** Six ressources conservées ; formulations alignées sur les limites de la méthode. */
+/** Ressources conservées ; exemples pédagogiques et limites explicites. */
 export interface ResourceContent {id:string;reponseCourte:string;explication:string[];exemple:{titre:string;texte:string};erreurs:string[];checklist:{titre:string;items:string[]};limite:string;action:string;situationLiee:string}
 export const resourceContents:ResourceContent[]=[
   {
@@ -199,34 +199,35 @@ export const resourceContents:ResourceContent[]=[
 ,
   {
     "id": "marge-negociation-erreur-25000",
-    "reponseCourte": "Afficher un prix supérieur de 10 % pour anticiper une négociation est le réflexe le plus coûteux du marché immobilier actuel. En 2026, les acheteurs solvables filtrent par budget strict et alertes automatiques : un bien surévalué est ignoré dès son lancement, perd sa fraîcheur en 90 jours et finit vendu avec une décote subie supérieure à la marge initiale.",
+    "reponseCourte": "Ajouter une marge au prix affiché ne garantit pas de vendre au montant souhaité. Si ce prix dépasse le budget maximal choisi par un acheteur dans sa recherche, l’annonce peut ne pas apparaître dans ses résultats. Comparez les ventes pertinentes et les biens proposés avant de choisir votre prix ; une négociation reste possible, même avec un prix bien argumenté.",
     "explication": [
-      "Le mythe de la marge de négociation repose sur une vision dépassée où l'acheteur découvrait les biens en vitrine. Aujourd'hui, les acquéreurs comparent instantanément l'historique DVF des ventes réelles de la rue et les barèmes au mètre carré sur leur smartphone. Lorsqu'une maison est positionnée 10 % au-dessus de sa valeur réelle, elle sort des critères des acheteurs qualifiés et n'apparaît que face à des profils dont les attentes ne correspondent pas au bien.",
-      "L'effet d'usure de l'annonce : les trois premières semaines concentrent 80 % de la visibilité et des contacts qualifiés. Si aucun contact sérieux n'intervient durant cette fenêtre, l'annonce stagne. Au-delà de 90 jours de parution, les acheteurs présument un défaut caché ou une situation de blocage, ce qui ouvre la porte aux offres agressives.",
-      "La création de tension concurrentielle : un bien positionné au juste prix de marché dès le premier jour suscite des visites groupées et des offres au prix, neutralisant toute tentative de négociation à la baisse."
+      "Un filtre de prix agit sur le montant affiché, pas sur le montant que vous seriez prêt à accepter. Selon le portail et les critères choisis, afficher au-dessus d’un plafond peut écarter l’annonce des résultats correspondants. Cela ne permet pas de compter les acheteurs perdus ni d’expliquer à lui seul un manque de contacts. Vérifiez concrètement la présence de votre annonce dans les recherches pertinentes.",
+      "Une annonce qui reste publiée mérite un examen de son historique : dates, changements de prix, diffusion, consultations et retours de visite. Il n’existe pas ici de données justifiant un seuil universel au-delà duquel elle perdrait son intérêt. Avant d’attribuer le silence au prix, distinguez ce qui est mesuré de ce qui manque.",
+      "Les données DVF décrivent des transactions passées. Elles ne donnent pas le prix initial de l’annonce ni le détail de la négociation. Une vente dans la même rue n’établit donc pas, seule, la valeur de votre logement : date, surface, type de bien et état doivent être examinés, et certaines informations restent inconnues.",
+      "Un prix argumenté aide à expliquer votre position. Il ne garantit ni plusieurs offres, ni une vente au prix, ni un délai. L’acheteur peut discuter le montant en fonction du logement et de son projet. Préparez les éléments qui fondent votre prix et examinez chaque offre dans son ensemble."
     ],
     "exemple": {
-      "titre": "Cas réel d'une maison à Lèves affichée à 275 000 €",
-      "texte": "Pour une maison dont la valeur de marché établie par les ventes DVF récentes était de 250 000 €, les vendeurs ont choisi d'afficher 275 000 € pour 'se garder 25 000 € de marge'. Résultat après 4 mois sans visite qualifiée et deux baisses successives : une offre acceptée à 225 000 €, soit 25 000 € de perte nette par rapport à une mise en vente au prix dès le jour 1."
+      "titre": "Quand le prix affiché dépasse un filtre de recherche",
+      "texte": "Supposons qu’un vendeur ajoute une marge et dépasse ainsi le plafond choisi par un acheteur. Si le portail applique strictement ce plafond, l’annonce n’apparaîtra pas dans cette recherche, même si le vendeur accepterait une offre inférieure. Ce scénario explique un mécanisme possible ; il ne décrit pas une vente observée à Lèves et ne permet de déduire aucune perte ni aucun délai."
     },
     "erreurs": [
-      "Croire que les acheteurs feront une offre basse s'ils aiment le bien (ils ne visitent tout simplement pas).",
+      "Supposer que tous les acheteurs verront l’annonce et proposeront un montant inférieur.",
       "Confondre les prix affichés sur les portails avec les prix réels enregistrés chez les notaires.",
-      "Compenser une marge de négociation imaginaire au détriment de l'effet nouveauté.",
-      "Procéder à des baisses de prix successives et timides qui décrédibilisent l'annonce."
+      "Déduire la valeur exacte du logement d’une seule vente voisine.",
+      "Attendre d’un prix ou d’un changement de prix qu’il garantisse une offre."
     ],
     "checklist": {
       "titre": "Les 5 vérifications avant de fixer son prix de départ",
       "items": [
-        "Consulter les transactions réelles DVF dans un rayon de 500 mètres sur les 12 derniers mois.",
-        "Identifier la tranche de prix exacte dans laquelle les alertes des acheteurs se déclenchent.",
-        "Neutraliser l'affectif et les dépenses de décoration non valorisables sur le bâti.",
-        "Vérifier le stock de biens concurrents actuellement disponibles sur Lèves et Chartres.",
-        "Fixer une stratégie de prix d'appel créant la concurrence entre acheteurs."
+        "Rechercher des ventes comparables et noter leur date, leur source et les informations inconnues.",
+        "Tester les filtres de prix des portails utilisés, sans présumer des critères de tous les acheteurs.",
+        "Distinguer le montant espéré des éléments concrets qui fondent le prix envisagé.",
+        "Comparer les biens proposés dans le secteur sans confondre leurs prix affichés avec des prix de vente.",
+        "Prévoir les observations à recueillir après publication avant de décider d’un éventuel ajustement."
       ]
     },
-    "limite": "Le juste prix de marché ne garantit pas une vente instantanée si les diagnostics ou l'état du bâti comportent des anomalies non levées préalablement.",
-    "action": "Consulter les repères DVF récents de votre secteur ou réaliser une clarification de valeur sur levois.fr avant toute diffusion.",
+    "limite": "Cette explication ne chiffre pas la valeur d’un bien, une marge de négociation acceptable ou une perte évitable. Elle ne prédit ni le délai ni le résultat d’une vente. Les données DVF seules ne mesurent pas l’écart entre prix d’annonce et prix signé.",
+    "action": "Consulter les ventes passées de votre secteur, relever les différences avec votre logement, puis noter ce qu’il reste à vérifier avant de choisir le prix affiché.",
     "situationLiee": "preparer"
   }
 ];

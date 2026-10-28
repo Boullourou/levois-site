@@ -1,0 +1,21 @@
+---
+import { renderEditorialMarkdown } from '../lib/editorial/markdown';
+interface Props { markdown: string; title: string }
+const html = renderEditorialMarkdown(Astro.props.markdown, { title: Astro.props.title });
+---
+<!-- Only the strict AST renderer's escaped output is inserted here. -->
+<div class="editorial-markdown" set:html={html} />
+<style>
+.editorial-markdown :global(h2) { font-family:'Satoshi',sans-serif;font-size:26px;font-weight:700;line-height:1.3;margin:44px 0 16px;color:var(--v7-ink) }
+.editorial-markdown :global(h3) { font-size:21px;line-height:1.4;font-weight:700;margin:30px 0 12px;color:var(--v7-ink) }
+.editorial-markdown :global(p) { margin:0 0 20px }
+.editorial-markdown :global(ul),.editorial-markdown :global(ol) { margin:0 0 24px;padding-inline-start:26px }
+.editorial-markdown :global(ul) { list-style:disc }
+.editorial-markdown :global(ol) { list-style:decimal }
+.editorial-markdown :global(li) { margin-block:8px }
+.editorial-markdown :global(li > ul),.editorial-markdown :global(li > ol) { margin-block:8px }
+.editorial-markdown :global(blockquote) { border-inline-start:3px solid var(--v7-orange);margin:24px 0;padding:4px 0 4px 20px }
+.editorial-markdown :global(blockquote > p:last-child) { margin-bottom:0 }
+.editorial-markdown :global(a) { color:var(--v7-ink);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere }
+.editorial-markdown :global(a:focus-visible) { outline:3px solid #a34510;outline-offset:4px }
+</style>

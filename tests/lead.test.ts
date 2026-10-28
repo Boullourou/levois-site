@@ -67,8 +67,8 @@ describe.sequential('Cloudflare /api/lead', () => {
 
     const response = await onRequest(contexte({ site_web: 'robot' }));
 
-    expect(response.status).toBe(200);
-    expect(await donnees(response)).toEqual({ ok: true });
+    expect(response.status).toBe(400);
+    expect(await donnees(response)).toMatchObject({ ok: false });
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

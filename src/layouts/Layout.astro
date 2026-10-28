@@ -9,12 +9,16 @@ import '../styles/v7.css';
 import '../styles/v7-production.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { getPublishedEditorialArticles } from '../lib/editorial/catalog';
+import { createResourceCatalog, getResourceRegistry } from '../lib/editorial/shared-catalog';
 
 interface Props { 
   homeV7?: boolean; 
   title: string; 
   description?: string; 
   image?: string; 
+  imageAlt?: string;
+  article?: { headline: string; author: { name: string; role: string }; category: string; createdAt?: string; updatedAt?: string; topicId?: string; revision?: number };
   noindex?: boolean; 
   headerTransparent?: boolean; 
   homeV2?: boolean; 
@@ -25,6 +29,8 @@ const {
   title,
   description = site.description,
   image = '/assets/levois-partage.jpg',
+  imageAlt = 'LEVOIS · Conseil immobilier avec Mouaad Boullourou à Lèves et Chartres',
+  article,
   noindex = false,
   homeV7 = false
 } = Astro.props;
@@ -37,10 +43,28 @@ const pageTitle = normalizedTitle === 'Accueil'
   ? 'LEVOIS · Conseil Immobilier & Vente à Lèves et Chartres'
   : (normalizedTitle.includes('LEVOIS') ? normalizedTitle : `${normalizedTitle} · LEVOIS`);
 const shareImage = new URL(image, site.url).href;
+const allArticleIdentities = getResourceRegistry(createResourceCatalog(getPublishedEditorialArticles()));
+const contextPaths = ['/situer-ma-vente', '/ma-recherche', '/vendre-et-acheter', '/lecture', '/contact', '/reprendre', '/votre-rue'];
+const articleRegistry = contextPaths.includes(path) ? allArticleIdentities : article ? allArticleIdentities.filter((entry) => path === `/ressources/${entry.slug}`) : [];
 
 const schemaOrg = {
   '@context': 'https://schema.org',
   '@graph': [
+    ...(article ? [{
+      '@type': 'Article',
+      '@id': `${canonicalUrl}#article`,
+      headline: article.headline,
+      description,
+      mainEntityOfPage: canonicalUrl,
+      url: canonicalUrl,
+      image: shareImage,
+      articleSection: article.category,
+      inLanguage: 'fr-FR',
+      author: { '@type': 'Person', name: article.author.name, jobTitle: article.author.role, ...(article.author.name === 'Mouaad Boullourou' ? { '@id': 'https://levois.fr/#mouaad' } : {}) },
+      publisher: { '@id': 'https://levois.fr/#agent' },
+      ...(article.createdAt ? { dateCreated: article.createdAt } : {}),
+      ...(article.updatedAt ? { dateModified: article.updatedAt } : {}),
+    }] : []),
     {
       '@type': 'RealEstateAgent',
       '@id': 'https://levois.fr/#agent',
@@ -123,15 +147,20 @@ const schemaOrg = {
   <meta property="og:title" content={pageTitle}/>
   <meta property="og:description" content={description}/>
   <meta property="og:image" content={shareImage}/>
-  <meta property="og:image:alt" content="LEVOIS · Conseil immobilier avec Mouaad Boullourou à Lèves et Chartres"/>
+  <meta property="og:image:alt" content={imageAlt}/>
   <meta property="og:site_name" content="LEVOIS"/>
   <meta property="og:locale" content="fr_FR"/>
-  <meta property="og:type" content="website"/>
+  <meta property="og:type" content={article ? 'article' : 'website'}/>
+  {article && <meta property="article:author" content={article.author.name}/>}
+  {article && <meta property="article:section" content={article.category}/>}
+  {article?.updatedAt && <meta property="article:modified_time" content={article.updatedAt}/>}
+  {article?.topicId && <meta name="levois:topic-id" content={article.topicId}/>}
+  {article?.revision !== undefined && <meta name="levois:revision" content={String(article.revision)}/>}
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content={pageTitle}/>
   <meta name="twitter:description" content={description}/>
   <meta name="twitter:image" content={shareImage}/>
-  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)}/>
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg).replace(/</g, '\\u003c')}/>
 </head>
 <body class:list={['levois-v7', homeV7 ? 'v7-homepage' : 'reperes-shell plan-vivant v7-inner', { 'rp-territoire': path === '/votre-rue' }]}>
   <a class="lv-skip" href="#contenu">Aller au contenu</a>
@@ -139,9 +168,11 @@ const schemaOrg = {
   <main id="contenu" tabindex="-1"><slot/></main>
   <Footer flush={homeV7}/>
   <Analytics/>
+  {articleRegistry.length > 0 && <script id="levois-article-context" type="application/json" set:html={JSON.stringify(articleRegistry).replace(/</g, '\\u003c')}/>}
   <script>
     import '../scripts/public-forms';
     import '../scripts/experience-entry';
+    import '../scripts/editorial-context';
   </script>
 </body>
 </html>

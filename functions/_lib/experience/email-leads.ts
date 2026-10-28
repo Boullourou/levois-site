@@ -75,6 +75,7 @@ export async function captureSynthesis(input: ActionInput, env: ExperienceEnv): 
   // the anonymous browser context or an exported reading. No schema change.
   const consent = {
     ...input.consent, recordedAt: createdAt,
+    ...(input.articleContext ? {articleContext:input.articleContext} : {}),
     scope: arbitrage
       ? 'Synthèse d’arbitrage par e-mail et projet enregistré auprès de Mouaad. '
         + (phoneExchangeRequested ? 'Échange direct par téléphone demandé pour ce projet. ' : 'Aucun échange téléphonique demandé. ')

@@ -5,13 +5,13 @@ import { chromium, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 const base = process.env.LEVOIS_TEST_URL || process.env.LEVOIS_QA_BASE || 'http://127.0.0.1:4345';
-if (!['127.0.0.1', 'localhost'].includes(new URL(base).hostname)) throw new Error('Cette recette exige un serveur local.');
+if (!['127.0.0.1', 'localhost'].includes(new URL(base).hostname) && !new URL(base).hostname.endsWith('.levois-site.pages.dev')) throw new Error('Cette recette exige un serveur local ou une preview du projet levois-site.pages.dev ; la production est exclue.');
 const output = path.resolve(process.env.LEVOIS_QA_OUTPUT || 'artifacts/final/diagnostics');
 const scenarioFilter = process.env.LEVOIS_QA_FILTER ? new RegExp(process.env.LEVOIS_QA_FILTER) : null;
 await mkdir(output, { recursive: true });
 const key = 'levois:experience:v1';
 const method = 'diagnostic-2026-10-25';
-const widths = [1440, 768, 375];
+const widths = [1440, 360, 390, 430];
 const deliveryKey = 'levois:diagnostic-delivery:v1';
 const contact = { firstName: 'Camille', email: 'camille.qa@example.invalid', phone: '' };
 const projects = {
@@ -29,7 +29,7 @@ async function createContext(width = 375, extra = {}, onAction) {
   await context.route('**/*', async route => {
     const request = route.request();
     if (['GET', 'HEAD'].includes(request.method())) return route.continue();
-    if (new URL(request.url()).origin === new URL(base).origin && new URL(request.url()).pathname === '/api/experience/actions' && request.method() === 'POST' && onAction) {
+    if (new URL(request.url()).origin === new URL(base).origin && ['/api/experience/actions','/api/lead'].includes(new URL(request.url()).pathname) && request.method() === 'POST' && onAction) {
       const payload = request.postDataJSON();
       assert.match(payload.email, /@example\.invalid$/, 'Only fixture contacts may reach a mocked action');
       return onAction(route, payload);
@@ -59,6 +59,10 @@ async function scenario(name, fn) {
   }
   item.completedAt = new Date().toISOString();
 }
+async function captureScreenshot(page, filename) {
+  await page.evaluate(() => window.scrollTo({top:0,left:0,behavior:'instant'}));
+  await page.screenshot({path:path.join(output,filename),fullPage:true,animations:'disabled'});
+}
 async function fits(page, label) {
   const state = await page.evaluate(() => ({ width: innerWidth, documentWidth: document.documentElement.scrollWidth,
     overflow: [...document.querySelectorAll('body *')].filter(element => {
@@ -84,10 +88,11 @@ async function belowHeader(locator, label) {
   });
   assert.ok(position.top >= position.headerBottom - 1, label + ': titre masqué sous le header ' + JSON.stringify(position));
 }
-async function assertGate(page) {
-  await expect(page.locator('.lv-capture-gate')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Où devons-nous vous envoyer votre synthèse d’arbitrage personnalisée ?', exact: true })).toBeVisible();
-  await expect(page.locator('.lv-synthesis-card, [data-keep], [data-print]')).toHaveCount(0);
+async function assertOptionalCapture(page) {
+  await expect(page.locator('.lv-capture-gate')).toHaveCount(0);
+  await expect(page.locator('.lv-synthesis-card')).toHaveCount(3);
+  await expect(page.getByRole('heading', { name: 'Recevoir cette synthèse par e-mail pour garder une trace', exact: true })).toBeVisible();
+  await expect(page.locator('[data-keep]')).toBeVisible();
   await expect(page.locator('#synthesis-first-name')).toHaveAttribute('required', '');
   await expect(page.locator('#synthesis-email')).toHaveAttribute('required', '');
   await expect(page.locator('#synthesis-phone')).not.toHaveAttribute('required', '');
@@ -139,18 +144,21 @@ async function assertReading(page, project, memory = false) {
   assert.deepEqual(page.errors, [], 'Erreur JavaScript dans le parcours');
 }
 async function capture(page, project, { memory = false, values = contact } = {}) {
-  await assertGate(page);
+  await assertOptionalCapture(page);
   await fillContact(page, values);
   await page.locator('[data-synthesis-form] [type=submit]').click();
+  await expect(page.locator('#synthesis-status')).not.toContainText('Préparation et envoi');
   await assertReading(page, project, memory);
 }
 async function complete(page, project, { navigation = true, memory = false, screenshot = false, audit = false, deliver = true } = {}) {
   const config = projects[project];
   await page.goto(new URL(config.route, base).href, { waitUntil: 'networkidle' });
   await expect(page.locator('.lv-question-form')).toBeVisible();
+  if(memory)await expect(page.locator('[data-storage-warning]')).toBeVisible();
+  else await expect(page.locator('[data-storage-warning]')).toBeHidden();
   await expect(page.locator('.lv-diagnostic-intro h1')).toHaveCount(1);
-  await expect(page.locator('.lv-diagnostic-intro')).toContainText('prénom et votre e-mail');
-  if (screenshot) await page.screenshot({ path: path.join(output, project + '-question-' + page.viewportSize().width + '.png'), fullPage: true });
+  await expect(page.locator('.lv-diagnostic-intro')).toContainText('synthèse à l’écran');
+  if (screenshot) await captureScreenshot(page,project + '-question-' + page.viewportSize().width + '.png');
   if (audit) await axe(page, project + ' question');
   for (let index = 0; index < 5; index++) {
     const form = page.locator('.lv-question-form');
@@ -177,12 +185,12 @@ async function complete(page, project, { navigation = true, memory = false, scre
       await belowHeader(page.locator('[data-question-title]'), 'Question ' + (index + 2));
     }
   }
-  await assertGate(page);
-  if (screenshot) await page.screenshot({ path: path.join(output, project + '-capture-' + page.viewportSize().width + '.png'), fullPage: true });
+  await assertOptionalCapture(page);
+  if (screenshot) await captureScreenshot(page,project + '-capture-' + page.viewportSize().width + '.png');
   if (audit) await axe(page, project + ' capture');
   if (!deliver) return;
   await capture(page, project, { memory });
-  if (screenshot) await page.screenshot({ path: path.join(output, project + '-reading-' + page.viewportSize().width + '.png'), fullPage: true });
+  if (screenshot) await captureScreenshot(page,project + '-reading-' + page.viewportSize().width + '.png');
   if (audit) await axe(page, project + ' synthèse');
 }
 async function seed(context, saved) {
@@ -208,7 +216,7 @@ try {
     const context = await createContext(width, {}, (route, payload) => { assertPayload(payload, project); return success(route, payload); });
     try {
       const page = await newPage(context);
-      await complete(page, project, { screenshot: true, audit: width === 375 });
+      await complete(page, project, { screenshot: true, audit: width === 390 });
       if (width === 1440) {
         const before = await page.locator('.lv-synthesis-card').allTextContents();
         await page.locator('#corrections summary').click();
@@ -222,7 +230,7 @@ try {
     } finally { await context.close(); }
   });
 
-  await scenario('Capture : prénom/e-mail/téléphone, échec sans résultat, copie échouée et reprises sans doublon', async () => {
+  await scenario('Envoi facultatif : champs, synthèse conservée sur échec, copie échouée et reprises sans doublon', async () => {
     const requests = [];
     let releaseFirst;
     const context = await createContext(375, {}, async (route, payload) => {
@@ -241,7 +249,7 @@ try {
       await seed(context, stored.get('buyer'));
       const page = await newPage(context);
       await page.goto(base + '/lecture/', { waitUntil: 'networkidle' });
-      await assertGate(page);
+      await assertOptionalCapture(page);
       const form = page.locator('[data-synthesis-form]'), button = form.locator('[type=submit]');
       await button.click();
       assert.equal(requests.length, 0, 'Les champs vides ont déclenché une requête');
@@ -265,7 +273,7 @@ try {
       releaseFirst();
       await expect(button).toBeEnabled();
       await expect(page.locator('#synthesis-status')).toContainText('pas été confirmée');
-      await assertGate(page);
+      await assertOptionalCapture(page);
       await button.click();
       await assertReading(page, 'buyer');
       await expect(page.locator('#synthesis-status')).toContainText('l’envoi n’est pas confirmé');
@@ -288,13 +296,13 @@ try {
     } finally { releaseFirst?.(); await context.close(); }
   });
 
-  await scenario('Capture : une confirmation incomplète ou d’une autre demande ne révèle rien', async () => {
+  await scenario('Envoi facultatif : une confirmation incomplète ou d’une autre demande ne confirme aucun envoi', async () => {
     const requests = [];
     const context = await createContext(375, {}, (route, payload) => {
       requests.push(payload);
       return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
         ok: true, saved: requests.length !== 1, requestId: requests.length === 2 ? crypto.randomUUID() : payload.requestId,
-        copySent: true, copyState: 'sent',
+        copySent: requests.length === 3 ? 'true' : true, copyState: 'sent',
       }) });
     });
     try {
@@ -302,11 +310,11 @@ try {
       const page = await newPage(context);
       await page.goto(base + '/lecture/', { waitUntil: 'networkidle' });
       await fillContact(page);
-      for (let attempt = 1; attempt <= 2; attempt++) {
+      for (let attempt = 1; attempt <= 3; attempt++) {
         await page.locator('[data-synthesis-form] [type=submit]').click();
         await expect.poll(() => requests.length).toBe(attempt);
         await expect(page.locator('#synthesis-status')).toContainText('pas été confirmée');
-        await assertGate(page);
+        await assertOptionalCapture(page);
       }
       assert.deepEqual(requests[0], requests[1]);
       assert.equal(await page.evaluate(key => sessionStorage.getItem(key), deliveryKey), null);
@@ -418,7 +426,7 @@ try {
       assert.equal(requests.length, 2);
       assert.equal(requests[1].context.answers.diag_seller_blocker.value, 'price');
       assert.notEqual(requests[1].requestId, requests[0].requestId);
-      await page.screenshot({ path: path.join(output, 'storage-blocked-320.png'), fullPage: true });
+      await captureScreenshot(page,'storage-blocked-320.png');
     } finally { await context.close(); }
   });
 
@@ -448,7 +456,7 @@ try {
           await fits(page, 'Reflow question ' + (index + 2));
         }
       }
-      await assertGate(page);
+      await assertOptionalCapture(page);
       const first = page.locator('#synthesis-first-name');
       for (let step = 0; step < 35 && !await first.evaluate(element => element === document.activeElement); step++) await page.keyboard.press('Tab');
       await expect(first).toBeFocused();
@@ -462,8 +470,123 @@ try {
       await assertReading(page, 'buyer');
       assert.equal(requests.length, 1);
       await fits(page, 'Reflow résultat');
-      await page.screenshot({ path: path.join(output, 'keyboard-reflow-200.png'), fullPage: true });
+      await captureScreenshot(page,'keyboard-reflow-200.png');
     } finally { await context.close(); }
+  });
+
+  for (const width of [360, 390, 430]) await scenario(`Contact / ${width}px : clavier, antispam, erreur réseau, double soumission et confirmation`, async () => {
+    const requests=[];
+    let releaseFirst;
+    const context=await createContext(width,{},async(route,payload)=>{
+      requests.push(payload);
+      if(requests.length===1){await new Promise(resolve=>{releaseFirst=resolve;});return route.abort('failed');}
+      if(requests.length===2)return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,notificationSent:true,notificationState:'sent',requestId:'wrong-request'})});
+      if(requests.length===3)return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,notificationSent:true,requestId:payload.requestId})});
+      return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,notificationSent:true,notificationState:'sent',requestId:payload.requestId})});
+    });
+    try{
+      await context.addInitScript(()=>{for(const storage of ['localStorage','sessionStorage'])Object.defineProperty(window,storage,{configurable:true,get(){throw new DOMException('QA storage denied','SecurityError');}});});
+      const page=await newPage(context);await page.goto(base+'/contact/',{waitUntil:'networkidle'});
+      await expect(page.locator('#c-site')).toBeHidden();await expect(page.locator('#c-site')).toHaveAttribute('tabindex','-1');
+      const button=page.locator('[data-direct-contact] [type=submit]');
+      await button.click();await expect(page.locator('#c-prenom-error')).toBeVisible();await expect(page.locator('#c-prenom')).toHaveAttribute('aria-invalid','true');
+      assert.equal(requests.length,0);
+      for(const [id,value]of Object.entries({'c-prenom':'Camille','c-nom':'Test','c-email':'qa.contact@example.invalid','c-objet':'Question de recette','c-message':'Message fictif, sans destinataire réel.'}))await page.locator('#'+id).fill(value);
+      await page.locator('#c-consent').focus();await page.keyboard.press('Space');await button.focus();await page.keyboard.press('Enter');
+      await expect.poll(()=>requests.length).toBe(1);await expect(button).toBeDisabled();
+      await page.locator('[data-direct-contact]').evaluate(form=>{form.requestSubmit();form.requestSubmit();});assert.equal(requests.length,1);
+      releaseFirst();await expect(button).toBeEnabled();await expect(page.locator('[data-contact-status]')).toContainText('connexion');
+      await expect(page.locator('#c-message')).toHaveValue('Message fictif, sans destinataire réel.');
+      await button.click();await expect(page.locator('[data-contact-status]')).toContainText('pas confirmée');await expect(button).toBeEnabled();
+      await button.click();await expect(page.locator('[data-contact-status]')).toContainText('pas confirmée');await expect(button).toBeEnabled();
+      await button.click();await expect(button).toBeDisabled();await expect(page.locator('[data-contact-status]')).toContainText('accepté par le service');
+      assert.equal(requests.length,4);assert.deepEqual(requests[0],requests[1]);assert.deepEqual(requests[1],requests[2]);assert.deepEqual(requests[2],requests[3]);
+      await fits(page,'Contact '+width);if(width===390)await axe(page,'Contact après confirmation');
+      await captureScreenshot(page,'contact-confirmation-'+width+'.png');assert.deepEqual(page.errors,[]);
+    }finally{releaseFirst?.();await context.close();}
+  });
+
+  await scenario('Article → contact : contexte public et synthèse jointe au choix sans réponses dans URL', async()=>{
+    const requests=[];
+    const context=await createContext(390,{},(route,payload)=>{
+      requests.push(payload);return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({ok:true,notificationSent:true,notificationState:'sent',requestId:payload.requestId})});
+    });
+    try{
+      await seed(context,stored.get('buyer'));const page=await newPage(context);
+      await page.goto(base+'/contact/?article=marge-negociation-erreur-25000',{waitUntil:'networkidle'});
+      await expect(page.locator('[data-article-context]')).toContainText('marge de négociation');
+      await expect(page.locator('#c-objet')).toHaveValue(/marge de négociation/);
+      await expect(page.locator('[data-synthesis-attachment]')).toBeVisible();
+      await page.locator('[data-synthesis-attachment] summary').click();
+      await expect(page.locator('[data-synthesis-preview]')).toContainText('La prochaine étape utile');
+      for(const [id,value]of Object.entries({'c-prenom':'Camille','c-nom':'Test','c-email':'qa.context@example.invalid','c-message':'Ma question de test.'}))await page.locator('#'+id).fill(value);
+      await page.locator('#c-consent').check();await page.locator('[data-direct-contact] [type=submit]').click();
+      await expect.poll(()=>requests.length).toBe(1);await expect(page.locator('[data-direct-contact] [type=submit]')).toBeDisabled();
+      assert.equal(requests[0].articleContext.id,'marge-negociation-erreur-25000');assert.equal(requests[0].attachSynthesis,true);assert.match(requests[0].synthesis,/Réponses déclarées/);
+      assert.equal(new URL(page.url()).search,'?article=marge-negociation-erreur-25000');
+      await page.locator('#c-attach').uncheck();await page.locator('[data-direct-contact] [type=submit]').click();await expect.poll(()=>requests.length).toBe(2);
+      assert.equal(requests[1].attachSynthesis,false);assert.equal(requests[1].synthesis,'');assert.notEqual(requests[0].requestId,requests[1].requestId);
+    }finally{await context.close();}
+  });
+
+  for(const [project,config]of Object.entries(projects))await scenario(`Questionnaire sans JavaScript / ${project} : aucune réponse dans URL, activation après init`,async()=>{
+    const noJs=await createContext(390,{javaScriptEnabled:false});
+    try{
+      const page=await newPage(noJs),requests=[];
+      page.on('request',request=>requests.push({method:request.method(),url:request.url()}));
+      await page.goto(base+config.route,{waitUntil:'networkidle'});
+      const form=page.locator('.lv-question-form');await expect(form).toHaveAttribute('method','post');await expect(form.locator('[type=submit]')).toBeDisabled();
+      await form.locator('input[value="'+config.values[0]+'"]').check();await form.locator('input:checked').press('Enter');
+      assert.equal(new URL(page.url()).pathname,config.route);assert.equal(new URL(page.url()).search,'');
+      for(const request of requests.filter(item=>item.method==='GET'))assert.equal(new URL(request.url).searchParams.has('answer'),false,'Réponse personnelle dans URL');
+      await expect(page.locator('noscript a[href="/contact/"]')).toBeVisible();await expect(page.locator('noscript a[href="/ressources/"]')).toBeVisible();
+    }finally{await noJs.close();}
+    const withJs=await createContext(390);
+    try{
+      const page=await newPage(withJs);await page.goto(base+config.route,{waitUntil:'networkidle'});
+      const form=page.locator('.lv-question-form');await expect(form.locator('[type=submit]')).toBeEnabled();await expect(form).toHaveAttribute('method','post');
+      await form.locator('input[value="'+config.values[0]+'"]').check();await form.locator('[type=submit]').click();await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow','2');
+      assert.equal(new URL(page.url()).search,'');
+    }finally{await withJs.close();}
+  });
+
+  await scenario('Contact sans JavaScript : aucun GET avec coordonnées, e-mail et appel disponibles', async()=>{
+    const context=await createContext(390,{javaScriptEnabled:false});
+    try{
+      const page=await newPage(context),requests=[];
+      page.on('request',request=>requests.push({method:request.method(),url:request.url()}));
+      await page.goto(base+'/contact/',{waitUntil:'networkidle'});
+      const form=page.locator('[data-direct-contact]');
+      await expect(form).toHaveAttribute('method','post');await expect(form).toHaveAttribute('action','/api/lead');
+      await expect(form.locator('[type=submit]')).toBeDisabled();
+      await expect(page.locator('noscript a[href^="mailto:"]')).toBeVisible();await expect(page.locator('noscript a[href^="tel:"]')).toBeVisible();
+      for(const [id,value]of Object.entries({'c-prenom':'CamilleConfidentiel','c-nom':'TestConfidentiel','c-email':'qa.nojs@example.invalid','c-objet':'SujetConfidentiel','c-message':'MessageConfidentiel'}))await page.locator('#'+id).fill(value);
+      await page.locator('#c-consent').check();await page.locator('#c-objet').press('Enter');
+      await expect(page).toHaveURL(new RegExp('/contact/?$'));
+      for(const request of requests.filter(item=>item.method==='GET'))assert.doesNotMatch(decodeURIComponent(request.url),/CamilleConfidentiel|TestConfidentiel|qa.nojs|SujetConfidentiel|MessageConfidentiel/,'Donnée personnelle dans un GET');
+      assert.equal(new URL(page.url()).search,'');
+    }finally{await context.close();}
+  });
+
+  await scenario('Article → questionnaire → contact : identifiant public conservé avec stockage refusé', async()=>{
+    const context=await createContext(390);
+    try{
+      await context.addInitScript(()=>{for(const storage of ['localStorage','sessionStorage'])Object.defineProperty(window,storage,{configurable:true,get(){throw new DOMException('QA storage denied','SecurityError');}});});
+      const page=await newPage(context),article='retours-de-visite';
+      await page.goto(base+'/ressources/'+article+'/',{waitUntil:'networkidle'});
+      await page.locator('.res-primary-action').click();
+      await expect.poll(()=>new URL(page.url()).pathname).toBe('/situer-ma-vente/');
+      assert.equal(new URL(page.url()).search,'?article='+article);
+      await expect(page.locator('[data-storage-warning]')).toBeVisible();
+      for(const value of projects.seller.values){await page.locator('.lv-question-form input[value="'+value+'"]').check();await page.locator('.lv-question-form [type=submit]').click();}
+      await expect(page.locator('.lv-synthesis-card')).toHaveCount(3);
+      await page.locator('.lv-synthesis-contact a.lv-text-link').click();
+      assert.equal(new URL(page.url()).pathname,'/contact/');assert.equal(new URL(page.url()).search,'?article='+article);
+      await expect(page.locator('[data-article-context]')).toContainText('retours de visite');
+      await expect(page.locator('#c-objet')).toHaveValue(/retours de visite/);
+      await expect(page.locator('[data-direct-contact] [type=submit]')).toBeEnabled();
+      assert.deepEqual(page.errors,[]);
+    }finally{await context.close();}
   });
 
   await scenario('Diagnostic incomplet : /lecture propose de continuer sans inventer une synthèse historique', async () => {
@@ -518,15 +641,15 @@ try {
     } finally { await noJs.close(); }
   });
 
-  for (const width of [375, 320]) for (const route of ['/', '/reprendre/', '/contact/', '/votre-rue/', '/prix-immobilier/leves/']) await scenario(`Finition publique ${route} / ${width}px`, async () => {
+  for (const width of [360, 390, 430]) for (const route of ['/', '/reprendre/', '/contact/', '/votre-rue/', '/prix-immobilier/leves/']) await scenario(`Finition publique ${route} / ${width}px`, async () => {
     const context = await createContext(width);
     try {
       const page = await newPage(context);
       assert.equal((await page.goto(new URL(route, base).href, { waitUntil: 'networkidle' })).status(), 200);
       await fits(page, route);
-      if (width === 375) await axe(page, route);
+      if (width === 390) await axe(page, route);
       assert.deepEqual(page.errors, []);
-      await page.screenshot({ path: path.join(output, `public-${route.replaceAll('/', '-').replace(/^-|-$/g, '') || 'home'}-${width}.png`), fullPage: true });
+      await captureScreenshot(page,`public-${route.replaceAll('/', '-').replace(/^-|-$/g, '') || 'home'}-${width}.png`);
     } finally { await context.close(); }
   });
 

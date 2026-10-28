@@ -54,11 +54,7 @@ export function journeyForPath(value: string): Journey {
   return 'brand';
 }
 
-function shortLabel(value: unknown): string | undefined {
-  if (typeof value !== 'string') return undefined;
-  const normalized = value.trim().replace(/\s+/g, ' ').slice(0, 120);
-  return normalized || undefined;
-}
+const auditSources = new Set(['SeLoger', 'Leboncoin', 'PAP', 'Bien’ici', 'Bienici', 'Autre']);
 
 export function safeAuditProperties(
   event: AuditEventName,
@@ -67,18 +63,7 @@ export function safeAuditProperties(
   const safe: Record<string, string> = {};
 
   if (event === 'audit_url_readable' || event === 'audit_url_blocked') {
-    const source = shortLabel(detail.source);
-    if (source) safe.source = source;
-  }
-
-  if (event === 'audit_stage_identified') {
-    const signal = shortLabel(detail.signal);
-    if (signal) safe.signal = signal;
-  }
-
-  if (event === 'audit_result_viewed' || event === 'audit_human_requested') {
-    const result = shortLabel(detail.result);
-    if (result) safe.result = result;
+    if (typeof detail.source === 'string' && auditSources.has(detail.source)) safe.source = detail.source;
   }
 
   if (event === 'audit_resource_clicked') {
@@ -86,6 +71,23 @@ export function safeAuditProperties(
     if (href) safe.destination_path = href;
   }
 
+  return safe;
+}
+
+export const JOURNEY_EVENTS = new Set([
+  'journey_started', 'diagnostic_completed', 'capture_viewed', 'first_value_seen',
+  'answer_corrected', 'reading_kept', 'reading_copy_requested', 'review_requested',
+  'exchange_requested', 'journey_step_completed', 'journey_completed', 'result_viewed',
+  'contact_consent_submitted', 'matching_consent_submitted', 'reading_consent_submitted',
+  'synthesis_saved', 'synthesis_email_accepted', 'contact_message_accepted',
+]);
+
+/** Deliberately drops all labels, answers, IDs of requests and free text. */
+export function safeJourneyProperties(detail: Record<string, unknown>): Record<string, string | number> {
+  const safe: Record<string, string | number> = {};
+  if (typeof detail.step === 'number' && Number.isInteger(detail.step) && detail.step >= 0 && detail.step <= 30) safe.step = detail.step;
+  if (typeof detail.duration_seconds === 'number' && Number.isFinite(detail.duration_seconds)) safe.duration_seconds = Math.min(86400, Math.max(0, Math.round(detail.duration_seconds)));
+  if (typeof detail.selected_journey === 'string' && ['buyer','seller','transition','local','audit','prescriber','team_candidate','brand'].includes(detail.selected_journey)) safe.selected_journey = detail.selected_journey;
   return safe;
 }
 

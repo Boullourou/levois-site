@@ -1,0 +1,35 @@
+[
+  {
+    "path": "/",
+    "beforeMedianLcp": 1048,
+    "afterMedianLcp": 992,
+    "beforeBytes": 148990,
+    "afterBytes": 123681,
+    "beforeRequests": 9,
+    "afterRequests": 10,
+    "beforeMaxCls": 0.0,
+    "afterMaxCls": 0.0
+  },
+  {
+    "path": "/ressources/",
+    "beforeMedianLcp": 848,
+    "afterMedianLcp": 856,
+    "beforeBytes": 112383,
+    "afterBytes": 139392,
+    "beforeRequests": 7,
+    "afterRequests": 10,
+    "beforeMaxCls": 0.0,
+    "afterMaxCls": 0.0
+  },
+  {
+    "path": "/ressources/marge-negociation-erreur-25000/",
+    "beforeMedianLcp": 888,
+    "afterMedianLcp": 908,
+    "beforeBytes": 139351,
+    "afterBytes": 140545,
+    "beforeRequests": 8,
+    "afterRequests": 10,
+    "beforeMaxCls": 0.0,
+    "afterMaxCls": 0.0
+  }
+]

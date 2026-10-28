@@ -1,0 +1,15 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ResourceLibrary from '../../../components/ResourceLibrary.astro';
+import { getPublishedEditorialArticles } from '../../../lib/editorial/catalog';
+import { createResourceCatalog, paginateResources } from '../../../lib/editorial/shared-catalog';
+export function getStaticPaths() {
+  const catalog = createResourceCatalog(getPublishedEditorialArticles());
+  const pages = paginateResources(catalog);
+  return pages.slice(1).map((entries, index) => ({ params: { page: String(index + 2) }, props: { entries, catalog, page: index + 2, totalPages: pages.length } }));
+}
+const { entries, catalog, page, totalPages } = Astro.props;
+---
+<Layout title={`Ressources immobilières · Page ${page} · LEVOIS`} description={`Page ${page} des guides LEVOIS pour préparer une vente, un achat ou comprendre les ventes locales à Lèves et Chartres Métropole.`}>
+  <ResourceLibrary entries={entries} catalog={catalog} page={page} totalPages={totalPages} />
+</Layout>

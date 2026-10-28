@@ -1,0 +1,25 @@
+name: Contrat éditorial Limova
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: ['codex/**', 'content/**']
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: node scripts/editorial-check.mjs
+      - run: npm run editorial:prepare
+      - run: npx vitest run src/lib/editorial
