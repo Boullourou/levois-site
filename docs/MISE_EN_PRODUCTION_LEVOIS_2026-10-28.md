@@ -19,22 +19,35 @@ Le site reste Astro statique pour les pages publiques, avec Pages Functions et D
 | Compte Cloudflare | `0f0bffd8e630cc790af849a70ff0e768` |
 | Production | Branche `main`, commit `3737bc944e4a926509054f8c5001f9448cd290a5` |
 | Déploiement de retour arrière observé | `723ae144-3a72-4ec5-ab0c-571be11ae4e8`, production, réussi |
-| Candidat de correction | `2d1fe76a82a0e0b939b440fe61f44deb1b8cda6a` sur `codex/editorial-conversion-20261028` |
-| Preview de ce candidat | `https://600d0e08.levois-site.pages.dev` ; déploiement réussi, lecture applicative distante encore bloquée par Access |
+| Candidat de correction contrôlé | `27165fe918a7391ad2b0e9f7ee42e1a7d101a155` sur `codex/editorial-conversion-20261028` ; figer la tête finale de PR indiquée au compte rendu avant exécution |
+| Preview de ce candidat | `https://0a251104.levois-site.pages.dev` ; déploiement réussi, quatre checks verts ; recette réelle sur `70e7abb`, suivie uniquement de documentation et captures |
 | `RECHERCHE_DB` production | `077d24f8-5efc-4787-a451-05b041ddd2f7` |
 | `RECHERCHE_DB` preview | `308c98e9-d484-4fdd-9892-539abb6b0ffd`, distincte de la production |
 | Intégration Git existante | GitHub, déploiements de production activés sur `main`, previews de toutes les branches, `npm run build`, sortie `dist` |
 
-Preuves d’inspection : `artifacts/editorial-20261028/cloudflare-before.json` et `deployment-status.json`. Ces relevés datés ne remplacent pas une lecture juste avant intervention. Une nouvelle modification du code implique un nouveau SHA, une nouvelle preview et les contrôles concernés ; ne pas déployer un SHA différent de celui validé.
+Preuves d’inspection actualisées le 28 octobre à 15:19–15:23 UTC : `artifacts/release-readiness-20261028/` (déploiements, configuration GitHub, schéma D1, portée Access). Ces relevés datés ne remplacent pas une lecture juste avant intervention. Une nouvelle modification du code implique un nouveau SHA, une nouvelle preview et les contrôles concernés ; ne pas déployer un SHA différent de celui validé.
 
-Les extensions de traitement par lots, couvertures et reçus décrites plus bas sont préparées après ce candidat. Le SHA et la preview ci-dessus prouvent l’état des corrections précédentes, pas la validation distante de ces extensions. Consigner leur futur SHA relu et sa preview avant de les inclure dans A ou B.
+Les extensions de traitement par lots, couvertures et reçus sont incluses dans ce candidat et testées localement/CI. Leur présence n'active pas le calendrier. Aucun JSON d'article réel n'est présent dans `src/content/editorial` : la validation J001–J007 reste isolée dans les artefacts ignorés. Aucune publication automatique réelle de lot n'est encore validée.
 
-Les secrets `RESEND_API_KEY`, `LEAD_FROM`, `LEAD_TO` existent dans les deux environnements, mais leurs valeurs chiffrées n’ont pas été consultées. L’adresse effective du destinataire conseiller reste donc **à confirmer**, sans présumer qu’il s’agit de l’adresse de repli du code. Préserver aussi les secrets Access/cockpit et ceux de reprise protégée déjà présents en production. Aucun ajout de binding `COCKPIT_DB` à la production n’est nécessaire pour cette livraison : l’avertissement Wrangler sur sa non-héritabilité ne justifie pas une modification.
+Les secrets `RESEND_API_KEY`, `LEAD_FROM`, `LEAD_TO` existent dans les deux environnements, mais leurs valeurs chiffrées n’ont pas été consultées. Les sept messages de recette preview ont été reçus et confirmés par Mouaad ; cela ne prouve pas le routage de production, dont les réglages doivent être préservés. Préserver aussi les secrets Access/cockpit et ceux de reprise protégée déjà présents en production. Aucun ajout de binding `COCKPIT_DB` à la production n’est nécessaire pour cette livraison : l’avertissement Wrangler sur sa non-héritabilité ne justifie pas une modification.
+
+## Ce que bloque réellement l'accès machine
+
+| Opération | État et portée |
+|---|---|
+| Navigateur connecté de la preview | Recette réelle effectuée : sept réceptions et deux rejeux sans nouvelle tentative d'envoi. |
+| Runner automatisé sur la preview | Bloqué par Access : les GET sans session autorisée sont redirigés en HTTP 302. Le runner ouvre un autre navigateur et n'hérite pas de la connexion humaine. |
+| Vérification machine du manifeste et des URL preview | Même blocage Access pour les lectures des jobs `plan` et `verify`. Le manifeste a été lu avec succès dans le navigateur connecté. |
+| Build local/CI et intégration Git Cloudflare | Non bloqués par cette absence d'accès : checks et previews existantes réussis. |
+| Site public et lectures futures du manifeste public | Aucun challenge Access observé : accueil public HTTP 200. Le manifeste de l'ancienne production est HTTP 404, car cette route n'est pas encore publiée ; contrôler son HTTP 200 après A. |
+| Publication programmée de production | Pas de dépendance aux credentials Access de preview dans le workflow. B reste néanmoins désactivé et nécessite séparément un lot valide, sa revue, les credentials de déploiement Actions et la recette de son fonctionnement. |
+
+La mise en production A ne demande aucun élargissement d'accès. Au relevé GitHub, aucune variable éditoriale, aucun secret Actions du dépôt et aucun environnement ne sont configurés. Le cron est dormant sans `LEVOIS_EDITORIAL_SCHEDULE_ENABLED=true`. Un déclenchement manuel peut exécuter `plan`, mais ne déploie pas par défaut ; la production exige aussi `LEVOIS_EDITORIAL_PRODUCTION_ENABLED=true` et `main`. Aucun de ces éléments n'a été activé. Une éventuelle authentification machine de preview sera décidée seulement pour les contrôles B qui en ont besoin, avec une politique compatible et limitée ; un jeton seul ne suffit pas. [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/).
 
 ## A1 — Préconditions et recette de la version exacte
 
-1. Terminer la [recette distante](RECETTE_DISTANTE_LEVOIS_2026-10-28.md) sur l’URL immuable du candidat : accès applicatif, formulaires, réponses HTTP et réception des messages de test autorisés. Un build réussi ou un test avec transport simulé ne prouve pas la livraison réelle.
-2. Confirmer la boîte test et le destinataire conseiller effectif de preview avant les quatre soumissions. Le volume prévu est **sept messages**, détaillé dans la recette. Aucun prospect réel ni téléphone de prospect.
+1. Relire les [résultats de recette distante](RECETTE_DISTANTE_RESULTATS_2026-10-28.md) : trois diagnostics, un contact, sept acceptations Resend, sept réceptions confirmées par Mouaad et deux rejeux sans tentative supplémentaire. Ne pas renvoyer ces messages automatiquement. Les tests de pannes simulées, stockage refusé, no-JS et Axe restent locaux/CI quand non rejoués à distance ; cette limite ne bloque pas la revue de A au vu des contrôles réellement obtenus.
+2. Conserver la séparation preview/production. Aucun prospect réel ni téléphone n'a été utilisé ; un éventuel test d'e-mail en production nécessiterait son propre destinataire et volume autorisés. Le contrôle après déploiement A décrit plus bas utilise par défaut des parcours sans envoi valide.
 3. Relire la PR et consigner l’accord explicite pour A, le SHA testé, l’URL de preview, le créneau et l’opérateur. Confirmer que les variables d’activation du calendrier ne valent pas `true` ; si une activation inconnue est trouvée, arrêter et clarifier avant toute fusion.
 4. Vérifier l’absence de fusion, de déploiement manuel et de job éditorial concurrents. Les verrous GitHub du planificateur ne verrouillent pas l’intégration Git Cloudflare.
 5. Depuis le checkout propre du commit approuvé, rejouer les checks applicables si le code a changé. Les scripts `precheck`, `pretest` et `prebuild` génèrent les fichiers éditoriaux nécessaires ; ne pas les contourner en appelant Astro directement.
@@ -159,4 +172,4 @@ Pour interrompre B, remettre `LEVOIS_EDITORIAL_SCHEDULE_ENABLED` à `false`, arr
 - [Cloudflare — commandes D1](https://developers.cloudflare.com/d1/wrangler-commands/) ; syntaxe revérifiée avec le Wrangler local 4.152.0.
 - [Cloudflare — jetons de service Access](https://developers.cloudflare.com/cloudflare-one/access-controls/service-credentials/service-tokens/) ; politique compatible à vérifier, aucune modification préparatoire.
 - [GitHub — déclenchements planifiés](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule).
-- Les résultats locaux et limites de la preview sont consignés dans [AUDIT_CONTENU_CONVERSION_2026-10-28.md](AUDIT_CONTENU_CONVERSION_2026-10-28.md) et [AUDIT_FORMULAIRES_2026-10-28.md](AUDIT_FORMULAIRES_2026-10-28.md). La recette distante et la livraison effective restent des conditions de validation à compléter, pas des résultats acquis.
+- Les résultats locaux sont consignés dans [AUDIT_CONTENU_CONVERSION_2026-10-28.md](AUDIT_CONTENU_CONVERSION_2026-10-28.md) et [AUDIT_FORMULAIRES_2026-10-28.md](AUDIT_FORMULAIRES_2026-10-28.md). La recette réelle et les sept réceptions sont maintenant acquises dans leur périmètre décrit dans [RECETTE_DISTANTE_RESULTATS_2026-10-28.md](RECETTE_DISTANTE_RESULTATS_2026-10-28.md) ; la suite distante complète et l'activation B restent distinctes.

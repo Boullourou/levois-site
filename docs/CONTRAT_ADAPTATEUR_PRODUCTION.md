@@ -4,6 +4,8 @@ Préparé le 28 octobre 2026. Aucun lot réel importé, aucune publication activ
 
 ## Entrées réellement inspectées et limites
 
+**Complément de recette du 28 octobre :** les sept dossiers J001–J007 du lot V3 ont depuis été contrôlés. Markdown, liens et sources passent les contrôles techniques ; l'import complet reste refusé faute de `SITE.json`, `LOT.json` et couvertures finales. Le [bilan réel des sept journées](SORTIE_CORRECTIONS_ET_VALIDATION_J001_2026-10-28.md) distingue ces résultats des tests sur fixtures et des conditions d'activation. Les observations J001/J010 ci-dessous restent l'historique de préparation du contrat.
+
 Les PRODUCTION.json J001 et J010 du lot Drive `LEVOIS-LOT10-V3-20261028` ont été lus, sans modifier Drive. Ils contiennent les champs article annoncés, les sources et leurs dates de consultation, une limite explicite, ainsi que les contenus sociaux. Leur Markdown passe le parseur strict V2. La valeur `version` est une version du lot, **pas un identifiant durable de campagne**.
 
 Il manque un sidecar explicite pour l'identité de campagne, la révision, l'auteur structuré, la date réelle de rédaction, la réponse immédiate, le périmètre et la catégorie. Ces valeurs ne sont pas déduites du nom de dossier, de l'heure d'envoi Drive ni d'une signature analysée dans le texte. Le fichier référence `REFERENCE.png` ne prouve pas qu'une couverture finale 1600 × 900 a été fabriquée. Aucune photo de substitution n'est générée.
