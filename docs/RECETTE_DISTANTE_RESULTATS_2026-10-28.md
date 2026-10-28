@@ -1,6 +1,6 @@
 # Recette distante LEVOIS — résultats du 28 octobre 2026
 
-Les trois diagnostics et le contact ont été vérifiés dans la preview authentifiée. Les quatre demandes ont été enregistrées, les sept e-mails acceptés par Resend et **Mouaad a confirmé la réception des sept messages** dans ce chat. Le rejeu exact d'un diagnostic et du contact n'a déclenché aucune nouvelle tentative de transport.
+Les trois diagnostics et le contact ont été vérifiés dans la preview authentifiée. Les trois demandes de synthèse et le reçu du contact ont été enregistrés, les sept e-mails acceptés par Resend et **Mouaad a confirmé la réception des sept messages** dans ce chat. Le rejeu exact d'un diagnostic et du contact n'a déclenché aucune nouvelle tentative de transport. Le message du contact lui-même n'est pas conservé dans D1.
 
 Cette conclusion porte sur les scénarios ci-dessous. Elle ne vaut ni recette exhaustive de production ni autorisation de fusion, migration ou activation du calendrier.
 
@@ -71,7 +71,7 @@ Les POST invalides ne contenaient aucune coordonnée ni consentement. Le code et
 - [Vente-achat, fenêtre 430 px](review/2026-10-28/remote/transition-before-430.png)
 - [Confirmation du contact, fenêtre 390 px](review/2026-10-28/remote/contact-confirmation-390.png)
 
-La largeur utile des captures est inférieure de 15 px à celle de la fenêtre, du fait de la barre de défilement. Les images et résultats détaillés privés restent aussi dans `artifacts/remote-recipe-20261028/`. Les reçus minimaux D1 avant/après et le contrôle de version sont dans `artifacts/editorial-20261028/authorized-preview-*.json`. Aucun cookie, header d'authentification ou corps personnel n'est ajouté à la documentation.
+La largeur utile des trois captures pleine page des diagnostics est inférieure de 15 px à celle de la fenêtre, du fait de la barre de défilement (345, 375 et 415 px). La capture du contact mesure bien 390 × 844 px. Les images et résultats détaillés privés restent aussi dans `artifacts/remote-recipe-20261028/`. Les reçus minimaux D1 avant/après et le contrôle de version sont dans `artifacts/editorial-20261028/authorized-preview-*.json`. Aucun cookie, header d'authentification ou corps personnel n'est ajouté à la documentation.
 
 ## Limites et prérequis restants
 
