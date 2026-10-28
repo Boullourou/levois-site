@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { mkdtemp, mkdir, copyFile, writeFile, readFile, readdir, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile } from 'node:child_process';
@@ -15,9 +14,12 @@ const example = {
   dates: { createdAt: '2026-10-27T10:00:00+01:00', publishAt: '2026-10-28T07:00:00+01:00' }, sources: [], scope: 'Test.', limits: ['Test.'], image: null, category: 'vendre', primaryDestination: '/situer-ma-vente/', status: 'draft',
 };
 async function sandbox() {
-  const directory = await mkdtemp(resolve(tmpdir(), 'levois-editorial-test-'));
+  await mkdir(resolve(root, '.cache'), { recursive: true });
+  // The isolated repository shares only installed parser dependencies via
+  // Node's ancestor resolution; its content and import lock remain isolated.
+  const directory = await mkdtemp(resolve(root, '.cache/levois-editorial-test-'));
   temporaryRoots.push(directory);
-  for (const file of ['scripts/editorial-import.mjs', 'scripts/editorial-io.mjs', 'src/lib/editorial/schema.ts', 'src/data/resources.ts']) {
+  for (const file of ['scripts/editorial-import.mjs', 'scripts/editorial-io.mjs', 'src/lib/editorial/schema.ts', 'src/lib/editorial/markdown.ts', 'src/data/resources.ts']) {
     await mkdir(dirname(resolve(directory, file)), { recursive: true });
     await copyFile(resolve(root, file), resolve(directory, file));
   }
@@ -29,7 +31,7 @@ async function sandbox() {
 }
 afterEach(async () => {
   for (const directory of temporaryRoots.splice(0)) {
-    if (!directory.startsWith(resolve(tmpdir(), 'levois-editorial-test-'))) throw new Error('Unexpected temporary path');
+    if (!directory.startsWith(resolve(root, '.cache/levois-editorial-test-'))) throw new Error('Unexpected temporary path');
     await rm(directory, { recursive: true, force: true });
   }
 });

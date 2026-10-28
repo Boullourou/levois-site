@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import EditorialMarkdown from '../../components/EditorialMarkdown.astro';
 import { getPublishedEditorialArticles } from '../../lib/editorial/catalog';
 import { RESOURCE_CATEGORY_LABELS, RESOURCE_CTA_LABELS, createResourceCatalog, resourceActionUrl, resourceDate } from '../../lib/editorial/shared-catalog';
 export function getStaticPaths() {
@@ -17,7 +18,7 @@ const contactUrl = resourceActionUrl('/contact/', resource.id);
   description={resource.summary}
   image={resource.image?.src}
   imageAlt={resource.image?.alt}
-  article={{ headline: resource.title, author: resource.author, category: RESOURCE_CATEGORY_LABELS[resource.category], createdAt: resource.createdAt, updatedAt: resource.updatedAt }}
+  article={{ headline: resource.title, author: resource.author, category: RESOURCE_CATEGORY_LABELS[resource.category], createdAt: resource.createdAt, updatedAt: resource.updatedAt, topicId: resource.topicId, revision: resource.revision }}
 >
   <div class="res-article-page" data-article-id={resource.id}>
     <div class="w">
@@ -41,7 +42,7 @@ const contactUrl = resourceActionUrl('/contact/', resource.id);
             <h2>La réponse courte</h2>
             <p>{resource.answer}</p>
           </div>
-          {resource.image && <img class="res-article-image" src={resource.image.src} alt={resource.image.alt} width={resource.image.width} height={resource.image.height} loading="lazy" decoding="async" />}
+          {resource.image && <figure class="res-article-figure"><img class="res-article-image" src={resource.image.src} alt={resource.image.alt} width={resource.image.width} height={resource.image.height} loading="lazy" decoding="async" />{'caption' in resource.image && <figcaption>{resource.image.caption}</figcaption>}</figure>}
           <div class="res-prose">
             {legacy ? <>
               {legacy.explication.map((paragraph) => <p>{paragraph}</p>)}
@@ -51,7 +52,7 @@ const contactUrl = resourceActionUrl('/contact/', resource.id);
               <ul class="res-list-warn">{legacy.erreurs.map((item) => <li>{item}</li>)}</ul>
               <h2>{legacy.checklist.titre}</h2>
               <ol class="res-list-check">{legacy.checklist.items.map((item) => <li>{item}</li>)}</ol>
-            </> : resource.sections.map((section) => <section><h2>{section.heading}</h2>{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</section>)}
+            </> : resource.content ? <EditorialMarkdown markdown={resource.content.markdown} title={resource.title} /> : resource.sections.map((section) => <section><h2>{section.heading}</h2>{section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}</section>)}
             <div class="res-box-limit">
               <h2>Les limites à garder en tête</h2>
               {resource.limits.map((limit) => <p>{limit}</p>)}
@@ -60,7 +61,7 @@ const contactUrl = resourceActionUrl('/contact/', resource.id);
             <section class="res-sources" aria-labelledby="article-sources">
               <h2 id="article-sources">Périmètre et sources</h2>
               <p>{resource.scope}</p>
-              {resource.sources.length ? <ul>{resource.sources.map((source) => <li><a href={source.url}>{source.label}</a>{source.accessedAt && <span> — consulté le {resourceDate(source.accessedAt)}</span>}</li>)}</ul> : <p>Cette ressource propose une méthode de réflexion. Elle ne présente pas de statistique locale ni de résultat commercial mesuré.</p>}
+              {resource.sources.length ? <ul>{resource.sources.map((source) => <li>{source.id && <span class="res-source-id">[{source.id}] </span>}{source.url ? <a href={source.url}>{source.label}</a> : <span>{source.label}</span>}{source.accessedAt && <span> — consulté le {resourceDate(source.accessedAt)}</span>}{source.scope && <p>{source.scope}</p>}</li>)}</ul> : <p>Cette ressource propose une méthode de réflexion. Elle ne présente pas de statistique locale ni de résultat commercial mesuré.</p>}
             </section>
           </div>
           <div class="res-author-card">
@@ -432,6 +433,11 @@ const contactUrl = resourceActionUrl('/contact/', resource.id);
 .res-breadcrumb { flex-wrap:wrap }
 .res-breadcrumb .curr { max-width:100%;white-space:normal;overflow-wrap:anywhere }
 .res-article-image { display:block;width:100%;height:auto;border-radius:12px;margin:0 0 32px }
+.res-article-figure { margin:0 0 32px }
+.res-article-figure .res-article-image { margin-bottom:12px }
+.res-article-figure figcaption { font-size:13px;line-height:1.5;color:var(--v7-muted) }
+.res-sources li { margin-block:12px }
+.res-sources li p { margin:6px 0 0 }
 .res-box-limit p + p { margin-top:12px }
 .res-sources { font-size:15px;border-top:1px solid rgba(20,20,20,.12);margin-top:40px;padding-top:12px }
 .res-sources a { color:var(--v7-ink);text-underline-offset:3px;overflow-wrap:anywhere }

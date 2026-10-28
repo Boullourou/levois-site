@@ -1,6 +1,6 @@
 import { resources } from '../../data/resources';
 import { getResourceContent, type ResourceContent } from '../../data/resourceContent';
-import type { EditorialArticle } from './schema';
+import type { EditorialArticle, EditorialArticleV1, EditorialArticleV2 } from './schema';
 
 export const RESOURCE_CATEGORY_LABELS = {
   vendre: 'Préparer ou vendre',
@@ -13,15 +13,18 @@ export const RESOURCE_SEARCH_THRESHOLD = 12;
 export type ResourceCategory = EditorialArticle['category'];
 export interface ResourceArticle {
   id: string;
+  topicId?: string;
+  revision?: number;
   slug: string;
   title: string;
   summary: string;
   answer: string;
-  sections: EditorialArticle['sections'];
+  sections: EditorialArticleV1['sections'];
+  content?: EditorialArticleV2['content'];
   author: EditorialArticle['author'];
   createdAt?: string;
   updatedAt?: string;
-  sources: { label: string; url: string; accessedAt?: string }[];
+  sources: { id?: string; label: string; url: string | null; accessedAt?: string; scope?: string }[];
   scope: string;
   limits: string[];
   image: EditorialArticle['image'];
@@ -49,8 +52,8 @@ export function createResourceCatalog(editorialArticles: EditorialArticle[]): Re
     };
   });
   const current = [...editorialArticles].sort((a, b) => Date.parse(b.dates.publishAt) - Date.parse(a.dates.publishAt) || a.topicId.localeCompare(b.topicId)).map((article): ResourceArticle => ({
-    id: article.topicId, slug: article.slug, title: article.title, summary: article.summary,
-    answer: article.answer, sections: article.sections, author: article.author,
+    id: article.topicId, topicId: article.topicId, revision: article.revision, slug: article.slug, title: article.title, summary: article.summary,
+    answer: article.answer, sections: article.schemaVersion === 1 ? article.sections : [], content: article.schemaVersion === 2 ? article.content : undefined, author: article.author,
     createdAt: article.dates.createdAt, updatedAt: article.dates.updatedAt,
     sources: article.sources, scope: article.scope, limits: article.limits,
     image: article.image, category: article.category, primaryDestination: article.primaryDestination,

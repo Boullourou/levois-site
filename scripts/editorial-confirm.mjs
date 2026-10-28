@@ -1,29 +1,35 @@
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFile, writeFile, rename, mkdir } from 'node:fs/promises';
+import { resolve, dirname } from 'node:path';
 import { parseArgs } from 'node:util';
 import { setTimeout } from 'node:timers/promises';
 import { validateEditorialHost, editorialManifestRequest } from './editorial-http.mjs';
+import { editorialBuildTime } from '../src/lib/editorial/schema.ts';
+import { repoRoot, loadEditorialCatalog, createEditorialManifest } from './editorial-io.mjs';
+import { verifyEditorialPublication } from './editorial-receipts.mjs';
 
-const { values } = parseArgs({ options: { host: { type: 'string' } }, strict: true });
+const { values } = parseArgs({ options: { host: { type: 'string' }, output: { type: 'string', default: 'artifacts/editorial-publication/receipts.json' }, 'from-catalog': { type: 'boolean', default: false }, attempts: { type: 'string', default: '3' } }, strict: true });
 if (!values.host) throw new Error('--host attendu');
 const host = validateEditorialHost(values.host);
-const root = fileURLToPath(new URL('../', import.meta.url));
-const expected = JSON.parse(await readFile(resolve(root, 'dist/editorial-manifest.json'), 'utf8'));
+const attempts = Number(values.attempts);
+if (!Number.isInteger(attempts) || attempts < 1 || attempts > 12) throw new Error('--attempts doit être un entier entre 1 et 12');
+const articles = await loadEditorialCatalog();
+const expected = values['from-catalog']
+  ? createEditorialManifest(articles, editorialBuildTime(process.env.LEVOIS_EDITORIAL_BUILD_AT))
+  : JSON.parse(await readFile(resolve(repoRoot, 'dist/editorial-manifest.json'), 'utf8'));
 // Fail immediately on a partial/malformed token rather than hide it as a transient failure.
 editorialManifestRequest(host, { release: expected.fingerprint });
-for (let attempt = 0; attempt < 12; attempt += 1) {
-  const request = editorialManifestRequest(host, { release: expected.fingerprint, timeoutMs: 10000, noStore: true });
-  try {
-    const response = await fetch(request.url, request.options);
-    if (response.ok) {
-      const actual = await response.json();
-      if (actual.schemaVersion === 1 && actual.fingerprint === expected.fingerprint) {
-        console.log(`Catalogue confirmé sur ${host.hostname} : ${expected.articles.length} article(s) éditoriaux.`);
-        process.exit(0);
-      }
-    }
-  } catch { /* A transient public GET failure can be retried; never report it as success. */ }
-  if (attempt < 11) await setTimeout(5000);
+const output = resolve(values.output);
+await mkdir(dirname(output), { recursive: true });
+for (let attempt = 0; attempt < attempts; attempt += 1) {
+  const report = await verifyEditorialPublication({
+    host, manifest: expected, articles,
+    workflow: { repository: process.env.GITHUB_REPOSITORY, runId: process.env.GITHUB_RUN_ID, runAttempt: process.env.GITHUB_RUN_ATTEMPT, commitSha: process.env.GITHUB_SHA },
+  });
+  const temporary = `${output}.${process.pid}.tmp`;
+  await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`);
+  await rename(temporary, output);
+  console.log(JSON.stringify({ deploymentState: report.deploymentState, environment: report.environment, articleCount: report.receipts.length, verifiedCount: report.receipts.filter((receipt) => receipt.deploymentState === 'verified').length, receiptFile: output }));
+  if (report.deploymentState === 'verified') process.exit(0);
+  if (attempt < attempts - 1) await setTimeout(5000);
 }
-throw new Error('Déploiement envoyé mais catalogue public non confirmé ; consulter Cloudflare et relancer la vérification.');
+throw new Error('Publication non confirmée : reçu conservé avec état failed, aucune diffusion sociale autorisée.');

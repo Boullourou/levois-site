@@ -18,7 +18,7 @@ interface Props {
   description?: string; 
   image?: string; 
   imageAlt?: string;
-  article?: { headline: string; author: { name: string; role: string }; category: string; createdAt?: string; updatedAt?: string };
+  article?: { headline: string; author: { name: string; role: string }; category: string; createdAt?: string; updatedAt?: string; topicId?: string; revision?: number };
   noindex?: boolean; 
   headerTransparent?: boolean; 
   homeV2?: boolean; 
@@ -154,6 +154,8 @@ const schemaOrg = {
   {article && <meta property="article:author" content={article.author.name}/>}
   {article && <meta property="article:section" content={article.category}/>}
   {article?.updatedAt && <meta property="article:modified_time" content={article.updatedAt}/>}
+  {article?.topicId && <meta name="levois:topic-id" content={article.topicId}/>}
+  {article?.revision !== undefined && <meta name="levois:revision" content={String(article.revision)}/>}
   <meta name="twitter:card" content="summary_large_image"/>
   <meta name="twitter:title" content={pageTitle}/>
   <meta name="twitter:description" content={description}/>

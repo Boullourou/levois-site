@@ -18,6 +18,7 @@ if (values['write-manifest']) {
   const request = editorialManifestRequest(values.host);
   const local = parisDateParts(now);
   const inWindow = local.hour >= 7 && local.hour < 10;
+  const shouldVerify = (inWindow || values.force) && manifest.articles.length > 0;
   let shouldBuild = false;
   if (inWindow || values.force) {
     const response = await fetch(request.url, request.options);
@@ -29,7 +30,8 @@ if (values['write-manifest']) {
       shouldBuild = deployed.fingerprint !== manifest.fingerprint;
     }
   }
-  const result = { shouldBuild, parisDate: local.date, parisHour: local.hour, articleCount: manifest.articles.length, fingerprint: manifest.fingerprint };
-  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `should_build=${shouldBuild}\n`);
+  const buildAt = now.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const result = { shouldBuild, shouldVerify, buildAt, parisDate: local.date, parisHour: local.hour, articleCount: manifest.articles.length, fingerprint: manifest.fingerprint };
+  if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, `should_build=${shouldBuild}\nshould_verify=${shouldVerify}\nbuild_at=${buildAt}\n`);
   console.log(JSON.stringify(result));
 }

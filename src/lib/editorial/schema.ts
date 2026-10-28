@@ -1,27 +1,39 @@
-/** Contract v1: plain text only. Publishing always requires editorial review. */
+import { parseEditorialMarkdown } from './markdown.ts';
+
+/** Both contracts require explicit, reviewed facts; v2 preserves Markdown. */
 export const EDITORIAL_CATEGORIES = ['vendre', 'acheter', 'vente-achat', 'ventes-locales'] as const;
 export const EDITORIAL_DESTINATIONS = ['/votre-rue/', '/situer-ma-vente/', '/ma-recherche/', '/vendre-et-acheter/', '/contact/'] as const;
 export const EDITORIAL_STATUSES = ['draft', 'scheduled', 'published', 'archived'] as const;
 
-export interface EditorialArticle {
-  schemaVersion: 1;
+interface EditorialMetadata {
   topicId: string;
   revision: number;
   slug: string;
   title: string;
   summary: string;
   answer: string;
-  sections: { heading: string; paragraphs: string[] }[];
   author: { name: string; role: string };
   dates: { createdAt: string; publishAt: string; updatedAt?: string };
-  sources: { label: string; url: string; accessedAt: string }[];
   scope: string;
   limits: string[];
-  image: { src: string; alt: string; width: number; height: number } | null;
   category: typeof EDITORIAL_CATEGORIES[number];
   primaryDestination: typeof EDITORIAL_DESTINATIONS[number];
   status: typeof EDITORIAL_STATUSES[number];
 }
+
+export interface EditorialArticleV1 extends EditorialMetadata {
+  schemaVersion: 1;
+  sections: { heading: string; paragraphs: string[] }[];
+  sources: { label: string; url: string; accessedAt: string }[];
+  image: { src: string; alt: string; width: number; height: number } | null;
+}
+export interface EditorialArticleV2 extends EditorialMetadata {
+  schemaVersion: 2;
+  content: { format: 'commonmark'; markdown: string };
+  sources: { id: string; label: string; url: string | null; accessedAt: string; scope: string }[];
+  image: { src: string; alt: string; width: number; height: number; caption: string } | null;
+}
+export type EditorialArticle = EditorialArticleV1 | EditorialArticleV2;
 
 export interface ReservedEditorialIdentity { id: string; slug: string }
 export class EditorialValidationError extends Error {}
@@ -65,6 +77,16 @@ export function parseTimestamp(value: unknown, path = 'date'): string {
   return result;
 }
 
+/** Date-only evidence stays date-only; no midnight or timezone is fabricated. */
+export function parseEditorialDate(value: unknown, path = 'date'): string {
+  if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const parsed = new Date(`${value}T12:00:00Z`);
+    if (!Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== value) return fail(path, 'date civile invalide');
+    return value;
+  }
+  return parseTimestamp(value, path);
+}
+
 export function parisDateParts(instant: Date) {
   if (!Number.isFinite(instant.getTime())) fail('horloge', 'instant invalide');
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(instant);
@@ -73,46 +95,66 @@ export function parisDateParts(instant: Date) {
 }
 
 export function validateEditorialArticle(value: unknown): EditorialArticle {
-  const a = object(value, 'article', ['schemaVersion', 'topicId', 'revision', 'slug', 'title', 'summary', 'answer', 'sections', 'author', 'dates', 'sources', 'scope', 'limits', 'image', 'category', 'primaryDestination', 'status']);
-  if (a.schemaVersion !== 1) fail('schemaVersion', 'seule la version 1 est acceptée');
+  const a = object(value, 'article', ['schemaVersion', 'topicId', 'revision', 'slug', 'title', 'summary', 'answer', 'sections', 'content', 'author', 'dates', 'sources', 'scope', 'limits', 'image', 'category', 'primaryDestination', 'status']);
+  if (a.schemaVersion !== 1 && a.schemaVersion !== 2) fail('schemaVersion', 'version 1 ou 2 attendue');
+  if (a.schemaVersion === 1 && 'content' in a) fail('content', 'réservé à la version 2');
+  if (a.schemaVersion === 2 && 'sections' in a) fail('sections', 'la version 2 conserve uniquement content.markdown');
   const author = object(a.author, 'author', ['name', 'role']);
   const dates = object(a.dates, 'dates', ['createdAt', 'publishAt', 'updatedAt']);
-  const createdAt = parseTimestamp(dates.createdAt, 'dates.createdAt');
+  const parseDate = a.schemaVersion === 2 ? parseEditorialDate : parseTimestamp;
+  const createdAt = parseDate(dates.createdAt, 'dates.createdAt');
   const publishAt = parseTimestamp(dates.publishAt, 'dates.publishAt');
-  const updatedAt = dates.updatedAt === undefined ? undefined : parseTimestamp(dates.updatedAt, 'dates.updatedAt');
+  const updatedAt = dates.updatedAt === undefined ? undefined : parseDate(dates.updatedAt, 'dates.updatedAt');
   if (Date.parse(publishAt) < Date.parse(createdAt)) fail('dates.publishAt', 'antérieure à la création');
   if (updatedAt && Date.parse(updatedAt) < Date.parse(createdAt)) fail('dates.updatedAt', 'antérieure à la création');
   const paris = parisDateParts(new Date(publishAt));
   if (paris.hour !== 7 || paris.minute !== 0 || paris.second !== 0 || !publishAt.startsWith(`${paris.date}T07:00:00+0`)) fail('dates.publishAt', '07:00:00 Europe/Paris avec le bon décalage +01:00 ou +02:00 attendu');
-  const image = a.image === null ? null : object(a.image, 'image', ['src', 'alt', 'width', 'height']);
+  const image = a.image === null ? null : object(a.image, 'image', ['src', 'alt', 'width', 'height', ...(a.schemaVersion === 2 ? ['caption'] : [])]);
   let imageValue: EditorialArticle['image'] = null;
   if (image) {
     const src = text(image.src, 'image.src', 240);
     if (!/^\/editorial\/[a-z0-9-]+\/[a-z0-9-]+\.(?:webp|avif|jpg|jpeg|png)$/.test(src)) fail('image.src', 'image locale sous /editorial/{topicId}/ attendue');
     if (!src.startsWith(`/editorial/${a.topicId}/`)) fail('image.src', 'le dossier doit correspondre au topicId');
-    imageValue = { src, alt: text(image.alt, 'image.alt', 300), width: positiveInteger(image.width, 'image.width', 4000), height: positiveInteger(image.height, 'image.height', 4000) };
+    imageValue = { src, alt: text(image.alt, 'image.alt', 300), width: positiveInteger(image.width, 'image.width', 4000), height: positiveInteger(image.height, 'image.height', 4000), ...(a.schemaVersion === 2 ? { caption: text(image.caption, 'image.caption', 500) } : {}) };
   }
-  return {
-    schemaVersion: 1,
+  const common = {
     topicId: identifier(a.topicId, 'topicId'), revision: positiveInteger(a.revision, 'revision'), slug: identifier(a.slug, 'slug'),
     title: text(a.title, 'title', 140), summary: text(a.summary, 'summary', 320), answer: text(a.answer, 'answer', 1200),
+    author: { name: text(author.name, 'author.name', 120), role: text(author.role, 'author.role', 200) },
+    dates: { createdAt, publishAt, ...(updatedAt ? { updatedAt } : {}) },
+    scope: text(a.scope, 'scope', 600), limits: list(a.limits, 'limits', 1, 8, (entry, path) => text(entry, path, 700)),
+    category: choice(a.category, 'category', EDITORIAL_CATEGORIES), primaryDestination: choice(a.primaryDestination, 'primaryDestination', EDITORIAL_DESTINATIONS), status: choice(a.status, 'status', EDITORIAL_STATUSES),
+  };
+  function sourceUrl(value: unknown, path: string): string {
+      const url = text(value, path, 2000);
+      let parsed: URL;
+      try { parsed = new URL(url); } catch { return fail(path, 'URL HTTPS attendue'); }
+      if (parsed.protocol !== 'https:' || parsed.username || parsed.password) fail(path, 'URL HTTPS sans identifiants attendue');
+      return url;
+  }
+  if (a.schemaVersion === 1) return {
+    schemaVersion: 1, ...common, image: imageValue,
     sections: list(a.sections, 'sections', 1, 16, (entry, path) => {
       const section = object(entry, path, ['heading', 'paragraphs']);
       return { heading: text(section.heading, `${path}.heading`, 160), paragraphs: list(section.paragraphs, `${path}.paragraphs`, 1, 12, (p, path) => text(p, path, 3000)) };
     }),
-    author: { name: text(author.name, 'author.name', 120), role: text(author.role, 'author.role', 200) },
-    dates: { createdAt, publishAt, ...(updatedAt ? { updatedAt } : {}) },
     sources: list(a.sources, 'sources', 0, 30, (entry, path) => {
       const source = object(entry, path, ['label', 'url', 'accessedAt']);
-      const url = text(source.url, `${path}.url`, 2000);
-      let parsed: URL;
-      try { parsed = new URL(url); } catch { return fail(`${path}.url`, 'URL HTTPS attendue'); }
-      if (parsed.protocol !== 'https:' || parsed.username || parsed.password) fail(`${path}.url`, 'URL HTTPS sans identifiants attendue');
-      return { label: text(source.label, `${path}.label`, 200), url, accessedAt: parseTimestamp(source.accessedAt, `${path}.accessedAt`) };
+      return { label: text(source.label, `${path}.label`, 200), url: sourceUrl(source.url, `${path}.url`), accessedAt: parseTimestamp(source.accessedAt, `${path}.accessedAt`) };
     }),
-    scope: text(a.scope, 'scope', 600), limits: list(a.limits, 'limits', 1, 8, (entry, path) => text(entry, path, 700)), image: imageValue,
-    category: choice(a.category, 'category', EDITORIAL_CATEGORIES), primaryDestination: choice(a.primaryDestination, 'primaryDestination', EDITORIAL_DESTINATIONS), status: choice(a.status, 'status', EDITORIAL_STATUSES),
   };
+  const content = object(a.content, 'content', ['format', 'markdown']);
+  choice(content.format, 'content.format', ['commonmark']);
+  if (typeof content.markdown !== 'string') fail('content.markdown', 'chaîne Markdown attendue');
+  parseEditorialMarkdown(content.markdown as string, { title: common.title });
+  const sources = list(a.sources, 'sources', 0, 30, (entry, path) => {
+    const source = object(entry, path, ['id', 'label', 'url', 'accessedAt', 'scope']);
+    const id = text(source.id, `${path}.id`, 100);
+    if (!/^[A-Za-z0-9_-]+$/.test(id)) fail(`${path}.id`, 'identifiant de source ASCII attendu');
+    return { id, label: text(source.label, `${path}.label`, 200), url: source.url === null ? null : sourceUrl(source.url, `${path}.url`), accessedAt: parseEditorialDate(source.accessedAt, `${path}.accessedAt`), scope: text(source.scope, `${path}.scope`, 1000) };
+  });
+  if (new Set(sources.map((source) => source.id)).size !== sources.length) fail('sources', 'identifiant de source dupliqué');
+  return { schemaVersion: 2, ...common, sources, image: imageValue as EditorialArticleV2['image'], content: { format: 'commonmark', markdown: content.markdown as string } };
 }
 
 export function validateEditorialCatalog(values: unknown[], reserved: ReservedEditorialIdentity[] = []): EditorialArticle[] {

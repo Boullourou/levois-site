@@ -34,6 +34,8 @@ jobs:
     environment: ${{ (inputs.target || vars.LEVOIS_EDITORIAL_TARGET || 'preview') == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
     outputs:
       should_build: ${{ steps.due.outputs.should_build }}
+      should_verify: ${{ steps.due.outputs.should_verify }}
+      build_at: ${{ steps.due.outputs.build_at }}
       target: ${{ steps.target.outputs.target }}
       branch: ${{ steps.target.outputs.branch }}
       host: ${{ steps.target.outputs.host }}
@@ -42,6 +44,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
+      - run: npm ci --ignore-scripts
       - name: Choisir explicitement la destination
         id: target
         env:
@@ -84,6 +87,8 @@ jobs:
     if: needs.plan.outputs.should_build == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      LEVOIS_EDITORIAL_BUILD_AT: ${{ needs.plan.outputs.build_at }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -94,7 +99,7 @@ jobs:
       - run: node scripts/editorial-check.mjs
       - run: npm run check
       - run: npm test
-      # npm prebuild freezes one real clock for HTML, registry and manifest.
+      # The plan clock is shared by HTML, registry, manifest and confirmation.
       - run: npm run build
       - run: node scripts/editorial-schedule.mjs --write-manifest
       - uses: actions/upload-artifact@v4
@@ -112,8 +117,7 @@ jobs:
     if: github.event_name == 'schedule' || inputs.deploy == true
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Deployment credentials stay in the Wrangler step. Access credentials are
-    # only in the two preview manifest GET steps, never the build or content PRs.
+    # Deployment credentials stay in the Wrangler step, never content PRs.
     environment: ${{ needs.plan.outputs.target == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
     steps:
       - uses: actions/checkout@v4
@@ -139,9 +143,33 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           DEPLOY_BRANCH: ${{ needs.plan.outputs.branch }}
         run: npx --no-install wrangler pages deploy dist --project-name levois-site --branch "$DEPLOY_BRANCH" --commit-hash "$GITHUB_SHA"
-      - name: Confirmer le catalogue réellement servi
+  verify:
+    needs: [plan, build, deploy]
+    # An already deployed catalogue can be reverified without a second deployment.
+    if: always() && needs.plan.result == 'success' && needs.plan.outputs.should_verify == 'true' && (needs.plan.outputs.should_build == 'false' || needs.deploy.result == 'success')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ needs.plan.outputs.target == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
+    env:
+      LEVOIS_EDITORIAL_BUILD_AT: ${{ needs.plan.outputs.build_at }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Vérifier le manifeste et chaque URL exacte
         env:
           EDITORIAL_HOST: ${{ needs.plan.outputs.host }}
           CF_ACCESS_CLIENT_ID: ${{ needs.plan.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_ID || '' }}
           CF_ACCESS_CLIENT_SECRET: ${{ needs.plan.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_SECRET || '' }}
-        run: node scripts/editorial-confirm.mjs --host "$EDITORIAL_HOST"
+        run: node scripts/editorial-confirm.mjs --host "$EDITORIAL_HOST" --from-catalog --output artifacts/editorial-publication/receipts.json
+      - name: Conserver les reçus machine, y compris les échecs vérifiés
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-publication-receipts-${{ needs.plan.outputs.target }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/editorial-publication/receipts.json
+          retention-days: 30
+          if-no-files-found: warn

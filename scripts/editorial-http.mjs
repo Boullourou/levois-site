@@ -12,12 +12,14 @@ export function validateEditorialHost(value) {
 }
 
 /**
- * Only a fixed public manifest may be requested; redirects cannot carry a token away.
+ * Only the fixed manifest or a validated article route may be requested.
+ * Redirects cannot carry a preview service token away.
  * @param {string | URL} hostValue
+ * @param {string} pathname
  * @param {{ release?: string, timeoutMs?: number, noStore?: boolean }} [options]
  * @param {{ CF_ACCESS_CLIENT_ID?: string, CF_ACCESS_CLIENT_SECRET?: string }} [credentials]
  */
-export function editorialManifestRequest(hostValue, { release, timeoutMs = 15000, noStore = false } = {}, credentials = process.env) {
+function editorialRequest(hostValue, pathname, { release, timeoutMs = 15000, noStore = false } = {}, credentials = process.env) {
   const host = validateEditorialHost(hostValue);
   const id = credentials.CF_ACCESS_CLIENT_ID ?? '';
   const secret = credentials.CF_ACCESS_CLIENT_SECRET ?? '';
@@ -32,13 +34,29 @@ export function editorialManifestRequest(hostValue, { release, timeoutMs = 15000
     headers.set('CF-Access-Client-Id', id);
     headers.set('CF-Access-Client-Secret', secret);
   }
-  const url = new URL('/editorial-manifest.json', host);
+  const url = new URL(pathname, host);
   if (release !== undefined) {
     if (typeof release !== 'string' || !/^[a-f0-9]{64}$/.test(release)) throw new Error('Empreinte de publication invalide');
     url.searchParams.set('release', release);
   }
   return {
     url,
-    options: { method: 'GET', headers, signal: AbortSignal.timeout(timeoutMs), redirect: 'error', ...(noStore ? { cache: 'no-store' } : {}) },
+    options: { method: 'GET', headers, signal: AbortSignal.timeout(timeoutMs), redirect: /** @type {const} */ ('error'), ...(noStore ? { cache: /** @type {const} */ ('no-store') } : {}) },
   };
+}
+
+/** @param {string | URL} hostValue @param {{ release?: string, timeoutMs?: number, noStore?: boolean }} [options] @param {{ CF_ACCESS_CLIENT_ID?: string, CF_ACCESS_CLIENT_SECRET?: string }} [credentials] */
+export function editorialManifestRequest(hostValue, options = {}, credentials = process.env) {
+  return editorialRequest(hostValue, '/editorial-manifest.json', options, credentials);
+}
+
+/** Exact article route only; a supplied slug cannot change the host or request arbitrary paths.
+ * @param {string | URL} hostValue
+ * @param {string} slug
+ * @param {{ release?: string, timeoutMs?: number, noStore?: boolean }} [options]
+ * @param {{ CF_ACCESS_CLIENT_ID?: string, CF_ACCESS_CLIENT_SECRET?: string }} [credentials]
+ */
+export function editorialArticleRequest(hostValue, slug, options = {}, credentials = process.env) {
+  if (typeof slug !== 'string' || slug.length > 100 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error('Slug éditorial invalide');
+  return editorialRequest(hostValue, `/ressources/${slug}/`, options, credentials);
 }
