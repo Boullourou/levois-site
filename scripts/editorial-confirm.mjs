@@ -29,7 +29,8 @@ for (let attempt = 0; attempt < attempts; attempt += 1) {
   await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`);
   await rename(temporary, output);
   console.log(JSON.stringify({ deploymentState: report.deploymentState, environment: report.environment, articleCount: report.receipts.length, verifiedCount: report.receipts.filter((receipt) => receipt.deploymentState === 'verified').length, receiptFile: output }));
-  if (report.deploymentState === 'verified') process.exit(0);
-  if (attempt < attempts - 1) await setTimeout(5000);
+  // Let Node drain stdout and fetch handles; forced exit can crash libuv on Windows.
+  if (report.deploymentState === 'verified') break;
+  if (attempt === attempts - 1) throw new Error('Publication non confirmée : reçu conservé avec état failed, aucune diffusion sociale autorisée.');
+  await setTimeout(5000);
 }
-throw new Error('Publication non confirmée : reçu conservé avec état failed, aucune diffusion sociale autorisée.');
