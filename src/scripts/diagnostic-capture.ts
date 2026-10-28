@@ -1,12 +1,13 @@
 import { textReading } from '../lib/experience/context';
 import { requestJson } from '../lib/request-json';
+import { getArticleContext } from '../lib/editorial/acquisition';
 import type { Context, Reading } from '../lib/experience/types';
 
 export interface CaptureResponse {
   ok: boolean; saved?: boolean; requestId?: string; copySent?: boolean; copyState?: string;
   phoneExchangeRequested?: boolean; firstName?: string; message?: string;
 }
-const buttonLabel = 'Recevoir mon analyse d’arbitrage par email →';
+const buttonLabel = 'Recevoir ma synthèse par e-mail →';
 export const captureFormHTML = () => '<form data-synthesis-form>' +
   '<div class="lv-capture-fields"><div class="lv-field"><label for="synthesis-first-name">Prénom</label><input id="synthesis-first-name" name="firstName" autocomplete="given-name" maxlength="80" required /></div>' +
   '<div class="lv-field"><label for="synthesis-email">Adresse e-mail</label><input id="synthesis-email" name="email" type="email" autocomplete="email" maxlength="254" required /></div></div>' +
@@ -18,7 +19,7 @@ export const captureFormHTML = () => '<form data-synthesis-form>' +
   '<p class="lv-note lv-capture-reassurance">Une analyse construite à partir de vos réponses. Vous gardez la main, sans relance agressive.</p>' +
   '<p id="synthesis-status" role="status" aria-live="polite" hidden></p></form>';
 
-/** A controller survives the gate-to-reading transition, including a failed mail retry. */
+/** Preserve one request identity through network failures and failed-mail retries. */
 export function createDiagnosticCapture(context: Context, reading: Reading, onSaved: (data: CaptureResponse) => void) {
   let frozen: Record<string, unknown> | null = null;
   let fingerprint = '';
@@ -26,6 +27,7 @@ export function createDiagnosticCapture(context: Context, reading: Reading, onSa
   let result: CaptureResponse | null = null;
   let pending = false;
   let acknowledged = false;
+  let emailAccepted = false;
   return function mount(root: HTMLElement) {
     const form = root.querySelector<HTMLFormElement>('[data-synthesis-form]')!;
     const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
@@ -36,8 +38,8 @@ export function createDiagnosticCapture(context: Context, reading: Reading, onSa
       if (!result) return;
       status.hidden = false; status.className = 'lv-note';
       status.textContent = result.copySent
-        ? 'Votre analyse a été confiée au service d’envoi. Retrouvez-la aussi ci-dessous. Vérifiez vos courriers indésirables si nécessaire.'
-        : 'Votre demande est enregistrée, mais l’envoi n’est pas confirmé. Votre analyse reste disponible ci-dessous et peut être téléchargée.';
+        ? 'Votre synthèse a été confiée au service d’envoi. Vérifiez vos courriers indésirables si nécessaire.'
+        : 'Votre demande est enregistrée, mais l’envoi n’est pas confirmé. Votre synthèse reste disponible sur cette page et peut être téléchargée.';
       if (result.phoneExchangeRequested) status.textContent += ' Votre demande d’échange téléphonique est enregistrée pour ce projet.';
       const retryable = !result.copySent && ['pending','failed','unavailable'].includes(result.copyState || '');
       button.disabled = !retryable;
@@ -51,7 +53,7 @@ export function createDiagnosticCapture(context: Context, reading: Reading, onSa
       field('firstName').setCustomValidity(''); field('phone').setCustomValidity('');
     });
     form.addEventListener('submit', async event => {
-      event.preventDefault(); if (pending) return;
+      event.preventDefault(); if (pending || button.disabled) return;
       values = { firstName: field('firstName').value.trim().normalize('NFC'), email: field('email').value.trim(), phone: field('phone').value.trim() };
       field('firstName').setCustomValidity(/^[\p{L}][\p{L}\p{M} '\u2019\u02BC-]{0,79}$/u.test(values.firstName) ? '' : 'Indiquez votre prénom avec des lettres, espaces, apostrophes ou tirets.');
       const digits = values.phone.replace(/\D/g, '').length;
@@ -59,9 +61,9 @@ export function createDiagnosticCapture(context: Context, reading: Reading, onSa
       if (!form.reportValidity()) return;
       const next = JSON.stringify([values.firstName, values.email, values.phone]);
       if (!frozen || fingerprint !== next) {
-        fingerprint = next; result = null;
+        fingerprint = next; result = null; acknowledged = false; emailAccepted = false;
         frozen = { action: 'synthesis-email', channel: 'email', ...values, requestId: crypto.randomUUID(), approved: true,
-          context, synthesis: textReading(reading, context), site_web: field('site_web').value,
+          context, articleContext:getArticleContext(), synthesis: textReading(reading, context), site_web: field('site_web').value,
           consent: { purpose: 'synthesis', textVersion: '2026-10-25-arbitrage', acceptedAt: new Date().toISOString() } };
       }
       pending = true; button.disabled = true;
@@ -72,8 +74,15 @@ export function createDiagnosticCapture(context: Context, reading: Reading, onSa
         const {response, data} = await requestJson<CaptureResponse>('/api/experience/actions', {
           method:'POST', redirect:'error', cache:'no-store', headers:{'content-type':'application/json'}, body:JSON.stringify(frozen),
         });
-        if (response.ok && data.ok && data.saved === true && data.requestId === frozen.requestId) {
+        const deliveryConsistent = typeof data.copySent === 'boolean'
+          && ['sent','pending','sending','failed','unknown','unavailable'].includes(data.copyState || '')
+          && data.copySent === (data.copyState === 'sent');
+        if (response.ok && data.ok === true && data.saved === true && data.requestId === frozen.requestId && deliveryConsistent) {
           result = data; updateStatus(); unlock = !acknowledged; acknowledged = true;
+          if (data.copySent === true && !emailAccepted) {
+            emailAccepted = true;
+            window.dispatchEvent(new CustomEvent('levois:journey', {detail:{event:'synthesis_email_accepted',selected_journey:context.project}}));
+          }
         } else {
           status.className = 'lv-error'; status.textContent = data.message || 'Votre demande n’a pas été confirmée. Vérifiez vos coordonnées et réessayez.'; button.disabled = false;
         }

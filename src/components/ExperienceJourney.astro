@@ -16,8 +16,8 @@ const introduction = introductions[project];
 ---
 <Layout title={title} description={description}>
 <div class="lv-journey" data-journey={project}>
-<div class="lv-journey-head"><a href="/">Accueil</a><span>5 questions · Votre analyse par e-mail</span></div>
-<header class="lv-diagnostic-intro"><h1>{introduction.title}</h1><p>{introduction.text}</p><p class="lv-note">Répondez aux cinq questions, puis indiquez votre prénom et votre e-mail pour recevoir votre synthèse d’arbitrage.</p></header>
+<div class="lv-journey-head"><a href="/">Accueil</a><span>5 questions · Votre synthèse à l’écran</span></div>
+<header class="lv-diagnostic-intro"><h1>{introduction.title}</h1><p>{introduction.text}</p><p class="lv-note">Répondez aux cinq questions pour lire votre synthèse à l’écran. Vous pourrez ensuite choisir de la recevoir par e-mail ou de contacter Mouaad.</p></header>
 <div class="lv-journey-grid">
 <div class="lv-question-panel" data-question-panel>
 <div class="lv-progress-label"><span>{question.sequenceTitle}</span><span>{question.sequence} sur {journey.sequences.length}</span></div>
@@ -31,7 +31,7 @@ const introduction = introductions[project];
 <p class="lv-note">Dans votre analyse : le constat, l’angle mort à surveiller et une action utile cette semaine.</p>
 </aside>
 </div>
-<p data-storage-warning class="lv-limit" hidden>La sauvegarde de session est bloquée. Vous pouvez poursuivre et demander votre analyse par e-mail avant de quitter cette page.</p>
+<p data-storage-warning class="lv-limit" role="status" hidden>La sauvegarde de session est bloquée. Vous pouvez poursuivre : votre synthèse s’affichera ici. Téléchargez-la avant de quitter cette page si vous souhaitez la conserver.</p>
 </div>
 <script>import '../scripts/experience-journey';</script>
 </Layout>

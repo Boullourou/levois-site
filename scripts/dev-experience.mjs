@@ -21,7 +21,10 @@ function run(script,parameters,cwd=root){return new Promise((resolve,reject)=>{c
 function assertInsideRuntime(target){const relative=path.relative(runtime,path.resolve(target));if(!relative||relative.startsWith('..')||path.isAbsolute(relative))throw new Error('Unsafe local runtime target.');}
 async function replaceDirectory(target,source){assertInsideRuntime(target);try{const info=await fs.lstat(target);if(info.isSymbolicLink())throw new Error('A local runtime directory must not be a symbolic link.');}catch(error){if(error.code!=='ENOENT')throw error;}await fs.rm(target,{recursive:true,force:true});await fs.cp(source,target,{recursive:true,dereference:false});}
 await new Promise((resolve,reject)=>{const server=net.createServer();server.once('error',()=>reject(new Error('Port 4333 is already used. Stop that local service before starting this one.')));server.listen(4333,'127.0.0.1',()=>server.close(resolve));});
-if(!args.includes('--skip-build'))await run(astro,['build']);
+if(!args.includes('--skip-build')){
+ await run(path.join(root,'scripts','editorial-prepare.mjs'),[]);
+ await run(astro,['build']);
+}
 await fs.access(path.join(root,'dist','index.html'));
 await fs.mkdir(runtime,{recursive:true});
 await fs.writeFile(path.join(runtime,'package.json'),JSON.stringify({name:'levois-experience-local',private:true,type:'module'}));
@@ -54,7 +57,7 @@ const config='name = "levois-experience-local"\npages_build_output_dir = "./site
 await fs.writeFile(path.join(runtime,'wrangler.toml'),config);
 await fs.writeFile(path.join(runtime,'.dev.vars'),Object.entries(localVars).map(([key,value])=>key+'='+JSON.stringify(value)).join('\n')+'\n');
 await fs.writeFile(path.join(runtime,'.env'),'');
-for(const schema of ['db/schema.sql','db/experience.sql','db/experience-email-leads.sql'])await run(wrangler,['d1','execute','levois-experience-local','--local','--persist-to',state,'--file',path.join(root,schema)],runtime);
+for(const schema of ['db/schema.sql','db/experience.sql','db/experience-email-leads.sql','db/contact-delivery.sql'])await run(wrangler,['d1','execute','levois-experience-local','--local','--persist-to',state,'--file',path.join(root,schema)],runtime);
 console.log('\nLEVOIS — local demonstration only');
 console.log('Public:   http://127.0.0.1:4333');
 console.log('Operator: http://127.0.0.1:4333/cockpit/relectures/');

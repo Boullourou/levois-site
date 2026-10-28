@@ -27,6 +27,7 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run test:market
+      - run: npm run editorial:check
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - name: Vérifier les parcours sur le site compilé

@@ -10,9 +10,11 @@ import type {Project,Question,AnswerValue} from '../lib/experience/types';
 import {getDiagnosticJourney} from '../lib/experience/diagnostics';
 import {diagnosticProgress} from '../lib/experience/diagnostic-reading-state';
 import {mountDiagnosticReading} from './diagnostic-reading';
+import {getArticleContext} from '../lib/editorial/acquisition';
 
 const root=document.querySelector<HTMLElement>('[data-journey]');
 if(root){
+ getArticleContext();
  const project=root.dataset.journey as Project;
  const editRequested=new URLSearchParams(location.search).get('edit');
  const legacyEdit=!!editRequested&&!editRequested.startsWith('diag_');
@@ -66,6 +68,7 @@ if(root){
     root!.querySelector<HTMLElement>('.lv-diagnostic-intro')!.hidden=false;
     index=Math.max(0,questions().findIndex(q=>q.id===id));editing=true;render(true);
    });
+   panel.querySelector<HTMLElement>('h1')?.focus({preventScroll:true});
    panel.scrollIntoView();
    return;
   }
@@ -83,7 +86,7 @@ if(root){
   const q=qs[index];
   const answer=ctx.answers[q.id]?.value;
 
-  side.innerHTML='<h2>Votre analyse, étape par étape.</h2><ol class="lv-sequences">'+journey.sequences.map((s,i)=>'<li'+(q.sequence===i+1?' aria-current="step"':'')+'>'+e(s)+'</li>').join('')+'</ol><p class="lv-note">Après les cinq questions, indiquez votre prénom et votre e-mail pour recevoir votre analyse d’arbitrage.</p>';
+  side.innerHTML='<h2>Votre analyse, étape par étape.</h2><ol class="lv-sequences">'+journey.sequences.map((s,i)=>'<li'+(q.sequence===i+1?' aria-current="step"':'')+'>'+e(s)+'</li>').join('')+'</ol><p class="lv-note">Après les cinq questions, lisez votre synthèse à l’écran. L’envoi par e-mail est facultatif.</p>';
 
   let controls='';
   if(q.type==='choice'||q.type==='multiple'){
@@ -93,26 +96,32 @@ if(root){
   }
 
   const isLast=index===qs.length-1;
-  const buttonLabel=editing?'Actualiser mon analyse':isLast?'Préparer mon analyse':'Continuer';
+  const buttonLabel=editing?'Actualiser mon analyse':isLast?'Lire ma synthèse':'Continuer';
 
   panel.innerHTML='<div class="lv-progress-label"><span>'+e(q.sequenceTitle||journey.sequences[q.sequence-1])+'</span><span>'+q.sequence+' sur '+journey.sequences.length+'</span></div>'+
    '<div class="lv-progress" role="progressbar" aria-label="Séquence du projet" aria-valuemin="0" aria-valuemax="'+journey.sequences.length+'" aria-valuenow="'+q.sequence+'"><i style="width:'+(q.sequence/journey.sequences.length*100)+'%"></i></div>'+
-   '<h2 tabindex="-1" data-question-title>'+e(q.title)+'</h2>'+(q.help?'<p class="lv-intro">'+e(q.help)+'</p>':'')+
-   '<form class="lv-question-form" novalidate>'+controls+
-   '<p class="lv-error" data-error role="alert" hidden></p>'+
+   '<h2 id="journey-question-title" tabindex="-1" data-question-title>'+e(q.title)+'</h2>'+(q.help?'<p class="lv-intro">'+e(q.help)+'</p>':'')+
+   '<form class="lv-question-form" novalidate aria-labelledby="journey-question-title">'+controls+
+   '<p id="journey-error" class="lv-error" data-error role="alert" hidden></p>'+
    '<div class="lv-question-actions">'+
    '<button class="lv-button" type="submit">'+buttonLabel+'</button>'+
    (index>0?'<button class="lv-text-link" data-back type="button">← Retour</button>':'')+
    '</div></form>';
 
   const form=panel.querySelector<HTMLFormElement>('form')!,error=panel.querySelector<HTMLElement>('[data-error]')!;
+  function showError(message:string){
+   error.textContent=message;error.hidden=false;
+   const fields=form.querySelectorAll<HTMLInputElement|HTMLTextAreaElement>('[name=answer]');
+   fields.forEach(field=>{field.setAttribute('aria-invalid','true');field.setAttribute('aria-describedby','journey-error');});
+   fields[0]?.focus();
+  }
 
   function collect():AnswerValue|undefined{
    if(q.type==='choice')return form.querySelector<HTMLInputElement>('input:checked')?.value;
    if(q.type==='multiple')return [...form.querySelectorAll<HTMLInputElement>('input:checked')].map(i=>i.value);
    const input=form.elements.namedItem('answer') as HTMLInputElement|HTMLTextAreaElement;
    if(!input||!input.value.trim())return null;
-   if(!input.checkValidity()){error.textContent='Vérifiez cette réponse'+(q.min!==undefined?' (minimum '+q.min+')':'')+(q.max!==undefined?' (maximum '+q.max+')':'')+'.';error.hidden=false;return undefined;}
+   if(!input.checkValidity()){showError('Vérifiez cette réponse'+(q.min!==undefined?' (minimum '+q.min+')':'')+(q.max!==undefined?' (maximum '+q.max+')':'')+'.');return undefined;}
    return q.type==='number'?Number(input.value):input.value.trim();
   }
 
@@ -122,9 +131,10 @@ if(root){
     else if(ev.target.checked){const unknown=form.querySelector<HTMLInputElement>('input[value=unknown]');if(unknown)unknown.checked=false;}
    }
    if(q.type==='multiple'&&q.maxChoices&&form.querySelectorAll('input:checked').length>q.maxChoices){
-    (ev.target as HTMLInputElement).checked=false;error.textContent='Choisissez au maximum '+q.maxChoices+' réponses.';error.hidden=false;return;
+    (ev.target as HTMLInputElement).checked=false;showError('Choisissez au maximum '+q.maxChoices+' réponses.');return;
    }
    error.hidden=true;
+   form.querySelectorAll('[aria-invalid]').forEach(field=>{field.removeAttribute('aria-invalid');field.removeAttribute('aria-describedby');});
    const v=collect();
    if(v!==undefined)updateAnswer(q,v);
   });
@@ -133,8 +143,7 @@ if(root){
    ev.preventDefault();
    const v=collect();
    if(v===undefined){
-    if(q.type==='choice'||q.type==='multiple')error.textContent='Choisissez la réponse qui vous ressemble le plus.';
-    error.hidden=false;
+    showError(q.type==='choice'||q.type==='multiple'?'Choisissez la réponse qui vous ressemble le plus.':error.textContent||'Vérifiez cette réponse.');
     return;
    }
    updateAnswer(q,v);

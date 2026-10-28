@@ -38,6 +38,13 @@ pnpm-debug.log*
 # Local QA evidence and generated delivery captures
 artifacts/
 
+# Deterministic public article registry and actual clock of the current build.
+# Generated before dev, checks, tests and build; never hand-edit.
+src/lib/editorial/article-registry.generated.json
+src/lib/editorial/build-clock.generated.json
+src/content/editorial/.import.lock
+src/content/editorial/.*.tmp
+
 # Local compiler/runtime caches
 .cache/
 

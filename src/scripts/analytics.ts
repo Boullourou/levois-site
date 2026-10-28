@@ -1,4 +1,5 @@
 import {ANALYTICS_CONSENT_KEY,readAnalyticsChoice,writeAnalyticsChoice,type AnalyticsChoice} from '../lib/analytics-consent';
+import { getArticleContext } from '../lib/editorial/acquisition';
 import {
   cleanAnalyticsUrl,
   cleanPath,
@@ -6,6 +7,8 @@ import {
   journeyForPath,
   linkPlacement,
   safeAuditProperties,
+  JOURNEY_EVENTS,
+  safeJourneyProperties,
 } from '../lib/analytics';
 
 const config = document.querySelector<HTMLElement>('[data-levois-analytics]');
@@ -70,7 +73,7 @@ async function startAnalytics(){
       else delete event.properties.$referrer;
       delete event.properties.$referring_domain;
       // Explicit allowlist: SDK acquisition metadata can otherwise include query strings.
-      const permitted=new Set(['token','distinct_id','$session_id','$window_id','$insert_id','$lib','$lib_version','$browser','$browser_version','$os','$os_version','$device_type','$screen_height','$screen_width','$viewport_height','$viewport_width','$current_url','$referrer','$timestamp','page_path','journey','source','signal','result','step','step_name','selected_journey','consent_type','placement','destination_path','link_type','form_name','active_seconds','scroll_percent','max_scroll_percent','duration_seconds','exit_reason']);
+      const permitted=new Set(['token','distinct_id','$session_id','$window_id','$insert_id','$lib','$lib_version','$browser','$browser_version','$os','$os_version','$device_type','$screen_height','$screen_width','$viewport_height','$viewport_width','$current_url','$referrer','$timestamp','page_path','journey','source','step','selected_journey','article_id','placement','destination_path','link_type','form_name','active_seconds','scroll_percent','max_scroll_percent','duration_seconds','exit_reason']);
       for(const key of Object.keys(event.properties))if(!permitted.has(key))delete event.properties[key];
       event.properties.$cookieless_mode = true;
       event.properties.$process_person_profile = false;
@@ -84,6 +87,7 @@ async function startAnalytics(){
     if(!allowed())return;
     posthog.capture(event, {
       ...properties,
+      ...(getArticleContext() ? { article_id: getArticleContext()!.id } : {}),
       page_path: cleanPath(window.location.pathname),
       journey: journeyForPath(window.location.pathname),
     });
@@ -98,24 +102,8 @@ async function startAnalytics(){
   window.addEventListener('levois:journey', (rawEvent) => {
     const detail = (rawEvent as CustomEvent<Record<string, unknown>>).detail ?? {};
     const event = typeof detail.event === 'string' ? detail.event : '';
-    const allowed = new Set([
-      'journey_started', 'diagnostic_completed', 'capture_viewed',
-      'first_value_seen', 'answer_corrected', 'reading_kept', 'reading_copy_requested', 'review_requested', 'exchange_requested',
-      'journey_step_completed',
-      'journey_completed',
-      'result_viewed',
-      'contact_consent_submitted',
-      'matching_consent_submitted',
-      'reading_consent_submitted',
-    ]);
-    if (!allowed.has(event)) return;
-    const safe: Record<string, string | number | boolean> = {};
-    if (typeof detail.step === 'number' && Number.isInteger(detail.step) && detail.step>=0 && detail.step<=30) safe.step = detail.step;
-    if(typeof detail.duration_seconds==='number'&&Number.isFinite(detail.duration_seconds))safe.duration_seconds=Math.min(86400,Math.max(0,Math.round(detail.duration_seconds)));
-    if (typeof detail.step_name === 'string') safe.step_name = detail.step_name.slice(0, 80);
-    if (typeof detail.selected_journey === 'string'&&['buyer','seller','transition','local','audit','prescriber','team_candidate','brand'].includes(detail.selected_journey)) safe.selected_journey = detail.selected_journey;
-    if (typeof detail.consent_type === 'string') safe.consent_type = detail.consent_type.slice(0, 40);
-    capture(event, safe);
+    if (!JOURNEY_EVENTS.has(event)) return;
+    capture(event, safeJourneyProperties(detail));
   });
 
   document.addEventListener('click', (event) => {
@@ -157,7 +145,8 @@ async function startAnalytics(){
   document.addEventListener('submit', (event) => {
     const form = event.target as HTMLFormElement | null;
     if (!form?.matches('form')) return;
-    capture('levois_form_submitted', { form_name: form.dataset.analyticsForm || cleanPath(window.location.pathname) });
+    // A DOM submit is an attempt. Server-confirmed outcomes have distinct events.
+    capture('levois_form_submit_attempted', { form_name: form.dataset.analyticsForm || cleanPath(window.location.pathname) });
   });
 
   let activeMilliseconds = 0;

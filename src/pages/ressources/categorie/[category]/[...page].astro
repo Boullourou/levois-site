@@ -1,0 +1,20 @@
+---
+import Layout from '../../../../layouts/Layout.astro';
+import ResourceLibrary from '../../../../components/ResourceLibrary.astro';
+import { getPublishedEditorialArticles } from '../../../../lib/editorial/catalog';
+import { RESOURCE_CATEGORY_LABELS, createResourceCatalog, paginateResources, type ResourceCategory } from '../../../../lib/editorial/shared-catalog';
+export function getStaticPaths() {
+  const catalog = createResourceCatalog(getPublishedEditorialArticles());
+  return (Object.keys(RESOURCE_CATEGORY_LABELS) as ResourceCategory[]).flatMap((category) => {
+    const matching = catalog.filter((entry) => entry.category === category);
+    if (!matching.length) return [];
+    const pages = paginateResources(matching);
+    return pages.map((entries, index) => ({ params: { category, page: index === 0 ? undefined : String(index + 1) }, props: { entries, catalog, page: index + 1, totalPages: pages.length, category } }));
+  });
+}
+const { entries, catalog, page, totalPages, category } = Astro.props;
+const label = RESOURCE_CATEGORY_LABELS[category];
+---
+<Layout title={`${label}${page > 1 ? ` · Page ${page}` : ''} · Ressources LEVOIS`} description={`${label} : guides pratiques, explications et limites pour votre projet à Lèves et Chartres Métropole${page > 1 ? `, page ${page}` : ''}.`}>
+  <ResourceLibrary entries={entries} catalog={catalog} page={page} totalPages={totalPages} category={category} />
+</Layout>

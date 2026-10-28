@@ -6,7 +6,7 @@ import { diagnosticNotesHTML } from '../lib/experience/diagnostic-notes';
 import { answersText } from '../lib/experience/labels';
 import { keepReading } from '../lib/experience/export';
 import { captureFormHTML, createDiagnosticCapture } from './diagnostic-capture';
-import { deliveryIds, rememberDelivery } from '../lib/experience/diagnostic-delivery';
+import { rememberDelivery } from '../lib/experience/diagnostic-delivery';
 import type { Context, Reading } from '../lib/experience/types';
 
 const routes: Record<DiagnosticProject, string> = {
@@ -39,7 +39,6 @@ export function mountDiagnosticReading(
   const active = state.context;
   if (state.regenerated && !memoryOnly && !saveContext(active)) memoryOnly = true;
   let displayed: Reading = active.reading!;
-  const delivered = new Set(deliveryIds());
   const captures = new Map<string, ReturnType<typeof createDiagnosticCapture>>();
   root.classList.add('lv-simple-reading');
   function track(event: string) {
@@ -57,8 +56,7 @@ export function mountDiagnosticReading(
     if (!captures.has(displayed.id)) {
       const reading = displayed;
       captures.set(reading.id, createDiagnosticCapture(snapshot, reading, () => {
-        delivered.add(reading.id); rememberDelivery(reading.id); track('reading_copy_requested');
-        render(); root.querySelector<HTMLElement>('h1')?.focus({preventScroll: true}); root.scrollIntoView({block:'start'});
+        rememberDelivery(reading.id); track('synthesis_saved');
       }));
     }
     const bindCapture = captures.get(displayed.id)!;
@@ -66,20 +64,9 @@ export function mountDiagnosticReading(
       memoryOnly ? '<button type="button" class="lv-text-link" data-correct="' + e(q.id) + '">' + e(q.title) + '</button>'
       : '<a class="lv-text-link" href="' + routes[snapshot.project as DiagnosticProject] + '?edit=' + encodeURIComponent(q.id) + '">' + e(q.title) + '</a>',
     ).join('');
-    const gated = displayed.deliveryMode === 'email-arbitrage-v1' && !delivered.has(displayed.id);
-    root.classList.toggle('lv-capture-gate', gated);
-    if (gated) {
-      root.innerHTML = '<header class="lv-synthesis-header"><p class="lv-capture-context">' + e(displayed.title) + '</p>' +
-        '<h1 tabindex="-1">Où devons-nous vous envoyer votre synthèse d’arbitrage personnalisée ?</h1>' +
-        '<p class="lv-intro">Vos cinq réponses sont réunies. Recevez votre point de blocage, l’angle mort à surveiller et votre prochaine étape utile.</p>' +
-        (historical ? '<p class="lv-note">Version conservée du ' + e(new Intl.DateTimeFormat('fr-FR', {dateStyle:'short',timeStyle:'short'}).format(new Date(displayed.generatedAt))) + '.</p><button class="lv-text-link" data-current type="button">Revenir à ma synthèse actuelle</button>' : '') + '</header>' +
-        '<section class="lv-synthesis-email lv-capture" aria-label="Recevoir votre analyse">' + captureFormHTML() + '</section>' +
-        '<details class="lv-history"><summary>Vérifier les réponses de cette version</summary><pre class="lv-preview">' + e(answersText(snapshot)) + '</pre>' + (historical ? '' : '<div class="lv-correction-links">' + correcting + '</div>') + '</details>' +
-        '<p class="lv-note"><a href="/contact/">Échanger directement avec Mouaad</a> · <a href="/ressources/">Consulter les guides</a></p>';
-      root.querySelectorAll<HTMLButtonElement>('[data-correct]').forEach(button => button.addEventListener('click', () => onCorrect?.(button.dataset.correct!)));
-      root.querySelector('[data-current]')?.addEventListener('click', () => {displayed=active.reading!;render();root.querySelector<HTMLElement>('h1')?.focus();});
-      bindCapture(root); track('capture_viewed'); return;
-    }
+    // A useful first reading is available before any contact detail is requested.
+    // Historical deliveryMode markers remain importable but no longer gate it.
+    root.classList.remove('lv-capture-gate');
     root.innerHTML = '<header class="lv-synthesis-header"><p class="lv-overline">Votre projet, en clair</p><h1 tabindex="-1">' + e(displayed.title) +
       '</h1><p class="lv-intro">Voici ce qui ressort de vos réponses, et par où commencer.</p>' +
       (historical ? '<p class="lv-limit">Vous consultez une version conservée du ' + e(new Intl.DateTimeFormat('fr-FR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(displayed.generatedAt))) + '. Vos réponses actuelles restent inchangées.</p>' : '') +
@@ -94,7 +81,7 @@ export function mountDiagnosticReading(
       '<h2 id="synthesis-contact-title">Un point ensemble pour avancer.</h2><p>Vous pouvez parler de votre situation à Mouaad, même si votre projet est encore en réflexion.</p></div>' +
       '<div class="lv-contact-actions"><a class="lv-button" data-contact-call href="tel:' + site.phone + '">Échanger 15 min avec Mouaad (sans engagement)</a>' +
       '<a class="lv-text-link" href="/contact/">Je préfère lui écrire</a><span class="lv-note">' + site.phoneDisplay + '</span></div></section>' +
-      '<section class="lv-synthesis-email" aria-labelledby="synthesis-email-title"><h2 id="synthesis-email-title">Votre analyse par e-mail</h2>' + captureFormHTML() + '</section>' +
+      '<section class="lv-synthesis-email" aria-labelledby="synthesis-email-title"><h2 id="synthesis-email-title">Recevoir cette synthèse par e-mail pour garder une trace</h2><p>Facultatif : votre synthèse reste disponible ici, sans laisser vos coordonnées.</p>' + captureFormHTML() + '</section>' +
       '<section class="lv-synthesis-resources" aria-labelledby="synthesis-resources-title"><h2 id="synthesis-resources-title">Deux lectures pour votre situation</h2><div>' +
       resources.map(r => '<a class="lv-resource-card" href="' + e(r.href) + '"><strong>' + e(r.label) + '</strong><span>' + e(r.detail) + '</span><span aria-hidden="true">↗</span></a>').join('') + '</div></section>' +
       '<div class="lv-synthesis-tools"><button class="lv-text-link" data-keep type="button">Télécharger une copie</button><button class="lv-text-link" data-print type="button">Imprimer</button><a class="lv-text-link" href="/reprendre/">Reprendre un projet</a></div>' +

@@ -4,6 +4,7 @@ import {
   rateLimit, readJson, sendMail, sha256, string, uuid, validateContext,
 } from '../../_lib/experience/common';
 import { ARBITRAGE_CONSENT_VERSION, captureSynthesis } from '../../_lib/experience/email-leads';
+import { resolveArticleContext } from '../../../src/lib/editorial/acquisition-server';
 
 export interface ActionInput {
   requestId: string;
@@ -15,6 +16,7 @@ export interface ActionInput {
   question: string;
   context?: Record<string, unknown>;
   synthesis: string;
+  articleContext?: {id:string;slug:string;title:string};
   consent: { purpose: 'copy' | 'synthesis' | 'review' | 'exchange'; textVersion: string; acceptedAt: string };
 }
 export interface RequestRow {
@@ -47,10 +49,13 @@ function validate(body: Record<string, unknown>): ActionInput {
   if ((channel === 'email' && body.phone && !arbitrage) || (channel === 'phone' && body.email)) invalid('Indiquez seulement la coordonnée utile au canal choisi.');
   if (['email-copy', 'synthesis-email'].includes(action) && ((!arbitrage && body.firstName) || body.question)) invalid('Indiquez seulement les coordonnées demandées pour recevoir votre synthèse.');
   const firstName = arbitrage ? line(body.firstName, 80, true).normalize('NFC') : line(body.firstName, 80);
+  const articleContext = resolveArticleContext(body.articleContext);
+  if (body.articleContext != null && !articleContext) invalid('L’article joint n’est pas reconnu. Rechargez la page avant de réessayer.');
   if (arbitrage && !/^[\p{L}][\p{L}\p{M} '\u2019\u02bc-]{0,79}$/u.test(firstName)) invalid('Indiquez votre prénom avec des lettres, espaces, apostrophes ou tirets.');
   return {
     requestId: uuid(body.requestId), action, channel: channel as ActionInput['channel'],
     email: emailAddress, phone, firstName, question: string(body.question, 2500),
+    ...(articleContext ? {articleContext} : {}),
     ...(action === 'email-copy' ? {} : { context: validateContext(body.context) }), synthesis: string(body.synthesis, 30_000, true),
     consent: { purpose, textVersion, acceptedAt },
   };
