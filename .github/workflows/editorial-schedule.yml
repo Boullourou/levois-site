@@ -30,6 +30,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch' || vars.LEVOIS_EDITORIAL_SCHEDULE_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Access service credentials are read only in the manifest GET step below.
+    environment: ${{ (inputs.target || vars.LEVOIS_EDITORIAL_TARGET || 'preview') == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
     outputs:
       should_build: ${{ steps.due.outputs.should_build }}
       target: ${{ steps.target.outputs.target }}
@@ -68,6 +70,8 @@ jobs:
         env:
           EDITORIAL_HOST: ${{ steps.target.outputs.host }}
           MANUAL_RUN: ${{ github.event_name == 'workflow_dispatch' }}
+          CF_ACCESS_CLIENT_ID: ${{ steps.target.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_ID || '' }}
+          CF_ACCESS_CLIENT_SECRET: ${{ steps.target.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_SECRET || '' }}
         run: |
           if [ "$MANUAL_RUN" = 'true' ]; then
             node scripts/editorial-schedule.mjs --host "$EDITORIAL_HOST" --force
@@ -108,8 +112,8 @@ jobs:
     if: github.event_name == 'schedule' || inputs.deploy == true
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Create and protect these environments before opting in. No secrets are
-    # passed to the plan/build jobs or to a Limova content pull request.
+    # Deployment credentials stay in the Wrangler step. Access credentials are
+    # only in the two preview manifest GET steps, never the build or content PRs.
     environment: ${{ needs.plan.outputs.target == 'production' && 'levois-editorial-production' || 'levois-editorial-preview' }}
     steps:
       - uses: actions/checkout@v4
@@ -138,4 +142,6 @@ jobs:
       - name: Confirmer le catalogue réellement servi
         env:
           EDITORIAL_HOST: ${{ needs.plan.outputs.host }}
+          CF_ACCESS_CLIENT_ID: ${{ needs.plan.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_ID || '' }}
+          CF_ACCESS_CLIENT_SECRET: ${{ needs.plan.outputs.target == 'preview' && secrets.CF_ACCESS_CLIENT_SECRET || '' }}
         run: node scripts/editorial-confirm.mjs --host "$EDITORIAL_HOST"

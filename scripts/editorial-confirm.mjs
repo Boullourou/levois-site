@@ -3,18 +3,19 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 import { setTimeout } from 'node:timers/promises';
+import { validateEditorialHost, editorialManifestRequest } from './editorial-http.mjs';
 
 const { values } = parseArgs({ options: { host: { type: 'string' } }, strict: true });
 if (!values.host) throw new Error('--host attendu');
-const host = new URL(values.host);
-if (host.protocol !== 'https:' || host.username || host.password || host.port || host.pathname !== '/' || host.search || host.hash || (!['levois.fr', 'www.levois.fr', 'levois-site.pages.dev'].includes(host.hostname) && !host.hostname.endsWith('.levois-site.pages.dev'))) throw new Error('Hôte LEVOIS HTTPS attendu');
+const host = validateEditorialHost(values.host);
 const root = fileURLToPath(new URL('../', import.meta.url));
 const expected = JSON.parse(await readFile(resolve(root, 'dist/editorial-manifest.json'), 'utf8'));
+// Fail immediately on a partial/malformed token rather than hide it as a transient failure.
+editorialManifestRequest(host, { release: expected.fingerprint });
 for (let attempt = 0; attempt < 12; attempt += 1) {
-  const url = new URL('/editorial-manifest.json', host);
-  url.searchParams.set('release', expected.fingerprint);
+  const request = editorialManifestRequest(host, { release: expected.fingerprint, timeoutMs: 10000, noStore: true });
   try {
-    const response = await fetch(url, { cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(10000) });
+    const response = await fetch(request.url, request.options);
     if (response.ok) {
       const actual = await response.json();
       if (actual.schemaVersion === 1 && actual.fingerprint === expected.fingerprint) {

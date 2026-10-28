@@ -529,6 +529,27 @@ try {
     }finally{await context.close();}
   });
 
+  for(const [project,config]of Object.entries(projects))await scenario(`Questionnaire sans JavaScript / ${project} : aucune réponse dans URL, activation après init`,async()=>{
+    const noJs=await createContext(390,{javaScriptEnabled:false});
+    try{
+      const page=await newPage(noJs),requests=[];
+      page.on('request',request=>requests.push({method:request.method(),url:request.url()}));
+      await page.goto(base+config.route,{waitUntil:'networkidle'});
+      const form=page.locator('.lv-question-form');await expect(form).toHaveAttribute('method','post');await expect(form.locator('[type=submit]')).toBeDisabled();
+      await form.locator('input[value="'+config.values[0]+'"]').check();await form.locator('input:checked').press('Enter');
+      assert.equal(new URL(page.url()).pathname,config.route);assert.equal(new URL(page.url()).search,'');
+      for(const request of requests.filter(item=>item.method==='GET'))assert.equal(new URL(request.url).searchParams.has('answer'),false,'Réponse personnelle dans URL');
+      await expect(page.locator('noscript a[href="/contact/"]')).toBeVisible();await expect(page.locator('noscript a[href="/ressources/"]')).toBeVisible();
+    }finally{await noJs.close();}
+    const withJs=await createContext(390);
+    try{
+      const page=await newPage(withJs);await page.goto(base+config.route,{waitUntil:'networkidle'});
+      const form=page.locator('.lv-question-form');await expect(form.locator('[type=submit]')).toBeEnabled();await expect(form).toHaveAttribute('method','post');
+      await form.locator('input[value="'+config.values[0]+'"]').check();await form.locator('[type=submit]').click();await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow','2');
+      assert.equal(new URL(page.url()).search,'');
+    }finally{await withJs.close();}
+  });
+
   await scenario('Contact sans JavaScript : aucun GET avec coordonnées, e-mail et appel disponibles', async()=>{
     const context=await createContext(390,{javaScriptEnabled:false});
     try{

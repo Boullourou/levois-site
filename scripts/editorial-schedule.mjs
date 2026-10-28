@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { editorialBuildTime, parisDateParts } from '../src/lib/editorial/schema.ts';
 import { repoRoot, loadEditorialCatalog, createEditorialManifest } from './editorial-io.mjs';
+import { editorialManifestRequest } from './editorial-http.mjs';
 
 const { values } = parseArgs({ options: { host: { type: 'string' }, 'write-manifest': { type: 'boolean', default: false }, force: { type: 'boolean', default: false } }, strict: true });
 const now = values['write-manifest']
@@ -13,13 +14,13 @@ if (values['write-manifest']) {
   await writeFile(resolve(repoRoot, 'dist/editorial-manifest.json'), `${JSON.stringify(manifest)}\n`);
 } else {
   if (!values.host) throw new Error('--host attendu : URL publique du déploiement à comparer');
-  const host = new URL(values.host);
-  if (host.protocol !== 'https:' || host.username || host.password || host.port || host.pathname !== '/' || host.search || host.hash || (!['levois.fr', 'www.levois.fr', 'levois-site.pages.dev'].includes(host.hostname) && !host.hostname.endsWith('.levois-site.pages.dev'))) throw new Error('Hôte LEVOIS HTTPS attendu, sans chemin, identifiants ni paramètres');
+  // Validate credentials even outside the time window, without making a request.
+  const request = editorialManifestRequest(values.host);
   const local = parisDateParts(now);
   const inWindow = local.hour >= 7 && local.hour < 10;
   let shouldBuild = false;
   if (inWindow || values.force) {
-    const response = await fetch(new URL('/editorial-manifest.json', host), { headers: { 'Cache-Control': 'no-cache' }, signal: AbortSignal.timeout(15000), redirect: 'error' });
+    const response = await fetch(request.url, request.options);
     if (response.status === 404) shouldBuild = manifest.articles.length > 0;
     else {
       if (!response.ok) throw new Error(`Lecture du manifeste refusée (${response.status}) ; aucun déploiement déclenché`);

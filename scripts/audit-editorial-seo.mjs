@@ -111,9 +111,16 @@ if (values.base) {
   const paths = ['/robots.txt', '/sitemap-index.xml', '/sitemap-0.xml', '/', '/ressources/', '/ressources/marge-negociation-erreur-25000/', '/situer-ma-vente/', '/ma-recherche/', '/vendre-et-acheter/', '/contact/', '/editorial-manifest.json'];
   for (const path of paths) {
     try {
-      const response = await fetch(new URL(path, base), { signal: AbortSignal.timeout(15000) });
+      const response = await fetch(new URL(path, base), { signal: AbortSignal.timeout(15000), redirect: 'manual' });
       const result = { path, status: response.status, contentType: response.headers.get('content-type'), cacheControl: response.headers.get('cache-control'), xRobotsTag: response.headers.get('x-robots-tag') };
+      if (response.status >= 300 && response.status < 400 && (response.headers.get('location') || '').includes('.cloudflareaccess.com/')) {
+        errors.push({ path, check: 'authentication-required', detail: 'Cloudflare Access protège la preview. Aucun contenu applicatif vérifié.' });
+        http.push(result);
+        continue;
+      }
       if (!response.ok) errors.push({ path, check: 'http', detail: `HTTP ${response.status}` });
+      const expectedType = path.endsWith('.xml') ? 'xml' : path.endsWith('.json') ? 'application/json' : path.endsWith('.txt') ? 'text/plain' : 'text/html';
+      if (!result.contentType?.includes(expectedType)) errors.push({path,check:'http-content-type',detail:`Type ${result.contentType} inattendu pour ${path}`});
       if (path === '/ressources/marge-negociation-erreur-25000/') {
         const campaign = await fetch(new URL(`${path}?utm_source=qa&utm_campaign=editorial`, base), { signal: AbortSignal.timeout(15000) });
         const html = await campaign.text();

@@ -101,7 +101,7 @@ if(root){
   panel.innerHTML='<div class="lv-progress-label"><span>'+e(q.sequenceTitle||journey.sequences[q.sequence-1])+'</span><span>'+q.sequence+' sur '+journey.sequences.length+'</span></div>'+
    '<div class="lv-progress" role="progressbar" aria-label="Séquence du projet" aria-valuemin="0" aria-valuemax="'+journey.sequences.length+'" aria-valuenow="'+q.sequence+'"><i style="width:'+(q.sequence/journey.sequences.length*100)+'%"></i></div>'+
    '<h2 id="journey-question-title" tabindex="-1" data-question-title>'+e(q.title)+'</h2>'+(q.help?'<p class="lv-intro">'+e(q.help)+'</p>':'')+
-   '<form class="lv-question-form" novalidate aria-labelledby="journey-question-title">'+controls+
+   '<form class="lv-question-form" method="post" novalidate aria-labelledby="journey-question-title">'+controls+
    '<p id="journey-error" class="lv-error" data-error role="alert" hidden></p>'+
    '<div class="lv-question-actions">'+
    '<button class="lv-button" type="submit">'+buttonLabel+'</button>'+

@@ -17,7 +17,7 @@ Audit et corrections du 28 octobre 2026. Branche `codex/editorial-conversion-202
 | Priorité | Constat confirmé | Correction et preuve |
 |---|---|---|
 | P0 | Le dernier article affirme 80 % de visibilité, 90 jours et une perte de 25 000 € sans preuve retrouvée. Son cas est présenté comme réel et illustratif. | Chiffres et garanties supprimés ; mécanisme conditionnel sans montant fictif. Titre, extrait, description, OG et Article utilisent le texte corrigé. Ancien slug conservé. Relevé complet dans `AUDIT_AFFIRMATIONS_2026-10-28.md`. |
-| P0 | Sans JavaScript, le contact sans méthode explicite pouvait soumettre les champs dans une URL GET. | Méthode POST explicite, bouton activé seulement après initialisation du contrôleur, accès e-mail/téléphone sans JavaScript. |
+| P0 | Sans JavaScript, le contact et le formulaire initial des diagnostics sans méthode explicite pouvaient soumettre les champs dans une URL GET. | Méthode POST explicite, bouton activé seulement après initialisation du contrôleur, accès e-mail/téléphone et liens utiles sans JavaScript. |
 | P0 | Le contact pouvait être renvoyé après une réponse perdue ; le honeypot rempli recevait un faux `ok:true`. | Référence stable, reçu D1 et verrou atomique ; refus antispam sans succès. Confirmation uniquement après réponse serveur concordante et transport accepté. |
 | P0 | La fiabilité de l’envoi ne se déduit pas d’un clic ou d’une extraction HTML. | Scénarios erreur réseau, refus du transport, confirmation incohérente, double clic et retry. Distinction enregistrement / service d’envoi / réception réelle. Aucun prospect réel utilisé. |
 | P0 | Message de stockage bloqué présent dans le HTML mais masqué ; honeypot correctement caché. | Pas de faux diagnostic fondé sur l’extraction. Tests stockage normal/refusé, clavier et erreurs. Détails dans `AUDIT_FORMULAIRES_2026-10-28.md`. |
@@ -54,7 +54,51 @@ Mesurer, avec consentement : entrée de parcours → fin des questions → résu
 
 ## Validation et preuves
 
-Les résultats définitifs de preview, les mesures comparées et les liens de captures sont ajoutés après le déploiement de branche. Les recettes ne constituent pas une preuve de livraison en boîte réelle lorsqu’elles simulent le transport.
+### Code et parcours compilés
+
+- `npm test` : **445 tests réussis dans 38 fichiers**. `npm run check` : **0 erreur, 0 avertissement, 33 indications** non bloquantes. Build statique final : **54 pages**.
+- Recette navigateur du build local : **44 scénarios réussis, aucun échec**, comprenant les parcours acheteur, vendeur, vente-achat et contact aux largeurs 360, 390, 430 px et desktop. Retour, modification, persistance, stockage refusé, clavier, erreurs, doubles clics, perte de réponse et retry sont couverts. **15 contrôles Axe : aucune violation détectée** sur les états examinés ; cela ne constitue pas une certification d’accessibilité exhaustive.
+- Les écritures réseau de cette recette sont interceptées : aucune notification vers un vrai prospect et aucune preuve de réception en boîte réelle. Les tests d’API vérifient séparément le reçu, la confirmation serveur et les refus du fournisseur simulé.
+- Après le dernier garde-fou POST : **3 contrôles supplémentaires réussis sur le build final**, un par questionnaire, sans réponse dans l’URL sans JavaScript et progression normale après initialisation. Total : 44 scénarios de recette et 3 contrôles ciblés, sans les présenter comme une seule exécution de 47 scénarios.
+- Confidentialité à 360/390/430 px : aucun appel d’audience avant consentement ou après refus ; propriétés privées fictives exclues des événements et du referrer ; arrêt après retrait. Tous les appels PostHog sont interceptés. La recette simule un navigateur visiteur car le SDK exclut volontairement les navigateurs automatisés ; aucun filtre applicatif n’a été désactivé.
+- Fixture isolée de 365 nouveaux sujets, plus les sept guides historiques : 31 pages de bibliothèque, recherche globale, catégories, navigation sans JavaScript et reprise après erreur réseau vérifiées à 360/390/430 px. Aucun faux article de test dans le catalogue livré.
+- Audit statique : 54 pages HTML, 88 cibles internes et 39 URL de sitemap, zéro erreur ni avertissement après correction. Contrôles DVF : six tests réussis et intégrité des 6 318 mutations confirmée.
+
+### Preview Cloudflare et limites restantes
+
+- PR en brouillon : https://github.com/Boullourou/levois-site/pull/5. Branche `codex/editorial-conversion-20261028`.
+- Preview de branche : https://codex-editorial-conversion-2.levois-site.pages.dev. Premier déploiement immuable réussi : https://dbc4b9d3.levois-site.pages.dev, commit `6bd04b9`.
+- **Cloudflare Access protège toutes les previews de ce projet.** Les GET anonymes retournent HTTP 302 vers la connexion. Ce résultat ne prouve ni un défaut applicatif ni l’absence de robots/sitemap ; la recette applicative distante reste non exécutée. Une connexion a été demandée dans l’onglet de preview, sans retirer la protection.
+- Le test d’envoi réel attend aussi une adresse sous contrôle confirmée par Mouaad. Aucun envoi réel n’a été effectué. L’acceptation par Resend, la réception destinataire et la livraison de la synthèse restent à valider en preview authentifiée.
+- Les secrets de reprise protégée absents de preview et les droits insuffisants de lecture des règles de cache restent explicitement hors des validations obtenues. Aucun secret ou réglage de production n’est modifié.
+
+### Performances avant / après
+
+Comparaison des builds compilés du commit `3737bc9` et de cette branche, tous deux servis par Astro Preview en local, sur le même poste. Chromium **153.0.8010.12**, viewport **390 × 844**, DPR 1, CPU ×4, paramètres réseau CDP 150 ms / 1,6 Mbit/s descendant / 0,75 Mbit/s montant, cache désactivé et nouveau contexte à chaque passage. Trois passages à froid par page, sans consentement d’audience ; aucun autre test navigateur en parallèle. La première série de référence ayant chevauché une recette a été remplacée par une série au repos.
+
+| Page | LCP médian avant | LCP médian après | Corps encodés avant → après | Requêtes avant → après | CLS maximal avant / après |
+|---|---:|---:|---:|---:|---:|
+| Accueil | 1 048 ms | 992 ms | 148 990 → 123 681 octets | 9 → 10 | 0 / 0 |
+| Ressources | 848 ms | 856 ms | 112 383 → 139 392 octets | 7 → 10 | 0 / 0 |
+| Article négociation | 888 ms | 908 ms | 139 351 → 140 545 octets | 8 → 10 | 0 / 0 |
+
+Ces petits écarts sur trois passages ne prouvent pas un gain ou une régression durable. La bibliothèque charge davantage de code et de contenu qu’avant ; son index de recherche demeure chargé à la demande. Les mesures locales isolent les changements du site, **sans mesurer le CDN Cloudflare, l’INP ni les Core Web Vitals de vrais visiteurs**. Aucun score PageSpeed n’a été calculé.
+
+Douze captures complémentaires (accueil, bibliothèque, article et contact × 360/390/430 px) : aucun débordement horizontal ni image cassée détecté. Les captures des états de formulaire et du panneau de confidentialité complètent ce contrôle. Résultats chiffrés : [comparaison JSON](review/2026-10-28/performance-comparison.json).
+
+### Captures et journaux
+
+Trois captures du résultat vendeur **avant toute saisie de coordonnées**, sur le build local et avec réponses fictives, sont jointes à ce rapport : [360 px](review/2026-10-28/synthese-locale-360.png), [390 px](review/2026-10-28/synthese-locale-390.png), [430 px](review/2026-10-28/synthese-locale-430.png).
+
+Les rapports JSON, journaux et autres PNG sont conservés dans `artifacts/editorial-20261028/` du worktree de cette branche. Ils sont exclus du dépôt pour ne pas embarquer toutes les sorties de test dans le site :
+
+- `local-forms/report.json` et `*-reading-{360,390,430}.png` : synthèses immédiatement accessibles sur le build local ;
+- `local-before/` et `local-after/` : captures et mesures comparables du commit de production et de la branche, servis localement ;
+- `before/` : observation initiale du site public ; elle n’est pas utilisée comme comparateur des mesures locales ;
+- `seo-static.json`, `seo-preview.json` : contrôles statiques et blocage d’authentification distant ;
+- `privacy.json` : vérifications de consentement et filtrage des propriétés avec transport d’audience intercepté.
+
+Les mesures et captures locales ne sont pas renommées « captures Cloudflare ». Aucun score PageSpeed ni mesure INP n’est annoncé sans mesure correspondante.
 
 ## Publication ultérieure et retour arrière
 
