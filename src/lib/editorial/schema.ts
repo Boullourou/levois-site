@@ -13,7 +13,7 @@ interface EditorialMetadata {
   summary: string;
   answer: string;
   author: { name: string; role: string };
-  dates: { createdAt: string; publishAt: string; updatedAt?: string };
+  dates: { createdAt?: string; publishAt: string; updatedAt?: string };
   scope: string;
   limits: string[];
   category: typeof EDITORIAL_CATEGORIES[number];
@@ -23,6 +23,7 @@ interface EditorialMetadata {
 
 export interface EditorialArticleV1 extends EditorialMetadata {
   schemaVersion: 1;
+  dates: EditorialMetadata['dates'] & { createdAt: string };
   sections: { heading: string; paragraphs: string[] }[];
   sources: { label: string; url: string; accessedAt: string }[];
   image: { src: string; alt: string; width: number; height: number } | null;
@@ -102,11 +103,11 @@ export function validateEditorialArticle(value: unknown): EditorialArticle {
   const author = object(a.author, 'author', ['name', 'role']);
   const dates = object(a.dates, 'dates', ['createdAt', 'publishAt', 'updatedAt']);
   const parseDate = a.schemaVersion === 2 ? parseEditorialDate : parseTimestamp;
-  const createdAt = parseDate(dates.createdAt, 'dates.createdAt');
+  const createdAt = a.schemaVersion === 2 && dates.createdAt === undefined ? undefined : parseDate(dates.createdAt, 'dates.createdAt');
   const publishAt = parseTimestamp(dates.publishAt, 'dates.publishAt');
   const updatedAt = dates.updatedAt === undefined ? undefined : parseDate(dates.updatedAt, 'dates.updatedAt');
-  if (Date.parse(publishAt) < Date.parse(createdAt)) fail('dates.publishAt', 'antérieure à la création');
-  if (updatedAt && Date.parse(updatedAt) < Date.parse(createdAt)) fail('dates.updatedAt', 'antérieure à la création');
+  if (createdAt && Date.parse(publishAt) < Date.parse(createdAt)) fail('dates.publishAt', 'antérieure à la création');
+  if (createdAt && updatedAt && Date.parse(updatedAt) < Date.parse(createdAt)) fail('dates.updatedAt', 'antérieure à la création');
   const paris = parisDateParts(new Date(publishAt));
   if (paris.hour !== 7 || paris.minute !== 0 || paris.second !== 0 || !publishAt.startsWith(`${paris.date}T07:00:00+0`)) fail('dates.publishAt', '07:00:00 Europe/Paris avec le bon décalage +01:00 ou +02:00 attendu');
   const image = a.image === null ? null : object(a.image, 'image', ['src', 'alt', 'width', 'height', ...(a.schemaVersion === 2 ? ['caption'] : [])]);
@@ -121,7 +122,7 @@ export function validateEditorialArticle(value: unknown): EditorialArticle {
     topicId: identifier(a.topicId, 'topicId'), revision: positiveInteger(a.revision, 'revision'), slug: identifier(a.slug, 'slug'),
     title: text(a.title, 'title', 140), summary: text(a.summary, 'summary', 320), answer: text(a.answer, 'answer', 1200),
     author: { name: text(author.name, 'author.name', 120), role: text(author.role, 'author.role', 200) },
-    dates: { createdAt, publishAt, ...(updatedAt ? { updatedAt } : {}) },
+    dates: { ...(createdAt ? { createdAt } : {}), publishAt, ...(updatedAt ? { updatedAt } : {}) },
     scope: text(a.scope, 'scope', 600), limits: list(a.limits, 'limits', 1, 8, (entry, path) => text(entry, path, 700)),
     category: choice(a.category, 'category', EDITORIAL_CATEGORIES), primaryDestination: choice(a.primaryDestination, 'primaryDestination', EDITORIAL_DESTINATIONS), status: choice(a.status, 'status', EDITORIAL_STATUSES),
   };
@@ -134,6 +135,7 @@ export function validateEditorialArticle(value: unknown): EditorialArticle {
   }
   if (a.schemaVersion === 1) return {
     schemaVersion: 1, ...common, image: imageValue,
+    dates: { ...common.dates, createdAt: createdAt ?? fail('dates.createdAt', 'date de création requise en version 1') },
     sections: list(a.sections, 'sections', 1, 16, (entry, path) => {
       const section = object(entry, path, ['heading', 'paragraphs']);
       return { heading: text(section.heading, `${path}.heading`, 160), paragraphs: list(section.paragraphs, `${path}.paragraphs`, 1, 12, (p, path) => text(p, path, 3000)) };
@@ -198,6 +200,8 @@ export function classifyEditorialImport(incoming: EditorialArticle, existing?: E
     return 'unchanged';
   }
   if (incoming.revision !== existing.revision + 1) fail('revision', 'la prochaine révision doit être exactement la précédente + 1');
-  if (!incoming.dates.updatedAt || Date.parse(incoming.dates.updatedAt) <= Date.parse(existing.dates.updatedAt ?? existing.dates.createdAt)) fail('dates.updatedAt', 'une révision doit dater une modification réelle plus récente');
+  const previousKnownDate = existing.dates.updatedAt ?? existing.dates.createdAt;
+  // An unknown creation date cannot become a publication or processing timestamp.
+  if (!incoming.dates.updatedAt || (previousKnownDate && Date.parse(incoming.dates.updatedAt) <= Date.parse(previousKnownDate))) fail('dates.updatedAt', 'une révision doit dater une modification réelle plus récente');
   return 'updated';
 }

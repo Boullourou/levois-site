@@ -2,6 +2,8 @@
 
 **Document de préparation, pas autorisation d’exécution.** Aucun déploiement, migration de production, réglage, secret ou automatisation n’a été appliqué pendant sa rédaction. La lecture du schéma D1 décrite ci-dessous a été effectuée sans lire les demandes.
 
+**Complément de conversion directe :** le contrat a été corrigé pour produire SITE.json depuis PRODUCTION.json seul. Les références de commit/preview ci-dessous décrivent les contrôles antérieurs ; la tête finale proposée est indiquée dans la PR après ses nouveaux checks. Les résultats J001 sans couverture sont des tests locaux isolés, pas une activation du contenu. Voir [la recette de conversion](VALIDATION_CONVERSION_DIRECTE_2026-10-28.md).
+
 ## Deux décisions distinctes
 
 | Lot | Objet | Autorisation et effets |
@@ -146,7 +148,7 @@ Le fichier `.github/workflows/editorial-schedule.yml` est opt-in. Une fusion dan
 
 ### Lots, couvertures et signal de disponibilité
 
-Préparer les sept journées avec `npm run editorial:batch -- --file chemin/LOT.json --out chemin/prepared`. `--review chemin/REVUE.json` vérifie la revue mais conserve les brouillons. L’étape distincte `--activate` exige cette revue, copie les articles `scheduled` dans la branche locale et **ne fusionne ni ne publie rien**. Le contrat exige les métadonnées manquantes au lieu de les déduire de Drive. La couverture finale doit être déjà composée aux dimensions explicites après orientation EXIF ; elle est seulement compressée en WebP, sans crop ni redimensionnement, avec contrôle du budget. Aucune référence visuelle n’est remplacée par une image inventée.
+Préparer les sept journées avec `npm run editorial:batch -- --file chemin/LOT.json --out chemin/prepared`. SITE.json est généré depuis PRODUCTION, pas fourni en entrée ; le manifeste technique porte les chemins et l'identité stable de campagne. Les champs sont copiés ou extraits selon des règles explicites ; la date de rédaction inconnue est omise. `--review chemin/REVUE.json` vérifie la revue mais conserve les brouillons. L’étape distincte `--activate` exige cette revue, copie les articles `scheduled` dans la branche locale et **ne fusionne ni ne publie rien**. La couverture finale doit être déjà composée aux dimensions explicites après orientation EXIF ; elle est seulement compressée en WebP, sans crop ni redimensionnement, avec contrôle du budget. L'option de test unitaire sans image n'existe pas dans la préparation/activation du lot et aucune référence visuelle n'est remplacée par une image inventée.
 
 Le workflow suit `plan → build → deploy → verify`. `verify` produit `editorial-publication-receipts-{preview|production}-{run_id}-{run_attempt}`, conservé trente jours, même si la vérification échoue. Les secrets Access sont limités à `plan` et `verify` en preview ; les credentials Pages restent dans l’étape Wrangler de `deploy`.
 

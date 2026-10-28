@@ -1,6 +1,6 @@
 # LEVOIS — sortie des corrections et validation réelle J001–J007
 
-Constat du 28 octobre 2026. **A est prêt à être soumis à revue ; B reste désactivé et son premier lot n'est pas importable en l'état.** Aucune fusion, migration de production, activation, publication d'article ou intégration sociale effectuée. Aucun nouveau message de test envoyé.
+Constat du 28 octobre 2026. **A est soumis à revue ; B reste désactivé. La conversion sans couverture est validée, les couvertures finales restent à produire avant préparation du lot publiable.** Aucune fusion, migration de production, activation, publication d'article ou intégration sociale effectuée. Aucun nouveau message de test envoyé.
 
 ## A — corrections du site
 
@@ -23,41 +23,14 @@ L'accès machine absent empêche le runner distant complet et les GET automatis�
 
 Production observée : `3737bc944e4a926509054f8c5001f9448cd290a5`, déploiement `723ae144-3a72-4ec5-ab0c-571be11ae4e8`. À revalider lors de l'intervention. [Procédure détaillée et commandes](MISE_EN_PRODUCTION_LEVOIS_2026-10-28.md). Preuves locales en lecture seule : `artifacts/release-readiness-20261028/`.
 
-## B — adaptateur implémenté, premier lot incomplet
+## B — contrat corrigé : conversion directe réussie
 
-L'adaptateur déterministe, le parseur Markdown, la compression de couverture, les identifiants/révisions, les garde-fous de lot et les reçus sont **implémentés et testés**. Cela ne signifie pas qu'un article réel incomplet est importable. Aucun changement du contrat n'a été improvisé pour accepter les données absentes.
+Le précédent bilan exigeait à tort SITE.json en entrée. Ce point est corrigé : **PRODUCTION.json produit SITE.json**. Les détails et preuves actuels figurent dans [VALIDATION_CONVERSION_DIRECTE_2026-10-28.md](VALIDATION_CONVERSION_DIRECTE_2026-10-28.md).
 
-Source examinée : [LOT_10_JOURS_FIGES_V3 dans Drive](https://drive.google.com/drive/folders/1Na4Ft14mmSpoYuFNMcMZiLnmfrhvp7cJ), sept premiers dossiers, sans modifier Drive. Le registre et les fichiers de fabrication ne valent pas manifeste d'import ni revue éditoriale du lot. Les contenus réels restent dans les artefacts locaux ignorés ; ils ne sont pas ajoutés au site.
+- Sept conversions réelles réussies avec image:null explicitement réservé au test, sans modifier les originaux. Les 38 liens, 19 sources, textes et limites sont conservés ; les identifiants globaux sont maintenant validés sous le namespace technique stable levois-365-2026-2027.
+- Auteur, périmètre et réponse extraits du Markdown selon des règles déterministes ; catégorie déduite de la destination. La date de rédaction absente reste omise en V2, sans remplacement par une date de source ou d'import.
+- J001 importé et construit dans une copie locale isolée : 55 pages, dont l'article, et 24 contrôles HTML réussis. Horloge simulée uniquement dans cette recette, jamais preuve de publication. Les rejeux ne réécrivent aucun fichier et ne créent aucun doublon.
+- LOT.json généré techniquement. Les sept couvertures finales 1600 × 900 restent à fabriquer par ARTICLE puis à compresser ; la préparation normale du lot reste bloquée sur ces fichiers absents.
+- Revue du lot complet et activation restent des décisions distinctes. Aucun article dans le catalogue livré, aucun calendrier activé, aucune publication. La validation technique ne valide pas automatiquement les faits.
 
-### J001 puis contrôle des sept premières journées
-
-| Jour | Sujet | Échéance déclarée Europe/Paris | Résultat |
-|---|---|---|---|
-| J001 | Prix des ventes à Lèves | 29/10/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-| J002 | Canapé et passage des portes | 30/10/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-| J003 | Documents avant l'annonce | 31/10/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-| J004 | DPE et facture d'énergie | 01/11/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-| J005 | Budget au-delà du prix affiché | 02/11/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-| J006 | Adresse et trajet Filibus à Lèves | 03/11/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-| J007 | Ordre de vente et d'achat | 04/11/2026 07:00, UTC+01 | Texte compatible ; import bloqué |
-
-Contrôles réellement obtenus :
-
-- Les **14 empreintes SHA-256** des `PRODUCTION.json` et `DOSSIER_COMPLET.md` correspondent au registre. Les sept chaînes Markdown sont retrouvées à l'identique dans les dossiers et acceptées par le parseur ; les 38 occurrences de liens restent identiques dans le rendu.
-- Les 19 entrées de sources, dont quatre avec URL null, sont conservées par une projection réversible. Aucune URL ni référence inventée. Ce contrôle établit la conservation des champs, pas la véracité des affirmations ni l'accessibilité des sources.
-- Les sept dates sont consécutives et résolues à **06:00 UTC / 07:00 Europe/Paris**, après le passage à l'heure d'hiver. Les tests du planificateur couvrent aussi les deux changements d'heure 2027. Ces échéances ne sont pas des dates de publication effective.
-- Aucun doublon de jour/slug ni collision avec les sept URL historiques. L'identifiant global `campaignId + dayId` et sa collision réelle restent **non validables sans `campaignId` explicite** ; les reprises/idempotences du code passent les tests techniques.
-- Les sept `REFERENCE.png` font **941 × 1672 px**, environ 1,95 à 2,48 Mo : références de fabrication, pas couvertures finales 1600 × 900. Ni composition ni compression d'une couverture réelle prétendue.
-- L'appel réel à l'adaptateur pour chaque journée refuse les champs manquants. La CLI sans activation refuse `LOT.json` absent (`ENOENT`), sans créer de bundle. Le registre V3 n'est pas accepté comme manifeste de remplacement.
-
-**Import complet et build incluant J001 : non réalisés, bloqués par les entrées obligatoires absentes.** Le build vert du site et les 109 tests techniques réussis ne sont pas présentés comme une validation de J001. Il ne s'agit ni d'une nouvelle rédaction ni d'une validation automatique des faits.
-
-### Éléments précis à fournir avant la prochaine recette du lot
-
-1. Sept `SITE.json` conformes au [contrat](CONTRAT_ADAPTATEUR_PRODUCTION.md) : `schemaVersion`, `campaignId` durable, `dayId`, `revision`, `author.name`, `author.role`, `dates.createdAt` réelle, `answer`, `scope`, `category`. Certains textes existent dans les dossiers, mais aucune valeur n'a été inférée ; une date de fichier Drive ou de consultation de source n'est pas une date de rédaction.
-2. Sept couvertures finales **1600 × 900**, déjà composées, avec leur texte alternatif validé. La recette vérifiera dimensions/orientation puis compression WebP ≤500 000 octets, sans modifier les originaux.
-3. Un `LOT.json` référençant exactement ces sept PRODUCTION, SITE et couvertures. Une revue liée à l'empreinte du lot ne sera demandée qu'après préparation réussie, avant l'étape distincte d'activation.
-
-À réception : rejouer l'adaptation J001, contrôler la conservation de toutes les données, l'identité, la couverture et le build isolé ; puis préparer les sept brouillons. Aucun `--activate`, fusion ou déclenchement du calendrier n'est autorisé par cette recette technique. Les relais Facebook/LinkedIn restent conditionnés ultérieurement à un reçu de disponibilité de l'URL publique.
-
-Preuves locales détaillées : `artifacts/editorial-validation-20261028/BILAN_REEL_J001_J007.md`, `real-seven-report.json`, `reference-images.json`, `technical-contract-tests.json` et rapports individuels. Les entrées originales n'ont pas été modifiées.
+Aucun SITE.json ni date de rédaction supposée n'est demandé comme pièce manquante. Le commit applicatif a changé pour cette correction du convertisseur : la tête finale et ses checks figurent dans la PR, les constats A ci-dessus sont les preuves antérieures de la recette des formulaires restés inchangés.

@@ -1,14 +1,25 @@
 # PRODUCTION.json → article LEVOIS : contrat exécutable
 
-Préparé le 28 octobre 2026. Aucun lot réel importé, aucune publication activée. Ce document complète le [contrat historique](CONTRAT_LIMOVA_2026-10-28.md), le [schéma Markdown V2](CONTRAT_MARKDOWN_EDITORIAL_V2.md) et le [protocole de publication par lots](PUBLICATION_LOTS_LIMOVA_2026-10-28.md).
+Corrigé le 28 octobre 2026 après clarification de Mouaad. **PRODUCTION.json est l'entrée ; SITE.json est une sortie de conversion, pas une pièce éditoriale à fournir.** Les conversions réelles restent dans les artefacts locaux ignorés. Aucun article ajouté au catalogue livré, aucune publication activée. Ce document complète le [schéma Markdown V2](CONTRAT_MARKDOWN_EDITORIAL_V2.md) et le [protocole de publication par lots](PUBLICATION_LOTS_LIMOVA_2026-10-28.md).
 
 ## Entrées réellement inspectées et limites
 
-**Complément de recette du 28 octobre :** les sept dossiers J001–J007 du lot V3 ont depuis été contrôlés. Markdown, liens et sources passent les contrôles techniques ; l'import complet reste refusé faute de `SITE.json`, `LOT.json` et couvertures finales. Le [bilan réel des sept journées](SORTIE_CORRECTIONS_ET_VALIDATION_J001_2026-10-28.md) distingue ces résultats des tests sur fixtures et des conditions d'activation. Les observations J001/J010 ci-dessous restent l'historique de préparation du contrat.
+Les sept PRODUCTION J001–J007 du lot V3 passent la conversion directe avec l'option de test sans couverture. Les anciens constats de refus faute de SITE.json décrivent le précédent contrat, désormais corrigé. La validation technique ne valide ni les faits ni la disponibilité publique de l'article.
 
 Les PRODUCTION.json J001 et J010 du lot Drive `LEVOIS-LOT10-V3-20261028` ont été lus, sans modifier Drive. Ils contiennent les champs article annoncés, les sources et leurs dates de consultation, une limite explicite, ainsi que les contenus sociaux. Leur Markdown passe le parseur strict V2. La valeur `version` est une version du lot, **pas un identifiant durable de campagne**.
 
-Il manque un sidecar explicite pour l'identité de campagne, la révision, l'auteur structuré, la date réelle de rédaction, la réponse immédiate, le périmètre et la catégorie. Ces valeurs ne sont pas déduites du nom de dossier, de l'heure d'envoi Drive ni d'une signature analysée dans le texte. Le fichier référence `REFERENCE.png` ne prouve pas qu'une couverture finale 1600 × 900 a été fabriquée. Aucune photo de substitution n'est générée.
+Le namespace technique du dispositif est `levois-365-2026-2027`, correspondant à la campagne connue ; il est passé explicitement à la commande et reste stable entre les lots. Le jour vient de `production.id`, la première révision vaut 1. La signature explicite du Markdown fournit l'auteur et le périmètre ; le premier paragraphe fournit la réponse par extraction du texte visible, sans réécriture ; la destination détermine la catégorie selon une table fixe. Une date réelle de rédaction inconnue est omise en V2, jamais remplacée par la date de consultation des sources ou de publication prévue. Le fichier `REFERENCE.png` n'est pas une couverture finale 1600 × 900 : celle-ci reste à fabriquer par ARTICLE.
+
+## Conversion unitaire et test sans image
+
+```sh
+npm run editorial:convert -- --file /chemin/J001/PRODUCTION.json --campaign levois-365-2026-2027 --out artifacts/conversion-j001 --test-without-cover
+npm run editorial:import -- --file artifacts/conversion-j001/SITE.json
+```
+
+La première commande produit un `SITE.json` V2 en `draft` et `CONVERSION.json` : provenance des champs, empreintes source/sortie et blocages de publication. L'option explicite autorise `image:null` uniquement pour le test et conserve référence/alt/légende dans le rapport. Le PRODUCTION original n'est pas modifié. `publicationReady` reste `false`. La seconde commande teste l'import **sans écrire au catalogue** (pas de `--write`).
+
+Avec une couverture finale, remplacer `--test-without-cover` par `--cover /chemin/cover.png` : la commande vérifie 1600 × 900 puis compresse et produit `cover.webp`. Un dossier de sortie existant ne peut être écrasé par des octets différents. Rejouer la même conversion est sans effet, y compris après import du sujet. Les sorties sont interdites dans `public/` et le catalogue ; dans le dépôt elles restent sous `artifacts/`.
 
 J001/J010 ne contiennent pas de présentation Facebook sous `article`. Le texte LinkedIn de repli examiné pointe vers un parcours, et non l'URL du futur article. Il faut donc préparer/valider ces textes de diffusion dans Drive et y prévoir l'URL publique exacte. Le site et l'adaptateur ne réécrivent pas ces textes. La compatibilité des connecteurs Limova (article LinkedIn, PDF multipage, suivi des reçus Actions) reste à tester dans Limova.
 
@@ -18,7 +29,6 @@ J001/J010 ne contiennent pas de présentation Facebook sous `article`. Le texte 
 lot/
   LOT.json
   J001/PRODUCTION.json
-  J001/SITE.json
   J001/cover.png
   ... six autres journées ...
 ```
@@ -35,7 +45,6 @@ Le chat ARTICLE utilise ces fichiers locaux téléchargés depuis Drive. Aucun c
   "days": [
     {
       "production": "J001/PRODUCTION.json",
-      "metadata": "J001/SITE.json",
       "cover": "J001/cover.png",
       "coverWidth": 1600,
       "coverHeight": 900
@@ -46,33 +55,24 @@ Le chat ARTICLE utilise ces fichiers locaux téléchargés depuis Drive. Aucun c
 
 L'extrait montre la structure d'une entrée : le fichier réel doit en avoir sept. Les chemins sont relatifs au lot, sans sortie de dossier, même par lien symbolique. La couverture peut être `null` seulement si `article.image` vaut explicitement `null` ; omettre alors ses dimensions. Chaque JSON est limité à 100 000 octets.
 
-`SITE.json` accompagne chaque journée :
+`LOT.json` est un manifeste technique générable à partir des chemins, jours et de l'identifiant de campagne ; il n'exige aucune nouvelle rédaction. `SITE.json` ne figure pas parmi ses entrées. L'ancien champ `metadata` reste accepté uniquement pour compatibilité avec les lots déjà préparés ; il n'est plus demandé dans le flux V3.
 
-```json
-{
-  "schemaVersion": 1,
-  "campaignId": "campagne-exemple",
-  "dayId": "J001",
-  "revision": 1,
-  "author": { "name": "Auteur réel à renseigner", "role": "Fonction réelle à renseigner" },
-  "dates": { "createdAt": "DATE_REELLE_A_FOURNIR" },
-  "answer": "Réponse immédiate exacte, préparée et validée en amont.",
-  "scope": "Périmètre exact préparé et validé en amont.",
-  "category": "ventes-locales"
-}
-```
+Les champs éditoriaux explicites facultatifs `article.author`, `article.answer`, `article.scope`, `article.category` et `article.dates` sont prioritaires s'ils existent. Sinon, les règles d'extraction ci-dessous s'appliquent. Une signature absente/ambiguë, une réponse trop longue ou une destination sans catégorie déterminable produit une erreur nommée, jamais un auteur par défaut ou une troncature.
 
-Ces exemples sont des gabarits, pas des faits validés. Les placeholders sont volontairement refusés par le validateur. Le responsable éditorial complète les données avant transmission ; Limova n'invente ni réponse, ni auteur, ni date. Une date connue au jour reste `YYYY-MM-DD`, sans minuit fabriqué. Si une heure réelle est connue, ISO 8601 avec fuseau explicite est accepté. `updatedAt` apparaît seulement pour une modification réelle ; une deuxième révision doit être strictement plus récente. Deux modifications le même jour peuvent nécessiter leurs heures réellement connues.
+Une date connue au jour reste `YYYY-MM-DD`, sans minuit fabriqué. `article.dates.createdAt` est facultatif en V2 ; `updatedAt` apparaît seulement pour une modification réelle. Une nouvelle révision doit porter une date de modification explicite, strictement après la dernière date connue si elle existe. Aucune date de rédaction/JSON-LD `dateCreated` n'est affichée quand elle est inconnue.
 
 ## Mapping sans réécriture
 
 | Source | Sortie V2 |
 |---|---|
-| `SITE.campaignId` + `PRODUCTION.id` | `topicId = campagne-j001` ; ne dépend ni de la version du lot, ni du titre, ni de la date |
-| `SITE.revision` | `revision`, identique |
+| Configuration `campaignId` + `PRODUCTION.id` | `topicId = levois-365-2026-2027-j001` ; ne dépend ni de la version du lot, ni du titre, ni de la date |
+| Nouveau sujet / catalogue existant | `revision=1` pour un nouveau sujet ; révision conservée au rejeu ; révision suivante explicite pour modifier |
 | `article.title / slug_propose / meta_description` | `title / slug / summary`, chaînes exactes |
 | `article.markdown` | `content.markdown`, chaîne exacte, `format=commonmark` |
-| `SITE.answer / author / scope / category / dates` | Champs correspondants, sans valeur par défaut |
+| Premier paragraphe AST du Markdown | `answer` : texte visible exact, emphase retirée et libellés des liens conservés ; contenu et destinations restent intacts dans `content.markdown`. Maximum 1200 caractères, sinon refus |
+| Unique signature `Nom — rôle. RSAC … . Périmètre.` | `author.name`, `author.role` et `scope` : extraits littéraux ; signature entière conservée dans le corps |
+| Destination `/votre-rue/`, `/situer-ma-vente/`, `/ma-recherche/`, `/vendre-et-acheter/` | Respectivement `ventes-locales`, `vendre`, `acheter`, `vente-achat` ; `/contact/` exige `article.category` explicite |
+| `article.dates.createdAt / updatedAt`, si présents | Copie exacte validée ; absents = omis, sans horodatage inventé |
 | `date` + `article.time=07:00` + `timezone=Europe/Paris` | `dates.publishAt`, échéance prévue calculée avec +01:00/+02:00 ; **jamais heure de déploiement prétendue** |
 | `sources[].id / editeur / url / lecture / portee` | `id / label / url / accessedAt / scope`, exacts ; URL `null` reste null |
 | `limites` | Un élément exact dans `limits`, sans découpage ni résumé |
@@ -142,8 +142,8 @@ Un verrou partagé avec l'import unitaire protège l'activation. Les validations
 
 ## Ce qui reste à fournir
 
-1. Convention d'identifiant de campagne pérenne et sept SITE.json documentés.
-2. Sept couvertures finales ou absence explicitement assumée.
+1. Les sept PRODUCTION V3 sont présents ; aucun SITE.json entrant supplémentaire n'est à fournir. Le manifeste technique est généré à partir du lot.
+2. Sept couvertures finales 1600 × 900 fabriquées par ARTICLE ; les références actuelles ne les remplacent pas. `image:null` du test ne vaut pas renoncement à ces couvertures.
 3. Revue éditoriale réelle des sept journées et son horodatage ; les flags de fabrication ne la remplacent pas.
 4. Accès Limova au dépôt et lecture des artefacts Actions vérifiés, avec une branche/PR stable par lot.
 5. Textes sociaux validés et attente des reçus `socialReady=true`, selon le protocole des lots.

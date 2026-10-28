@@ -7,7 +7,7 @@ export interface ProductionMetadata {
   dayId: string;
   revision: number;
   author: { name: string; role: string };
-  dates: { createdAt: string; updatedAt?: string };
+  dates: { createdAt?: string; updatedAt?: string };
   answer: string;
   scope: string;
   category: EditorialArticleV2['category'];
@@ -46,12 +46,11 @@ export function productionIdentity(campaignId: unknown, dayId: unknown): string 
   return `${campaignId}-${dayId.toLowerCase()}`;
 }
 
-/** Reports every missing sidecar field without filling it from Drive upload times. */
+/** Validates resolved metadata; unknown writing dates are never fabricated. */
 export function missingProductionMetadata(value: unknown): string[] {
   const m = value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {};
   const a = m.author && typeof m.author === 'object' ? m.author as Record<string, unknown> : {};
-  const d = m.dates && typeof m.dates === 'object' ? m.dates as Record<string, unknown> : {};
-  return Object.entries({ schemaVersion: m.schemaVersion, campaignId: m.campaignId, dayId: m.dayId, revision: m.revision, 'author.name': a.name, 'author.role': a.role, 'dates.createdAt': d.createdAt, answer: m.answer, scope: m.scope, category: m.category }).filter(([,v]) => v == null || v === '').map(([key]) => `metadata.${key}`);
+  return Object.entries({ schemaVersion: m.schemaVersion, campaignId: m.campaignId, dayId: m.dayId, revision: m.revision, 'author.name': a.name, 'author.role': a.role, dates: m.dates, answer: m.answer, scope: m.scope, category: m.category }).filter(([,v]) => v == null || v === '').map(([key]) => `metadata.${key}`);
 }
 
 /** Only ARTICLE is mapped. Carousel/video/social payloads remain in the source package. */
@@ -90,7 +89,7 @@ export function adaptProduction(production: unknown, metadata: unknown, cover: P
     answer: m.answer,
     content: { format: 'commonmark', markdown: required(a.markdown, 'production.article.markdown') },
     author: m.author,
-    dates: { createdAt: d.createdAt, publishAt: plannedParisPublication(p.date, a.time, p.timezone), ...(d.updatedAt === undefined ? {} : { updatedAt: d.updatedAt }) },
+    dates: { ...(d.createdAt === undefined ? {} : { createdAt: d.createdAt }), publishAt: plannedParisPublication(p.date, a.time, p.timezone), ...(d.updatedAt === undefined ? {} : { updatedAt: d.updatedAt }) },
     sources, scope: m.scope, limits: [required(p.limites, 'production.limites')],
     image: cover ? { ...cover, alt: required(a.image_alt, 'production.article.image_alt'), caption: required(a.image_caption, 'production.article.image_caption') } : null,
     category: m.category, primaryDestination: url.pathname, status: 'draft',

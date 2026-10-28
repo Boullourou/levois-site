@@ -2,6 +2,7 @@ import { readFile, realpath, stat } from 'node:fs/promises';
 import { resolve, relative, isAbsolute } from 'node:path';
 import { createHash } from 'node:crypto';
 import { adaptProduction, productionIdentity } from '../src/lib/editorial/production.ts';
+import { convertProduction } from '../src/lib/editorial/production-conversion.ts';
 import { validateEditorialArticle, validateEditorialCatalog, classifyEditorialImport, parseTimestamp } from '../src/lib/editorial/schema.ts';
 import { resources } from '../src/data/resources.ts';
 import { prepareCover } from './editorial-cover.mjs';
@@ -37,11 +38,13 @@ export async function prepareBatch(manifest, inputRoot, existing = [], coverProc
   if (!Array.isArray(manifest.days) || manifest.days.length !== 7) throw new Error('Un lot contient exactement sept journées');
   const articles = [], covers = [], sourceEvidence = [];
   for (const day of manifest.days) {
-    fields(day, ['production','metadata','cover','coverWidth','coverHeight'], 'lot.days');
+    fields(day, ['production','metadata','cover','coverWidth','coverHeight','revision'], 'lot.days');
     const production = await readJson(await inputFile(inputRoot, day.production));
-    const metadata = await readJson(await inputFile(inputRoot, day.metadata));
-    if (metadata.campaignId !== manifest.campaignId) throw new Error('Campagne différente dans les métadonnées');
-    const topicId = productionIdentity(metadata.campaignId, production.id);
+    // Optional legacy metadata input remains readable, but SITE.json is now
+    // generated directly from PRODUCTION and is never an input requirement.
+    const metadata = day.metadata === undefined ? null : await readJson(await inputFile(inputRoot, day.metadata));
+    if (metadata && metadata.campaignId !== manifest.campaignId) throw new Error('Campagne différente dans les métadonnées');
+    const topicId = productionIdentity(manifest.campaignId, production.id);
     let cover = null;
     if (day.cover !== null) {
       const prepared = await coverProcessor(await inputFile(inputRoot, day.cover, 25_000_000), { width: day.coverWidth, height: day.coverHeight });
@@ -50,8 +53,11 @@ export async function prepareBatch(manifest, inputRoot, existing = [], coverProc
       cover = { src, width: prepared.report.width, height: prepared.report.height };
       covers.push({ src, buffer: prepared.buffer, report: prepared.report });
     } else if (day.coverWidth !== undefined || day.coverHeight !== undefined) throw new Error('Dimensions sans couverture');
-    articles.push(adaptProduction(production, metadata, cover));
-    sourceEvidence.push({ topicId, productionSha256: hash(JSON.stringify(production)), metadataSha256: hash(JSON.stringify(metadata)) });
+    const conversion = metadata ? null : convertProduction(production, { campaignId: manifest.campaignId, cover, previous: existing.find(a => a.topicId === topicId), revision: day.revision });
+    articles.push(conversion ? conversion.article : adaptProduction(production, metadata, cover));
+    // Review evidence must remain identical after activation/retry. Runtime
+    // actions (created/unchanged) belong to the result, never the fingerprint.
+    sourceEvidence.push({ topicId, productionSha256: hash(JSON.stringify(production)), ...(metadata ? { metadataSha256: hash(JSON.stringify(metadata)) } : { conversionVersion: 'production-direct-v1' }) });
   }
   articles.sort((a,b) => a.dates.publishAt.localeCompare(b.dates.publishAt));
   const dates = articles.map(a => a.dates.publishAt.slice(0,10));

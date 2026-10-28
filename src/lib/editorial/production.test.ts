@@ -55,7 +55,7 @@ describe('Adaptateur PRODUCTION vers V2 sans faits inventés', () => {
   it('énumère tous les champs complémentaires indispensables sans repli implicite', () => {
     expect(missingProductionMetadata(undefined)).toEqual([
       'metadata.schemaVersion', 'metadata.campaignId', 'metadata.dayId', 'metadata.revision',
-      'metadata.author.name', 'metadata.author.role', 'metadata.dates.createdAt', 'metadata.answer', 'metadata.scope', 'metadata.category',
+      'metadata.author.name', 'metadata.author.role', 'metadata.dates', 'metadata.answer', 'metadata.scope', 'metadata.category',
     ]);
     for (const key of ['schemaVersion', 'campaignId', 'dayId', 'revision', 'author', 'dates', 'answer', 'scope', 'category']) {
       const metadata: Record<string, unknown> = { ...productionMetadataFixture() }; delete metadata[key];

@@ -54,6 +54,31 @@ afterEach(async () => {
 });
 
 describe('Préparation transactionnelle en mémoire de sept journées', () => {
+  it('convertit sept PRODUCTION sans sidecar et conserve l’empreinte après activation et rejeu', async () => {
+    const fixture = await batchFixture('2026-10-29', false);
+    for (let i = 0; i < 7; i++) {
+      await fixture.change(i, 'production', p => { p.article.markdown += '\n\nAuteur test — rôle fourni. RSAC Test 000. Périmètre fourni.'; });
+      delete (fixture.manifest.days[i] as { metadata?: string }).metadata;
+    }
+    const first = await fixture.prepare();
+    expect(first.articles).toHaveLength(7);
+    expect(first.articles[0].dates).not.toHaveProperty('createdAt');
+    expect(first.articles[0].answer).toBe('Un texte conservé, avec un document.');
+    const retry = await fixture.prepare(first.scheduled);
+    expect(retry.fingerprint).toBe(first.fingerprint);
+    expect(retry.actions.every((action: { action: string }) => action.action === 'unchanged')).toBe(true);
+  });
+  it('ne permet pas au lot d’utiliser le mode de test sans couverture finale déclarée', async () => {
+    const fixture = await batchFixture();
+    for (let i = 0; i < 7; i++) {
+      await fixture.change(i, 'production', p => { p.article.markdown += '\n\nAuteur test — rôle fourni. RSAC Test 000. Périmètre fourni.'; });
+      delete (fixture.manifest.days[i] as { metadata?: string }).metadata;
+      fixture.manifest.days[i].cover = null;
+      delete fixture.manifest.days[i].coverWidth;
+      delete fixture.manifest.days[i].coverHeight;
+    }
+    await expect(fixture.prepare()).rejects.toThrow(/Couverture finale absente/);
+  });
   it('prépare un lot complet sans écrire au catalogue ni altérer les fichiers source', async () => {
     const fixture = await batchFixture();
     const before = await Promise.all(fixture.manifest.days.flatMap(day => [day.production, day.metadata, day.cover!]).map(file => readFile(resolve(fixture.input, file), 'utf8')));
@@ -70,7 +95,7 @@ describe('Préparation transactionnelle en mémoire de sept journées', () => {
       expect(cover.report.width).toBe(1600);
       expect(cover.report.height).toBe(900);
     }
-    expect(batch.sourceEvidence.every(entry => /^[a-f0-9]{64}$/.test(entry.productionSha256) && /^[a-f0-9]{64}$/.test(entry.metadataSha256))).toBe(true);
+    expect(batch.sourceEvidence.every(entry => /^[a-f0-9]{64}$/.test(entry.productionSha256) && 'metadataSha256' in entry && /^[a-f0-9]{64}$/.test(entry.metadataSha256))).toBe(true);
     const after = await Promise.all(fixture.manifest.days.flatMap(day => [day.production, day.metadata, day.cover!]).map(file => readFile(resolve(fixture.input, file), 'utf8')));
     expect(after).toEqual(before);
     expect(await fixture.prepare()).toEqual(batch);

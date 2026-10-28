@@ -1,6 +1,6 @@
 # Contenu éditorial V2 — conservation du Markdown
 
-Le format V1 reste accepté sans migration. V2 conserve les mêmes métadonnées requises et remplace `sections` par `content: { "format": "commonmark", "markdown": "…" }`. Le validateur conserve la chaîne Markdown exacte, y compris les espaces, les fins de ligne et les liens. Une tentative invalide échoue avec le type de structure et sa position ; elle ne transforme pas le texte pour le faire passer.
+Le format V1 reste accepté sans migration. V2 conserve les métadonnées éditoriales et remplace `sections` par `content: { "format": "commonmark", "markdown": "…" }`. La date réelle de rédaction `dates.createdAt` peut être omise si inconnue ; V1 la conserve obligatoire. Le validateur conserve la chaîne Markdown exacte, y compris les espaces, les fins de ligne et les liens. Une tentative invalide échoue avec le type de structure et sa position ; elle ne transforme pas le texte pour le faire passer.
 
 Le parseur est **satteri 0.10.5**, déjà installé par Astro et désormais déclaré directement dans `package.json` et son verrouillage. Son API `markdownToMdast` fournit un arbre CommonMark. La [documentation primaire du projet](https://github.com/bruits/satteri) et les déclarations de la version installée définissent cette API. Le rendu ne compile pas MDX et n’exécute aucun code ; un second passage de reconnaissance MDX sert uniquement à refuser le JSX que CommonMark pourrait traiter comme du texte.
 
@@ -19,7 +19,7 @@ Les sources V2 sont `{ id, label, url, accessedAt, scope }`. L’identifiant doc
 
 `image` reste `null` ou devient `{ src, alt, width, height, caption }` : la légende est obligatoire en V2 et visible sous l’image, notamment pour une illustration IA. Le chemin local et les dimensions suivent les mêmes contrôles que V1.
 
-`dates.createdAt` et `dates.updatedAt` acceptent aussi une date civile en V2. Aucune heure à minuit n’est ajoutée aux données, au texte visible ou au JSON-LD. `publishAt` reste une échéance à **07:00 Europe/Paris** avec le bon décalage saisonnier ; elle ne devient jamais `datePublished`. Les révisions conservent les contrôles existants : une date de modification plus précise peut être nécessaire pour établir l’ordre de plusieurs modifications le même jour.
+`dates.createdAt` et `dates.updatedAt` acceptent aussi une date civile en V2. `createdAt` inconnu est omis, y compris dans le texte visible et le JSON-LD ; une date de source, d'import ou de publication prévue ne le remplace jamais. Aucune heure à minuit n’est ajoutée. `publishAt` reste une échéance à **07:00 Europe/Paris** avec le bon décalage saisonnier ; elle ne devient jamais `datePublished`. Les révisions exigent une date réelle de modification, supérieure à la dernière date connue lorsqu'elle existe ; une précision horaire peut être nécessaire pour plusieurs modifications le même jour.
 
 ## Vérifications reproductibles
 

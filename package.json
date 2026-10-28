@@ -29,6 +29,7 @@
     "editorial:check": "node scripts/editorial-check.mjs",
     "editorial:prepare": "node scripts/editorial-prepare.mjs",
     "editorial:import": "node scripts/editorial-import.mjs",
+    "editorial:convert": "node scripts/editorial-convert.mjs",
     "editorial:batch": "node scripts/editorial-batch.mjs",
     "test:public": "node scripts/verify-public.mjs",
     "test:delivery": "node scripts/qa-delivery.mjs",
