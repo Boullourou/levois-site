@@ -1,0 +1,110 @@
+name: Réception ARTICLE — préparation sans publication
+
+on:
+  push:
+    branches: ['codex/editorial-intake-20261029', 'codex/article-intake-*']
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/editorial-*'
+      - 'tests/editorial-*.node.mjs'
+      - 'config/editorial-intake/**'
+      - '.github/workflows/editorial-intake.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: editorial-intake-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  receiver-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm install --global npm@11.18.0
+      - run: npm ci --no-audit --no-fund
+      - run: node --test tests/editorial-transfer.node.mjs tests/editorial-receive.node.mjs
+
+  preflight:
+    if: github.event_name == 'push' && startsWith(github.ref_name, 'codex/article-intake-')
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.gate.outputs.enabled }}
+    steps:
+      - id: gate
+        env:
+          INTAKE_ENABLED: ${{ vars.LEVOIS_INTAKE_ENABLED }}
+        run: |
+          if [ "$INTAKE_ENABLED" != 'true' ]; then
+            echo '::error::INTAKE_NOT_CONFIGURED — réception privée non autorisée/configurée ; aucune publication.'
+            exit 1
+          fi
+          echo 'enabled=true' >> "$GITHUB_OUTPUT"
+
+  receive:
+    needs: [receiver-tests, preflight]
+    if: needs.preflight.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: levois-editorial-intake
+    env:
+      INTAKE_CODE_COMMIT: af3e198f05280429e4ce8da8e7c3fcad3d889f9f
+      INPUT_COMMIT: ${{ github.sha }}
+    steps:
+      - name: Code du récepteur immuable, indépendant des fichiers ARTICLE
+        uses: actions/checkout@v4
+        with:
+          ref: af3e198f05280429e4ce8da8e7c3fcad3d889f9f
+          path: trusted
+          persist-credentials: false
+      - name: Fichiers chiffrés uniquement
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          path: incoming
+          sparse-checkout: .editorial-inbox
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: trusted/.node-version
+          cache: npm
+          cache-dependency-path: trusted/package-lock.json
+      - run: npm install --global npm@11.18.0
+      - run: npm ci --no-audit --no-fund
+        working-directory: trusted
+      - id: receive
+        name: Réception, conversion et import de brouillons dans le checkout jetable
+        working-directory: trusted
+        env:
+          LEVOIS_INTAKE_PRIVATE_KEY: ${{ secrets.LEVOIS_INTAKE_PRIVATE_KEY }}
+        run: node scripts/editorial-receive.mjs receive ../incoming/.editorial-inbox ../result
+      - id: build
+        working-directory: trusted
+        run: npm run build > ../private-build.log 2>&1
+      - name: Finaliser le reçu et protéger le journal
+        if: always() && steps.receive.outcome != 'skipped'
+        working-directory: trusted
+        env:
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+        run: |
+          if [ -f ../private-build.log ]; then
+            node scripts/editorial-protect-log.mjs ../private-build.log ../result/build-log.encrypted
+          fi
+          node scripts/editorial-receive.mjs finalize ../result "$BUILD_OUTCOME"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: editorial-intake-${{ github.run_id }}-${{ github.run_attempt }}
+          path: result/
+          if-no-files-found: warn
+          retention-days: 30
