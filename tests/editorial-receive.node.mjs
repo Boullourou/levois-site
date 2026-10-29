@@ -1,4 +1,4 @@
-import { test } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { generateKeyPairSync } from 'node:crypto';
 import { mkdtemp, rm, readFile, readdir } from 'node:fs/promises';
@@ -9,6 +9,10 @@ import { productionFixture } from './fixtures/editorial-production.ts';
 import { seal, digest, writeEnvelope } from '../scripts/editorial-transfer.mjs';
 import { receive, finalize } from '../scripts/editorial-receive.mjs';
 const keys=generateKeyPairSync('rsa',{modulusLength:2048});
+// Synthetic fixtures have their own transfer IDs; the CI test branch is not an intake branch.
+const branchBeforeTests = process.env.GITHUB_REF_NAME;
+before(() => { delete process.env.GITHUB_REF_NAME; });
+after(() => { if (branchBeforeTests !== undefined) process.env.GITHUB_REF_NAME = branchBeforeTests; });
 async function fixture(broken=false) {
   const png=await sharp({create:{width:1600,height:900,channels:3,background:'#f7f6f2'}}).png().toBuffer();
   const lot={schemaVersion:1,batchId:'test-seven-days',campaignId:'campagne-test',days:[]},files=[];
@@ -48,4 +52,12 @@ test('champ indispensable absent : rejet exploitable sans texte privé dans le r
 test('clé manquante : refus explicite sans faux succès',async()=>{
   const root=await mkdtemp(resolve(tmpdir(),'receive-test-'));
   try {const r=await receive('absent',root,null);assert.equal(r.code,'INTAKE_KEY_MISSING');assert.equal(r.state,'rejected');}finally{await rm(root,{recursive:true,force:true});}
+});
+test('le nom de branche de transport doit correspondre au contenu reçu',async()=>{
+  const root=await mkdtemp(resolve(tmpdir(),'receive-test-'));
+  try {
+    await writeEnvelope(resolve(root,'in'),seal(Buffer.from(JSON.stringify(await fixture())),keys.publicKey));
+    process.env.GITHUB_REF_NAME='codex/article-intake-wrong';
+    const r=await receive(resolve(root,'in'),resolve(root,'out'),keys.privateKey);assert.equal(r.code,'BRANCH_ID_MISMATCH');
+  }finally{delete process.env.GITHUB_REF_NAME;await rm(root,{recursive:true,force:true});}
 });
