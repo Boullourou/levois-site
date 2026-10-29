@@ -14,7 +14,7 @@ export async function receive(inbox, out, privateKey, options = {}) {
   await mkdir(out, { recursive: true });
   const receipt = { schemaVersion: 1, state: 'rejected', stage: 'transport', publication: 'not-requested', schedule: 'unchanged',
     checkedAt: new Date().toISOString(), runId: process.env.GITHUB_RUN_ID ?? null, attempt: process.env.GITHUB_RUN_ATTEMPT ?? null,
-    codeCommit: process.env.INTAKE_CODE_COMMIT ?? null, inputCommit: process.env.INPUT_COMMIT ?? null };
+    codeCommit: process.env.INTAKE_CODE_COMMIT ?? null, inputCommit: process.env.INPUT_COMMIT ?? null, catalogCommit: process.env.CATALOG_COMMIT ?? null };
   let root;
   const publicKey = await readFile(resolve(repoRoot, 'config/editorial-intake/public.pem'), 'utf8');
   try {
@@ -67,7 +67,7 @@ export async function receive(inbox, out, privateKey, options = {}) {
       expected.add(day.production);
     }
     if (expected.size !== payload.files.length || payload.files.some(file => !expected.has(file.path))) fail('UNEXPECTED_OR_MISSING_FILE');
-    const batch = await prepareBatch(manifest, root, await loadEditorialCatalog(), processor);
+    const batch = await prepareBatch(manifest, root, await loadEditorialCatalog(options.catalogDirectory), processor);
     if (options.expectedFingerprint && batch.fingerprint !== options.expectedFingerprint) fail('V3_FINGERPRINT_CHANGED');
     if (batch.articles.some(article => article.status !== 'draft')) fail('DRAFT_REQUIRED');
     const files = [ { path: 'PREPARATION.json', base64: Buffer.from(json({ ...batch, coverFiles: undefined, scheduled: undefined })).toString('base64') },
@@ -113,7 +113,10 @@ export async function finalize(out, buildOk) {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   try {
     const [mode, inbox, out] = process.argv.slice(2);
-    const receipt = mode === 'finalize' ? await finalize(inbox, out === 'success') : await receive(inbox, out, process.env.LEVOIS_INTAKE_PRIVATE_KEY, { buildRoot: process.env.GITHUB_ACTIONS === 'true' ? repoRoot : undefined });
+    const receipt = mode === 'finalize' ? await finalize(inbox, out === 'success') : await receive(inbox, out, process.env.LEVOIS_INTAKE_PRIVATE_KEY, {
+      buildRoot: process.env.GITHUB_ACTIONS === 'true' ? repoRoot : undefined,
+      catalogDirectory: process.env.GITHUB_ACTIONS === 'true' ? resolve(repoRoot, '../catalogue/src/content/editorial') : undefined,
+    });
     console.log(JSON.stringify({ state: receipt.state, stage: receipt.stage, code: receipt.code ?? null, transferId: receipt.transferId }));
     if (receipt.state === 'rejected') process.exitCode = 1;
   } catch { console.error('RECEIVER_FAILED_BEFORE_RECEIPT'); process.exitCode = 1; }
