@@ -1,0 +1,97 @@
+{
+  "batchId": "levois-365-2026-2027-j001-j007",
+  "fingerprint": "76e272e575ccfccc53aa75b9a818601a53b601f4ac0b754650fc41beb114afea",
+  "days": [
+    {
+      "production": "J001_2026-10-29/PRODUCTION.json",
+      "productionSha256": "a004f48fe7cdbb53cc9557edc1abea3e3966fd979fdb000dba995d79ad5e1ee4",
+      "webp": "J001_2026-10-29/cover.webp",
+      "report": {
+        "inputSha256": "3108ce765a51a7429f9a207fa35e5b624d0e239115925a694a977e30b2153b64",
+        "sha256": "9048eb822c7a52f13e417e69f2edc7b63fdffea4ee8234423526b4f1afe23b11",
+        "width": 1600,
+        "height": 900,
+        "bytes": 312222,
+        "quality": 88
+      }
+    },
+    {
+      "production": "J002_2026-10-30/PRODUCTION.json",
+      "productionSha256": "51b590226e5ea3cbe1a33098d4ea32b87501f60299195541e560d59c720c31e4",
+      "webp": "J002_2026-10-30/cover.webp",
+      "report": {
+        "inputSha256": "b4b190844b2cc1180f69ae32fca3ea690414bbb5e954e2e6631da3ffc7d8ab9c",
+        "sha256": "36820b932b6f10b053fead0c921bdece23d6562cbad95fd32f693c0365648657",
+        "width": 1600,
+        "height": 900,
+        "bytes": 209184,
+        "quality": 88
+      }
+    },
+    {
+      "production": "J003_2026-10-31/PRODUCTION.json",
+      "productionSha256": "b3597d14d9f9c06cb8102de737b52dba8b8fe77304db82d7cb344063b7d84062",
+      "webp": "J003_2026-10-31/cover.webp",
+      "report": {
+        "inputSha256": "0f05e3de1b677b41c38788408e0981509574ee71280a86295300c6c311908b38",
+        "sha256": "fe66a2b852bb8f1885547860e0108a4d3d5c9565a310b3123e0afde084aef9e0",
+        "width": 1600,
+        "height": 900,
+        "bytes": 172634,
+        "quality": 88
+      }
+    },
+    {
+      "production": "J004_2026-11-01/PRODUCTION.json",
+      "productionSha256": "c90ead025d29074c242532cb7ef3c6fd4dc1a996ebffb3aaaddf3154f2c8293d",
+      "webp": "J004_2026-11-01/cover.webp",
+      "report": {
+        "inputSha256": "9670c9bbd40f26af383b6fde7c50ee434d79e0424b1c57bbc910d6713a4be6dd",
+        "sha256": "8fd1ced57f3c0f7316c010dda40671e24351b68888b66d7fdf5cab24dfa7005e",
+        "width": 1600,
+        "height": 900,
+        "bytes": 154312,
+        "quality": 88
+      }
+    },
+    {
+      "production": "J005_2026-11-02/PRODUCTION.json",
+      "productionSha256": "049f481331f106b54af33cdc1274b7c8f77dd8fb444bb3e30bc4763c69827566",
+      "webp": "J005_2026-11-02/cover.webp",
+      "report": {
+        "inputSha256": "5c75e9284378065f8ff249b73676eb0fa49e6e2976309b4a503b8f4c9022ce79",
+        "sha256": "913645c4cacab7cb26f6429c2a2e9f24a6f80b49ae2a2a5a087343285d49c001",
+        "width": 1600,
+        "height": 900,
+        "bytes": 134254,
+        "quality": 88
+      }
+    },
+    {
+      "production": "J006_2026-11-03/PRODUCTION.json",
+      "productionSha256": "680c540e713d029760f155214aa155e941fd9dcfd43c6706285eac9f72270506",
+      "webp": "J006_2026-11-03/cover.webp",
+      "report": {
+        "inputSha256": "105e2ad52c7d452434d36d465fbe9fa0821e03ce7707c3069e393396049ac115",
+        "sha256": "f2ce1c8ff8b25961f8d05d53b14423bdac319e2c30eaa9fb3ce551c3b821f968",
+        "width": 1600,
+        "height": 900,
+        "bytes": 197024,
+        "quality": 88
+      }
+    },
+    {
+      "production": "J007_2026-11-04/PRODUCTION.json",
+      "productionSha256": "ee5506be820a60f5f919dc2963b98abb1750919857d420cea122683c311523c5",
+      "webp": "J007_2026-11-04/cover.webp",
+      "report": {
+        "inputSha256": "245c869498249188e258b4a0f22a7b4109c717779977acf637ff55d9b0ed07ac",
+        "sha256": "cdc69696f2da2c5e61e04aabb8c37e191834ef960a9f5a4cf1968efb6f333459",
+        "width": 1600,
+        "height": 900,
+        "bytes": 213172,
+        "quality": 88
+      }
+    }
+  ]
+}
