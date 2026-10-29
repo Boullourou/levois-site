@@ -57,15 +57,24 @@ jobs:
     timeout-minutes: 20
     environment: levois-editorial-intake
     env:
-      INTAKE_CODE_COMMIT: af3e198f05280429e4ce8da8e7c3fcad3d889f9f
+      INTAKE_CODE_COMMIT: a95f4b2da112b7fef5a6c84644c8f0e33ffda43f
       INPUT_COMMIT: ${{ github.sha }}
     steps:
       - name: Code du récepteur immuable, indépendant des fichiers ARTICLE
         uses: actions/checkout@v4
         with:
-          ref: af3e198f05280429e4ce8da8e7c3fcad3d889f9f
+          ref: a95f4b2da112b7fef5a6c84644c8f0e33ffda43f
           path: trusted
           persist-credentials: false
+      - name: Catalogue courant de main, données uniquement
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: catalogue
+          sparse-checkout: src/content/editorial
+          persist-credentials: false
+      - name: Tracer le catalogue contrôlé
+        run: echo "CATALOG_COMMIT=$(git -C catalogue rev-parse HEAD)" >> "$GITHUB_ENV"
       - name: Fichiers chiffrés uniquement
         uses: actions/checkout@v4
         with:
